@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<classes>
+	<class name="Elefante" top="140px" left="420px"></class>
+	<class name="Class6" top="40px" left="500px"></class>
+	<class name="Class" top="120px" left="640px"></class>
+	<class name="Class1" top="60px" left="640px"></class>
+</classes>

@@ -1,0 +1,230 @@
+.class {
+    border: 1px solid #3d66cc;
+    background: #D2E0F3;
+    float: left;
+    padding: 5px;
+    padding-bottom: 15px;
+}
+
+.class .handle {
+    cursor: move;
+    height: 10px;
+    background: #3d66cc;
+}
+
+.class .controls {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+#footer {
+    bottom: 0px;
+    width: 100%;
+    position: absolute;
+}
+
+.icon-primary-null       { width: 10px; height: 10px; background-position: 0 0;         position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-primary-not-null   { width: 10px; height: 10px; background-position: -11px 0;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-field-null         { width: 10px; height: 10px; background-position: 0 -11px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-field-not-null     { width: 10px; height: 10px; background-position: -11px -11px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-foreign-null       { width: 10px; height: 10px; background-position: 0 -22px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-foreign-not-null   { width: 10px; height: 10px; background-position: -11px -22px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+
+.icon-inheritance-top    { width: 9px;  height: 14px; background-position: -22px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-top            { width: 9px;  height: 14px; background-position: -37px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-null-top       { width: 11px; height: 14px; background-position: -52px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-many-null-top      { width: 11px; height: 14px; background-position: -67px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+
+.icon-inheritance-bottom { width: 9px;  height: 14px; background-position: -22px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-bottom         { width: 9px;  height: 14px; background-position: -37px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-null-bottom    { width: 11px; height: 14px; background-position: -52px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-many-null-bottom   { width: 11px; height: 14px; background-position: -67px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+
+.icon-inheritance-left   { width: 14px; height: 9px;  background-position: -22px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-left           { width: 14px; height: 9px;  background-position: -37px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-null-left      { width: 14px; height: 11px; background-position: -52px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-many-null-left     { width: 14px; height: 11px; background-position: -67px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+
+.icon-inheritance-right  { width: 14px; height: 9px;  background-position: -22px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-right          { width: 14px; height: 9px;  background-position: -37px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-one-null-right     { width: 14px; height: 11px; background-position: -52px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-many-null-right    { width: 14px; height: 11px; background-position: -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+
+div.connector {
+    z-index: -1;
+    position: absolute;
+    /*background-color: #d3d3d3;*/
+}
+
+div.connectorMarker, div.leftConnectorMarker, div.rightConnectorMarker {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+}
+
+div.horizontalTopFrom {
+    border-top: 1px solid #969696;
+    border-right: 1px solid #969696;
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+div.horizontalTopFrom div.connectorMarker {
+    top: 0;
+    left: 0;
+}
+
+div.horizontalBottomTo {
+    border-bottom: 1px solid #969696;
+    width: 50%;
+    height: 100%;
+    margin-left: -1px;
+    float: left;
+}
+
+div.horizontalBottomTo div.connectorMarker {
+    bottom: -1px;
+    right: 0;
+}
+
+div.horizontalBottomFrom {
+    border-bottom: 1px solid #969696;
+    border-right: 1px solid #969696;
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+div.horizontalBottomFrom div.connectorMarker {
+    bottom: -1px;
+    left: 0;
+}
+
+div.horizontalTopTo {
+    border-top: 1px solid #969696;
+    width: 50%;
+    height: 100%;
+    margin-left: -1px;
+    float: left;
+}
+
+div.horizontalTopTo div.connectorMarker {
+    top: 0;
+    right: 0;
+}
+
+div.verticalTopLeft {
+    border-left: 1px solid #969696;
+    border-bottom: 1px solid #969696;
+    width: 100%;
+    height: 50%;
+}
+
+div.verticalTopLeft div.connectorMarker {
+    top: 0;
+    left: 0;
+}
+
+div.verticalBottomRight {
+    border-right: 1px solid #969696;
+    width: 100%;
+    height: 50%;
+}
+
+div.verticalBottomRight div.connectorMarker {
+    bottom: 0;
+    right: -1px;
+}
+
+div.verticalBottomLeft {
+    border-left: 1px solid #969696;
+    width: 100%;
+    height: 50%;
+}
+
+div.verticalBottomLeft div.connectorMarker {
+    bottom: 0;
+    left: 0;
+}
+
+div.verticalTopRight {
+    border-right: 1px solid #969696;
+    border-bottom: 1px solid #969696;
+    width: 100%;
+    height: 50%;
+}
+
+div.verticalTopRight div.connectorMarker {
+    top: 0;
+    right: -1px;
+}
+
+div.cornerTopRight {
+    border-top: 1px solid #969696;
+    border-right: 1px solid #969696;
+    width: 100%;
+    height: 100%
+}
+
+div.cornerTopRight div.leftConnectorMarker {
+    top: 0;
+    left: 0;
+}
+
+div.cornerTopRight div.rightConnectorMarker {
+    bottom: 0;
+    right: -1px;
+}
+
+div.cornerBottomRight {
+    border-bottom: 1px solid #969696;
+    border-right: 1px solid #969696;
+    width: 100%;
+    height: 100%
+}
+
+div.cornerBottomRight div.leftConnectorMarker {
+    bottom: -1px;
+    left: 0;
+}
+
+div.cornerBottomRight div.rightConnectorMarker {
+    top: 0;
+    right: -1px;
+}
+
+div.cornerTopLeft {
+    border-top: 1px solid #969696;
+    border-left: 1px solid #969696;
+    width: 100%;
+    height: 100%
+}
+
+div.cornerTopLeft div.leftConnectorMarker {
+    top: 0;
+    right: 0;
+}
+
+div.cornerTopLeft div.rightConnectorMarker {
+    bottom: 0;
+    left: 0;
+}
+
+div.cornerBottomLeft {
+    border-bottom: 1px solid #969696;
+    border-left: 1px solid #969696;
+    width: 100%;
+    height: 100%
+}
+
+div.cornerBottomLeft div.leftConnectorMarker {
+    bottom: -1px;
+    right: 0;
+}
+
+div.cornerBottomLeft div.rightConnectorMarker {
+    top: 0;
+    left: 0;
+}
