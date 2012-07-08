@@ -10,6 +10,8 @@
         <link type="text/css" href="css/style.css" rel="stylesheet"/>
         <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+        <script type="text/javascript" src="js/func.js"></script>
+        <script type="text/javascript" src="js/Item.js"></script>
         <script type="text/javascript" src="js/Class.js"></script>
         <script type="text/javascript" src="js/Link.js"></script>
 
@@ -44,14 +46,23 @@
             ?>
 
             $(document).ready(function () {
+                //addLink('Class1', 'Elefante', 'OneToOne');
                 addLink('Class1', 'Elefante', 'OneToOne');
-                addLink('Class1', 'Elefante', 'OneToOne');
-                //addLink('Class', 'Elefante', 'OneToOne');
-                //addLink('Class6', 'Elefante', 'OneToOne');
+                addLink('Class', 'Elefante', 'OneToOne');
+                addLink('Class6', 'Elefante', 'OneToOne');
 
                 addLink('Elefante', 'Class1', 'OneToOne');
-                //addLink('Elefante', 'Class', 'OneToOne');
-                //addLink('Elefante', 'Class6', 'OneToOne');
+                addLink('Elefante', 'Class', 'OneToOne');
+                addLink('Elefante', 'Class6', 'OneToOne');
+
+                addLink('Elefante', 'Class1', 'OneToOne');
+                addLink('Elefante', 'Class', 'OneToOne');
+                addLink('Elefante', 'Class6', 'OneToOne');
+
+                addLink('Class6', 'Class1', 'OneToOne');
+                addLink('Class6', 'Class', 'OneToOne');
+
+                //addLink('Class2', 'Class2', 'OneToOne');
 
 
                 //addLink('Class2', 'Class6', 'OneToOne');
@@ -78,8 +89,8 @@
     <div id="debug" style="border: 1px solid red; width: 500px; position: absolute; right: 0; height:100%;"></div>
 
     <?php
-        require 'parts/editClassNameDialog.php';
-        require 'parts/linkClassDialog.php';
+        //require 'parts/editClassNameDialog.php';
+        //require 'parts/linkClassDialog.php';
     ?>
     </body>
 </html>

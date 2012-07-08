@@ -51,8 +51,6 @@
 .icon-one-null-right     { width: 14px; height: 11px; background-position: -52px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-null-right    { width: 14px; height: 11px; background-position: -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 
-.inheritance-left   { right: 0;   position: absolute; display: block; text-indent: -99999px; }
-
 div.connector {
     z-index: -1;
     position: absolute;
