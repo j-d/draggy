@@ -2,7 +2,6 @@ Class.prototype = new Item();           // Inheritance
 Class.prototype.constructor = Class;
 
 Class.prototype.classes = {};           // Static associative array
-Class.prototype.classIdsByName = {};    // Static associative array
 
 function Class (name) {
     if (name == undefined)
@@ -13,24 +12,22 @@ function Class (name) {
     this.innit('Class');
 
     Class.prototype.classes[this.id] = this;
-    Class.prototype.classIdsByName[this.name] = this.id;
+    Item.prototype.itemIdsByName[this.name] = this.id;
+
+    $(
+        '<div id="' + this.getId() + '" class="class" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
+            '<div class="handle"></div>' +
+            '<div class="name">' + this.getName() + '</div>' +
+            '<div class="controls" style="display: none;">' +
+            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="removeClass(\'' + this.getName() + '\')"></span>' +
+            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
+            '</div>' +
+            '</div>'
+    ).appendTo('body');
+
+    this.calculateMiddlePoints();
+    this.makeInteractive();
 }
-
-Class.prototype.setName = function (name) {
-    this.name = this.getValidName(name);
-};
-
-Class.prototype.getName = function () {
-    return this.name;
-};
-
-Class.prototype.getIdFromName = function(name) {
-    return Class.prototype.classIdsByName[name];
-};
-
-Class.prototype.getClassByName = function(name) {
-    return Class.prototype.classes[Class.prototype.classIdsByName[name]];
-};
 
 Class.prototype.toXML = function () {
     var ret = '';
@@ -45,36 +42,6 @@ Class.prototype.toXML = function () {
     return ret;
 };
 
-Class.prototype.getValidName = function (name) {
-    var valid = true;
-    var i;
-
-    for (i in Class.prototype.classes)
-        if (Class.prototype.classes[i].getName() == name) {
-            valid = false;
-            break;
-        }
-
-    if (valid)
-        return name;
-
-    var number = 1;
-
-    while (!valid) {
-        valid = true;
-
-        for (i in Class.prototype.classes)
-            if (Class.prototype.classes[i].getName() == name + number) {
-                valid = false
-            }
-
-        if (valid)
-            return name + number;
-
-        number++;
-    }
-};
-
 Class.prototype.makeInteractive = function () {
     var name = this.name; // Later it will be out of context
 
@@ -83,13 +50,13 @@ Class.prototype.makeInteractive = function () {
         grid: [ 1,1 ],
         handle: 'div.handle',
         drag: function () {
-            var c = Class.prototype.getClassByName(name);
+            var c = Class.prototype.getItemByName(name);
             c.calculateMiddlePoints();
             c.markLinksToBeRedrawn();
             Link.prototype.reDrawLinks();
         },
         stop: function () {
-            var c = Class.prototype.getClassByName(name);
+            var c = Class.prototype.getItemByName(name);
             c.calculateMiddlePoints();
             c.markLinksToBeRedrawn();
             Link.prototype.reDrawLinks();
@@ -122,7 +89,7 @@ Class.prototype.makeInteractive = function () {
         $('#link-class-name-dialog select option[name=destClass]').remove();
 
         // Add other classes
-        for (i in Class.prototype.classes)
+        for (var i in Class.prototype.classes)
             $('<option value="' + Class.prototype.classes[i].getName() + '">' + Class.prototype.classes[i].getName() + '</option>').appendTo($('#link-class-name-dialog select[name=destClass]'));
 
         //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
@@ -132,32 +99,20 @@ Class.prototype.makeInteractive = function () {
     });
 };
 
-function addClass(name) {
-    var c = new Class(name);
+Class.prototype.remove = function () {
+    this.itemRemove();
 
-    $(
-        '<div id="' + c.getId() + '" class="class" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
-            '<div class="handle"></div>' +
-            '<div class="name">' + c.getName() + '</div>' +
-            '<div class="controls" style="display: none;">' +
-            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="deleteClass(\'' + c.getName() + '\')"></span>' +
-            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
-            '</div>' +
-            '</div>'
-    ).appendTo('body');
-
-    c.calculateMiddlePoints();
-    c.makeInteractive(name);
-}
-
-function deleteClass(name) {
     for (var i in Class.prototype.classes)
-        if (Class.prototype.classes[i].getName() == name) {
-            $(this.hashId).remove();
-
+        if (Class.prototype.classes[i].getName() == this.name) {
             delete Class.prototype.classes[i];
-
-            //alert('Deleted ' + name);
             break;
         }
+};
+
+function addClass(name) {
+    new Class(name);
+}
+
+function removeClass(name) {
+    Class.prototype.getItemByName(name).remove();
 }

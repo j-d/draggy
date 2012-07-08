@@ -110,6 +110,12 @@ Link.prototype.reLocate = function () {
     );
 };
 
+Link.prototype.remove = function () {
+    Class.prototype.classes[this.from].removeConnector(this.id);
+    Class.prototype.classes[this.to].removeConnector(this.id);
+
+    $(this.hashId).remove();
+};
 
 Link.prototype.calculateDistance = function () {
     if (this.needsRedraw) {
@@ -194,20 +200,6 @@ Link.prototype.calculateDistance = function () {
         }
     }
 };
-
-function addLink(from, to, type) {
-    var l = new Link(from, to, type);
-    //name = c.getName();
-
-    //drawLinkObjects(l.getId(),Class.prototype.classes[from], Class.prototype.classes[to]);
-
-    /*    addClassInteractivity(name);*/
-}
-
-function distance(x1, y1, x2, y2) {
-    return Math.sqrt( Math.pow(x2-x1,2) + Math.pow(y2-y1,2) );
-}
-
 
 function drawLink(id,fromX, fromY, toX, toY, fromConnector, toConnector, fromType, toType) {
     // Connector types
@@ -417,4 +409,12 @@ function drawLink(id,fromX, fromY, toX, toY, fromConnector, toConnector, fromTyp
     div += '</div>';
 
     $(div).appendTo('body');
+}
+
+function addLink(from, to, type) {
+    new Link(from, to, type);
+}
+
+function removeLink(id) {
+    Link.prototype.links[id].remove();
 }

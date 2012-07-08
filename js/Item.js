@@ -1,7 +1,8 @@
 function Item () {
 }
 
-Item.prototype.items = {};  // Static associative array
+Item.prototype.items = {};              // Static associative array
+Item.prototype.itemIdsByName = {};      // Static associative array
 
 Item.prototype.innit = function (desiredId) {
     this.id = getUniqueId(desiredId);
@@ -13,8 +14,24 @@ Item.prototype.innit = function (desiredId) {
     Item.prototype.items[this.id] = this;
 };
 
+Item.prototype.getIdFromName = function(name) {
+    return Item.prototype.itemIdsByName[name];
+};
+
+Item.prototype.getItemByName = function(name) {
+    return Item.prototype.items[Item.prototype.itemIdsByName[name]];
+};
+
 Item.prototype.getId = function () {
     return this.id;
+};
+
+Item.prototype.setName = function (name) {
+    this.name = this.getValidName(name);
+};
+
+Item.prototype.getName = function () {
+    return this.name;
 };
 
 Item.prototype.calculateMiddlePoints = function () {
@@ -236,3 +253,47 @@ Item.prototype.markLinksToBeRedrawn = function () {
             Link.prototype.links[this.connectors[i][j]].needsRedraw = true;
 };
 
+Item.prototype.getValidName = function (name) {
+    var valid = true;
+    var i;
+
+    for (i in Item.prototype.items)
+        if (Item.prototype.items[i].getName() == name) {
+            valid = false;
+            break;
+        }
+
+    if (valid)
+        return name;
+
+    var number = 1;
+
+    while (!valid) {
+        valid = true;
+
+        for (i in Item.prototype.items)
+            if (Item.prototype.items[i].getName() == name + number) {
+                valid = false
+            }
+
+        if (valid)
+            return name + number;
+
+        number++;
+    }
+};
+
+Item.prototype.itemRemove = function () {
+    for (var i in Item.prototype.items)
+        if (Item.prototype.items[i].getName() == this.name) {
+            // Remove all links that depended on it
+            for (var j = 0; j < 4; j++)
+                while (this.connectors[j].length > 0) {
+                    removeLink(this.connectors[j][0]);
+                }
+
+            $(this.hashId).remove();
+            delete Item.prototype.items[i];
+            break;
+        }
+};

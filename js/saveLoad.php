@@ -33,7 +33,7 @@ $(document).ready(function () {
             $classAttributes = $classAttributes['@attributes'];
 
             echo 'addClass(\'' . $classAttributes['name'] . '\');' . "\n";
-            echo 'Class.prototype.getClassByName(\'' . $classAttributes['name'] . '\').moveTo(\'' . $classAttributes['left'] . '\',\'' . $classAttributes['top'] . '\');' . "\n";
+            echo 'Class.prototype.getItemByName(\'' . $classAttributes['name'] . '\').moveTo(\'' . $classAttributes['left'] . '\',\'' . $classAttributes['top'] . '\');' . "\n";
         }
 
     ?>

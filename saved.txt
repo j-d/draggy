@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <classes>
-	<class name="Elefante" top="169px" left="475px"></class>
+	<class name="Elefante" top="175px" left="454px"></class>
 	<class name="Class6" top="36px" left="609px"></class>
 	<class name="Class" top="170px" left="185px"></class>
-	<class name="Class1" top="317px" left="602px"></class>
+	<class name="Class1" top="289px" left="616px"></class>
 	<class name="Class2" top="51px" left="967px"></class>
 </classes>
