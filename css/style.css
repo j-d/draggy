@@ -1,3 +1,10 @@
+/* Override jQuery UI */
+.ui-widget, .ui-widget .ui-widget {
+    font-size: inherit;
+}
+
+
+/* Draggy */
 .class {
     border: 1px solid #3d66cc;
     background: #D2E0F3;
@@ -24,12 +31,14 @@
     position: absolute;
 }
 
-.icon-primary-null       { width: 10px; height: 10px; background-position: 0 0;         position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-primary-not-null   { width: 10px; height: 10px; background-position: -11px 0;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-field-null         { width: 10px; height: 10px; background-position: 0 -11px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-field-not-null     { width: 10px; height: 10px; background-position: -11px -11px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-foreign-null       { width: 10px; height: 10px; background-position: 0 -22px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-foreign-not-null   { width: 10px; height: 10px; background-position: -11px -22px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-primary-null              { width: 10px; height: 10px; background-position: 0 0;         position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-primary-not-null          { width: 10px; height: 10px; background-position: -11px 0;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-field-null                { width: 10px; height: 10px; background-position: 0 -11px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-field-not-null            { width: 10px; height: 10px; background-position: -11px -11px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-foreign-null              { width: 10px; height: 10px; background-position: 0 -22px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-foreign-not-null          { width: 10px; height: 10px; background-position: -11px -22px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-primary-foreign-null      { width: 10px; height: 10px; background-position: 0 -33px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+.icon-primary-foreign-not-null  { width: 10px; height: 10px; background-position: -11px -33px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
 
 .icon-inheritance-top    { width: 9px;  height: 14px; background-position: -22px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-top            { width: 9px;  height: 14px; background-position: -37px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }

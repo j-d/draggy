@@ -12,22 +12,30 @@ function Class (name) {
     this.innit('Class');
 
     Class.prototype.classes[this.id] = this;
-    Item.prototype.itemIdsByName[this.name] = this.id;
 
     $(
         '<div id="' + this.getId() + '" class="class" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
-            '<div class="handle"></div>' +
-            '<div class="name">' + this.getName() + '</div>' +
-            '<div class="controls" style="display: none;">' +
-            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="removeClass(\'' + this.getName() + '\')"></span>' +
-            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
-            '</div>' +
-            '</div>'
+        '</div>'
     ).appendTo('body');
 
-    this.calculateMiddlePoints();
-    this.makeInteractive();
+    this.reDraw();
 }
+
+Class.prototype.reDraw = function () {
+    $(this.hashId).html(
+        //'<div class="handle"></div>' +
+        '<div class="name">' + this.getName() + '</div>' +
+        '<div class="attributes">' + this.attributesToHtml() + '</div>' +
+        '<div class="controls" style="display: none;">' +
+            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="removeClass(\'' + this.getName() + '\')"></span>' +
+            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
+        '</div>'
+    );
+
+    this.calculateMiddlePoints();
+
+    this.makeInteractive();
+};
 
 Class.prototype.toXML = function () {
     var ret = '';
@@ -35,68 +43,35 @@ Class.prototype.toXML = function () {
     ret += '<class ' +
         'name="' + this.getName() + '" ' +
         'top="' + $(this.hashId).css('top') + '" ' +
-        'left="' + $(this.hashId).css('left') + '">';
+        'left="' + $(this.hashId).css('left') + '"';
 
-    ret += '</class>';
+    if (this.getNumberAttributes() == 0)
+        ret += ' />' + '\n';
+    else {
+        ret += '>' + '\n';
+
+        var a;
+        for (var i = 0; i < this.getNumberAttributes(); i++) {
+            a = this.getAttribute(i);
+
+            ret += '\t\t\t' + '<attribute ' +
+                'name="' + a.getName() + '" ' +
+                'type="' + a.getType() + '" ' +
+                'size="' + a.getSize() + '" ' +
+                'null="' + a.getNull() + '" ' +
+                'primary="' + a.getPrimary() + '" ' +
+                'foreign="' + a.getForeign() + '" ' +
+                'autoincrement="' + a.getAutoincrement() + '" ' +
+                'unique="' + a.getUnique() + '" ' +
+                'default="' + a.getDefault() + '" ' +
+                'description="' + a.getDescription() + '" ' +
+                '/>' + '\n';
+        }
+
+        ret += '\t\t' + '</class>' + '\n';
+    }
 
     return ret;
-};
-
-Class.prototype.makeInteractive = function () {
-    var name = this.name; // Later it will be out of context
-
-    // Make it draggable
-    $(this.hashId).draggable({
-        grid: [ 1,1 ],
-        handle: 'div.handle',
-        drag: function () {
-            var c = Class.prototype.getItemByName(name);
-            c.calculateMiddlePoints();
-            c.markLinksToBeRedrawn();
-            Link.prototype.reDrawLinks();
-        },
-        stop: function () {
-            var c = Class.prototype.getItemByName(name);
-            c.calculateMiddlePoints();
-            c.markLinksToBeRedrawn();
-            Link.prototype.reDrawLinks();
-        }
-    });
-
-    var hashId = this.hashId;
-
-    // Hover controls
-    $(this.hashId).hover(
-        function () {
-            $(hashId + ' .controls').show();
-        },
-        function () {
-            $(hashId + ' .controls').hide();
-        }
-    );
-
-    // Edit name
-    $(this.hashId + ' .name').click(function () {
-        $('#edit-class-name-dialog input[name=name]').attr('value',$(hashId + ' .name').html());
-        $('#edit-class-name-dialog input[name=class]').attr('value',name);
-
-        $('#edit-class-name-dialog').dialog('open');
-    });
-
-    // Link class
-    $(this.hashId + ' .controls .linkClass').click(function () {
-        // Remove previous select items
-        $('#link-class-name-dialog select option[name=destClass]').remove();
-
-        // Add other classes
-        for (var i in Class.prototype.classes)
-            $('<option value="' + Class.prototype.classes[i].getName() + '">' + Class.prototype.classes[i].getName() + '</option>').appendTo($('#link-class-name-dialog select[name=destClass]'));
-
-        //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
-        $('#link-class-name-dialog input[name=class]').attr('value',name);
-
-        $('#link-class-name-dialog').dialog('open');
-    });
 };
 
 Class.prototype.remove = function () {

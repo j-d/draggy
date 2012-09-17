@@ -12,11 +12,18 @@ Item.prototype.innit = function (desiredId) {
     this.connectorsSide = {};
 
     Item.prototype.items[this.id] = this;
+    Item.prototype.itemIdsByName[this.name] = this.id;
+
+    this.attributes = [];
 };
 
 Item.prototype.getIdFromName = function(name) {
     return Item.prototype.itemIdsByName[name];
 };
+
+Item.prototype.getNameFromId = function(id) {
+    return Item.prototype.items[id].getName();
+}
 
 Item.prototype.getItemByName = function(name) {
     return Item.prototype.items[Item.prototype.itemIdsByName[name]];
@@ -26,8 +33,13 @@ Item.prototype.getId = function () {
     return this.id;
 };
 
-Item.prototype.setName = function (name) {
-    this.name = this.getValidName(name);
+Item.prototype.setName = function (desiredName) {
+    var newName = this.getValidName(desiredName);
+
+    delete(Item.prototype.itemIdsByName[this.name]);
+    Item.prototype.itemIdsByName[newName] = this.id;
+
+    this.name = newName;
 };
 
 Item.prototype.getName = function () {
@@ -296,4 +308,108 @@ Item.prototype.itemRemove = function () {
             delete Item.prototype.items[i];
             break;
         }
+};
+
+Item.prototype.makeInteractive = function () {
+    var name = this.name; // Later it will be out of context
+
+    // Make it draggable
+    $(this.hashId).draggable({
+        grid: [ 1,1 ],
+        //handle: 'div.handle',
+        drag: function () {
+            var i = Item.prototype.getItemByName(name);
+            i.calculateMiddlePoints();
+            i.markLinksToBeRedrawn();
+            Link.prototype.reDrawLinks();
+        },
+        stop: function () {
+            var i = Item.prototype.getItemByName(name);
+            i.calculateMiddlePoints();
+            i.markLinksToBeRedrawn();
+            Link.prototype.reDrawLinks();
+        }
+    });
+
+    var hashId = this.hashId;
+    var id = this.id;
+
+    // Hover controls
+    $(this.hashId).hover(
+        function () {
+            $(hashId + ' .controls').show();
+        },
+        function () {
+            $(hashId + ' .controls').hide();
+        }
+    );
+
+    // Edit dialog
+    $(this.hashId).dblclick(function () {
+        $('#edit-item-dialog input[name=name]').attr('value',$(hashId + ' .name').html());
+        $('#edit-item-dialog input[name=currentname]').attr('value',$(hashId + ' .name').html());
+
+        $('#edit-item-dialog #edit-attributes tbody tr').remove();
+
+        var item = Item.prototype.items[id];
+
+        for (var i = 0; i < item.attributes.length; i++)
+            $(getAttributeRow(
+                i,
+                item.attributes[i].getName(),
+                item.attributes[i].getType(),
+                item.attributes[i].getSize(),
+                item.attributes[i].getNull(),
+                item.attributes[i].getPrimary(),
+                item.attributes[i].getForeign(),
+                item.attributes[i].getAutoincrement(),
+                item.attributes[i].getUnique(),
+                item.attributes[i].getDefault(),
+                item.attributes[i].getDescription()
+
+            )).appendTo('#edit-item-dialog #edit-attributes tbody');
+
+        $('#edit-item-dialog').dialog('open');
+    });
+
+    // Link item
+    $(this.hashId + ' .controls .linkClass').click(function () {
+        // Remove previous select items
+        $('#link-item-dialog select[name=destinationItem] option').remove();
+
+        // Add other items
+        for (var i in Item.prototype.items)
+            $('<option value="' + Item.prototype.items[i].getName() + '">' + Item.prototype.items[i].getName() + '</option>').appendTo($('#link-item-dialog select[name=destinationItem]'));
+
+        //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
+        $('#link-item-dialog input[name=class]').attr('value',name);
+
+        $('#link-item-dialog').dialog('open');
+    });
+};
+
+Item.prototype.addAttribute = function (name, type, size, nul, primary, foreign, autoincrement, unique, def, description) {
+    this.attributes.push(new Attribute(name, type, size, nul, primary, foreign, autoincrement, unique, def, description));
+    this.reDraw();
+};
+
+Item.prototype.attributesToHtml = function () {
+    var ret = '';
+
+    for (var i = 0; i < this.attributes.length; i++) {
+        ret += this.attributes[i].toHtml();
+
+        if (i < this.attributes.length - 1)
+            ret += '<br>';
+    }
+
+    return ret;
+};
+
+Item.prototype.getNumberAttributes = function () {
+    return this.attributes.length;
+};
+
+Item.prototype.getAttribute = function (i) {
+    return this.attributes[i];
 };

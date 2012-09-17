@@ -1,6 +1,6 @@
-<div id="link-class-name-dialog" title="Link class">
+<div id="link-item-dialog" title="Link class">
     Destination:
-    <select name="destClass" class="text ui-widget-content ui-corner-all"></select><br/>
+    <select name="destinationItem" class="text ui-widget-content ui-corner-all"></select><br/>
     Type:
     <select name="type" class="text ui-widget-content ui-corner-all">
         <option value='OneToOne'>One to one</option>
@@ -12,7 +12,7 @@
 
 <script>
     $(function() {
-        $("#link-class-name-dialog").dialog({
+        $("#link-item-dialog").dialog({
             autoOpen: false,
             //height: 300,
             //width: 350,
@@ -20,10 +20,12 @@
             buttons: {
                 'Link': function() {
                     addLink(
-                        $('#link-class-name-dialog input[name=class]').val(),
-                        $('#link-class-name-dialog select[name=destClass]').val(),
-                        $('#link-class-name-dialog select[name=type]').val()
+                        $('#link-item-dialog input[name=class]').val(),
+                        $('#link-item-dialog select[name=destinationItem]').val(),
+                        $('#link-item-dialog select[name=type]').val()
                     );
+
+                    Link.prototype.reDrawLinks();
 
                     $( this ).dialog("close");
                 },

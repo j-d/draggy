@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<draggy>
+	<classes>
+		<class name="Elefante" top="373px" left="460px">
+			<attribute name="id" type="string" size="" null="true" primary="true" foreign="false" autoincrement="false" unique="false" default="" description="" />
+			<attribute name="name" type="string" size="" null="false" primary="true" foreign="false" autoincrement="false" unique="true" default="aaa" description="" />
+			<attribute name="n" type="string" size="" null="true" primary="false" foreign="false" autoincrement="false" unique="false" default="" description="bbb" />
+			<attribute name="namg" type="integer" size="" null="false" primary="false" foreign="false" autoincrement="false" unique="false" default="" description="" />
+			<attribute name="namh" type="string" size="25" null="true" primary="false" foreign="true" autoincrement="true" unique="false" default="" description="" />
+			<attribute name="nami" type="smallint" size="" null="false" primary="false" foreign="true" autoincrement="false" unique="false" default="" description="" />
+			<attribute name="namj" type="string" size="" null="true" primary="true" foreign="true" autoincrement="false" unique="false" default="" description="" />
+			<attribute name="namk" type="string" size="" null="false" primary="true" foreign="true" autoincrement="false" unique="false" default="" description="" />
+		</class>
+		<class name="Class6" top="36px" left="609px" />
+		<class name="Class" top="154px" left="95px" />
+		<class name="Gallina" top="289px" left="616px" />
+		<class name="Class2" top="51px" left="967px" />
+		<class name="Class1" top="280px" left="60px" />
+	</classes>
+	<relationships>
+		<relation from="Elefante" to="Gallina" type="OneToOne" fromType="manyNull" toType="one" />
+		<relation from="Elefante" to="Class" type="OneToOne" fromType="one" toType="inheritance" />
+		<relation from="Elefante" to="Class6" type="OneToOne" fromType="manyNull" toType="inheritance" />
+		<relation from="Class6" to="Gallina" type="OneToOne" fromType="oneNull" toType="oneNull" />
+		<relation from="Class6" to="Class" type="OneToOne" fromType="manyNull" toType="one" />
+	</relationships>
+</draggy>

@@ -1,5 +1,5 @@
-function Link (from, to, type) {
-    this.id = getValidName('Link');
+function Link (from, to, type, fromType, toType) {
+    this.id = getUniqueId('Link');
     this.hashId = '#' + this.id;
 
     this.from = Class.prototype.getIdFromName(from);
@@ -8,11 +8,31 @@ function Link (from, to, type) {
     this.positionFrom = null;
     this.positionTo = null;
     this.needsRedraw = true;
+    this.fromConnector = null;
+    this.toConnector = null;
+    this.fromType = fromType;
+    this.toType = toType;
+
+    this.shape = null;
 
     Link.prototype.links[this.id] = this;
 }
 
-Link.prototype.links = [];      // Static associative array
+Link.prototype.links = {};      // Static associative array
+
+Link.prototype.suffixes = [
+    '-top',
+    '-right',
+    '-bottom',
+    '-left'
+];
+
+Link.prototype.iconNames = {
+    inheritance:    'icon-inheritance',
+    one:            'icon-one',
+    oneNull:        'icon-one-null',
+    manyNull:       'icon-many-null'
+};
 
 Link.prototype.getId = function () {
     return this.id;
@@ -34,25 +54,19 @@ Link.prototype.toXML = function () {
     var ret = '';
 
     ret += '<relation ' +
-        'from="' + this.getFrom() + '" ' +
-        'to="' + this.getTo() + '" ' +
+        'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
+        'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
         'type="' + this.getType() + '" ' +
-        'top="' + $(this.hashId).css('top') + '" ' +
-        'left="' + $(this.hashId).css('left') + '">';
+        'fromType="' + this.fromType + '" ' +
+        'toType="' + this.toType + '" />' + '\n';
 
-    ret += '</relation>';
+    //ret += '</relation>';
 
     return ret;
 };
 
 Link.prototype.reDraw = function () {
     drawLinkObjects(this.id,'class_' + this.from, 'class_' + this.to);
-};
-
-Link.prototype.setProperties = function (distance, fromConnector, toConnector) {
-    this.distance = distance;
-    this.fromConnector = fromConnector;
-    this.toConnector = toConnector;
 };
 
 Link.prototype.reDrawLinks = function () {
@@ -70,44 +84,16 @@ Link.prototype.reDraw = function () {
     Class.prototype.classes[this.from].addConnector(this.fromConnector,this.id);
     Class.prototype.classes[this.to].addConnector(this.toConnector,this.id);
 
-    Class.prototype.classes[this.from].assignPositions(this.fromConnector);
-    Class.prototype.classes[this.to].assignPositions(this.toConnector);
-
-    $(this.hashId).remove();
-
-    drawLink(
-        this.id,
-        Class.prototype.classes[this.from].getLinkX(this.id,this.fromConnector),
-        Class.prototype.classes[this.from].getLinkY(this.id,this.fromConnector),
-        Class.prototype.classes[this.to].getLinkX(this.id,this.toConnector),
-        Class.prototype.classes[this.to].getLinkY(this.id,this.toConnector),
-        this.fromConnector,
-        this.toConnector,
-        'fromType',
-        'toType'
-    );
+    this.reLocate();
 
     this.needsRedraw = false;
 };
 
 Link.prototype.reLocate = function () {
-    // Same as reDraw but doesn't calculate where is meant to be connecting to and from since it has not changed
     Class.prototype.classes[this.from].assignPositions(this.fromConnector);
     Class.prototype.classes[this.to].assignPositions(this.toConnector);
 
-    $(this.hashId).remove();
-
-    drawLink(
-        this.id,
-        Class.prototype.classes[this.from].getLinkX(this.id,this.fromConnector),
-        Class.prototype.classes[this.from].getLinkY(this.id,this.fromConnector),
-        Class.prototype.classes[this.to].getLinkX(this.id,this.toConnector),
-        Class.prototype.classes[this.to].getLinkY(this.id,this.toConnector),
-        this.fromConnector,
-        this.toConnector,
-        'fromType',
-        'toType'
-    );
+    this.draw();
 };
 
 Link.prototype.remove = function () {
@@ -201,91 +187,49 @@ Link.prototype.calculateDistance = function () {
     }
 };
 
-function drawLink(id,fromX, fromY, toX, toY, fromConnector, toConnector, fromType, toType) {
+Link.prototype.draw = function () {
+    var fromX = Item.prototype.items[this.from].getLinkX(this.id,this.fromConnector);
+    var fromY = Item.prototype.items[this.from].getLinkY(this.id,this.fromConnector);
+    var toX = Item.prototype.items[this.to].getLinkX(this.id,this.toConnector);
+    var toY = Item.prototype.items[this.to].getLinkY(this.id,this.toConnector);
+
+    var width = Math.abs(toX - fromX);
+    var left = Math.min(fromX, toX);
+    var height = Math.abs(toY - fromY);
+    var top = Math.min(fromY, toY);
+
+
+    var shape = this.fromConnector * 10 + this.toConnector + (fromX < toX ? 'x0' : 'x1') + (fromY < toY ?  'y0' : 'y1');
+
+    if (shape == this.shape) { // Only needs to be resized
+        $(this.hashId).css('top',top).css('left',left).css('width',width).css('height',height);
+        return;
+    }
+
+    $(this.hashId).remove();
+
+    this.shape = shape;
+
     // Connector types
     // 0 = Top
     // 1 = Right
     // 2 = Bottom
     // 3 = Left
 
-    var width = Math.abs(toX - fromX);
-    var left = Math.min(fromX, toX);
-    var height = Math.abs(toY - fromY);
-    var top = Math.min(fromY, toY);
+    var fromConnector = this.fromConnector;
+    var toConnector = this.toConnector;
+
     var firstClass;
     var secondClass;
     var firstType;
     var secondType;
 
-    var fromSuffix;
-    var toSuffix;
-
-    switch (fromConnector) {
-        case 0:
-            fromSuffix = '-top';
-            break;
-        case 1:
-            fromSuffix = '-right';
-            break;
-        case 2:
-            fromSuffix = '-bottom';
-            break;
-        case 3:
-            fromSuffix = '-left';
-            break;
-    }
-
-    switch (toConnector) {
-        case 0:
-            toSuffix = '-top';
-            break;
-        case 1:
-            toSuffix = '-right';
-            break;
-        case 2:
-            toSuffix = '-bottom';
-            break;
-        case 3:
-            toSuffix = '-left';
-            break;
-    }
-
-    fromType = 'many-null';
-    toType = 'inheritance';
-
-    switch (fromType) {
-        case 'inheritance':
-            fromType = 'icon-inheritance' + fromSuffix;
-            break;
-        case 'one':
-            fromType = 'icon-one' + fromSuffix;
-            break;
-        case 'one-null':
-            fromType = 'icon-one-null' + fromSuffix;
-            break;
-        case 'many-null':
-            fromType = 'icon-many-null' + fromSuffix;
-            break;
-    }
-
-    switch (toType) {
-        case 'inheritance':
-            toType = 'icon-inheritance' + toSuffix;
-            break;
-        case 'one':
-            toType = 'icon-one' + toSuffix;
-            break;
-        case 'one-null':
-            toType = 'icon-one-null' + toSuffix;
-            break;
-        case 'many-null':
-            toType = 'icon-many-null' + toSuffix;
-            break;
-    }
+    var fromType = Link.prototype.iconNames[this.fromType] + Link.prototype.suffixes[fromConnector];
+    var toType = Link.prototype.iconNames[this.toType] + Link.prototype.suffixes[toConnector];
 
     var div = '';
 
-    div += '<div id="' + id + '" class="connector" style="width: ' + width + 'px; height: ' + height + 'px; left: ' + left + 'px; top: ' + top + 'px;">';
+    div += '<div id="' + this.id + '" class="connector" style="width: ' + width + 'px; height: ' + height + 'px; left: ' + left + 'px; top: ' + top + 'px;">';
 
     if ( ( fromConnector == 1 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 1 ) ) { // Case ¯¯|__ or __|¯¯
         if (fromY < toY ^ fromConnector == 3 ) { // Case ¯¯|__
@@ -409,10 +353,13 @@ function drawLink(id,fromX, fromY, toX, toY, fromConnector, toConnector, fromTyp
     div += '</div>';
 
     $(div).appendTo('body');
-}
+};
 
-function addLink(from, to, type) {
-    new Link(from, to, type);
+function addLink(from, to, type, fromType, toType) {
+    debug(type);
+    debug(fromType);
+    debug(toType);
+    new Link(from, to, type, fromType, toType);
 }
 
 function removeLink(id) {
