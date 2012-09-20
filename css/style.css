@@ -5,30 +5,82 @@
 
 
 /* Draggy */
-.class {
-    border: 1px solid #3d66cc;
-    background: #D2E0F3;
+.item {
     float: left;
     padding: 5px;
     padding-bottom: 15px;
 }
 
-.class .handle {
-    cursor: move;
-    height: 10px;
-    background: #3d66cc;
+.item .name {
+    font-weight: bold;
 }
 
-.class .controls {
+.item .controls {
     position: absolute;
     left: 0;
     bottom: 0;
 }
 
-#footer {
-    bottom: 0px;
-    width: 100%;
+.class {
+    border: 1px solid #3d66cc;
+    background: #D2E0F3;
+}
+
+.abstract {
+    border: 1px solid #4ccc20;
+    background: #bff3b8;
+}
+
+
+.container {
+    border: 1px solid #d0ce7d;
+    background: #fff9c2;
+    float: left;
+    padding: 5px;
+}
+
+.container .handle {
+    cursor: move;
+    xheight: 10px;
+    background: #ccb866;
+    float: left;
+    left: 0px;
+    top: 0px;
     position: absolute;
+    padding: 0px 3px;
+    border-right: 1px solid #d0ce7d;
+    border-bottom: 1px solid #d0ce7d;
+}
+
+.container .class {
+    z-index: 20;
+}
+
+.attributes .attribute {
+    color: #707070;
+}
+
+.attributes .inherited-attribute {
+    text-decoration: underline;
+}
+
+#edit-item-tabs div {
+    height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+#link-item-dialog table {
+    width: 100%;
+}
+
+/* Footer menu */
+#footer {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
 }
 
 .icon-primary-null              { width: 10px; height: 10px; background-position: 0 0;         position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
@@ -61,7 +113,7 @@
 .icon-many-null-right    { width: 14px; height: 11px; background-position: -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 
 div.connector {
-    z-index: -1;
+    z-index: 1;
     position: absolute;
     /*background-color: #d3d3d3;*/
 }

@@ -42,15 +42,26 @@ function getModelXML() {
     ret += '<\?xml version="1.0" encoding="UTF-8" ?>\n';
     ret += '<draggy>\n';
 
+    for (var i in Container.prototype.containers)
+        ret += '\t' + Container.prototype.containers[i].toXML();
+
     ret += '\t<classes>\n';
     for (var i in Class.prototype.classes)
-        ret += '\t\t' + Class.prototype.classes[i].toXML();
+        if (Class.prototype.classes[i].getModule() == '')
+            ret += '\t\t' + Class.prototype.classes[i].toXML();
     ret += '\t</classes>\n';
 
     ret += '\t<relationships>\n';
     for (var i in Link.prototype.links)
         ret += '\t\t' + Link.prototype.links[i].toXML();
     ret += '\t</relationships>\n';
+
+    /*
+    ret += '\t<modules>\n';
+    for (var i in Container.prototype.containers)
+        ret += '\t\t' + Container.prototype.containers[i].toXML();
+    ret += '\t</modules>\n';
+    */
 
     ret += '</draggy>';
 

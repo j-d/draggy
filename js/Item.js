@@ -10,11 +10,13 @@ Item.prototype.innit = function (desiredId) {
     this.hashId = '#' + this.id;
     this.connectors = [[],[],[],[]];
     this.connectorsSide = {};
+    this.inheritingFrom = null;
 
     Item.prototype.items[this.id] = this;
     Item.prototype.itemIdsByName[this.name] = this.id;
 
     this.attributes = [];
+    this.module = '';
 };
 
 Item.prototype.getIdFromName = function(name) {
@@ -46,9 +48,38 @@ Item.prototype.getName = function () {
     return this.name;
 };
 
+Item.prototype.setModule = function (module) {
+    if (this.module != '')
+        Container.prototype.containers[this.module].removeObject(this.id);
+
+    this.module = module;
+
+    if (this.module != '') {
+        var c = Container.prototype.containers[this.module];
+
+        c.addObject(this.id);
+        var x = $(this.hashId).offset().left - $(c.hashId).offset().left;
+        var y = $(this.hashId).offset().top - $(c.hashId).offset().top;
+        $(this.hashId).appendTo(c.hashId);
+        $(this.hashId).css('left',x);
+        $(this.hashId).css('top',y);
+    }
+    else {
+        $(this.hashId).appendTo('body');
+    }
+
+};
+
+Item.prototype.getModule = function () {
+    return this.module;
+};
+
 Item.prototype.calculateMiddlePoints = function () {
-    this.x = parseInt($(this.hashId).css('left'));
-    this.y = parseInt($(this.hashId).css('top'));
+    //this.x = parseInt($(this.hashId).css('left'));
+    //this.y = parseInt($(this.hashId).css('top'));
+
+    this.x = $(this.hashId).offset().left;
+    this.y = $(this.hashId).offset().top;
 
     this.width = parseInt($(this.hashId).outerWidth());
     this.height = parseInt($(this.hashId).outerHeight());
@@ -72,6 +103,13 @@ Item.prototype.calculateMiddlePoints = function () {
 Item.prototype.moveTo = function(x,y) {
     $(this.hashId).css('left',x);
     $(this.hashId).css('top',y);
+
+    this.calculateMiddlePoints();
+};
+
+Item.prototype.move = function(x,y) {
+    $(this.hashId).css('left',(parseInt($(this.hashId).css('left')) + x) + 'px');
+    $(this.hashId).css('top',(parseInt($(this.hashId).css('top')) + y) + 'px');
 
     this.calculateMiddlePoints();
 };
@@ -310,6 +348,12 @@ Item.prototype.itemRemove = function () {
         }
 };
 
+Item.prototype.reDrawLinks = function () {
+    this.calculateMiddlePoints();
+    this.markLinksToBeRedrawn();
+    Link.prototype.reDrawLinks();
+};
+
 Item.prototype.makeInteractive = function () {
     var name = this.name; // Later it will be out of context
 
@@ -318,16 +362,10 @@ Item.prototype.makeInteractive = function () {
         grid: [ 1,1 ],
         //handle: 'div.handle',
         drag: function () {
-            var i = Item.prototype.getItemByName(name);
-            i.calculateMiddlePoints();
-            i.markLinksToBeRedrawn();
-            Link.prototype.reDrawLinks();
+            Item.prototype.getItemByName(name).reDrawLinks();
         },
         stop: function () {
-            var i = Item.prototype.getItemByName(name);
-            i.calculateMiddlePoints();
-            i.markLinksToBeRedrawn();
-            Link.prototype.reDrawLinks();
+            Item.prototype.getItemByName(name).reDrawLinks();
         }
     });
 
@@ -396,6 +434,20 @@ Item.prototype.addAttribute = function (name, type, size, nul, primary, foreign,
 Item.prototype.attributesToHtml = function () {
     var ret = '';
 
+    if (this.inheritingFrom != null) {
+        var parent = Item.prototype.getItemByName(this.inheritingFrom);
+
+        for (var i = 0; i < parent.attributes.length; i++) {
+            ret += parent.attributes[i].inheritedToHtml();
+
+            if (i < parent.attributes.length - 1)
+                ret += '<br>';
+        }
+
+        if (this.attributes.length > 0)
+            ret += '<br>';
+    }
+
     for (var i = 0; i < this.attributes.length; i++) {
         ret += this.attributes[i].toHtml();
 
@@ -412,4 +464,20 @@ Item.prototype.getNumberAttributes = function () {
 
 Item.prototype.getAttribute = function (i) {
     return this.attributes[i];
+};
+
+Item.prototype.reDraw = function () {
+    $(this.hashId).html(
+        //'<div class="handle"></div>' +
+        '<div class="name">' + this.getName() + '</div>' +
+            '<div class="attributes">' + this.attributesToHtml() + '</div>' +
+            '<div class="controls" style="display: none;">' +
+            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="removeClass(\'' + this.getName() + '\')"></span>' +
+            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
+            '</div>'
+    );
+
+    this.calculateMiddlePoints();
+
+    this.makeInteractive();
 };

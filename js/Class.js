@@ -3,7 +3,7 @@ Class.prototype.constructor = Class;
 
 Class.prototype.classes = {};           // Static associative array
 
-function Class (name) {
+function Class (name,container) {
     if (name == undefined)
         this.name = this.getValidName('Class');
     else
@@ -13,28 +13,18 @@ function Class (name) {
 
     Class.prototype.classes[this.id] = this;
 
+    if (container != undefined) {
+        var c = Container.prototype.getContainerByName(container);
+        c.addObject(this.id);
+    }
+
     $(
-        '<div id="' + this.getId() + '" class="class" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
+        '<div id="' + this.getId() + '" class="item class" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
         '</div>'
-    ).appendTo('body');
+    ).appendTo(container == undefined ? 'body' : c.hashId);
+
 
     this.reDraw();
-}
-
-Class.prototype.reDraw = function () {
-    $(this.hashId).html(
-        //'<div class="handle"></div>' +
-        '<div class="name">' + this.getName() + '</div>' +
-        '<div class="attributes">' + this.attributesToHtml() + '</div>' +
-        '<div class="controls" style="display: none;">' +
-            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="removeClass(\'' + this.getName() + '\')"></span>' +
-            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
-        '</div>'
-    );
-
-    this.calculateMiddlePoints();
-
-    this.makeInteractive();
 };
 
 Class.prototype.toXML = function () {
@@ -51,22 +41,8 @@ Class.prototype.toXML = function () {
         ret += '>' + '\n';
 
         var a;
-        for (var i = 0; i < this.getNumberAttributes(); i++) {
-            a = this.getAttribute(i);
-
-            ret += '\t\t\t' + '<attribute ' +
-                'name="' + a.getName() + '" ' +
-                'type="' + a.getType() + '" ' +
-                'size="' + a.getSize() + '" ' +
-                'null="' + a.getNull() + '" ' +
-                'primary="' + a.getPrimary() + '" ' +
-                'foreign="' + a.getForeign() + '" ' +
-                'autoincrement="' + a.getAutoincrement() + '" ' +
-                'unique="' + a.getUnique() + '" ' +
-                'default="' + a.getDefault() + '" ' +
-                'description="' + a.getDescription() + '" ' +
-                '/>' + '\n';
-        }
+        for (var i = 0; i < this.getNumberAttributes(); i++)
+            ret += '\t\t\t' + this.getAttribute(i).toXML() + '\n';
 
         ret += '\t\t' + '</class>' + '\n';
     }
@@ -84,8 +60,8 @@ Class.prototype.remove = function () {
         }
 };
 
-function addClass(name) {
-    new Class(name);
+function addClass(name,container) {
+    new Class(name,container);
 }
 
 function removeClass(name) {

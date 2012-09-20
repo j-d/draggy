@@ -14,8 +14,10 @@
         <script type="text/javascript" src="js/func.js"></script>
         <script type="text/javascript" src="js/Item.js"></script>
         <script type="text/javascript" src="js/Class.js"></script>
+        <script type="text/javascript" src="js/Abstract.js"></script>
         <script type="text/javascript" src="js/Link.js"></script>
         <script type="text/javascript" src="js/Attribute.js"></script>
+        <script type="text/javascript" src="js/Container.js"></script>
 
         <script>
             <?php
@@ -33,12 +35,14 @@
     <div id='status' style=""></div>
 
     <div id='footer'>
+        <span onClick="addAbstract();">Add abstract class</span>
+        |
         <span onClick="addClass();">Add class</span>
         |
         <span onClick="save();">Save</span>
     </div>
 
-    <div id="debug" style="border: 1px solid red; width: 500px; position: absolute; right: 0; height:100%;"></div>
+    <div id="debug" style="border: 1px solid red; width: 400px; position: fixed; right: 0;  z-index:100;"></div>
 
     <?php
         require 'parts/editClassNameDialog.php';

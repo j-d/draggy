@@ -4,30 +4,40 @@
     <input type="hidden" name="currentname" class="text ui-widget-content ui-corner-all" />
     <br/>
     <br/>
-    Attributes:
-    <table border="1" id="edit-attributes">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Size</th>
-                <th>Null</th>
-                <th>PK</th>
-                <th>FK</th>
-                <th>AI</th>
-                <th>UQ</th>
-                <th>Default</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <br/>
 
-    <input id="add-attribute" type="button" value="Add attribute">
+	<div id="edit-item-tabs">
+        <ul>
+            <li><a href="#edit-item-tabs-attributes">Attributes</a></li>
+            <li><a href="#edit-item-tabs-links">Links</a></li>
+        </ul>
 
+
+		<div id="edit-item-tabs-attributes">
+            <input id="add-attribute" type="button" value="Add attribute"><br/>
+            <table border="1" id="edit-attributes">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Null</th>
+                    <th>PK</th>
+                    <th>FK</th>
+                    <th>AI</th>
+                    <th>UQ</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+		</div>
+		<div id="edit-item-tabs-links">
+			blah
+		</div>
+	</div>
 </div>
 
 <script>
@@ -55,7 +65,7 @@
                             '<input id="primary' + rowId + '" type="checkbox"'+ ( primary != undefined && primary ? ' checked="checked"' : '' ) + '">' +
                         '</td>' +
                         '<td align="center">' +
-                            '<input id="foreign' + rowId + '" type="checkbox"'+ ( foreign != undefined && foreign ? ' checked="checked"' : '' ) + '">' +
+                            '<input id="foreign' + rowId + '" type="checkbox" disabled="disabled"'+ ( foreign != undefined && foreign ? ' checked="checked"' : '' ) + '">' +
                         '</td>' +
                         '<td align="center">' +
                             '<input id="autoincrement' + rowId + '" type="checkbox"'+ ( autoincrement != undefined && autoincrement ? ' checked="checked"' : '' ) + '">' +
@@ -75,6 +85,8 @@
     }
 
     $(function() {
+        $('#edit-item-tabs').tabs();
+
         $('#edit-item-dialog').dialog({
             autoOpen: false,
             //height: 300,
@@ -95,13 +107,22 @@
 
                     for (var j = 0; j < i.getNumberAttributes(); j++) {
                         a  = i.getAttribute(j);
-                        //(name, type, size, nul, primary, foreign, autoincrement, unique, def, description)
-                        a.setName( $('#name' + j).val() );
 
-                        a.setDefault( $('#default' + j).val() )
+                        a.setName( $('#name' + j).val() );
+                        a.setType( $('#type' + j).val() );
+                        a.setSize( $('#size' + j).val() );
+                        a.setNull( $('#null' + j).is(':checked'));
+                        a.setPrimary( $('#primary' + j).is(':checked'));
+                        a.setForeign( $('#foreign' + j).is(':checked'));
+                        a.setAutoincrement( $('#autoincrement' + j).is(':checked'));
+                        a.setUnique( $('#unique' + j).is(':checked'));
+                        a.setDefault( $('#default' + j).val() );
+                        a.setDescription( $('#description' + j).val() );
                     }
 
                     $(i.hashId + ' .attributes').html(i.attributesToHtml());
+
+	                i.reDrawLinks();
 
                     $( this ).dialog("close");
                 },

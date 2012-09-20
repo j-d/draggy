@@ -2,18 +2,28 @@ function Link (from, to, type, fromType, toType) {
     this.id = getUniqueId('Link');
     this.hashId = '#' + this.id;
 
-    this.from = Class.prototype.getIdFromName(from);
-    this.to = Class.prototype.getIdFromName(to);
+    this.from = Item.prototype.getIdFromName(from);
+    this.to = Item.prototype.getIdFromName(to);
     this.type = type;
     this.positionFrom = null;
     this.positionTo = null;
     this.needsRedraw = true;
     this.fromConnector = null;
     this.toConnector = null;
-    this.fromType = fromType;
-    this.toType = toType;
-
     this.shape = null;
+
+    switch (type) {
+        case 'Inheritance':
+            this.fromType = null;
+            this.toType = 'inheritance';
+            Item.prototype.getItemByName(from).inheritingFrom = to;
+            Item.prototype.getItemByName(from).reDraw();
+            break;
+        default:
+            this.fromType = fromType;
+            this.toType = toType;
+            break;
+    }
 
     Link.prototype.links[this.id] = this;
 }
@@ -53,12 +63,20 @@ Link.prototype.getType = function () {
 Link.prototype.toXML = function () {
     var ret = '';
 
-    ret += '<relation ' +
-        'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
-        'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
-        'type="' + this.getType() + '" ' +
-        'fromType="' + this.fromType + '" ' +
-        'toType="' + this.toType + '" />' + '\n';
+    if (this.getType() == 'Inheritance') {
+        ret += '<relation ' +
+            'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
+            'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
+            'type="' + this.getType() + '" />' + '\n';
+    }
+    else {
+        ret += '<relation ' +
+            'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
+            'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
+            'type="' + this.getType() + '" ' +
+            'fromType="' + this.fromType + '" ' +
+            'toType="' + this.toType + '" />' + '\n';
+    }
 
     //ret += '</relation>';
 
@@ -78,11 +96,11 @@ Link.prototype.reDrawLinks = function () {
 Link.prototype.reDraw = function () {
     this.calculateDistance();
 
-    Class.prototype.classes[this.from].removeConnector(this.id);
-    Class.prototype.classes[this.to].removeConnector(this.id);
+    Item.prototype.items[this.from].removeConnector(this.id);
+    Item.prototype.items[this.to].removeConnector(this.id);
 
-    Class.prototype.classes[this.from].addConnector(this.fromConnector,this.id);
-    Class.prototype.classes[this.to].addConnector(this.toConnector,this.id);
+    Item.prototype.items[this.from].addConnector(this.fromConnector,this.id);
+    Item.prototype.items[this.to].addConnector(this.toConnector,this.id);
 
     this.reLocate();
 
@@ -90,23 +108,23 @@ Link.prototype.reDraw = function () {
 };
 
 Link.prototype.reLocate = function () {
-    Class.prototype.classes[this.from].assignPositions(this.fromConnector);
-    Class.prototype.classes[this.to].assignPositions(this.toConnector);
+    Item.prototype.items[this.from].assignPositions(this.fromConnector);
+    Item.prototype.items[this.to].assignPositions(this.toConnector);
 
     this.draw();
 };
 
 Link.prototype.remove = function () {
-    Class.prototype.classes[this.from].removeConnector(this.id);
-    Class.prototype.classes[this.to].removeConnector(this.id);
+    Item.prototype.items[this.from].removeConnector(this.id);
+    Item.prototype.items[this.to].removeConnector(this.id);
 
     $(this.hashId).remove();
 };
 
 Link.prototype.calculateDistance = function () {
     if (this.needsRedraw) {
-        var from = Class.prototype.classes[this.from];
-        var to =  Class.prototype.classes[this.to];
+        var from = Item.prototype.items[this.from];
+        var to =  Item.prototype.items[this.to];
 
         // Connector types
         // 0 = Top
@@ -219,8 +237,8 @@ Link.prototype.draw = function () {
     var fromConnector = this.fromConnector;
     var toConnector = this.toConnector;
 
-    var firstClass;
-    var secondClass;
+    var firstItem;
+    var secondItem;
     var firstType;
     var secondType;
 
@@ -233,12 +251,12 @@ Link.prototype.draw = function () {
 
     if ( ( fromConnector == 1 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 1 ) ) { // Case ¯¯|__ or __|¯¯
         if (fromY < toY ^ fromConnector == 3 ) { // Case ¯¯|__
-            firstClass =  'horizontalTopFrom';
-            secondClass = 'horizontalBottomTo';
+            firstItem =  'horizontalTopFrom';
+            secondItem = 'horizontalBottomTo';
         }
         else { // Case __|¯¯
-            firstClass =  'horizontalBottomFrom';
-            secondClass = 'horizontalTopTo';
+            firstItem =  'horizontalBottomFrom';
+            secondItem = 'horizontalTopTo';
         }
 
         if (fromConnector == 3) {
@@ -250,12 +268,12 @@ Link.prototype.draw = function () {
             secondType = toType;
         }
 
-        div +=  '<div class="' + firstClass + '">' +
+        div +=  '<div class="' + firstItem + '">' +
                     '<div class="connectorMarker">' +
                         '<span class="' + firstType + '"></span>' +
                     '</div>' +
                 '</div>' +
-                '<div class="' + secondClass + '">' +
+                '<div class="' + secondItem + '">' +
                     '<div class="connectorMarker">' +
                         '<span class="' + secondType + '"></span>' +
                     '</div>' +
@@ -263,12 +281,12 @@ Link.prototype.draw = function () {
     }
     else if ( ( fromConnector == 0 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 0 ) ) { // Case '-, or ,-'
         if ( fromX < toX ^ fromConnector == 2 ) { // Case ,-'
-            firstClass = 'verticalTopRight';
-            secondClass = 'verticalBottomLeft';
+            firstItem = 'verticalTopRight';
+            secondItem = 'verticalBottomLeft';
         }
         else { // Case '-,
-            firstClass = 'verticalTopLeft';
-            secondClass = 'verticalBottomRight';
+            firstItem = 'verticalTopLeft';
+            secondItem = 'verticalBottomRight';
         }
 
         if (fromConnector == 0) {
@@ -280,19 +298,19 @@ Link.prototype.draw = function () {
             secondType = toType;
         }
 
-        div +=  '<div class="' + firstClass + '">' +
+        div +=  '<div class="' + firstItem + '">' +
                     '<div class="connectorMarker">' +
                         '<span class="' + firstType + '"></span>' +
                     '</div>' +
                 '</div>' +
-                '<div class="' + secondClass + '">' +
+                '<div class="' + secondItem + '">' +
                     '<div class="connectorMarker">' +
                         '<span class="' + secondType + '"></span>' +
                     '</div>' +
                 '</div>';
     } else { // Corner
         if ( ( fromConnector == 1 && toConnector == 0 ) || ( fromConnector == 0 && toConnector == 1 ) ) { // Case ¯¯|
-            firstClass = 'cornerTopRight';
+            firstItem = 'cornerTopRight';
 
             if (fromConnector == 0) {
                 firstType = toType;
@@ -304,7 +322,7 @@ Link.prototype.draw = function () {
             }
         }
         else if ( ( fromConnector == 1 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 1 ) ) { // Case _|
-            firstClass = 'cornerBottomRight';
+            firstItem = 'cornerBottomRight';
 
             if (fromConnector == 2) {
                 firstType = toType;
@@ -316,7 +334,7 @@ Link.prototype.draw = function () {
             }
         }
         else if ( ( fromConnector == 0 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 0 ) ) { // Case |¯¯
-            firstClass = 'cornerTopLeft';
+            firstItem = 'cornerTopLeft';
 
             if (fromConnector == 0) {
                 firstType = toType;
@@ -328,7 +346,7 @@ Link.prototype.draw = function () {
             }
         }
         else if ( ( fromConnector == 2 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 2 ) ) { // Case |_
-            firstClass = 'cornerBottomLeft';
+            firstItem = 'cornerBottomLeft';
 
             if (fromConnector == 2) {
                 firstType = toType;
@@ -340,7 +358,7 @@ Link.prototype.draw = function () {
             }
         }
 
-        div +=  '<div class="' + firstClass + '">' +
+        div +=  '<div class="' + firstItem + '">' +
                     '<div class="leftConnectorMarker">' +
                         '<span class="' + firstType + '"></span>' +
                     '</div>' +
