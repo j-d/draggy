@@ -1,9 +1,13 @@
-function Link (from, to, type, fromType, toType) {
-    this.id = getUniqueId('Link');
-    this.hashId = '#' + this.id;
+Link.prototype = new ScreenItem();           // Inheritance
+Link.prototype.constructor = Link;
 
-    this.from = Item.prototype.getIdFromName(from);
-    this.to = Item.prototype.getIdFromName(to);
+Link.prototype.links = {};      // Static associative array
+
+function Link (from, to, type, fromAttributeName, toAttributeName) {
+    this.innitScreenItem('Link');
+
+    this.from = Connectable.prototype.getIdFromName(from);
+    this.to = Connectable.prototype.getIdFromName(to);
     this.type = type;
     this.positionFrom = null;
     this.positionTo = null;
@@ -11,24 +15,30 @@ function Link (from, to, type, fromType, toType) {
     this.fromConnector = null;
     this.toConnector = null;
     this.shape = null;
+    this.fromAttribute = null;
+    this.toAttribute = null;
+    this.forceRender = false;
 
-    switch (type) {
-        case 'Inheritance':
-            this.fromType = null;
-            this.toType = 'inheritance';
-            Item.prototype.getItemByName(from).inheritingFrom = to;
-            Item.prototype.getItemByName(from).reDraw();
-            break;
-        default:
-            this.fromType = fromType;
-            this.toType = toType;
-            break;
+    if (type != 'Inheritance') {
+        this.fromAttribute = Connectable.prototype.connectables[this.from].getAttributeFromName(fromAttributeName);
+        this.toAttribute = Connectable.prototype.connectables[this.to].getAttributeFromName(toAttributeName);
+
+        Attribute.prototype.attributes[this.fromAttribute].links.push(this.getId());
+        Attribute.prototype.attributes[this.toAttribute].links.push(this.getId());
     }
+    else {
+        Item.prototype.items[this.from].inheritFrom(this.to);
+
+        if (System.prototype.runtime)
+            Item.prototype.items[this.from].inheritAttributes();
+
+        Item.prototype.items[this.from].reDraw();
+    }
+
+    this.adjustConnectors();
 
     Link.prototype.links[this.id] = this;
 }
-
-Link.prototype.links = {};      // Static associative array
 
 Link.prototype.suffixes = [
     '-top',
@@ -41,6 +51,7 @@ Link.prototype.iconNames = {
     inheritance:    'icon-inheritance',
     one:            'icon-one',
     oneNull:        'icon-one-null',
+    many:           'icon-many',
     manyNull:       'icon-many-null'
 };
 
@@ -74,17 +85,13 @@ Link.prototype.toXML = function () {
             'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
             'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
             'type="' + this.getType() + '" ' +
-            'fromType="' + this.fromType + '" ' +
-            'toType="' + this.toType + '" />' + '\n';
+            'fromAttribute="' + Attribute.prototype.attributes[this.fromAttribute].getName() + '" ' +
+            'toAttribute="' + Attribute.prototype.attributes[this.toAttribute].getName() + '" />' + '\n';
     }
 
     //ret += '</relation>';
 
     return ret;
-};
-
-Link.prototype.reDraw = function () {
-    drawLinkObjects(this.id,'class_' + this.from, 'class_' + this.to);
 };
 
 Link.prototype.reDrawLinks = function () {
@@ -102,6 +109,8 @@ Link.prototype.reDraw = function () {
     Item.prototype.items[this.from].addConnector(this.fromConnector,this.id);
     Item.prototype.items[this.to].addConnector(this.toConnector,this.id);
 
+    this.adjustConnectors();
+
     this.reLocate();
 
     this.needsRedraw = false;
@@ -114,11 +123,13 @@ Link.prototype.reLocate = function () {
     this.draw();
 };
 
-Link.prototype.remove = function () {
+Link.prototype.destroyLink = function () {
     Item.prototype.items[this.from].removeConnector(this.id);
     Item.prototype.items[this.to].removeConnector(this.id);
 
     $(this.hashId).remove();
+    delete Link.prototype.links[this.id];
+    this.destroyScreenItem();
 };
 
 Link.prototype.calculateDistance = function () {
@@ -219,10 +230,12 @@ Link.prototype.draw = function () {
 
     var shape = this.fromConnector * 10 + this.toConnector + (fromX < toX ? 'x0' : 'x1') + (fromY < toY ?  'y0' : 'y1');
 
-    if (shape == this.shape) { // Only needs to be resized
+    if (!this.forceRender && shape == this.shape) { // Only needs to be resized
         $(this.hashId).css('top',top).css('left',left).css('width',width).css('height',height);
         return;
     }
+
+    this.forceRender = false;
 
     $(this.hashId).remove();
 
@@ -373,11 +386,42 @@ Link.prototype.draw = function () {
     $(div).appendTo('body');
 };
 
-function addLink(from, to, type, fromType, toType) {
-    debug(type);
-    debug(fromType);
-    debug(toType);
-    new Link(from, to, type, fromType, toType);
+Link.prototype.adjustConnectors = function () {
+    var newFrom;
+    var newTo;
+
+    switch (this.type) {
+        case 'Inheritance':
+            newFrom = null;
+            newTo = 'inheritance';
+            break;
+        case 'OneToOne':
+            newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
+            newTo = Attribute.prototype.attributes[this.toAttribute].getNull() ? 'oneNull' : 'one';
+            break;
+        case 'OneToMany':
+            newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
+            newTo = Attribute.prototype.attributes[this.toAttribute].getNull() ? 'manyNull' : 'many';
+            break;
+        default:
+            newFrom = '';
+            newTo = '';
+            break;
+    }
+
+    if ( newFrom != this.fromType || newTo != this.toType ) {
+        this.forceRender = true;
+        this.fromType = newFrom;
+        this.toType = newTo;
+    }
+};
+
+Link.prototype.setNeedsRedraw = function (needsRedraw) {
+    this.needsRedraw = needsRedraw;
+};
+
+function addLink(from, to, type, fromAttributeName, toAttributeName) {
+    new Link(from, to, type, fromAttributeName, toAttributeName);
 }
 
 function removeLink(id) {

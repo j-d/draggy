@@ -1,15 +1,15 @@
-Abstract.prototype = new Item();           // Inheritance
+Abstract.prototype = new ClassLike();           // Inheritance
 Abstract.prototype.constructor = Abstract;
 
 Abstract.prototype.abstracts = {};           // Static associative array
 
 function Abstract (name,container) {
+    this.innitClassLike('Abstract');
+
     if (name == undefined)
         this.name = this.getValidName('Abstract');
     else
         this.name = name;
-
-    this.innit('Abstract');
 
     Abstract.prototype.abstracts[this.id] = this;
 
@@ -19,7 +19,7 @@ function Abstract (name,container) {
     }
 
     $(
-        '<div id="' + this.getId() + '" class="item abstract" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
+        '<div id="' + this.getId() + '" class="connectable abstract" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
             '</div>'
     ).appendTo(container == undefined ? 'body' : c.hashId);
 
@@ -32,8 +32,8 @@ Abstract.prototype.toXML = function () {
 
     ret += '<abstract ' +
         'name="' + this.getName() + '" ' +
-        'top="' + $(this.hashId).css('top') + '" ' +
-        'left="' + $(this.hashId).css('left') + '"';
+        'top="' + parseInt($(this.hashId).css('top')) + '" ' +
+        'left="' + parseInt($(this.hashId).css('left')) + '"';
 
     if (this.getNumberAttributes() == 0)
         ret += ' />' + '\n';

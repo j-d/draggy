@@ -92,14 +92,14 @@ Container.prototype.toXML = function () {
 
     ret += '<module ' +
         'name="' + this.getName() + '" ' +
-        'left="' + $(this.hashId).css('left') + '" ' +
-        'top="' + $(this.hashId).css('top') + '" ' +
-        'width="' + $(this.hashId).css('width') + '" ' +
-        'height="' + $(this.hashId).css('height') + '"';
+        'left="' + parseInt($(this.hashId).css('left')) + '" ' +
+        'top="' + parseInt($(this.hashId).css('top')) + '" ' +
+        'width="' + parseInt($(this.hashId).css('width')) + '" ' +
+        'height="' + parseInt($(this.hashId).css('height')) + '"';
 
 
-    for (var i in Item.prototype.items) {
-        if (Item.prototype.items[i].getModule() == this.getId())
+    for (var i in Connectable.prototype.connectables) {
+        if (Connectable.prototype.connectables[i].getModule() == this.getId())
             ret2 += '\t\t' + Item.prototype.items[i].toXML();
     }
 

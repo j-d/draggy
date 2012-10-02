@@ -13,11 +13,18 @@
         <script type="text/javascript" src="js/Config.js"></script>
         <script type="text/javascript" src="js/func.js"></script>
         <script type="text/javascript" src="js/Item.js"></script>
+        <script type="text/javascript" src="js/ScreenItem.js"></script>
+        <script type="text/javascript" src="js/Connectable.js"></script>
+	    <script type="text/javascript" src="js/ClassLike.js"></script>
         <script type="text/javascript" src="js/Class.js"></script>
         <script type="text/javascript" src="js/Abstract.js"></script>
         <script type="text/javascript" src="js/Link.js"></script>
         <script type="text/javascript" src="js/Attribute.js"></script>
+        <script type="text/javascript" src="js/InheritedAttribute.js"></script>
         <script type="text/javascript" src="js/Container.js"></script>
+        <script type="text/javascript" src="js/System.js"></script>
+        <script type="text/javascript" src="js/EditItemDialog.js"></script>
+        <script type="text/javascript" src="js/LinkClassDialog.js"></script>
 
         <script>
             <?php

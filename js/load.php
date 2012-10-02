@@ -1,5 +1,40 @@
 $(document).ready(function () {
     <?php
+		function assignAttributesToClassLike($attributes,$classLikeVarName) {
+			foreach ($attributes as $attribute) {
+				$attributeProperties = (array) $attribute;
+				$attributeProperties = $attributeProperties['@attributes'];
+
+				if (isset($attributeProperties['inherited'])) {
+					echo 'var a = new InheritedAttribute(\'' . $attributeProperties['id'] . '\');' . "\n";
+
+					echo $classLikeVarName . '.addInheritedAttribute(a);' . "\n";
+				}
+				else {
+					echo 'var a = new Attribute(\'' . $attributeProperties['name'] . '\',\'' . $attributeProperties['id'] . '\');' . "\n";
+					echo 'a.setType(\'' . $attributeProperties['type'] . '\');' . "\n";
+					if (isset($attributeProperties['size']))
+						echo 'a.setSize(\'' . $attributeProperties['size'] . '\');' . "\n";
+					if (isset($attributeProperties['null']))
+						echo 'a.setNull(' . $attributeProperties['null'] . ');' . "\n";
+					if (isset($attributeProperties['primary']))
+						echo 'a.setPrimary(' . $attributeProperties['primary'] . ');' . "\n";
+					if (isset($attributeProperties['foreign']))
+						echo 'a.setForeign(' . $attributeProperties['foreign'] . ');' . "\n";
+					if (isset($attributeProperties['autoincrement']))
+						echo 'a.setAutoincrement(' . $attributeProperties['autoincrement'] . ');' . "\n";
+					if (isset($attributeProperties['unique']))
+						echo 'a.setUnique(' . $attributeProperties['unique'] . ');' . "\n";
+					if (isset($attributeProperties['default']))
+						echo 'a.setDefault(\'' . $attributeProperties['default'] . '\');' . "\n";
+					if (isset($attributeProperties['description']))
+						echo 'a.setDescription(\'' . $attributeProperties['description'] . '\');' . "\n";
+
+					echo $classLikeVarName . '.addAttribute(a);' . "\n";
+				}
+			}
+		}
+
         $xml = simplexml_load_file('saved.xml');
 
 		$modules = (array) $xml->xpath('/draggy/module');
@@ -8,7 +43,7 @@ $(document).ready(function () {
 			$moduleAttributes = (array) $module;
 			$moduleAttributes = $moduleAttributes['@attributes'];
 
-			echo 'addContainer(\'' . $moduleAttributes['name'] . '\',\'' . $moduleAttributes['left'] . '\',\'' . $moduleAttributes['top'] . '\',\'' . $moduleAttributes['width'] . '\',\'' . $moduleAttributes['height'] . '\')' . "\n";
+			echo 'addContainer(\'' . $moduleAttributes['name'] . '\',\'' . ($moduleAttributes['left'] - 1) . 'px\',\'' . ($moduleAttributes['top'] - 1) . 'px\',\'' . $moduleAttributes['width'] . 'px\',\'' . $moduleAttributes['height'] . 'px\')' . "\n";
 
 			// Inside classes
 
@@ -18,21 +53,16 @@ $(document).ready(function () {
 				$classAttributes = (array) $class;
 				$classAttributes = $classAttributes['@attributes'];
 
-				echo 'addClass(\'' . $classAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
-				echo 'Class.prototype.getItemByName(\'' . $classAttributes['name'] . '\').moveTo(\'' . $classAttributes['left'] . '\',\'' . $classAttributes['top'] . '\');' . "\n";
+				echo 'var c = new Class(\'' . $classAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
+				echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
 
 				$attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
 
-				foreach ($attributes as $attribute) {
-					$attributeProperties = (array) $attribute;
-					$attributeProperties = $attributeProperties['@attributes'];
+				assignAttributesToClassLike($attributes,'c');
 
-					echo 'Class.prototype.getItemByName(\'' . $classAttributes['name'] . '\').addAttribute(\'' . $attributeProperties['name'] . '\',\'' . $attributeProperties['type'] . '\',\'' . (isset($attributeProperties['size']) ? $attributeProperties['size'] : '') . '\',' . (isset($attributeProperties['null']) ? $attributeProperties['null'] : 'false') . ',' . (isset($attributeProperties['primary']) ? $attributeProperties['primary'] : 'false' ) . ',' . (isset($attributeProperties['foreign']) ? $attributeProperties['foreign'] : 'false') . ',' . (isset($attributeProperties['autoincrement']) ? $attributeProperties['autoincrement'] : 'false') . ',' . (isset($attributeProperties['unique']) ? $attributeProperties['unique'] : 'false') . ',\'' . (isset($attributeProperties['default']) ? $attributeProperties['default'] : '') . '\',\'' . (isset($attributeProperties['description']) ? $attributeProperties['description'] : '') . '\');' . "\n";
-				}
-
-				echo 'Class.prototype.getItemByName(\'' . $classAttributes['name'] . '\').setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
+				echo 'c.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
 			}
-			
+
 			// Inside abstracts
 			$abstracts = (array) $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract');
 
@@ -40,19 +70,14 @@ $(document).ready(function () {
 				$abstractAttributes = (array) $abstract;
 				$abstractAttributes = $abstractAttributes['@attributes'];
 
-				echo 'addAbstract(\'' . $abstractAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
-				echo 'Abstract.prototype.getItemByName(\'' . $abstractAttributes['name'] . '\').moveTo(\'' . $abstractAttributes['left'] . '\',\'' . $abstractAttributes['top'] . '\');' . "\n";
+				echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
+				echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
 
 				$attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
 
-				foreach ($attributes as $attribute) {
-					$attributeProperties = (array) $attribute;
-					$attributeProperties = $attributeProperties['@attributes'];
+				assignAttributesToClassLike($attributes,'s');
 
-					echo 'Abstract.prototype.getItemByName(\'' . $abstractAttributes['name'] . '\').addAttribute(\'' . $attributeProperties['name'] . '\',\'' . $attributeProperties['type'] . '\',\'' . (isset($attributeProperties['size']) ? $attributeProperties['size'] : '') . '\',' . (isset($attributeProperties['null']) ? $attributeProperties['null'] : 'false') . ',' . (isset($attributeProperties['primary']) ? $attributeProperties['primary'] : 'false' ) . ',' . (isset($attributeProperties['foreign']) ? $attributeProperties['foreign'] : 'false') . ',' . (isset($attributeProperties['autoincrement']) ? $attributeProperties['autoincrement'] : 'false') . ',' . (isset($attributeProperties['unique']) ? $attributeProperties['unique'] : 'false') . ',\'' . (isset($attributeProperties['default']) ? $attributeProperties['default'] : '') . '\',\'' . (isset($attributeProperties['description']) ? $attributeProperties['description'] : '') . '\');' . "\n";
-				}
-
-				echo 'Abstract.prototype.getItemByName(\'' . $abstractAttributes['name'] . '\').setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
+				echo 's.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
 			}
 		}
 
@@ -64,17 +89,12 @@ $(document).ready(function () {
             $classAttributes = (array) $class;
             $classAttributes = $classAttributes['@attributes'];
 
-            echo 'addClass(\'' . $classAttributes['name'] . '\');' . "\n";
-            echo 'Class.prototype.getItemByName(\'' . $classAttributes['name'] . '\').moveTo(\'' . $classAttributes['left'] . '\',\'' . $classAttributes['top'] . '\');' . "\n";
+            echo 'var c = new Class(\'' . $classAttributes['name'] . '\');' . "\n";
+            echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
 
 	        $attributes = $xml->xpath('/draggy/classes/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
 
-	        foreach ($attributes as $attribute) {
-		        $attributeProperties = (array) $attribute;
-		        $attributeProperties = $attributeProperties['@attributes'];
-
-		        echo 'Class.prototype.getItemByName(\'' . $classAttributes['name'] . '\').addAttribute(\'' . $attributeProperties['name'] . '\',\'' . $attributeProperties['type'] . '\',\'' . (isset($attributeProperties['size']) ? $attributeProperties['size'] : '') . '\',' . (isset($attributeProperties['null']) ? $attributeProperties['null'] : 'false') . ',' . (isset($attributeProperties['primary']) ? $attributeProperties['primary'] : 'false' ) . ',' . (isset($attributeProperties['foreign']) ? $attributeProperties['foreign'] : 'false') . ',' . (isset($attributeProperties['autoincrement']) ? $attributeProperties['autoincrement'] : 'false') . ',' . (isset($attributeProperties['unique']) ? $attributeProperties['unique'] : 'false') . ',\'' . (isset($attributeProperties['default']) ? $attributeProperties['default'] : '') . '\',\'' . (isset($attributeProperties['description']) ? $attributeProperties['description'] : '') . '\');' . "\n";
-	        }
+	        assignAttributesToClassLike($attributes,'c');
         }
 
 		// Outside abstracts
@@ -85,17 +105,12 @@ $(document).ready(function () {
 			$abstractAttributes = (array) $abstract;
 			$abstractAttributes = $abstractAttributes['@attributes'];
 
-			echo 'addAbstract(\'' . $abstractAttributes['name'] . '\');' . "\n";
-			echo 'Abstract.prototype.getItemByName(\'' . $abstractAttributes['name'] . '\').moveTo(\'' . $abstractAttributes['left'] . '\',\'' . $abstractAttributes['top'] . '\');' . "\n";
+			echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\');' . "\n";
+			echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
 
 			$attributes = $xml->xpath('/draggy/abstracts/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
 
-			foreach ($attributes as $attribute) {
-				$attributeProperties = (array) $attribute;
-				$attributeProperties = $attributeProperties['@attributes'];
-
-				echo 'Abstract.prototype.getItemByName(\'' . $abstractAttributes['name'] . '\').addAttribute(\'' . $attributeProperties['name'] . '\',\'' . $attributeProperties['type'] . '\',\'' . (isset($attributeProperties['size']) ? $attributeProperties['size'] : '') . '\',' . (isset($attributeProperties['null']) ? $attributeProperties['null'] : 'false') . ',' . (isset($attributeProperties['primary']) ? $attributeProperties['primary'] : 'false' ) . ',' . (isset($attributeProperties['foreign']) ? $attributeProperties['foreign'] : 'false') . ',' . (isset($attributeProperties['autoincrement']) ? $attributeProperties['autoincrement'] : 'false') . ',' . (isset($attributeProperties['unique']) ? $attributeProperties['unique'] : 'false') . ',\'' . (isset($attributeProperties['default']) ? $attributeProperties['default'] : '') . '\',\'' . (isset($attributeProperties['description']) ? $attributeProperties['description'] : '') . '\');' . "\n";
-			}
+			assignAttributesToClassLike($attributes,'s');
 		}
 
 		// Relationships
@@ -106,12 +121,16 @@ $(document).ready(function () {
             $relationAttributes = (array) $relation;
             $relationAttributes = $relationAttributes['@attributes'];
 
-	        if (isset($relationAttributes['fromType']))
-                echo 'addLink(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\',\'' . $relationAttributes['fromType'] . '\',\'' . $relationAttributes['toType'] . '\')' . "\n";
+	        if (isset($relationAttributes['fromAttribute']))
+                echo 'addLink(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\',\'' . $relationAttributes['fromAttribute'] . '\',\'' . $relationAttributes['toAttribute'] . '\')' . "\n";
 	        else
                 echo 'addLink(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\')' . "\n";
         }
 
+		echo 'for (var i in Connectable.prototype.connectables) Connectable.prototype.connectables[i].reDraw();' . "\n";
+
         echo 'Link.prototype.reDrawLinks();' . "\n";
+
+		echo 'System.prototype.runtime = true;' . "\n";
     ?>
 });
