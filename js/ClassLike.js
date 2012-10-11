@@ -1,11 +1,12 @@
 ClassLike.prototype = new Connectable();           // Inheritance
 ClassLike.prototype.constructor = ClassLike;
 
-function ClassLike () {
-}
+function ClassLike () {} // Abstract class
 
 ClassLike.prototype.innitClassLike = function (desiredId) {
     this.inheritingFrom = null;
+    this.toString = null;
+
     this.innitConnectable(desiredId);
 
     this.children = [];
@@ -29,5 +30,19 @@ ClassLike.prototype.inheritAttributes = function () {
 
     // Has to skip the ones that are already inherited
     // May need to inherit to the grandchildren
+};
 
+ClassLike.prototype.getParent = function () {
+    if (this.inheritingFrom == null)
+        return null;
+    else
+        return Connectable.prototype.connectables[this.inheritingFrom];
+};
+
+ClassLike.prototype.setToString = function (toString) {
+    this.toString = toString;
+};
+
+ClassLike.prototype.getToString = function () {
+    return this.toString;
 };

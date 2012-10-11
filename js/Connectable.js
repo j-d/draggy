@@ -3,8 +3,7 @@ Connectable.prototype.constructor = Connectable;
 
 Connectable.prototype.connectables = {};
 
-function Connectable() {
-}
+function Connectable() { }
 
 Connectable.prototype.innitConnectable = function (desiredId) {
     this.innitScreenItem(desiredId);
@@ -12,6 +11,7 @@ Connectable.prototype.innitConnectable = function (desiredId) {
     this.connectorsSide = {};
     this.attributes = [];
     this.module = '';
+    this.links = [];
 
     Connectable.prototype.connectables[this.id] = this;
 };
@@ -132,6 +132,7 @@ Connectable.prototype.addConnector = function (side, linkId) {
 
     // If it exists is because is a self-connector, etc
     this.connectorsSide[linkId] = side;
+    this.links.push(linkId);
 
     for (var i = 0; i < this.connectors[side].length - 1; i++)
         Link.prototype.links[this.connectors[side][i]].reLocate(); // Needs to be redrawn since it position is now different
@@ -140,6 +141,8 @@ Connectable.prototype.addConnector = function (side, linkId) {
 Connectable.prototype.removeConnector = function (linkId) {
     var side = this.connectorsSide[linkId];
     var i;
+
+    this.links.remove(linkId);
 
     if (side != undefined) {    // The link existed
         var tempConnectors = this.connectors[side];
@@ -181,6 +184,11 @@ Connectable.prototype.reDraw = function () {
         for (var i = 0; i < this.children.length; i++)
             Connectable.prototype.connectables[this.children[i]].reDraw();
     }
+
+    if (this instanceof Class && this.isPureManyToMany())
+        $(this.getHashId()).addClass('manyToMany');
+    else
+        $(this.getHashId()).removeClass('manyToMany');
 };
 
 Connectable.prototype.setModule = function (module) {
@@ -447,7 +455,15 @@ Connectable.prototype.getAttributeFromName = function (attributeName) {
         if (Attribute.prototype.attributes[this.attributes[i]].getName() == attributeName)
             return this.attributes[i];
 
-    alert(this.getName() + ' does not have an attribute called ' + attributeName);
+    alert('Error: ' + this.getName() + ' does not have an attribute called ' + attributeName);
 
     return null;
+};
+
+Connectable.prototype.getNumberLinks = function () {
+    return this.links.length;
+};
+
+Connectable.prototype.getLink = function (i) {
+    return Link.prototype.links[this.links[i]];
 };

@@ -25,6 +25,12 @@ function Class (name,container) {
 
 
     this.reDraw();
+
+    this.repository = false;
+}
+
+Class.prototype.isPureManyToMany = function () {
+    return this.getNumberAttributes() == 2 && this.getAttribute(0).getForeign() && this.getAttribute(1).getForeign();
 };
 
 Class.prototype.toXML = function () {
@@ -33,7 +39,13 @@ Class.prototype.toXML = function () {
     ret += '<class ' +
         'name="' + this.getName() + '" ' +
         'top="' + parseInt($(this.hashId).css('top')) + '" ' +
-        'left="' + parseInt($(this.hashId).css('left')) + '"';
+        'left="' + parseInt($(this.hashId).css('left')) + '"' +
+        (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getName() + '"' : '' ) +
+        (this.getRepository() ? ' repository="' + this.getRepository() + '"' : '' ) +
+        (this.getToString() != null ? ' toString="' + Attribute.prototype.attributes[this.getToString()].getName() + '"' : '' ) +
+        (this.getDescription() != null ? ' description="' + this.getDescription() + '"' : '' ) +
+        (this.isPureManyToMany() ? ' manyToMany="true"' : '' ) +
+    '';
 
     if (this.getNumberAttributes() == 0)
         ret += ' />' + '\n';
@@ -58,6 +70,14 @@ Class.prototype.remove = function () {
         }
 
     this.destroyConnectable();
+};
+
+Class.prototype.setRepository = function (repository) {
+    this.repository = repository;
+};
+
+Class.prototype.getRepository = function () {
+    return this.repository;
 };
 
 function addClass(name,container) {

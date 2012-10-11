@@ -5,6 +5,7 @@ function InheritedAttribute (parentAttributeId) {
     this.innitItem('inheritedAttribute');
 
     this.attribute = parentAttributeId;
+    this.links = [];
 
     Attribute.prototype.attributes[this.id] = this;
 }
@@ -69,6 +70,14 @@ InheritedAttribute.prototype.getInherited = function () {
     return true;
 };
 
+InheritedAttribute.prototype.getSetter = function () {
+    return this.getAttribute().getSetter();
+};
+
+InheritedAttribute.prototype.getGetter = function () {
+    return this.getAttribute().getGetter();
+};
+
 InheritedAttribute.prototype.toHtml = function () {
     var iconName = '';
 
@@ -99,4 +108,12 @@ InheritedAttribute.prototype.toXML = function () {
         'id="' + this.getParentId() + '" ' +
         (this.getInherited() ? 'inherited="' + this.getInherited() + '" ' : '' ) +
         '/>';
+};
+
+Attribute.prototype.getNumberLinks = function () {
+    return this.links.length;
+};
+
+Attribute.prototype.getLink = function (i) {
+    return this.links[i];
 };

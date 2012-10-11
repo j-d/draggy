@@ -18,6 +18,7 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.fromAttribute = null;
     this.toAttribute = null;
     this.forceRender = false;
+    this.broken = false;
 
     if (type != 'Inheritance') {
         this.fromAttribute = Connectable.prototype.connectables[this.from].getAttributeFromName(fromAttributeName);
@@ -67,6 +68,14 @@ Link.prototype.getTo = function () {
     return this.to;
 };
 
+Link.prototype.getFromAttribute = function () {
+    return this.fromAttribute;
+};
+
+Link.prototype.getToAttribute = function () {
+    return this.toAttribute;
+};
+
 Link.prototype.getType = function () {
     return this.type;
 };
@@ -78,13 +87,16 @@ Link.prototype.toXML = function () {
         ret += '<relation ' +
             'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
             'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
-            'type="' + this.getType() + '" />' + '\n';
+            'type="' + this.getType() + '"' +
+            ( this.getBroken() ? ' broken="' + this.getBroken() + '"' : '') +
+            ' />' + '\n';
     }
     else {
         ret += '<relation ' +
             'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
             'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
             'type="' + this.getType() + '" ' +
+            ( this.getBroken() ? 'broken="' + this.getBroken() + '" ' : '') +
             'fromAttribute="' + Attribute.prototype.attributes[this.fromAttribute].getName() + '" ' +
             'toAttribute="' + Attribute.prototype.attributes[this.toAttribute].getName() + '" />' + '\n';
     }
@@ -264,12 +276,12 @@ Link.prototype.draw = function () {
 
     if ( ( fromConnector == 1 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 1 ) ) { // Case ¯¯|__ or __|¯¯
         if (fromY < toY ^ fromConnector == 3 ) { // Case ¯¯|__
-            firstItem =  'horizontalTopFrom';
-            secondItem = 'horizontalBottomTo';
+            firstItem =  'horizontalTopFrom' + (this.getBroken() ? ' brokenLink' : '');
+            secondItem = 'horizontalBottomTo' + (this.getBroken() ? ' brokenLink' : '');
         }
         else { // Case __|¯¯
-            firstItem =  'horizontalBottomFrom';
-            secondItem = 'horizontalTopTo';
+            firstItem =  'horizontalBottomFrom' + (this.getBroken() ? ' brokenLink' : '');
+            secondItem = 'horizontalTopTo' + (this.getBroken() ? ' brokenLink' : '');
         }
 
         if (fromConnector == 3) {
@@ -294,12 +306,12 @@ Link.prototype.draw = function () {
     }
     else if ( ( fromConnector == 0 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 0 ) ) { // Case '-, or ,-'
         if ( fromX < toX ^ fromConnector == 2 ) { // Case ,-'
-            firstItem = 'verticalTopRight';
-            secondItem = 'verticalBottomLeft';
+            firstItem = 'verticalTopRight' + (this.getBroken() ? ' brokenLink' : '');
+            secondItem = 'verticalBottomLeft' + (this.getBroken() ? ' brokenLink' : '');
         }
         else { // Case '-,
-            firstItem = 'verticalTopLeft';
-            secondItem = 'verticalBottomRight';
+            firstItem = 'verticalTopLeft' + (this.getBroken() ? ' brokenLink' : '');
+            secondItem = 'verticalBottomRight' + (this.getBroken() ? ' brokenLink' : '');
         }
 
         if (fromConnector == 0) {
@@ -323,7 +335,7 @@ Link.prototype.draw = function () {
                 '</div>';
     } else { // Corner
         if ( ( fromConnector == 1 && toConnector == 0 ) || ( fromConnector == 0 && toConnector == 1 ) ) { // Case ¯¯|
-            firstItem = 'cornerTopRight';
+            firstItem = 'cornerTopRight' + (this.getBroken() ? ' brokenLink' : '');
 
             if (fromConnector == 0) {
                 firstType = toType;
@@ -335,7 +347,7 @@ Link.prototype.draw = function () {
             }
         }
         else if ( ( fromConnector == 1 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 1 ) ) { // Case _|
-            firstItem = 'cornerBottomRight';
+            firstItem = 'cornerBottomRight' + (this.getBroken() ? ' brokenLink' : '');
 
             if (fromConnector == 2) {
                 firstType = toType;
@@ -347,7 +359,7 @@ Link.prototype.draw = function () {
             }
         }
         else if ( ( fromConnector == 0 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 0 ) ) { // Case |¯¯
-            firstItem = 'cornerTopLeft';
+            firstItem = 'cornerTopLeft' + (this.getBroken() ? ' brokenLink' : '');
 
             if (fromConnector == 0) {
                 firstType = toType;
@@ -359,7 +371,7 @@ Link.prototype.draw = function () {
             }
         }
         else if ( ( fromConnector == 2 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 2 ) ) { // Case |_
-            firstItem = 'cornerBottomLeft';
+            firstItem = 'cornerBottomLeft' + (this.getBroken() ? ' brokenLink' : '');
 
             if (fromConnector == 2) {
                 firstType = toType;
@@ -418,6 +430,14 @@ Link.prototype.adjustConnectors = function () {
 
 Link.prototype.setNeedsRedraw = function (needsRedraw) {
     this.needsRedraw = needsRedraw;
+};
+
+Link.prototype.setBroken = function (broken) {
+    this.broken = broken;
+};
+
+Link.prototype.getBroken = function () {
+    return this.broken;
 };
 
 function addLink(from, to, type, fromAttributeName, toAttributeName) {

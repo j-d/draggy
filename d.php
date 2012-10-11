@@ -6,10 +6,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
         <title>Draggy</title>
         <meta charset="utf-8">
-        <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="stylesheet"/>
+        <link type="text/css" href="css/ui-lightness/jquery-ui-1.9.0.custom.css" rel="stylesheet"/>
         <link type="text/css" href="css/style.css" rel="stylesheet"/>
-        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.9.0.custom.min.js"></script>
         <script type="text/javascript" src="js/Config.js"></script>
         <script type="text/javascript" src="js/func.js"></script>
         <script type="text/javascript" src="js/Item.js"></script>

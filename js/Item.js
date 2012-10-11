@@ -39,6 +39,8 @@ Item.prototype.getName = function () {
 Item.prototype.setDescription = function (description) {
     if (description != '')
         this.description = description;
+    else
+        this.description = null;
 };
 
 Item.prototype.getDescription = function () {

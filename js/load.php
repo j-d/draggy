@@ -29,6 +29,10 @@ $(document).ready(function () {
 						echo 'a.setDefault(\'' . $attributeProperties['default'] . '\');' . "\n";
 					if (isset($attributeProperties['description']))
 						echo 'a.setDescription(\'' . $attributeProperties['description'] . '\');' . "\n";
+					if (isset($attributeProperties['getter']))
+						echo 'a.setGetter(' . $attributeProperties['getter'] . ');' . "\n";
+					if (isset($attributeProperties['setter']))
+						echo 'a.setSetter(' . $attributeProperties['setter'] . ');' . "\n";
 
 					echo $classLikeVarName . '.addAttribute(a);' . "\n";
 				}
@@ -60,6 +64,15 @@ $(document).ready(function () {
 
 				assignAttributesToClassLike($attributes,'c');
 
+				if (isset($classAttributes['toString']))
+					echo 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . "\n";
+
+				if (isset($classAttributes['description']))
+					echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
+
+				if (isset($classAttributes['repository']))
+					echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
+
 				echo 'c.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
 			}
 
@@ -76,6 +89,15 @@ $(document).ready(function () {
 				$attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
 
 				assignAttributesToClassLike($attributes,'s');
+
+				if (isset($abstractAttributes['toString']))
+					echo 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . "\n";
+
+				if (isset($abstractAttributes['description']))
+					echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
+
+				if (isset($abstractAttributes['repository']))
+					echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
 
 				echo 's.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
 			}
@@ -95,6 +117,15 @@ $(document).ready(function () {
 	        $attributes = $xml->xpath('/draggy/classes/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
 
 	        assignAttributesToClassLike($attributes,'c');
+
+	        if (isset($classAttributes['toString']))
+		        echo 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . "\n";
+
+	        if (isset($classAttributes['description']))
+		        echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
+
+	        if (isset($classAttributes['repository']))
+		        echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
         }
 
 		// Outside abstracts
@@ -111,6 +142,15 @@ $(document).ready(function () {
 			$attributes = $xml->xpath('/draggy/abstracts/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
 
 			assignAttributesToClassLike($attributes,'s');
+
+			if (isset($abstractAttributes['toString']))
+				echo 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . "\n";
+
+			if (isset($abstractAttributes['description']))
+				echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
+
+			if (isset($abstractAttributes['repository']))
+				echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
 		}
 
 		// Relationships
@@ -122,10 +162,16 @@ $(document).ready(function () {
             $relationAttributes = $relationAttributes['@attributes'];
 
 	        if (isset($relationAttributes['fromAttribute']))
-                echo 'addLink(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\',\'' . $relationAttributes['fromAttribute'] . '\',\'' . $relationAttributes['toAttribute'] . '\')' . "\n";
+                echo 'var l = new Link(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\',\'' . $relationAttributes['fromAttribute'] . '\',\'' . $relationAttributes['toAttribute'] . '\')' . "\n";
 	        else
-                echo 'addLink(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\')' . "\n";
+                echo 'var l = new Link(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\')' . "\n";
+
+	        if (isset($relationAttributes['broken'])) {
+		        echo 'l.setBroken(' . $relationAttributes['broken'] . ');' . "\n";
+	        }
         }
+
+
 
 		echo 'for (var i in Connectable.prototype.connectables) Connectable.prototype.connectables[i].reDraw();' . "\n";
 

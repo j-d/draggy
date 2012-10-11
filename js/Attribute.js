@@ -19,6 +19,9 @@ function Attribute (name, id) {
     this.description = null;
     this.links = [];
 
+    this.setter = true;
+    this.getter = true;
+
     Attribute.prototype.attributes[this.id] = this;
 }
 
@@ -99,6 +102,8 @@ Attribute.prototype.getUnique = function () {
 Attribute.prototype.setDefault = function (def) {
     if (def != '')
         this.default = def;
+    else
+        this.default = null;
 };
 
 Attribute.prototype.getDefault = function () {
@@ -155,6 +160,8 @@ Attribute.prototype.toXML = function () {
         (this.getUnique() ? 'unique="' + this.getUnique() + '" ' : '' ) +
         (this.getDefault() != null ? 'default="' + this.getDefault() + '" ' : '' ) +
         (this.getDescription() != null ? 'description="' + this.getDescription() + '" ' : '' ) +
+        (!this.getSetter() ? 'setter="' + this.getSetter() + '" ' : '' ) +
+        (!this.getGetter() ? 'getter="' + this.getGetter() + '" ' : '' ) +
     '/>';
 };
 
@@ -178,4 +185,20 @@ Attribute.prototype.getNumberLinks = function () {
 
 Attribute.prototype.getLink = function (i) {
     return this.links[i];
+};
+
+Attribute.prototype.setSetter = function (setter) {
+    this.setter = setter;
+};
+
+Attribute.prototype.getSetter = function () {
+    return this.setter;
+};
+
+Attribute.prototype.setGetter = function (getter) {
+    this.getter = getter;
+};
+
+Attribute.prototype.getGetter = function () {
+    return this.getter;
 };

@@ -33,7 +33,11 @@ Abstract.prototype.toXML = function () {
     ret += '<abstract ' +
         'name="' + this.getName() + '" ' +
         'top="' + parseInt($(this.hashId).css('top')) + '" ' +
-        'left="' + parseInt($(this.hashId).css('left')) + '"';
+        'left="' + parseInt($(this.hashId).css('left')) + '"' +
+        (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getName() + '"' : '' ) +
+        (this.getToString() != null ? ' toString="' + Attribute.prototype.attributes[this.getToString()].getName() + '"' : '' ) +
+        (this.getDescription() != null ? ' description="' + this.getDescription() + '"' : '' ) +
+    '';
 
     if (this.getNumberAttributes() == 0)
         ret += ' />' + '\n';

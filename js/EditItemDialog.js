@@ -10,15 +10,34 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
     var c = EditItemDialog.prototype.connectable = Connectable.prototype.connectables[connectableId];
 
     $('#edit-item-dialog input[name=name]').attr('value', c.getName());
+    $('#edit-item-dialog input[name=description]').attr('value', c.getDescription());
 
-    $('#edit-item-dialog #edit-attributes tbody tr').remove();
+    $('#edit-attributes tbody tr').remove();
 
     for (var i = 0; i < c.getNumberAttributes(); i++)
-        $(EditItemDialog.prototype.addAttributeRow(i,c.attributes[i])).appendTo('#edit-item-dialog #edit-attributes tbody');
+        $(EditItemDialog.prototype.getAttributeRow(i,c.attributes[i])).appendTo('#edit-attributes tbody');
+
+    $('#edit-links tbody tr').remove();
+
+    for (var i = 0; i < c.getNumberLinks(); i++)
+        $(EditItemDialog.prototype.getLinkRow(i,connectableId,c.links[i])).appendTo('#edit-links tbody');
+
+    $('#edit-programming-attributes tbody tr').remove();
+
+    for (var i = 0; i < c.getNumberAttributes(); i++)
+        $(EditItemDialog.prototype.getProgrammingAttributeRow(i,c.attributes[i])).appendTo('#edit-programming-attributes tbody');
+
 
     $("#edit-attributes tbody").sortable({
         //placeholder: "ui-state-highlight"
     });
+
+    // Abstracts don't have the repository property
+    $('#edit-item-repository').parents('label').show();
+    if (EditItemDialog.prototype.connectable instanceof Abstract)
+        $('#edit-item-repository').parents('label').hide();
+
+    this.loadProgrammingTab();
 
     $('#edit-item-dialog').dialog('open');
 };
@@ -37,13 +56,65 @@ EditItemDialog.prototype.performDeletionAttributes = function () {
     }
 };
 
-EditItemDialog.prototype.addAttributeRow = function (rowId, attributeId) {
+EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
+    var link = Link.prototype.links[linkId];
+
+    var type = link.getType();
+    var target;
+    var targetAttribute;
+    var sourceAttribute;
+    var inheritance = false;
+
+    if (link.from == connectableId) {
+        target = link.getTo();
+        targetAttribute = link.getToAttribute();
+        sourceAttribute = link.getFromAttribute();
+
+        if (type == 'Inheritance') {
+            type = 'Inherits from';
+            inheritance = true;
+        }
+    }
+    else {
+        if (type == 'OneToMany')
+            type = 'ManyToOne';
+        else if (type == 'Inheritance') {
+            type = 'Inherited by';
+            inheritance = true;
+        }
+
+        target = link.getFrom();
+        targetAttribute = link.getFromAttribute();
+        sourceAttribute = link.getToAttribute();
+    }
+
+    target = Connectable.prototype.connectables[target].getName();
+
+    if (inheritance) {
+        targetAttribute = '';
+        sourceAttribute = '';
+    }
+    else {
+        targetAttribute = Attribute.prototype.attributes[targetAttribute].getName();
+        sourceAttribute = Attribute.prototype.attributes[sourceAttribute].getName();
+    }
+
+    return  '<tr>' +
+                '<td name="' + link.getId() + '">' + rowId + '</td>' +
+                '<td>' + linkId + '</td>' +
+                '<td>' + sourceAttribute + '</td>' +
+                '<td>' + type + '</td>' +
+                '<td>' + target + (targetAttribute == '' ? '' : '.' + targetAttribute) + '</td>' +
+                '<td align="center">' +
+                    '<input id="broken' + rowId + '" type="checkbox"'+ ( link.getBroken() ? ' checked="checked"' : '' ) + '">' +
+                '</td>' +
+            '</tr>';
+};
+
+EditItemDialog.prototype.getAttributeRow = function (rowId, attributeId) {
     var attribute;
 
-    if (attributeId == undefined)
-        attribute = new Attribute('unnamed');
-    else
-        attribute = Attribute.prototype.attributes[attributeId];
+    attribute = Attribute.prototype.attributes[attributeId];
 
     var row =   '<tr>' +
         '<td name="' + attribute.getId() + '">' + rowId + '</td>' +
@@ -91,8 +162,28 @@ EditItemDialog.prototype.addAttributeRow = function (rowId, attributeId) {
     return row;
 };
 
+EditItemDialog.prototype.getProgrammingAttributeRow = function (rowId, attributeId) {
+    var attribute;
+
+    attribute = Attribute.prototype.attributes[attributeId];
+
+    var row =   '<tr>' +
+        '<td>' +
+            attribute.getName() +
+        '</td>' +
+        '<td align="center">' +
+        '<input id="setter' + rowId + '" type="checkbox"'+ ( attribute.getSetter() ? ' checked="checked"' : '' ) + '"' + (attribute.getInherited() ? ' disabled="disabled"' : '') + '>' +
+        '</td>' +
+        '<td align="center">' +
+        '<input id="getter' + rowId + '" type="checkbox"'+ ( attribute.getGetter() ? ' checked="checked"' : '' ) + '"' + (attribute.getInherited() ? ' disabled="disabled"' : '') + '>' +
+        '</td>' +
+        '</tr>';
+
+    return row;
+};
+
 EditItemDialog.prototype.commitChanges = function () {
-    var newName = $('#edit-item-dialog input[name=name]').attr('value');
+    var newName = $('#edit-item-dialog input[name=name]').val();
 
     var c = EditItemDialog.prototype.connectable;
 
@@ -102,9 +193,19 @@ EditItemDialog.prototype.commitChanges = function () {
     if (c.getName() != newName)
         c.setName(newName);
 
-    var a;
+    if ($('#edit-item-tostring').val() != '')
+        c.setToString($('#edit-item-tostring').val());
 
-    for (var j = 0; j < c.getNumberAttributes(); j++) {
+    if (EditItemDialog.prototype.connectable instanceof Class)
+        c.setRepository( $('#edit-item-repository').is(':checked') );
+
+    if ($('#edit-item-dialog input[name=description]').val() != '')
+        c.setDescription($('#edit-item-dialog input[name=description]').val());
+
+
+    var a, l, j;
+
+    for (j = 0; j < c.getNumberAttributes(); j++) {
         a  = c.getAttribute(j);
 
         if (!a.getInherited()) {
@@ -118,7 +219,17 @@ EditItemDialog.prototype.commitChanges = function () {
             a.setUnique( $('#unique' + j).is(':checked'));
             a.setDefault( $('#default' + j).val() );
             a.setDescription( $('#description' + j).val() );
+            a.setSetter( $('#setter' + j).is(':checked'));
+            a.setGetter( $('#getter' + j).is(':checked'));
         }
+    }
+
+    for (j = 0; j < c.getNumberLinks(); j++) {
+        l  = c.getLink(j);
+
+        l.setBroken( $('#broken' + j).is(':checked'));
+
+        l.forceRender = true;
     }
 
     // Resave the attributes in order in case they were reordered
@@ -136,11 +247,34 @@ EditItemDialog.prototype.commitChanges = function () {
 };
 
 EditItemDialog.prototype.addAttribute = function () {
-    $(EditItemDialog.prototype.addAttributeRow(
-        EditItemDialog.prototype.connectable.getNumberAttributes()
+    var a = new Attribute('unnamed');
+
+    $(EditItemDialog.prototype.getAttributeRow(
+        EditItemDialog.prototype.connectable.getNumberAttributes(),
+        a.getId()
     )).appendTo('#edit-item-dialog #edit-attributes tbody');
 
-    var a = new Attribute();
-
     EditItemDialog.prototype.connectable.addAttribute(a);
+};
+
+EditItemDialog.prototype.loadProgrammingTab = function () {
+    $('#edit-item-tostring option').remove();
+
+    var a;
+
+    if (EditItemDialog.prototype.connectable instanceof Class)
+        if (EditItemDialog.prototype.connectable.getRepository())
+            $('#edit-item-repository').attr('checked','checked');
+        else
+            $('#edit-item-repository').removeAttr('checked');
+
+    var current = EditItemDialog.prototype.connectable.getToString();
+
+    $('<option value=""' + (current == null ? ' selected="selected"' : '') + '>--None--</option>').appendTo('#edit-item-tostring');
+
+    for (var i = 0; i < EditItemDialog.prototype.connectable.getNumberAttributes(); i++) {
+        a = EditItemDialog.prototype.connectable.getAttribute(i);
+
+        $('<option value="' + a.getId() + '"' + (current == a.getId() ? ' selected="selected"' : '') + '>' + a.getName() + '</option>').appendTo('#edit-item-tostring');
+    }
 };
