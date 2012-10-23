@@ -7,7 +7,7 @@ function Class (name,container) {
     this.innitClassLike('Class');
 
     if (name == undefined)
-        this.name = this.getValidName('Class');
+        this.name = this.getValidName('Connectable','Class');
     else
         this.name = name;
 
@@ -30,7 +30,13 @@ function Class (name,container) {
 }
 
 Class.prototype.isPureManyToMany = function () {
-    return this.getNumberAttributes() == 2 && this.getAttribute(0).getForeign() && this.getAttribute(1).getForeign();
+    return this.getNumberAttributes() == 2 &&
+        this.getAttribute(0).getForeign() &&
+        this.getAttribute(1).getForeign() &&
+        (
+            Link.prototype.links[this.getAttribute(0).getLink(0)].getType() == 'OneToMany' ||
+            Link.prototype.links[this.getAttribute(1).getLink(0)].getType() == 'OneToMany'
+        );
 };
 
 Class.prototype.toXML = function () {
@@ -64,12 +70,12 @@ Class.prototype.toXML = function () {
 
 Class.prototype.remove = function () {
     for (var i in Class.prototype.classes)
-        if (Class.prototype.classes[i].getName() == this.name) {
+        if (Class.prototype.classes[i].getId() == this.getId()) {
             delete Class.prototype.classes[i];
             break;
         }
 
-    this.destroyConnectable();
+    this.destroyClassLike();
 };
 
 Class.prototype.setRepository = function (repository) {
@@ -79,11 +85,3 @@ Class.prototype.setRepository = function (repository) {
 Class.prototype.getRepository = function () {
     return this.repository;
 };
-
-function addClass(name,container) {
-    new Class(name,container);
-}
-
-function removeClass(name) {
-    Connectable.prototype.getConnectableFromName(name).remove();
-}

@@ -10,12 +10,22 @@ function InheritedAttribute (parentAttributeId) {
     Attribute.prototype.attributes[this.id] = this;
 }
 
+InheritedAttribute.prototype.remove = function () {
+    delete Attribute.prototype.attributes[this.id];
+
+    this.destroyItem();
+};
+
 InheritedAttribute.prototype.getId = function () {
     return this.id;
 };
 
 InheritedAttribute.prototype.getParentId = function () {
     return this.attribute;
+};
+
+InheritedAttribute.prototype.getParent = function () {
+    return Attribute.prototype.attributes[this.getParentId()];
 };
 
 InheritedAttribute.prototype.getName = function () {

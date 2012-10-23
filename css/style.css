@@ -48,14 +48,13 @@
 
 .container {
     border: 1px solid #d0ce7d;
-    background: #fff9c2;
+    background: #fffbe0;
     float: left;
     padding: 5px;
 }
 
 .container .handle {
     cursor: move;
-    xheight: 10px;
     background: #ccb866;
     float: left;
     left: 0px;
@@ -64,6 +63,12 @@
     padding: 0px 3px;
     border-right: 1px solid #d0ce7d;
     border-bottom: 1px solid #d0ce7d;
+}
+
+.container .controls {
+    position: absolute;
+    left: 0;
+    bottom: 0;
 }
 
 .container .connectable {

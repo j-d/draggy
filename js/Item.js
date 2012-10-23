@@ -1,10 +1,9 @@
-function Item () {
-}
+function Item () { }
 
 Item.prototype.items = {};                       // Static associative array
 
 Item.prototype.innitItem = function (desiredId) {
-    this.id = getUniqueId(desiredId);
+    this.id = Draggy.prototype.getUniqueId(desiredId);
     this.hashId = '#' + this.id;
     this.name = null;
     this.description = null;
@@ -45,4 +44,4 @@ Item.prototype.setDescription = function (description) {
 
 Item.prototype.getDescription = function () {
     return this.description;
-}
+};

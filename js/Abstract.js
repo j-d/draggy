@@ -7,7 +7,7 @@ function Abstract (name,container) {
     this.innitClassLike('Abstract');
 
     if (name == undefined)
-        this.name = this.getValidName('Abstract');
+        this.name = this.getValidName('Connectable','Abstract');
     else
         this.name = name;
 
@@ -55,19 +55,11 @@ Abstract.prototype.toXML = function () {
 };
 
 Abstract.prototype.remove = function () {
-    this.itemRemove();
-
     for (var i in Abstract.prototype.abstracts)
         if (Abstract.prototype.abstracts[i].getName() == this.name) {
             delete Abstract.prototype.abstracts[i];
             break;
         }
+
+    this.destroyClassLike();
 };
-
-function addAbstract(name,container) {
-    new Abstract(name,container);
-}
-
-function removeAbstract(name) {
-    Abstract.prototype.getItemByName(name).remove();
-}

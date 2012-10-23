@@ -1,19 +1,18 @@
-function Container () {
-
-}
+Container.prototype = new ScreenItem();           // Inheritance
+Container.prototype.constructor = Container;
 
 Container.prototype.containers = {};
 Container.prototype.containerIdsByName = {};      // Static associative array
 
-function Container (name) {
-    this.id = getUniqueId('Container');
-    this.hashId = '#' + this.id;
+function Container (desiredName) {
+    this.innitScreenItem('Container');
+
     this.objects = {};
 
-    if (name == undefined)
-        this.setName(this.getValidName('Container'));
+    if (desiredName == undefined)
+        this.setName(this.getValidName('Container','Module'));
     else
-        this.setName(name);
+        this.setName(desiredName);
 
     Container.prototype.containers[this.id] = this;
 
@@ -22,12 +21,24 @@ function Container (name) {
             '<div class="handle">' +
                 this.getName() +
             '</div>' +
+            '<div class="controls" style="display: none;">' +
+                '<span style="float: left;" class="ui-icon ui-icon-closethick removeModule"></span>' +
+                '<span style="float: left;" class="ui-icon ui-icon-plusthick addSection"></span>' +
+            '</div>' +
         '</div>'
     ).appendTo('body');
 
     //this.reDraw();
 
     var name = this.name; // Later it will be out of context
+
+    this.makeInteractive();
+}
+
+Container.prototype.makeInteractive = function () {
+    var id = this.id;
+    var hashId = this.hashId;
+    var name = this.getName();
 
     // Make it draggable
     $(this.hashId).draggable({
@@ -45,22 +56,36 @@ function Container (name) {
         }
     });
 
-    var id = this.id;
-    var hashId = this.hashId;
-
+    // Enable items to drop onto it
     $(this.hashId).droppable({
-        accept: '.class',
+        accept: '.connectable',
         drop: function( event, ui ) {
             //$(hashId).css("background-color",'#F00');
             Item.prototype.items[ui.draggable.attr('id')].setModule(id);
         }
     });
 
+    // Make it resizable
     $(this.hashId).resizable();
-}
 
-Container.prototype.getId = function () {
-    return this.id;
+    // Hover controls
+    $(this.hashId).hover(
+        function () {
+            $(hashId + ' > .controls').show();
+        },
+        function () {
+            $(hashId + ' > .controls').hide();
+        }
+    );
+
+    // Control clicks
+    $(this.hashId + ' .controls .removeModule').click(function () {
+        Item.prototype.items[id].remove();
+    });
+
+    $(this.hashId + ' .controls .addSection').click(function () {
+        alert('not implemented');
+    });
 };
 
 Container.prototype.setName = function (name) {
@@ -68,10 +93,6 @@ Container.prototype.setName = function (name) {
     Container.prototype.containerIdsByName[name] = this.id;
 
     this.name = name;
-};
-
-Container.prototype.getName = function () {
-    return this.name;
 };
 
 Container.prototype.addObject = function (object) {
@@ -121,13 +142,9 @@ Container.prototype.moveTo = function(x,y,width,height) {
     $(this.hashId).css('height',height);
 };
 
-function addContainer(name,x,y,width,height) {
-    var c = new Container(name);
+Container.prototype.remove = function () {
+    for (var i in this.objects)
+        this.objects[i].remove();
 
-    if (x != undefined)
-        c.moveTo(x,y,width,height);
-}
-
-function removeContainer(name) {
-    Container.prototype.containers[name].remove();
-}
+    this.destroyScreenItem();
+};

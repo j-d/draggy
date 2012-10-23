@@ -12,24 +12,56 @@ ClassLike.prototype.innitClassLike = function (desiredId) {
     this.children = [];
 };
 
-ClassLike.prototype.inheritFrom = function (parentId) {
-    this.inheritingFrom = parentId;
+ClassLike.prototype.setInheritingFrom = function (parentId) {
+    var parent;
 
-    var parent = Item.prototype.items[parentId];
+    if (parentId != null) {
+        this.inheritingFrom = parentId;
 
-    parent.children.push(this.id);
+        parent = Item.prototype.items[this.inheritingFrom];
+
+        parent.children.push(this.id);
+    }
+    else { //Un-inherit
+        parent = Item.prototype.items[this.inheritingFrom];
+
+        parent.children.remove(this.id);
+
+        this.inheritingFrom = null;
+    }
+};
+
+ClassLike.prototype.getInheritedFrom = function () {
+    return this.inheritingFrom;
 };
 
 ClassLike.prototype.inheritAttributes = function () {
     var parent = Item.prototype.items[this.inheritingFrom];
+    var ia;
 
     for (var i = 0; i < parent.getNumberAttributes(); i++) {
-        var ia = new InheritedAttribute(parent.getAttribute(i).getId());
+        if (parent.getAttribute(i) instanceof InheritedAttribute)
+            ia = new InheritedAttribute(parent.getAttribute(i).getParentId());
+        else
+            ia = new InheritedAttribute(parent.getAttribute(i).getId());
+
         this.addInheritedAttribute(ia);
     }
 
     // Has to skip the ones that are already inherited
     // May need to inherit to the grandchildren
+};
+
+ClassLike.prototype.unInheritAttributes = function () {
+    var parent = Item.prototype.items[this.inheritingFrom];
+
+    for (var i = 0; i < parent.getNumberAttributes(); i++) {
+        var ia = parent.getAttribute(i);
+
+        this.removeInheritedAttribute(ia);
+    }
+
+    // Uninherit to children
 };
 
 ClassLike.prototype.getParent = function () {
@@ -45,4 +77,8 @@ ClassLike.prototype.setToString = function (toString) {
 
 ClassLike.prototype.getToString = function () {
     return this.toString;
+};
+
+ClassLike.prototype.destroyClassLike = function () {
+    this.destroyConnectable();
 };

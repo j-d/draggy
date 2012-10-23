@@ -3,9 +3,11 @@ function EditItemDialog () {
 
 EditItemDialog.prototype.connectable = null;
 EditItemDialog.prototype.attributesToDelete = [];
+EditItemDialog.prototype.linksToDelete = [];
 
 EditItemDialog.prototype.openDialog = function (connectableId) {
     EditItemDialog.prototype.attributesToDelete = [];
+    EditItemDialog.prototype.linksToDelete = [];
 
     var c = EditItemDialog.prototype.connectable = Connectable.prototype.connectables[connectableId];
 
@@ -21,12 +23,6 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
 
     for (var i = 0; i < c.getNumberLinks(); i++)
         $(EditItemDialog.prototype.getLinkRow(i,connectableId,c.links[i])).appendTo('#edit-links tbody');
-
-    $('#edit-programming-attributes tbody tr').remove();
-
-    for (var i = 0; i < c.getNumberAttributes(); i++)
-        $(EditItemDialog.prototype.getProgrammingAttributeRow(i,c.attributes[i])).appendTo('#edit-programming-attributes tbody');
-
 
     $("#edit-attributes tbody").sortable({
         //placeholder: "ui-state-highlight"
@@ -45,12 +41,49 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
 EditItemDialog.prototype.deleteAttribute = function (attributeId, rowId) {
     EditItemDialog.prototype.attributesToDelete.push(attributeId);
 
-    $('#delete' + rowId).parents('tr').remove()
+    $('#delete' + rowId).parents('tr').remove();
+};
+
+EditItemDialog.prototype.deleteLink = function (linkId, rowId) {
+    EditItemDialog.prototype.linksToDelete.push(linkId);
+
+    $('#deleteLink' + rowId).parents('tr').remove();
+
+    // Remove attribute rows for those attributes that were inherited
+    var link = Link.prototype.links[linkId];
+
+    if (link.getType() == 'Inheritance' && link.from == this.connectable.getId()) {
+        var parentAttributes = Connectable.prototype.connectables[link.to].attributes;
+
+        for (var k = 0; k < parentAttributes.length; k++)
+            for (var j in this.connectable.attributes) {
+                var attribute = Attribute.prototype.attributes[this.connectable.attributes[j]];
+
+                if (attribute instanceof InheritedAttribute && attribute.getParentId() == parentAttributes[k]) {
+                    $("#edit-attributes td[name=" + attribute.getId() + "]").parents('tr').remove();
+                    break;
+                }
+
+
+            }
+    }
+};
+
+EditItemDialog.prototype.performDeletionLinks = function () {
+    var linkId;
+
+    for (var i = 0; i < EditItemDialog.prototype.linksToDelete.length; i++) {
+        linkId = EditItemDialog.prototype.linksToDelete[i];
+
+        Draggy.prototype.removeLink(linkId);
+    }
 };
 
 EditItemDialog.prototype.performDeletionAttributes = function () {
-    for (var i in EditItemDialog.prototype.attributesToDelete) {
-        var attributeId = EditItemDialog.prototype.attributesToDelete[i];
+    var attributeId;
+
+    for (var i = 0; i < EditItemDialog.prototype.attributesToDelete.length; i++) {
+        attributeId = EditItemDialog.prototype.attributesToDelete[i];
 
         EditItemDialog.prototype.connectable.deleteAttribute(attributeId);
     }
@@ -108,6 +141,7 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
                 '<td align="center">' +
                     '<input id="broken' + rowId + '" type="checkbox"'+ ( link.getBroken() ? ' checked="checked"' : '' ) + '">' +
                 '</td>' +
+                '<td><input id="deleteLink' + rowId + '" type="button" value="D" onClick="EditItemDialog.prototype.deleteLink(\'' + linkId + '\',' + rowId + ');"></td>' +
             '</tr>';
 };
 
@@ -137,7 +171,7 @@ EditItemDialog.prototype.getAttributeRow = function (rowId, attributeId) {
         '<input id="null' + rowId + '" type="checkbox"'+ ( attribute.getNull() ? ' checked="checked"' : '' ) + '"' + (attribute.getInherited() ? ' disabled="disabled"' : '') + '>' +
         '</td>' +
         '<td align="center">' +
-        '<input id="primary' + rowId + '" type="checkbox"'+ ( attribute.getPrimary() ? ' checked="checked"' : '' ) + '"' + (attribute.getInherited() ? ' disabled="disabled"' : '') + '>' +
+        '<input id="primary' + rowId + '" type="checkbox"'+ ( attribute.getPrimary() ? ' checked="checked"' : '' ) + '"' + (attribute.getInherited() || attribute.getNumberLinks() != 0 ? ' disabled="disabled"' : '') + '>' +
         '</td>' +
         '<td align="center">' +
         '<input id="foreign' + rowId + '" type="checkbox" disabled="disabled"'+ ( attribute.getForeign() ? ' checked="checked"' : '' ) + '">' +
@@ -187,6 +221,7 @@ EditItemDialog.prototype.commitChanges = function () {
 
     var c = EditItemDialog.prototype.connectable;
 
+    EditItemDialog.prototype.performDeletionLinks();
     EditItemDialog.prototype.performDeletionAttributes();
 
     // Change name
@@ -212,15 +247,20 @@ EditItemDialog.prototype.commitChanges = function () {
             a.setName( $('#name' + j).val() );
             a.setType( $('#type' + j).val() );
             a.setSize( $('#size' + j).val() );
-            a.setNull( $('#null' + j).is(':checked'));
-            a.setPrimary( $('#primary' + j).is(':checked'));
-            a.setForeign( $('#foreign' + j).is(':checked'));
-            a.setAutoincrement( $('#autoincrement' + j).is(':checked'));
-            a.setUnique( $('#unique' + j).is(':checked'));
+            a.setNull( $('#null' + j).is(':checked') );
+            a.setPrimary( $('#primary' + j).is(':checked') );
+            a.setAutoincrement( $('#autoincrement' + j).is(':checked') );
+            a.setUnique( $('#unique' + j).is(':checked') );
             a.setDefault( $('#default' + j).val() );
             a.setDescription( $('#description' + j).val() );
-            a.setSetter( $('#setter' + j).is(':checked'));
-            a.setGetter( $('#getter' + j).is(':checked'));
+
+            var setter =  $('#setter' + j);
+            if (setter.length > 0)
+                a.setSetter( setter.is(':checked') );
+
+            var getter = $('#getter' + j);
+            if (getter.length > 0)
+                a.setGetter( getter.is(':checked'));
         }
     }
 
@@ -260,21 +300,34 @@ EditItemDialog.prototype.addAttribute = function () {
 EditItemDialog.prototype.loadProgrammingTab = function () {
     $('#edit-item-tostring option').remove();
 
-    var a;
+    var a, i;
+    var c = EditItemDialog.prototype.connectable;
 
-    if (EditItemDialog.prototype.connectable instanceof Class)
-        if (EditItemDialog.prototype.connectable.getRepository())
+    // Repository
+
+    if (c instanceof Class)
+        if (c.getRepository())
             $('#edit-item-repository').attr('checked','checked');
         else
             $('#edit-item-repository').removeAttr('checked');
 
-    var current = EditItemDialog.prototype.connectable.getToString();
+    // ToString
 
-    $('<option value=""' + (current == null ? ' selected="selected"' : '') + '>--None--</option>').appendTo('#edit-item-tostring');
+    var currentToString = c.getToString();
 
-    for (var i = 0; i < EditItemDialog.prototype.connectable.getNumberAttributes(); i++) {
-        a = EditItemDialog.prototype.connectable.getAttribute(i);
+    $('<option value=""' + (currentToString == null ? ' selected="selected"' : '') + '>--None--</option>').appendTo('#edit-item-tostring');
 
-        $('<option value="' + a.getId() + '"' + (current == a.getId() ? ' selected="selected"' : '') + '>' + a.getName() + '</option>').appendTo('#edit-item-tostring');
+    for (i = 0; i < c.getNumberAttributes(); i++) {
+        a = c.getAttribute(i);
+
+        $('<option value="' + a.getId() + '"' + (currentToString == a.getId() ? ' selected="selected"' : '') + '>' + a.getName() + '</option>').appendTo('#edit-item-tostring');
     }
+
+    // Attributes
+
+    $('#edit-programming-attributes tbody tr').remove();
+
+    for (i = 0; i < c.getNumberAttributes(); i++)
+        $(EditItemDialog.prototype.getProgrammingAttributeRow(i,c.attributes[i])).appendTo('#edit-programming-attributes tbody');
+
 };

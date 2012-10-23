@@ -21,11 +21,6 @@
 			</td>
             <td rowspan="2" align="center">
                 <select name="type" class="text ui-widget-content ui-corner-all">
-                    <option value='OneToOne'>One to one</option>
-                    <!--<option value='ManyToOne'>Many to one</option>-->
-                    <option value='OneToMany'>One to Many</option>
-                    <!--<option value='ManyToMany'>Many to many</option>-->
-                    <option value='Inheritance'>Inherits from</option>
                 </select>
             </td>
             <td align="right">

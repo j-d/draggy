@@ -2,7 +2,6 @@
 
 <html>
     <head>
-
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
         <title>Draggy</title>
         <meta charset="utf-8">
@@ -25,35 +24,43 @@
         <script type="text/javascript" src="js/System.js"></script>
         <script type="text/javascript" src="js/EditItemDialog.js"></script>
         <script type="text/javascript" src="js/LinkClassDialog.js"></script>
-
+        <script type="text/javascript" src="js/Draggy.js"></script>
+    </head>
+    <body>
+        <?
+            if (empty($_GET['f']))
+                die('Project filename not specified');
+        ?>
         <script>
             <?php
+                $file = 'saves/' . $_GET['f'] . '.xml';
+
                 require 'js/load.php';
             ?>
 
-	        function debug(str) {
-		        $('#debug').html($('#debug').html() + '<br>' + str);
-	        }
+            function debug(str) {
+                $('#debug').html($('#debug').html() + '<br>' + str);
+            }
 
         </script>
-    </head>
-    <body>
 
-    <div id='status' style=""></div>
+        <div id='status' style=""></div>
 
-    <div id='footer'>
-        <span onClick="addAbstract();">Add abstract class</span>
-        |
-        <span onClick="addClass();">Add class</span>
-        |
-        <span onClick="save();">Save</span>
-    </div>
+        <div id='footer'>
+            <span onClick="Draggy.prototype.addAbstract();">Add abstract class</span>
+            |
+            <span onClick="Draggy.prototype.addClass();">Add class</span>
+            |
+            <span onClick="Draggy.prototype.addModule();">Add module</span>
+            |
+            <span onClick="Draggy.prototype.save('<?php echo $file; ?>');">Save</span>
+        </div>
 
-    <div id="debug" style="border: 1px solid red; width: 400px; position: fixed; right: 0;  z-index:100;"></div>
+        <!--<div id="debug" style="border: 1px solid red; width: 400px; position: fixed; right: 0;  z-index:100;"></div>-->
 
-    <?php
-        require 'parts/editClassNameDialog.php';
-        require 'parts/linkClassDialog.php';
-    ?>
+        <?php
+            require 'parts/editClassNameDialog.php';
+            require 'parts/linkClassDialog.php';
+        ?>
     </body>
 </html>

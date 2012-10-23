@@ -39,143 +39,146 @@ $(document).ready(function () {
 			}
 		}
 
-        $xml = simplexml_load_file('saved.xml');
+        if (file_exists($file)) {
+            $xml = simplexml_load_file($file);
 
-		$modules = (array) $xml->xpath('/draggy/module');
+            $modules = (array) $xml->xpath('/draggy/module');
 
-		foreach ($modules as $module) {
-			$moduleAttributes = (array) $module;
-			$moduleAttributes = $moduleAttributes['@attributes'];
+            foreach ($modules as $module) {
+                $moduleAttributes = (array) $module;
+                $moduleAttributes = $moduleAttributes['@attributes'];
 
-			echo 'addContainer(\'' . $moduleAttributes['name'] . '\',\'' . ($moduleAttributes['left'] - 1) . 'px\',\'' . ($moduleAttributes['top'] - 1) . 'px\',\'' . $moduleAttributes['width'] . 'px\',\'' . $moduleAttributes['height'] . 'px\')' . "\n";
+                echo 'var o = new Container(\'' . $moduleAttributes['name'] . '\');' . "\n";
+                echo 'o.moveTo(\'' . ($moduleAttributes['left'] - 1) . 'px\',\'' . ($moduleAttributes['top'] - 1) . 'px\',\'' . $moduleAttributes['width'] . 'px\',\'' . $moduleAttributes['height'] . 'px\')' . "\n";
 
-			// Inside classes
+                // Inside classes
 
-			$classes = (array) $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/class');
+                $classes = (array) $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/class');
 
-			foreach ($classes as $class) {
-				$classAttributes = (array) $class;
-				$classAttributes = $classAttributes['@attributes'];
+                foreach ($classes as $class) {
+                    $classAttributes = (array) $class;
+                    $classAttributes = $classAttributes['@attributes'];
 
-				echo 'var c = new Class(\'' . $classAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
-				echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
+                    echo 'var c = new Class(\'' . $classAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
+                    echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
 
-				$attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
+                    $attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
 
-				assignAttributesToClassLike($attributes,'c');
+                    assignAttributesToClassLike($attributes,'c');
 
-				if (isset($classAttributes['toString']))
-					echo 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . "\n";
+                    if (isset($classAttributes['toString']))
+                        echo 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . "\n";
 
-				if (isset($classAttributes['description']))
-					echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
+                    if (isset($classAttributes['description']))
+                        echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
 
-				if (isset($classAttributes['repository']))
-					echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
+                    if (isset($classAttributes['repository']))
+                        echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
 
-				echo 'c.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
-			}
+                    echo 'c.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
+                }
 
-			// Inside abstracts
-			$abstracts = (array) $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract');
+                // Inside abstracts
+                $abstracts = (array) $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract');
 
-			foreach ($abstracts as $abstract) {
-				$abstractAttributes = (array) $abstract;
-				$abstractAttributes = $abstractAttributes['@attributes'];
+                foreach ($abstracts as $abstract) {
+                    $abstractAttributes = (array) $abstract;
+                    $abstractAttributes = $abstractAttributes['@attributes'];
 
-				echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
-				echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
+                    echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
+                    echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
 
-				$attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
+                    $attributes = $xml->xpath('/draggy/module[@name=\'' . $moduleAttributes['name'] . '\']/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
 
-				assignAttributesToClassLike($attributes,'s');
+                    assignAttributesToClassLike($attributes,'s');
 
-				if (isset($abstractAttributes['toString']))
-					echo 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . "\n";
+                    if (isset($abstractAttributes['toString']))
+                        echo 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . "\n";
 
-				if (isset($abstractAttributes['description']))
-					echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
+                    if (isset($abstractAttributes['description']))
+                        echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
 
-				if (isset($abstractAttributes['repository']))
-					echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
+                    if (isset($abstractAttributes['repository']))
+                        echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
 
-				echo 's.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
-			}
-		}
+                    echo 's.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
+                }
+            }
 
-		// Outside classes
+            // Outside classes
 
-        $classes = (array) $xml->xpath('/draggy/classes/class');
+            $classes = (array) $xml->xpath('/draggy/loose/class');
 
-        foreach ($classes as $class) {
-            $classAttributes = (array) $class;
-            $classAttributes = $classAttributes['@attributes'];
+            foreach ($classes as $class) {
+                $classAttributes = (array) $class;
+                $classAttributes = $classAttributes['@attributes'];
 
-            echo 'var c = new Class(\'' . $classAttributes['name'] . '\');' . "\n";
-            echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
+                echo 'var c = new Class(\'' . $classAttributes['name'] . '\');' . "\n";
+                echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
 
-	        $attributes = $xml->xpath('/draggy/classes/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
+                $attributes = $xml->xpath('/draggy/loose/class[@name=\'' . $classAttributes['name'] . '\']/attribute');
 
-	        assignAttributesToClassLike($attributes,'c');
+                assignAttributesToClassLike($attributes,'c');
 
-	        if (isset($classAttributes['toString']))
-		        echo 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . "\n";
+                if (isset($classAttributes['toString']))
+                    echo 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . "\n";
 
-	        if (isset($classAttributes['description']))
-		        echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
+                if (isset($classAttributes['description']))
+                    echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
 
-	        if (isset($classAttributes['repository']))
-		        echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
+                if (isset($classAttributes['repository']))
+                    echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
+            }
+
+            // Outside abstracts
+
+            $abstracts = (array) $xml->xpath('/draggy/loose/abstract');
+
+            foreach ($abstracts as $abstract) {
+                $abstractAttributes = (array) $abstract;
+                $abstractAttributes = $abstractAttributes['@attributes'];
+
+                echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\');' . "\n";
+                echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
+
+                $attributes = $xml->xpath('/draggy/loose/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
+
+                assignAttributesToClassLike($attributes,'s');
+
+                if (isset($abstractAttributes['toString']))
+                    echo 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . "\n";
+
+                if (isset($abstractAttributes['description']))
+                    echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
+
+                if (isset($abstractAttributes['repository']))
+                    echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
+            }
+
+            // Relationships
+
+            $relationships = (array) $xml->xpath('/draggy/relationships/relation');
+
+            foreach ($relationships as $relation) {
+                $relationAttributes = (array) $relation;
+                $relationAttributes = $relationAttributes['@attributes'];
+
+                if (isset($relationAttributes['fromAttribute']))
+                    echo 'var l = new Link(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\',\'' . $relationAttributes['fromAttribute'] . '\',\'' . $relationAttributes['toAttribute'] . '\')' . "\n";
+                else
+                    echo 'var l = new Link(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\')' . "\n";
+
+                if (isset($relationAttributes['broken'])) {
+                    echo 'l.setBroken(' . $relationAttributes['broken'] . ');' . "\n";
+                }
+            }
+
+
+
+            echo 'for (var i in Connectable.prototype.connectables) Connectable.prototype.connectables[i].reDraw();' . "\n";
+
+            echo 'Link.prototype.reDrawLinks();' . "\n";
         }
-
-		// Outside abstracts
-
-		$abstracts = (array) $xml->xpath('/draggy/abstracts/abstract');
-
-		foreach ($abstracts as $abstract) {
-			$abstractAttributes = (array) $abstract;
-			$abstractAttributes = $abstractAttributes['@attributes'];
-
-			echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\');' . "\n";
-			echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
-
-			$attributes = $xml->xpath('/draggy/abstracts/abstract[@name=\'' . $abstractAttributes['name'] . '\']/attribute');
-
-			assignAttributesToClassLike($attributes,'s');
-
-			if (isset($abstractAttributes['toString']))
-				echo 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . "\n";
-
-			if (isset($abstractAttributes['description']))
-				echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
-
-			if (isset($abstractAttributes['repository']))
-				echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
-		}
-
-		// Relationships
-
-        $relationships = (array) $xml->xpath('/draggy/relationships/relation');
-
-        foreach ($relationships as $relation) {
-            $relationAttributes = (array) $relation;
-            $relationAttributes = $relationAttributes['@attributes'];
-
-	        if (isset($relationAttributes['fromAttribute']))
-                echo 'var l = new Link(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\',\'' . $relationAttributes['fromAttribute'] . '\',\'' . $relationAttributes['toAttribute'] . '\')' . "\n";
-	        else
-                echo 'var l = new Link(\'' . $relationAttributes['from'] . '\',\'' . $relationAttributes['to'] . '\',\'' . $relationAttributes['type'] . '\')' . "\n";
-
-	        if (isset($relationAttributes['broken'])) {
-		        echo 'l.setBroken(' . $relationAttributes['broken'] . ');' . "\n";
-	        }
-        }
-
-
-
-		echo 'for (var i in Connectable.prototype.connectables) Connectable.prototype.connectables[i].reDraw();' . "\n";
-
-        echo 'Link.prototype.reDrawLinks();' . "\n";
 
 		echo 'System.prototype.runtime = true;' . "\n";
     ?>

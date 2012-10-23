@@ -17,47 +17,15 @@ Connectable.prototype.innitConnectable = function (desiredId) {
 };
 
 Connectable.prototype.setName = function (desiredName) {
-    debug(desiredName);
-    this.name = this.getValidName(desiredName);
-};
-
-Connectable.prototype.getValidName = function (name) {
-    var valid = true;
-    var i;
-
-    for (i in Connectable.prototype.connectables)
-        if (Connectable.prototype.connectables[i].getName() == name) {
-            valid = false;
-            break;
-        }
-
-    if (valid)
-        return name;
-
-    var number = 1;
-
-    while (!valid) {
-        valid = true;
-
-        for (i in Connectable.prototype.connectables)
-            if (Connectable.prototype.connectables[i].getName() == name + number) {
-                valid = false
-            }
-
-        if (valid)
-            return name + number;
-
-        number++;
-    }
+    this.name = this.getValidName('Connectable',desiredName);
 };
 
 Connectable.prototype.destroyConnectable = function () {
     for (var j = 0; j < 4; j++)
         while (this.connectors[j].length > 0) {
-            Link.prototype.links[this.connectors[j][0]].destroyLink();
+            Link.prototype.links[this.connectors[j][0]].remove();
         }
 
-    $(this.hashId).remove();
     delete Connectable.prototype.connectables[this.id];
     this.destroyScreenItem();
 };
@@ -65,7 +33,6 @@ Connectable.prototype.destroyConnectable = function () {
 Connectable.prototype.makeInteractive = function () {
     var id = this.getId(); // Later it will be out of context
     var hashId = this.getHashId();
-    var name = this.getName();
 
     // Make it draggable
     $(this.hashId).draggable({
@@ -82,10 +49,10 @@ Connectable.prototype.makeInteractive = function () {
     // Hover controls
     $(this.hashId).hover(
         function () {
-            $(hashId + ' .controls').show();
+            $(hashId + ' > .controls').show();
         },
         function () {
-            $(hashId + ' .controls').hide();
+            $(hashId + ' > .controls').hide();
         }
     );
 
@@ -94,9 +61,13 @@ Connectable.prototype.makeInteractive = function () {
         EditItemDialog.prototype.openDialog(id);
     });
 
-    // Link item
-    $(this.hashId + ' .controls .linkClass').click(function () {
+    // Control clicks
+    $(this.hashId + ' .controls .linkConnectable').click(function () {
         LinkClassDialog.prototype.openDialog(id);
+    });
+
+    $(this.hashId + ' .controls .removeConnectable').click(function () {
+        Draggy.prototype.removeConnectable(id);
     });
 };
 
@@ -171,8 +142,8 @@ Connectable.prototype.reDraw = function () {
         '<div class="name">' + this.getName() + '</div>' +
             '<div class="attributes">' + this.attributesToHtml() + '</div>' +
             '<div class="controls" style="display: none;">' +
-            '<span style="float: left;" class="ui-icon ui-icon-closethick" onclick="removeClass(\'' + this.getName() + '\')"></span>' +
-            '<span style="float: left;" class="ui-icon ui-icon-link linkClass" onclick=""></span>' +
+            '<span style="float: left;" class="ui-icon ui-icon-closethick removeConnectable"></span>' +
+            '<span style="float: left;" class="ui-icon ui-icon-link linkConnectable"></span>' +
             '</div>'
     );
 
@@ -418,6 +389,31 @@ Connectable.prototype.addInheritedAttribute = function (attribute) {
             var ia = new InheritedAttribute(attribute.getParentId());
 
             Connectable.prototype.connectables[this.children[i]].addInheritedAttribute(ia);
+        }
+    }
+};
+
+Connectable.prototype.removeInheritedAttribute = function (parentAttribute) {
+    var i, attribute;
+
+    for (i = 0; i < this.attributes.length; i++) {
+        attribute = Attribute.prototype.attributes[this.attributes[i]];
+
+        if (attribute instanceof InheritedAttribute && attribute.getParentId() == parentAttribute.getId()) {
+            // This is the inherited attribute
+            this.attributes.remove(attribute.getId());
+            attribute.remove();
+            break;
+        }
+    }
+
+
+
+    //this.attributes.remove(parentAttribute.getId());
+
+    if (this.children) {
+        for (i = 0; i < this.children.length; i++) {
+            Connectable.prototype.connectables[this.children[i]].removeInheritedAttribute(parentAttribute);
         }
     }
 };

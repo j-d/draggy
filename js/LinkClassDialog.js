@@ -1,6 +1,8 @@
 function LinkClassDialog () {
 }
 
+LinkClassDialog.prototype.connectable = null;
+
 LinkClassDialog.prototype.innit = function () {
     $('#link-item-dialog select[name=type]').change(function () {
         if ($('#link-item-dialog select[name=type]').val() != 'Inheritance') {
@@ -19,15 +21,25 @@ LinkClassDialog.prototype.innit = function () {
 };
 
 LinkClassDialog.prototype.openDialog = function (connectableId) {
-    // Remove previous select items
+    var c = LinkClassDialog.prototype.connectable = Connectable.prototype.connectables[connectableId];
+    var i;
+
+    // Remove previous dropdowns
     $('#link-item-dialog select[name=destinationItem] option').remove();
+    $('#link-item-dialog select[name=type] option').remove();
 
     // Add other items
-    for (var i in Connectable.prototype.connectables)
-        $('<option value="' + Connectable.prototype.connectables[i].getName() + '">' + Connectable.prototype.connectables[i].getName() + '</option>').appendTo($('#link-item-dialog select[name=destinationItem]'));
+    for (i in Connectable.prototype.connectables)
+        if (Connectable.prototype.connectables[i].getId() != connectableId)
+            $('<option value="' + Connectable.prototype.connectables[i].getName() + '">' + Connectable.prototype.connectables[i].getName() + '</option>').appendTo($('#link-item-dialog select[name=destinationItem]'));
+
+    // Add types
+    for (i = 0; i < Config.prototype.relationships.length; i++)
+        if ( Config.prototype.relationships[i].internalName != 'Inheritance' || c.getInheritedFrom() == null )
+            $('<option value="' + Config.prototype.relationships[i].internalName + '">' + Config.prototype.relationships[i].nameSelf + '</option>').appendTo($('#link-item-dialog select[name=type]'));
 
     //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
-    $('#link-item-dialog input[name=class]').attr('value',Connectable.prototype.connectables[connectableId].getName());
+    $('#link-item-dialog input[name=class]').attr('value',c.getName());
 
     // Populate options for the first time
     LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=sourceAttribute]',$('#link-item-dialog input[name=class]').val(),true);
@@ -51,6 +63,7 @@ LinkClassDialog.prototype.createLink = function () {
             destinationAttribute.copyFrom(sourceAttribute);
             destinationAttribute.setName(source.getName() + '_' + sourceAttribute.getName());
             destinationAttribute.setPrimary(false);
+            destinationAttribute.setAutoincrement(false);
             destinationAttribute.setForeign(true);
             destination.addAttribute(destinationAttribute);
         }
@@ -60,21 +73,22 @@ LinkClassDialog.prototype.createLink = function () {
             destinationAttribute.copyFrom(sourceAttribute);
             destinationAttribute.setName(name);
             destinationAttribute.setPrimary(false);
+            destinationAttribute.setAutoincrement(false);
             destinationAttribute.setForeign(true);
         }
 
-        destination.reDraw();
-
-        addLink(
+        Draggy.prototype.addLink(
             source.getName(),
             destination.getName(),
             type,
             sourceAttribute.getName(),
             destinationAttribute.getName()
         );
+
+        destination.reDraw();
     }
     else {
-        addLink(
+        Draggy.prototype.addLink(
             source.getName(),
             destination.getName(),
             type
@@ -105,7 +119,8 @@ LinkClassDialog.prototype.populateOptions = function (select,itemName,key) {
                 s.append('<option value="' + attribute.getId() + '">' + attribute.getName() + '</option>');
         }
         else {
-            s.append('<option value="' + attribute.getId() + '">' + attribute.getName() + '</option>');
+            if (!attribute.getForeign())
+                s.append('<option value="' + attribute.getId() + '">' + attribute.getName() + '</option>');
         }
     }
 };

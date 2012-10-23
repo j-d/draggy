@@ -24,11 +24,21 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
         this.fromAttribute = Connectable.prototype.connectables[this.from].getAttributeFromName(fromAttributeName);
         this.toAttribute = Connectable.prototype.connectables[this.to].getAttributeFromName(toAttributeName);
 
-        Attribute.prototype.attributes[this.fromAttribute].links.push(this.getId());
-        Attribute.prototype.attributes[this.toAttribute].links.push(this.getId());
+        var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
+        var toAttribute = Attribute.prototype.attributes[this.toAttribute];
+
+        if (fromAttribute instanceof InheritedAttribute)
+            fromAttribute.getParent().links.push(this.getId());
+        else
+            fromAttribute.links.push(this.getId());
+
+        if (toAttribute instanceof InheritedAttribute)
+            toAttribute.getParent().links.push(this.getId());
+        else
+            toAttribute.links.push(this.getId());
     }
     else {
-        Item.prototype.items[this.from].inheritFrom(this.to);
+        Item.prototype.items[this.from].setInheritingFrom(this.to);
 
         if (System.prototype.runtime)
             Item.prototype.items[this.from].inheritAttributes();
@@ -39,6 +49,9 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.adjustConnectors();
 
     Link.prototype.links[this.id] = this;
+
+    if (System.prototype.runtime && Connectable.prototype.connectables[this.from].getModule() != Connectable.prototype.connectables[this.to].getModule())
+        this.broken = true;
 }
 
 Link.prototype.suffixes = [
@@ -133,15 +146,6 @@ Link.prototype.reLocate = function () {
     Item.prototype.items[this.to].assignPositions(this.toConnector);
 
     this.draw();
-};
-
-Link.prototype.destroyLink = function () {
-    Item.prototype.items[this.from].removeConnector(this.id);
-    Item.prototype.items[this.to].removeConnector(this.id);
-
-    $(this.hashId).remove();
-    delete Link.prototype.links[this.id];
-    this.destroyScreenItem();
 };
 
 Link.prototype.calculateDistance = function () {
@@ -440,10 +444,46 @@ Link.prototype.getBroken = function () {
     return this.broken;
 };
 
-function addLink(from, to, type, fromAttributeName, toAttributeName) {
-    new Link(from, to, type, fromAttributeName, toAttributeName);
-}
+Link.prototype.remove = function () {
+    Item.prototype.items[this.from].removeConnector(this.id);
+    Item.prototype.items[this.to].removeConnector(this.id);
 
-function removeLink(id) {
-    Link.prototype.links[id].remove();
-}
+    if (this.type != 'Inheritance') {
+        var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
+        var toAttribute = Attribute.prototype.attributes[this.toAttribute];
+
+        if (fromAttribute instanceof InheritedAttribute)
+            fromAttribute.getParent().links.remove(this.getId());
+        else
+            fromAttribute.links.remove(this.getId());
+
+        if (toAttribute instanceof InheritedAttribute)
+            toAttribute.getParent().links.remove(this.getId());
+        else
+            toAttribute.links.remove(this.getId());
+
+        toAttribute.setForeign(false);
+    }
+    else {
+        Item.prototype.items[this.from].unInheritAttributes();
+
+        Item.prototype.items[this.from].setInheritingFrom(null);
+
+        Item.prototype.items[this.from].reDraw();
+    }
+
+    Item.prototype.items[this.from].removeConnector(this.id);
+    Item.prototype.items[this.to].removeConnector(this.id);
+
+    for (var i in Link.prototype.links)
+        if (Link.prototype.links[i].getId() == this.id) {
+            delete Link.prototype.links[i];
+            break;
+        }
+
+    delete Link.prototype.links[this.id];
+
+    Connectable.prototype.connectables[this.to].reDraw();
+
+    this.destroyScreenItem();
+};

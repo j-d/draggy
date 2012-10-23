@@ -25,24 +25,41 @@ function Attribute (name, id) {
     Attribute.prototype.attributes[this.id] = this;
 }
 
+Attribute.prototype.remove = function () {
+    delete Attribute.prototype.attributes[this.id];
+
+    this.destroyItem();
+};
+
 Attribute.prototype.setType = function (type) {
-    switch (type) {
-        case 'array':
-        case 'bigint':
-        case 'boolean':
-        case 'date':
-        case 'datetime':
-        case 'decimal':
-        case 'integer':
-        case 'object':
-        case 'smallint':
-        case 'string':
-        case 'text':
-        case 'time':
-            this.type = type;
-            break;
-        default:
-            this.type = null;
+    if (type != this.type) {
+        switch (type) {
+            case 'array':
+            case 'bigint':
+            case 'boolean':
+            case 'date':
+            case 'datetime':
+            case 'decimal':
+            case 'integer':
+            case 'object':
+            case 'smallint':
+            case 'string':
+            case 'text':
+            case 'time':
+                this.type = type;
+                break;
+            default:
+                this.type = null;
+        }
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setType(type);
+                    Connectable.prototype.connectables[Link.prototype.links[this.links[i]].getTo()].reDraw();
+                }
+        }
     }
 };
 
@@ -51,8 +68,18 @@ Attribute.prototype.getType = function () {
 };
 
 Attribute.prototype.setSize = function (size) {
-    if (size != '')
+    if (size != '' && size != this.size) {
         this.size = size;
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setSize(size);
+                    Connectable.prototype.connectables[Link.prototype.links[this.links[i]].getTo()].reDraw();
+                }
+        }
+    }
 };
 
 Attribute.prototype.getSize = function () {
