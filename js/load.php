@@ -33,8 +33,16 @@ $(document).ready(function () {
 						echo 'a.setGetter(' . $attributeProperties['getter'] . ');' . "\n";
 					if (isset($attributeProperties['setter']))
 						echo 'a.setSetter(' . $attributeProperties['setter'] . ');' . "\n";
+					if (isset($attributeProperties['minSize']))
+						echo 'a.setMinSize(\'' . $attributeProperties['minSize'] . '\');' . "\n";
+					if (isset($attributeProperties['email']))
+						echo 'a.setEmail(' . $attributeProperties['email'] . ');' . "\n";
+                    if (isset($attributeProperties['min']))
+                        echo 'a.setMin(\'' . $attributeProperties['min'] . '\');' . "\n";
+                    if (isset($attributeProperties['max']))
+                        echo 'a.setMax(\'' . $attributeProperties['max'] . '\');' . "\n";
 
-					echo $classLikeVarName . '.addAttribute(a);' . "\n";
+                    echo $classLikeVarName . '.addAttribute(a);' . "\n";
 				}
 			}
 		}
@@ -75,6 +83,18 @@ $(document).ready(function () {
                     if (isset($classAttributes['repository']))
                         echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
 
+                    if (isset($classAttributes['form']))
+                        echo 'c.setForm(' . $classAttributes['form'] . ')' . "\n";
+
+                    if (isset($classAttributes['controller']))
+                        echo 'c.setController(' . $classAttributes['controller'] . ')' . "\n";
+
+                    if (isset($classAttributes['fixtures']))
+                        echo 'c.setFixtures(' . $classAttributes['fixtures'] . ')' . "\n";
+
+                    if (isset($classAttributes['crud']))
+                        echo 'c.setCrud(\'' . $classAttributes['crud'] . '\')' . "\n";
+
                     echo 'c.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
                 }
 
@@ -100,6 +120,18 @@ $(document).ready(function () {
 
                     if (isset($abstractAttributes['repository']))
                         echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
+
+                    if (isset($abstractAttributes['form']))
+                        echo 's.setForm(' . $abstractAttributes['form'] . ')' . "\n";
+
+                    if (isset($abstractAttributes['controller']))
+                        echo 's.setController(' . $abstractAttributes['controller'] . ')' . "\n";
+
+                    if (isset($abstractAttributes['fixtures']))
+                        echo 's.setFixtures(' . $abstractAttributes['fixtures'] . ')' . "\n";
+
+                    if (isset($abstractAttributes['crud']))
+                        echo 's.setCrud(\'' . $abstractAttributes['crud'] . '\')' . "\n";
 
                     echo 's.setModule(Container.prototype.getContainerByName(\'' . $moduleAttributes['name'] .'\').getId());' . "\n";
                 }
@@ -128,6 +160,18 @@ $(document).ready(function () {
 
                 if (isset($classAttributes['repository']))
                     echo 'c.setRepository(' . $classAttributes['repository'] . ')' . "\n";
+
+                if (isset($classAttributes['form']))
+                    echo 'c.setForm(' . $classAttributes['form'] . ')' . "\n";
+
+                if (isset($classAttributes['controller']))
+                    echo 'c.setController(' . $classAttributes['controller'] . ')' . "\n";
+
+                if (isset($classAttributes['fixtures']))
+                    echo 'c.setFixtures(' . $classAttributes['fixtures'] . ')' . "\n";
+
+                if (isset($classAttributes['crud']))
+                    echo 'c.setCrud(\'' . $classAttributes['crud'] . '\')' . "\n";
             }
 
             // Outside abstracts
@@ -153,6 +197,18 @@ $(document).ready(function () {
 
                 if (isset($abstractAttributes['repository']))
                     echo 's.setRepository(' . $abstractAttributes['repository'] . ')' . "\n";
+
+                if (isset($abstractAttributes['form']))
+                    echo 's.setForm(' . $abstractAttributes['form'] . ')' . "\n";
+
+                if (isset($abstractAttributes['controller']))
+                    echo 's.setController(' . $abstractAttributes['controller'] . ')' . "\n";
+
+                if (isset($abstractAttributes['fixtures']))
+                    echo 's.setFixtures(' . $abstractAttributes['fixtures'] . ')' . "\n";
+
+                if (isset($abstractAttributes['crud']))
+                    echo 's.setCrud(\'' . $abstractAttributes['crud'] . '\')' . "\n";
             }
 
             // Relationships

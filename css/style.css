@@ -63,6 +63,7 @@
     padding: 0px 3px;
     border-right: 1px solid #d0ce7d;
     border-bottom: 1px solid #d0ce7d;
+    z-index: 2;
 }
 
 .container .controls {
@@ -91,7 +92,7 @@
     width: 98%;
 }
 
-#edit-item-tabs div div {
+#edit-item-tabs div div.scroll {
     height: 300px;
     overflow: scroll;
     overflow-x: hidden;
@@ -124,24 +125,28 @@
 .icon-one-null-top       { width: 11px; height: 14px; background-position: -52px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-top           { width: 11px; height: 14px; background-position: -67px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-null-top      { width: 11px; height: 14px; background-position: -82px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-none-top           { width: 11px; height: 14px; background-position: -97px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 
 .icon-inheritance-bottom { width: 9px;  height: 14px; background-position: -22px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-bottom         { width: 9px;  height: 14px; background-position: -37px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-null-bottom    { width: 11px; height: 14px; background-position: -52px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-bottom        { width: 11px; height: 14px; background-position: -67px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-null-bottom   { width: 11px; height: 14px; background-position: -82px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-none-bottom        { width: 11px; height: 14px; background-position: -97px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 
 .icon-inheritance-left   { width: 14px; height: 9px;  background-position: -22px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-left           { width: 14px; height: 9px;  background-position: -37px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-null-left      { width: 14px; height: 11px; background-position: -52px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-left          { width: 14px; height: 11px; background-position: -67px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-null-left     { width: 14px; height: 11px; background-position: -82px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-none-left          { width: 14px; height: 11px; background-position: -97px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 
 .icon-inheritance-right  { width: 14px; height: 9px;  background-position: -22px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-right          { width: 14px; height: 9px;  background-position: -37px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-one-null-right     { width: 14px; height: 11px; background-position: -52px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-right         { width: 14px; height: 11px; background-position: -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 .icon-many-null-right    { width: 14px; height: 11px; background-position: -82px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-none-right         { width: 14px; height: 11px; background-position: -97px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
 
 div.connector {
     z-index: 1;

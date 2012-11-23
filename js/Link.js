@@ -66,7 +66,8 @@ Link.prototype.iconNames = {
     one:            'icon-one',
     oneNull:        'icon-one-null',
     many:           'icon-many',
-    manyNull:       'icon-many-null'
+    manyNull:       'icon-many-null',
+    null:           'icon-none'
 };
 
 Link.prototype.getId = function () {

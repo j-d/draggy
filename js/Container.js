@@ -113,8 +113,8 @@ Container.prototype.toXML = function () {
 
     ret += '<module ' +
         'name="' + this.getName() + '" ' +
-        'left="' + parseInt($(this.hashId).css('left')) + '" ' +
-        'top="' + parseInt($(this.hashId).css('top')) + '" ' +
+        'left="' + (parseInt($(this.hashId).css('left'))+1) + '" ' +
+        'top="' + (parseInt($(this.hashId).css('top'))+1) + '" ' +
         'width="' + parseInt($(this.hashId).css('width')) + '" ' +
         'height="' + parseInt($(this.hashId).css('height')) + '"';
 

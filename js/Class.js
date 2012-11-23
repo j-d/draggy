@@ -27,6 +27,10 @@ function Class (name,container) {
     this.reDraw();
 
     this.repository = false;
+    this.form = false;
+    this.controller = false;
+    this.fixtures = false;
+    this.crud = null;
 }
 
 Class.prototype.isPureManyToMany = function () {
@@ -48,8 +52,12 @@ Class.prototype.toXML = function () {
         'left="' + parseInt($(this.hashId).css('left')) + '"' +
         (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getName() + '"' : '' ) +
         (this.getRepository() ? ' repository="' + this.getRepository() + '"' : '' ) +
+        (this.getForm() ? ' form="' + this.getForm() + '"' : '' ) +
+        (this.getController() ? ' controller="' + this.getController() + '"' : '' ) +
+        (this.getFixtures() ? ' fixtures="' + this.getFixtures() + '"' : '' ) +
         (this.getToString() != null ? ' toString="' + Attribute.prototype.attributes[this.getToString()].getName() + '"' : '' ) +
         (this.getDescription() != null ? ' description="' + this.getDescription() + '"' : '' ) +
+        (this.getCrud() != null ? ' crud="' + this.getCrud() + '"' : '' ) +
         (this.isPureManyToMany() ? ' manyToMany="true"' : '' ) +
     '';
 
@@ -84,4 +92,39 @@ Class.prototype.setRepository = function (repository) {
 
 Class.prototype.getRepository = function () {
     return this.repository;
+};
+
+Class.prototype.setForm = function (form) {
+    this.form = form;
+};
+
+Class.prototype.getForm = function () {
+    return this.form;
+};
+
+Class.prototype.setController = function (controller) {
+    this.controller = controller;
+};
+
+Class.prototype.getController = function () {
+    return this.controller;
+};
+
+Class.prototype.setFixtures = function (fixtures) {
+    this.fixtures = fixtures;
+};
+
+Class.prototype.getFixtures = function () {
+    return this.fixtures;
+};
+
+Class.prototype.setCrud = function (crud) {
+    if (crud)
+        this.crud = crud;
+    else
+        this.crud = null;
+};
+
+Class.prototype.getCrud = function () {
+    return this.crud;
 };

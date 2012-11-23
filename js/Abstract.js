@@ -25,7 +25,7 @@ function Abstract (name,container) {
 
 
     this.reDraw();
-};
+}
 
 Abstract.prototype.toXML = function () {
     var ret = '';
@@ -44,7 +44,6 @@ Abstract.prototype.toXML = function () {
     else {
         ret += '>' + '\n';
 
-        var a;
         for (var i = 0; i < this.getNumberAttributes(); i++)
             ret += '\t\t\t' + this.getAttribute(i).toXML() + '\n';
 

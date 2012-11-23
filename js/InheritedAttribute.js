@@ -88,6 +88,22 @@ InheritedAttribute.prototype.getGetter = function () {
     return this.getAttribute().getGetter();
 };
 
+InheritedAttribute.prototype.getMinSize = function () {
+    return this.getAttribute().getMinSize();
+};
+
+InheritedAttribute.prototype.getEmail = function () {
+    return this.getAttribute().getEmail();
+};
+
+InheritedAttribute.prototype.getMin = function () {
+    return this.getAttribute().getMin();
+};
+
+InheritedAttribute.prototype.getMax = function () {
+    return this.getAttribute().getMax();
+};
+
 InheritedAttribute.prototype.toHtml = function () {
     var iconName = '';
 

@@ -21,6 +21,10 @@ function Attribute (name, id) {
 
     this.setter = true;
     this.getter = true;
+    this.minSize = null;
+    this.email = false;
+    this.min = null;
+    this.max = null;
 
     Attribute.prototype.attributes[this.id] = this;
 }
@@ -68,8 +72,11 @@ Attribute.prototype.getType = function () {
 };
 
 Attribute.prototype.setSize = function (size) {
-    if (size != '' && size != this.size) {
-        this.size = size;
+    if (size != this.size) {
+        if (size != '')
+            this.size = size;
+        else
+            this.size = null;
 
         // Update linked attributes
         if (this.links.length > 0) {
@@ -85,6 +92,47 @@ Attribute.prototype.setSize = function (size) {
 Attribute.prototype.getSize = function () {
     return this.size;
 };
+
+Attribute.prototype.setMinSize = function (size) {
+    if (size != this.minSize) {
+        if (size != '')
+            this.minSize = size;
+        else
+            this.minSize = null;
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setMinSize(size);
+                }
+        }
+    }
+};
+
+Attribute.prototype.getMinSize = function () {
+    return this.minSize;
+};
+
+Attribute.prototype.setEmail = function (email) {
+    if (email != this.email) {
+        this.email = email;
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setEmail(email);
+                }
+        }
+    }
+};
+
+Attribute.prototype.getMinSize = function () {
+    return this.minSize;
+};
+
+
 
 Attribute.prototype.setNull = function (n) {
     this.null = n;
@@ -178,7 +226,7 @@ Attribute.prototype.toXML = function () {
     return '<attribute ' +
         'id="' + this.getId() + '" ' +
         'name="' + this.getName() + '" ' +
-        'type="' + this.getType() + '" ' +
+        (this.getType() != null ? 'type="' + this.getType() + '" ' : '') +
         (this.getSize() != null ? 'size="' + this.getSize() + '" ' : '') +
         (this.getNull() ? 'null="' + this.getNull() + '" ' : '') +
         (this.getPrimary() ? 'primary="' + this.getPrimary() + '" ' : '' ) +
@@ -189,6 +237,10 @@ Attribute.prototype.toXML = function () {
         (this.getDescription() != null ? 'description="' + this.getDescription() + '" ' : '' ) +
         (!this.getSetter() ? 'setter="' + this.getSetter() + '" ' : '' ) +
         (!this.getGetter() ? 'getter="' + this.getGetter() + '" ' : '' ) +
+        (this.getMinSize() != null ? 'minSize="' + this.getMinSize() + '" ' : '') +
+        (this.getEmail() ? 'email="' + this.getEmail() + '" ' : '' ) +
+        (this.getMin() != null ? 'min="' + this.getMin() + '" ' : '') +
+        (this.getMax() != null ? 'max="' + this.getMax() + '" ' : '') +
     '/>';
 };
 
@@ -204,6 +256,10 @@ Attribute.prototype.copyFrom = function (attr) {
     this.setUnique(attr.getUnique());
     this.setDefault(attr.getDefault());
     this.setDescription(attr.getDescription());
+    this.setMinSize(attr.getMinSize());
+    this.setEmail(attr.getEmail());
+    this.setMin(attr.getMin());
+    this.setMax(attr.getMax());
 };
 
 Attribute.prototype.getNumberLinks = function () {
@@ -228,4 +284,54 @@ Attribute.prototype.setGetter = function (getter) {
 
 Attribute.prototype.getGetter = function () {
     return this.getter;
+};
+
+Attribute.prototype.setEmail = function (email) {
+    this.email = email;
+};
+
+Attribute.prototype.getEmail = function () {
+    return this.email;
+};
+
+Attribute.prototype.setMin = function (min) {
+    if (min != this.min) {
+        if (min != '')
+            this.min = min;
+        else
+            this.min = null;
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setMin(min);
+                }
+        }
+    }
+};
+
+Attribute.prototype.getMin = function () {
+    return this.min;
+};
+
+Attribute.prototype.setMax = function (max) {
+    if (max != this.max) {
+        if (max != '')
+            this.max = max;
+        else
+            this.max = null;
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setMax(max);
+                }
+        }
+    }
+};
+
+Attribute.prototype.getMax = function () {
+    return this.max;
 };
