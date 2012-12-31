@@ -9,6 +9,7 @@ function Attribute (name, id) {
     this.owner = null;
     this.name = name;
     this.type = null;
+    this.subtype = null;
     this.size = null;
     this.null = false;
     this.primary = false;
@@ -25,6 +26,8 @@ function Attribute (name, id) {
     this.email = false;
     this.min = null;
     this.max = null;
+
+    this.static = false;
 
     Attribute.prototype.attributes[this.id] = this;
 }
@@ -69,6 +72,41 @@ Attribute.prototype.setType = function (type) {
 
 Attribute.prototype.getType = function () {
     return this.type;
+};
+
+Attribute.prototype.setSubtype = function (subtype) {
+    if (subtype != this.subtype) {
+        var oldSubtype = this.subtype;
+
+        if (subtype !== '' && subtype !== null) {
+            this.subtype = subtype;
+        }
+
+        if (oldSubtype !== '' && oldSubtype !== null && Config.prototype.types.indexOf(oldSubtype) === -1) { // It was a class subtype
+            Connectable.prototype.getConnectableFromName(subtype).removeDependantAttribute(this.getId());
+        }
+
+        if (subtype !== '' && subtype !== null && Config.prototype.types.indexOf(subtype) === -1) { // Is a class subtype
+            Connectable.prototype.getConnectableFromName(subtype).addDependantAttribute(this.getId());
+        }
+
+        // Update linked attributes
+        if (this.links.length > 0) {
+            for (var i = 0; i < this.links.length; i++)
+                if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
+                    Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setSubtype(subtype);
+                    Connectable.prototype.connectables[Link.prototype.links[this.links[i]].getTo()].reDraw();
+                }
+        }
+    }
+};
+
+Attribute.prototype.getSubtype = function () {
+    return this.subtype;
+};
+
+Attribute.prototype.setName = function (desiredName) {
+    this.name = Connectable.prototype.connectables[this.getOwner()].getValidAttributeName(desiredName, this);
 };
 
 Attribute.prototype.setSize = function (size) {
@@ -166,19 +204,33 @@ Attribute.prototype.getAutoincrement = function () {
     return this.autoincrement;
 };
 
+/**
+ *
+ * @param unique
+ * @return {Attribute}
+ */
 Attribute.prototype.setUnique = function (unique) {
     this.unique = unique;
+
+    return this;
 };
 
+/**
+ *
+ * @return {boolean}
+ */
 Attribute.prototype.getUnique = function () {
     return this.unique;
 };
 
 Attribute.prototype.setDefault = function (def) {
-    if (def != '')
+    if (def != '') {
         this.default = def;
-    else
+    } else {
         this.default = null;
+    }
+
+    return this;
 };
 
 Attribute.prototype.getDefault = function () {
@@ -213,8 +265,15 @@ Attribute.prototype.toHtml = function () {
 
     var ret = '<span class="' + iconName + '"></span> ' + this.getName();
 
-    if (this.getType() != null)
-        ret += ': <span class="attribute-information">' + this.getType() + '</span>';
+    if (this.getType() !== null) {
+        ret += ': <span class="attribute-information">' + this.getType();
+
+        if (this.getSubtype() !== null) {
+            ret += ' (' + this.getSubtype() + ')';
+        }
+
+        ret += '</span>';
+    }
 
     if (this.getSize() != null)
         ret += '<span class="attribute-information">(' + this.getSize() + ')</span>';
@@ -227,6 +286,7 @@ Attribute.prototype.toXML = function () {
         'id="' + this.getId() + '" ' +
         'name="' + this.getName() + '" ' +
         (this.getType() != null ? 'type="' + this.getType() + '" ' : '') +
+        (this.getSubtype() != null ? 'subtype="' + this.getSubtype() + '" ' : '') +
         (this.getSize() != null ? 'size="' + this.getSize() + '" ' : '') +
         (this.getNull() ? 'null="' + this.getNull() + '" ' : '') +
         (this.getPrimary() ? 'primary="' + this.getPrimary() + '" ' : '' ) +
@@ -241,6 +301,7 @@ Attribute.prototype.toXML = function () {
         (this.getEmail() ? 'email="' + this.getEmail() + '" ' : '' ) +
         (this.getMin() != null ? 'min="' + this.getMin() + '" ' : '') +
         (this.getMax() != null ? 'max="' + this.getMax() + '" ' : '') +
+        (this.getStatic() ? 'static="' + this.getStatic() + '" ' : '') +
     '/>';
 };
 
@@ -334,4 +395,28 @@ Attribute.prototype.setMax = function (max) {
 
 Attribute.prototype.getMax = function () {
     return this.max;
+};
+
+/**
+ * Set static
+ *
+ * @param {boolean} staticAttribute
+ *
+ * @return {*}
+ */
+Attribute.prototype.setStatic = function (staticAttribute)
+{
+    this.static = staticAttribute;
+
+    return this;
+};
+
+/**
+ * Get static
+ *
+ * @return {boolean}
+ */
+Attribute.prototype.getStatic = function ()
+{
+    return this.static;
 };

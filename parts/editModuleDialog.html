@@ -1,0 +1,28 @@
+<div id="edit-module-dialog" class="draggy-dialog" title="Edit module">
+    <label for="edit-module-name">Name:</label>
+	<input id="edit-module-name" type="text" name="name" size="30" class="text ui-widget-content ui-corner-all" />
+    <br/>
+    <label for="edit-module-description">Description:</label>
+	<input id="edit-module-description" type="text" name="description" size="40" class="text ui-widget-content ui-corner-all" /><br/>
+</div>
+
+<script>
+    $(function() {
+        $('#edit-module-dialog').dialog({
+            autoOpen: false,
+            //height: 300,
+            width: 550,
+            modal: true,
+            buttons: {
+                'Change': function() {
+                    EditModuleDialog.prototype.commitChanges();
+
+                    $( this ).dialog("close");
+                },
+                'Cancel': function() {
+                    $( this ).dialog("close");
+                }
+            }
+        });
+    });
+</script>

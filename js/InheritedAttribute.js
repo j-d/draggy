@@ -104,6 +104,10 @@ InheritedAttribute.prototype.getMax = function () {
     return this.getAttribute().getMax();
 };
 
+InheritedAttribute.prototype.getSubtype = function () {
+    return this.getAttribute().getSubtype();
+};
+
 InheritedAttribute.prototype.toHtml = function () {
     var iconName = '';
 
@@ -136,10 +140,14 @@ InheritedAttribute.prototype.toXML = function () {
         '/>';
 };
 
-Attribute.prototype.getNumberLinks = function () {
+InheritedAttribute.prototype.getNumberLinks = function () {
     return this.links.length;
 };
 
-Attribute.prototype.getLink = function (i) {
+InheritedAttribute.prototype.getLink = function (i) {
     return this.links[i];
+};
+
+InheritedAttribute.prototype.getStatic = function () {
+    return this.getAttribute().getStatic();
 };

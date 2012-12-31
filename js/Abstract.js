@@ -2,27 +2,25 @@ Abstract.prototype = new ClassLike();           // Inheritance
 Abstract.prototype.constructor = Abstract;
 
 Abstract.prototype.abstracts = {};           // Static associative array
+Abstract.prototype.abstractList = [];           // Static associative array
 
-function Abstract (name,container) {
-    this.innitClassLike('Abstract');
-
-    if (name == undefined)
-        this.name = this.getValidName('Connectable','Abstract');
-    else
-        this.name = name;
+function Abstract (name, container) {
+    this.innitClassLike('Abstract', container);
 
     Abstract.prototype.abstracts[this.id] = this;
+    Abstract.prototype.abstractList.push(this);
 
-    if (container != undefined) {
-        var c = Container.prototype.getContainerByName(container);
-        c.addObject(this.id);
+    if (name == undefined) {
+        this.name = this.getValidName('Connectable', 'Abstract', this.getFolder());
+    } else {
+        this.name = name;
     }
 
     $(
-        '<div id="' + this.getId() + '" class="connectable abstract" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
-            '</div>'
-    ).appendTo(container == undefined ? 'body' : c.hashId);
+        '<div id="' + this.getId() + '" class="connectable abstract" style="position: absolute;"></div>'
+    ).appendTo(container === undefined ? 'body' : Container.prototype.getContainerByName(container).getHashId());
 
+    this.setDrawn(true);
 
     this.reDraw();
 }
@@ -34,9 +32,10 @@ Abstract.prototype.toXML = function () {
         'name="' + this.getName() + '" ' +
         'top="' + parseInt($(this.hashId).css('top')) + '" ' +
         'left="' + parseInt($(this.hashId).css('left')) + '"' +
-        (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getName() + '"' : '' ) +
+        (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getFullyQualifiedName() + '"' : '' ) +
         (this.getToString() != null ? ' toString="' + Attribute.prototype.attributes[this.getToString()].getName() + '"' : '' ) +
         (this.getDescription() != null ? ' description="' + this.getDescription() + '"' : '' ) +
+        (this.getConstructor() ? ' constructor="true"' : '' ) +
     '';
 
     if (this.getNumberAttributes() == 0)
@@ -54,11 +53,8 @@ Abstract.prototype.toXML = function () {
 };
 
 Abstract.prototype.remove = function () {
-    for (var i in Abstract.prototype.abstracts)
-        if (Abstract.prototype.abstracts[i].getName() == this.name) {
-            delete Abstract.prototype.abstracts[i];
-            break;
-        }
+    delete Abstract.prototype.abstracts[this.id];
+    Abstract.prototype.abstractList.remove(this);
 
     this.destroyClassLike();
 };

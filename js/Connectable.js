@@ -2,52 +2,79 @@ Connectable.prototype = new ScreenItem();           // Inheritance
 Connectable.prototype.constructor = Connectable;
 
 Connectable.prototype.connectables = {};
+Connectable.prototype.connectableList = [];
 
 function Connectable() { }
 
-Connectable.prototype.innitConnectable = function (desiredId) {
+Connectable.prototype.innitConnectable = function (desiredId, container) {
     this.innitScreenItem(desiredId);
     this.connectors = [[],[],[],[]];
     this.connectorsSide = {};
     this.attributes = [];
     this.module = '';
     this.links = [];
+    this.dependantAttributes = [];
 
     Connectable.prototype.connectables[this.id] = this;
+    Connectable.prototype.connectableList.push(this);
+
+    if (container !== undefined) {
+        var c = Container.prototype.getContainerByName(container);
+        c.addObject(this.id);
+        this.setModule(c.getId());
+    }
 };
 
 Connectable.prototype.setName = function (desiredName) {
-    this.name = this.getValidName('Connectable',desiredName);
+    var dependantAttribute;
+
+    this.name = this.getValidName('Connectable', desiredName, this.getFolder());
+
+    for (var i = 0; i < this.dependantAttributes.length; i++) {
+        dependantAttribute = Attribute.prototype.attributes[this.dependantAttributes[i]];
+        dependantAttribute.setSubtype(this.getFullyQualifiedName());
+        Connectable.prototype.connectables[dependantAttribute.getOwner()].reDraw();
+    }
 };
 
 Connectable.prototype.destroyConnectable = function () {
-    for (var j = 0; j < 4; j++)
+    for (var j = 0; j < 4; j++) {
         while (this.connectors[j].length > 0) {
             Link.prototype.links[this.connectors[j][0]].remove();
         }
+    }
 
     delete Connectable.prototype.connectables[this.id];
+    Connectable.prototype.connectableList.remove(this);
+
     this.destroyScreenItem();
 };
 
 Connectable.prototype.makeInteractive = function () {
     var id = this.getId(); // Later it will be out of context
     var hashId = this.getHashId();
+    var connectable = $(this.hashId);
 
     // Make it draggable
-    $(this.hashId).draggable({
+    connectable.draggable({
         grid: [ 1,1 ],
         //handle: 'div.handle',
         drag: function () {
-            Item.prototype.items[id].reDrawLinks();
+            Connectable.prototype.connectables[id].reDrawLinks();
         },
         stop: function () {
-            Item.prototype.items[id].reDrawLinks();
+            var item = Item.prototype.items[id];
+
+            item.reDrawLinks();
+
+            if (item.getModule() !== '') {
+                Container.prototype.containers[item.getModule()].adjustMinimumSizes();
+            }
         }
     });
 
     // Hover controls
-    $(this.hashId).hover(
+    connectable.hover(
         function () {
             $(hashId + ' > .controls').show();
         },
@@ -57,26 +84,30 @@ Connectable.prototype.makeInteractive = function () {
     );
 
     // Edit dialog
-    $(this.hashId).dblclick(function () {
+    connectable.dblclick(function (event) {
         EditItemDialog.prototype.openDialog(id);
+
+        event.stopImmediatePropagation();
     });
 
     // Control clicks
-    $(this.hashId + ' .controls .linkConnectable').click(function () {
+    connectable.find('.controls .linkConnectable').click(function () {
         LinkClassDialog.prototype.openDialog(id);
     });
 
-    $(this.hashId + ' .controls .removeConnectable').click(function () {
+    connectable.find('.controls .removeConnectable').click(function () {
         Draggy.prototype.removeConnectable(id);
     });
 };
 
 Connectable.prototype.calculateMiddlePoints = function () {
-    this.x = $(this.hashId).offset().left;
-    this.y = $(this.hashId).offset().top;
+    var connectable = $(this.hashId);
 
-    this.width = parseInt($(this.hashId).outerWidth());
-    this.height = parseInt($(this.hashId).outerHeight());
+    this.x = connectable.offset().left;
+    this.y = connectable.offset().top;
+
+    this.width = parseInt(connectable.outerWidth());
+    this.height = parseInt(connectable.outerHeight());
 
     this.middleX = Math.round(this.x + this.width / 2);
     this.middleY = Math.round(this.y + this.height / 2);
@@ -94,10 +125,6 @@ Connectable.prototype.calculateMiddlePoints = function () {
     this.bottomMiddleY = this.y + this.height;
 };
 
-Connectable.prototype.clearConnectors = function () {
-    this.connectors = [[],[],[],[]];
-};
-
 Connectable.prototype.addConnector = function (side, linkId) {
     this.connectors[side].push(linkId);
 
@@ -105,8 +132,10 @@ Connectable.prototype.addConnector = function (side, linkId) {
     this.connectorsSide[linkId] = side;
     this.links.push(linkId);
 
-    for (var i = 0; i < this.connectors[side].length - 1; i++)
+    for (var i = 0; i < this.connectors[side].length - 1; i++) {
         Link.prototype.links[this.connectors[side][i]].reLocate(); // Needs to be redrawn since it position is now different
+        Link.prototype.links[this.connectors[side][i]].draw(); // Needs to be redrawn since it position is now different
+    }
 };
 
 Connectable.prototype.removeConnector = function (linkId) {
@@ -131,9 +160,7 @@ Connectable.prototype.removeConnector = function (linkId) {
 };
 
 Connectable.prototype.reDrawLinks = function () {
-    this.calculateMiddlePoints();
-    this.markLinksToBeRedrawn();
-    Link.prototype.reDrawLinks();
+    Link.prototype.reDrawConnectableLinks(this);
 };
 
 Connectable.prototype.reDraw = function () {
@@ -144,44 +171,76 @@ Connectable.prototype.reDraw = function () {
             '<div class="controls" style="display: none;">' +
             '<span style="float: left;" class="ui-icon ui-icon-closethick removeConnectable"></span>' +
             '<span style="float: left;" class="ui-icon ui-icon-link linkConnectable"></span>' +
-            '</div>'
+        '</div>'
     );
 
     this.calculateMiddlePoints();
 
     this.makeInteractive();
 
-    if (this.children) {
-        for (var i = 0; i < this.children.length; i++)
+    if (this.children.length > 0) {
+        for (var i = 0; i < this.children.length; i++) {
             Connectable.prototype.connectables[this.children[i]].reDraw();
+        }
     }
 
-    if (this instanceof Class && this.isPureManyToMany())
+    if (this instanceof Class && this.isPureManyToMany()) {
         $(this.getHashId()).addClass('manyToMany');
-    else
+    } else {
         $(this.getHashId()).removeClass('manyToMany');
+    }
 };
 
 Connectable.prototype.setModule = function (module) {
-    if (this.module != '')
-        Container.prototype.containers[this.module].removeObject(this.id);
+    if (this.module !== module) {
+        var x, y;
+        var hadModule = false;
 
-    this.module = module;
+        if (this.module !== '') {
+            Container.prototype.containers[this.module].removeObject(this.id);
+            hadModule = true;
+        }
 
-    if (this.module != '') {
-        var c = Container.prototype.containers[this.module];
+        this.module = module;
 
-        c.addObject(this.id);
-        var x = $(this.hashId).offset().left - $(c.hashId).offset().left;
-        var y = $(this.hashId).offset().top - $(c.hashId).offset().top;
-        $(this.hashId).appendTo(c.hashId);
-        this.moveTo(x,y);
-        this.calculateMiddlePoints();
+        if (this.module !== '') {
+            var c = Container.prototype.containers[this.module];
+
+            c.addObject(this.id);
+
+            if (this.getDrawn()) {
+                x = $(this.getHashId()).offset().left - $(c.getHashId()).offset().left;
+                y = $(this.getHashId()).offset().top - $(c.getHashId()).offset().top;
+                $(this.hashId).appendTo(c.hashId);
+                this.moveTo(x,y);
+                this.calculateMiddlePoints();
+            }
+        }
+        else if (this.getDrawn()) {
+            var $draggyArea = $('#draggy-area');
+
+            if (hadModule) {
+                x = $(this.getHashId()).offset().left - $draggyArea.offset().left;
+                y = $(this.getHashId()).offset().top - $draggyArea.offset().top;
+            }
+
+            $(this.getHashId()).appendTo($draggyArea);
+
+            if (hadModule) {
+                this.moveTo(x,y);
+                this.calculateMiddlePoints();
+            }
+        }
+
+        // Set its name again in case there was another item on that module with the same name
+        var currentName = this.getName();
+        this.setName(currentName);
+        if (currentName !== this.getName()) {
+            this.reDraw();
+        }
     }
-    else {
-        $(this.hashId).appendTo('body');
-    }
 
+    return this;
 };
 
 Connectable.prototype.getModule = function () {
@@ -190,28 +249,36 @@ Connectable.prototype.getModule = function () {
 
 Connectable.prototype.getLinkX = function (name, side) {
     var total = this.connectors[side].length;
+    var ret;
 
-    for (i = 0; i < total; i++)
+    for (var i = 0; i < total; i++) {
         if (this.connectors[side][i] == name) {
-            if (this.id == Link.prototype.links[name].to )
-                var ret = this.getMultipleLinkX(side,Link.prototype.links[name].positionTo);
-            else
-                var ret =  this.getMultipleLinkX(side,Link.prototype.links[name].positionFrom);
+            if (this.id == Link.prototype.links[name].to ) {
+                ret = this.getMultipleLinkX(side,Link.prototype.links[name].positionTo);
+            }
+            else {
+                ret =  this.getMultipleLinkX(side,Link.prototype.links[name].positionFrom);
+            }
         }
+    }
 
     return ret;
 };
 
 Connectable.prototype.getLinkY = function (name, side) {
     var total = this.connectors[side].length;
+    var ret;
 
-    for (i = 0; i < total; i++)
+    for (var i = 0; i < total; i++) {
         if (this.connectors[side][i] == name) {
             if (this.id == Link.prototype.links[name].to )
-                return this.getMultipleLinkY(side,Link.prototype.links[name].positionTo);
+                ret = this.getMultipleLinkY(side,Link.prototype.links[name].positionTo);
             else
-                return this.getMultipleLinkY(side,Link.prototype.links[name].positionFrom);
+                ret = this.getMultipleLinkY(side,Link.prototype.links[name].positionFrom);
         }
+    }
+
+    return ret;
 };
 
 Connectable.prototype.getMultipleLinkX = function (side, positionOnSide) {
@@ -223,6 +290,8 @@ Connectable.prototype.getMultipleLinkX = function (side, positionOnSide) {
         case 2: return Math.round( this.x + ( total - ( positionOnSide + 1 ) ) * this.width / total );
         case 3: return this.x;
     }
+
+    return null;
 };
 
 Connectable.prototype.getMultipleLinkY = function (side, positionOnSide) {
@@ -234,6 +303,8 @@ Connectable.prototype.getMultipleLinkY = function (side, positionOnSide) {
         case 2: return this.y + this.height;
         case 3: return Math.round( this.y + ( total - ( positionOnSide + 1) ) * this.height / total );
     }
+
+    return null;
 };
 
 Connectable.prototype.attributesToHtml = function () {
@@ -350,29 +421,116 @@ Connectable.prototype.assignPositions = function (side) {
 Connectable.prototype.markLinksToBeRedrawn = function () {
     var i, j;
 
-    for (i = 0; i < 4; i++)
-        for (j = 0; j < this.connectors[i].length; j++)
-            Link.prototype.links[this.connectors[i][j]].needsRedraw = true;
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < this.connectors[i].length; j++) {
+            Link.prototype.links[this.connectors[i][j]].setNeedsRedraw(true);
+        }
+    }
 };
 
 Connectable.prototype.getIdFromName = function (name) {
-    for (var i in Connectable.prototype.connectables)
-        if (Connectable.prototype.connectables[i].getName() == name)
-            return Connectable.prototype.connectables[i].getId();
+    var ambiguous = false;
+    var id = null;
+    var i;
 
-    return null;
+    for (i = 0; i < Connectable.prototype.connectableList.length; i++) {
+        if (Connectable.prototype.connectableList[i].getFullyQualifiedName() == name) {
+            if (id !== null) {
+                ambiguous = true;
+            }
+            id = Connectable.prototype.connectableList[i].getId();
+        }
+    }
+
+    if (!ambiguous) {
+        // TODO : Remove this backwards compatibility
+        // Start of to be removed
+        if (id !== null) {
+            return id;
+        }
+
+        for (i = 0; i < Connectable.prototype.connectableList.length; i++) {
+            if (Connectable.prototype.connectableList[i].getName() == name) {
+                if (id !== null) {
+                    ambiguous = true;
+                }
+                id = Connectable.prototype.connectableList[i].getId();
+            }
+        }
+
+        if (!ambiguous) {
+            if (id === null) {
+                throw new NameNotFoundException(name);
+            }
+
+            return id;
+        } else {
+            throw new AmbiguousNameException;
+        }
+
+        // End of to be removed
+        // Reinstate:
+        // if (id === null) {
+        //     throw new NameNotFoundException(name);
+        // }
+        //
+        // return id;
+        // End of to be reinstated
+    } else {
+        throw new AmbiguousNameException;
+    }
 };
 
 Connectable.prototype.getConnectableFromName = function (name) {
     return Item.prototype.items[this.getIdFromName(name)];
 };
 
+Connectable.prototype.getValidAttributeName = function (desiredName, attribute) {
+    var valid = true;
+    var i;
+
+    for (i = 0; i < this.attributes.length; i++) {
+        if (Attribute.prototype.attributes[this.attributes[i]].getId() !== attribute.getId() && Attribute.prototype.attributes[this.attributes[i]].getName() === desiredName) {
+            valid = false;
+            break;
+        }
+    }
+
+    if (valid) {
+        return desiredName;
+    }
+
+    var number = 1;
+
+    while (!valid) {
+        valid = true;
+
+        for (i = 0; i < this.attributes.length; i++) {
+            if (Attribute.prototype.attributes[this.attributes[i]].getId() !== attribute.getId() && Attribute.prototype.attributes[this.attributes[i]].getName() === desiredName + number) {
+                valid = false
+            }
+        }
+
+        if (valid) {
+            return desiredName + number;
+        }
+
+        number++;
+    }
+
+    return null;
+};
+
 Connectable.prototype.addAttribute = function (attribute) {
     attribute.setOwner(this.getId());
 
+    // Check that the name does not exist already
+    var currentName = attribute.getName();
+    attribute.setName(currentName);
+
     this.attributes.push(attribute.getId());
 
-    if (this.children) {
+    if (this.children.length > 0) {
         for (var i = 0; i < this.children.length; i++) {
             var ia = new InheritedAttribute(attribute.getId());
 
@@ -384,7 +542,7 @@ Connectable.prototype.addAttribute = function (attribute) {
 Connectable.prototype.addInheritedAttribute = function (attribute) {
     this.attributes.push(attribute.getId());
 
-    if (this.children) {
+    if (this.children.length > 0) {
         for (var i = 0; i < this.children.length; i++) {
             var ia = new InheritedAttribute(attribute.getParentId());
 
@@ -396,6 +554,12 @@ Connectable.prototype.addInheritedAttribute = function (attribute) {
 Connectable.prototype.removeInheritedAttribute = function (parentAttribute) {
     var i, attribute;
 
+    if (this.children.length > 0) {
+        for (i = 0; i < this.children.length; i++) {
+            Connectable.prototype.connectables[this.children[i]].removeInheritedAttribute(parentAttribute);
+        }
+    }
+
     for (i = 0; i < this.attributes.length; i++) {
         attribute = Attribute.prototype.attributes[this.attributes[i]];
 
@@ -406,22 +570,12 @@ Connectable.prototype.removeInheritedAttribute = function (parentAttribute) {
             break;
         }
     }
-
-
-
-    //this.attributes.remove(parentAttribute.getId());
-
-    if (this.children) {
-        for (i = 0; i < this.children.length; i++) {
-            Connectable.prototype.connectables[this.children[i]].removeInheritedAttribute(parentAttribute);
-        }
-    }
 };
 
 Connectable.prototype.deleteAttribute = function (attributeId) {
     this.attributes.remove(attributeId);
 
-    if (this.children) {
+    if (this.children.length > 0) {
         for (var i = 0; i < this.children.length; i++)
             Connectable.prototype.connectables[this.children[i]].deleteInheritedAttribute(attributeId);
     }
@@ -429,17 +583,21 @@ Connectable.prototype.deleteAttribute = function (attributeId) {
 
 Connectable.prototype.deleteInheritedAttribute = function (attributeId) {
     var attributeToRemove = null;
+    var i;
 
-    for (var i = 0; i < this.getNumberAttributes(); i++)
-        if (this.getAttribute(i) instanceof InheritedAttribute && this.getAttribute(i).getParentId() == attributeId)
+    for (i = 0; i < this.getNumberAttributes(); i++) {
+        if (this.getAttribute(i) instanceof InheritedAttribute && this.getAttribute(i).getParentId() == attributeId) {
             attributeToRemove = this.getAttribute(i).getId();
+        }
+    }
 
     if (attributeToRemove != null) {
         this.attributes.remove(attributeToRemove);
 
-        if (this.children) {
-            for (var i = 0; i < this.children.length; i++)
+        if (this.children.length > 0) {
+            for (i = 0; i < this.children.length; i++) {
                 Connectable.prototype.connectables[this.children[i]].deleteInheritedAttribute(attributeId);
+            }
         }
 
         this.reDrawLinks();
@@ -462,4 +620,32 @@ Connectable.prototype.getNumberLinks = function () {
 
 Connectable.prototype.getLink = function (i) {
     return Link.prototype.links[this.links[i]];
+};
+
+Connectable.prototype.getFullyQualifiedName = function () {
+    if (this.getModule() === '') {
+        return this.getName();
+    } else {
+        return Container.prototype.containers[this.getModule()].getFullyQualifiedName() + '\\' + this.getName();
+    }
+};
+
+Connectable.prototype.getFolder = function () {
+    if (this.getModule() === '') {
+        return '';
+    } else {
+        return Container.prototype.containers[this.getModule()].getFullyQualifiedName();
+    }
+};
+
+Connectable.prototype.addDependantAttribute = function (attribute) {
+    this.dependantAttributes.push(attribute);
+
+    return this;
+};
+
+Connectable.prototype.removeDependantAttribute = function (attribute) {
+    this.dependantAttributes.remove(attribute);
+
+    return this;
 };

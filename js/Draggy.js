@@ -1,13 +1,14 @@
 function Draggy () { }
 
 Draggy.prototype.issuedIds = [];
+Draggy.prototype.language = null;
+Draggy.prototype.description = null;
+Draggy.prototype.orm = null;
+Draggy.prototype.framework = null;
+
 
 Draggy.prototype.addClass = function (name,container) {
     new Class(name,container);
-};
-
-Draggy.prototype.addAbstract = function (name, container) {
-    new Abstract(name,container);
 };
 
 Draggy.prototype.removeConnectable = function (connectableId) {
@@ -40,21 +41,56 @@ Draggy.prototype.getModelXML = function () {
     ret += '<\?xml version="1.0" encoding="UTF-8" ?>\n';
     ret += '<draggy>\n';
 
-    for (i in Container.prototype.containers)
-        ret += '\t' + Container.prototype.containers[i].toXML();
+    ret += '\t<project>\n';
+    ret += '\t\t<language>' + Draggy.prototype.getLanguage() + '</language>\n';
+    ret += '\t\t<description>' + Draggy.prototype.getDescription() + '</description>\n';
+
+    if (Draggy.prototype.getORM() !== '' && Draggy.prototype.getORM() !== undefined) {
+        ret += '\t\t<orm>' + Draggy.prototype.getORM() + '</orm>\n';
+    } else {
+        ret += '\t\t<orm/>\n';
+    }
+
+    if (Draggy.prototype.getFramework() !== '' && Draggy.prototype.getFramework() !== undefined) {
+        ret += '\t\t<framework>' + Draggy.prototype.getFramework() + '</framework>\n';
+    } else {
+        ret += '\t\t<framework/>\n';
+    }
+
+
+    ret += '\t</project>\n';
+
+    for (i = 0; i < Container.prototype.containerList.length; i++) {
+        ret += '\t' + Container.prototype.containerList[i].toXML();
+    }
 
     ret += '\t<loose>\n';
-    for (i in Class.prototype.classes)
-        if (Class.prototype.classes[i].getModule() == '')
-            ret += '\t\t' + Class.prototype.classes[i].toXML();
-    for (i in Abstract.prototype.abstracts)
-        if (Abstract.prototype.abstracts[i].getModule() == '')
-            ret += '\t\t' + Abstract.prototype.abstracts[i].toXML();
+    for (i = 0; i < Class.prototype.classList.length; i++) {
+        if (Class.prototype.classList[i].getModule() == '') {
+            ret += '\t\t' + Class.prototype.classList[i].toXML();
+        }
+    }
+    for (i = 0; i < Abstract.prototype.abstractList.length; i++) {
+        if (Abstract.prototype.abstractList[i].getModule() == '') {
+            ret += '\t\t' + Abstract.prototype.abstractList[i].toXML();
+        }
+    }
+    for (i = 0; i < Interface.prototype.interfaceList.length; i++) {
+        if (Interface.prototype.interfaceList[i].getModule() == '') {
+            ret += '\t\t' + Interface.prototype.interfaceList[i].toXML();
+        }
+    }
+    for (i = 0; i < Trait.prototype.traitList.length; i++) {
+        if (Trait.prototype.traitList[i].getModule() == '') {
+            ret += '\t\t' + Trait.prototype.traitList[i].toXML();
+        }
+    }
     ret += '\t</loose>\n';
 
     ret += '\t<relationships>\n';
-    for (i in Link.prototype.links)
-        ret += '\t\t' + Link.prototype.links[i].toXML();
+    for (i = 0; i < Link.prototype.linkList.length; i++) {
+        ret += '\t\t' + Link.prototype.linkList[i].toXML();
+    }
     ret += '\t</relationships>\n';
 
     /*
@@ -84,14 +120,6 @@ Draggy.prototype.getUniqueId = function (desiredId) {
     return desiredId + number;
 };
 
-Draggy.prototype.addModule = function (name) {
-    var c = new Container(name);
-};
-
-Draggy.prototype.removeModule = function (name) {
-    Container.prototype.containers[name].remove();
-};
-
 Draggy.prototype.addLink = function (from, to, type, fromAttributeName, toAttributeName) {
     new Link(from, to, type, fromAttributeName, toAttributeName);
 };
@@ -99,3 +127,94 @@ Draggy.prototype.addLink = function (from, to, type, fromAttributeName, toAttrib
 Draggy.prototype.removeLink = function (linkId) {
     Link.prototype.links[linkId].remove();
 };
+
+Draggy.prototype.setLanguage = function (language) {
+    Draggy.prototype.language = language;
+
+    Draggy.prototype.options = Draggy.prototype.allOptions[language];
+
+    return this;
+};
+
+Draggy.prototype.getLanguage = function () {
+    return Draggy.prototype.language;
+};
+
+Draggy.prototype.setDescription = function (description) {
+    if (description !== '' && description !== null) {
+        Draggy.prototype.description = description;
+    } else {
+        Draggy.prototype.description = null;
+    }
+
+    return this;
+};
+
+Draggy.prototype.getDescription = function () {
+    return Draggy.prototype.description;
+};
+
+
+Draggy.prototype.getORM = function () {
+    return Draggy.prototype.orm;
+};
+
+Draggy.prototype.setORM = function (orm) {
+    Draggy.prototype.orm = orm;
+
+    for (var i in Draggy.prototype.allORMOptions[orm]) {
+        Draggy.prototype.options[i] = Draggy.prototype.allORMOptions[orm][i];
+    }
+
+    return this;
+};
+
+Draggy.prototype.getFramework = function () {
+    return Draggy.prototype.framework;
+};
+
+Draggy.prototype.setFramework = function (framework) {
+    Draggy.prototype.framework = framework;
+
+    return this;
+};
+
+Draggy.prototype.allOptions = {
+    'PHP': {
+        classes: true,
+        abstracts: true,
+        interfaces: true,
+        traits: true
+    },
+    'JS':  {
+        classes: true,
+        abstracts: true,
+        interfaces: false,
+        traits: false
+    }
+};
+
+Draggy.prototype.allORMOptions = {
+    '': {
+        oneToOne: true,
+        oneToMany: true,
+        manyToOne: true,
+        manyToMany: true,
+        inheritance: true,
+        linkClasses: true
+    },
+    'Doctrine2': {
+        oneToOne: true,
+        oneToMany: true,
+        manyToOne: false,
+        manyToMany: false,
+        inheritance: true,
+        linkClasses: false
+    }
+};
+
+// Defaults (static)
+Draggy.prototype.setLanguage('PHP');
+Draggy.prototype.description = null;
+Draggy.prototype.setORM('');
+Draggy.prototype.setFramework('Symfony2');

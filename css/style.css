@@ -3,12 +3,37 @@
     font-size: inherit;
 }
 
+html, body {
+    min-height: 100%;
+    min-width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    xbackground-color: red;
+}
+
+html {
+    xbackground-color: black;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
 
 /* Draggy */
 .connectable {
     float: left;
-    padding: 5px;
-    padding-bottom: 15px;
+    padding: 5px 5px 15px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
 }
 
 .connectable .name {
@@ -57,13 +82,14 @@
     cursor: move;
     background: #ccb866;
     float: left;
-    left: 0px;
-    top: 0px;
+    left: 0;
+    top: 0;
     position: absolute;
-    padding: 0px 3px;
+    padding: 0 3px;
     border-right: 1px solid #d0ce7d;
     border-bottom: 1px solid #d0ce7d;
     z-index: 2;
+    border-bottom-right-radius: 5px;
 }
 
 .container .controls {
@@ -72,7 +98,7 @@
     bottom: 0;
 }
 
-.container .connectable {
+.container .connectable, .connectable {
     z-index: 20;
 }
 
@@ -98,55 +124,90 @@
     overflow-x: hidden;
 }
 
+div.draggy-dialog {
+    display: none;
+}
+
 #link-item-dialog table {
     width: 100%;
 }
 
 /* Footer menu */
-#footer {
-    bottom: 0;
+#menu {
+    top: 0;
     left: 0;
     width: 100%;
+    height: 20px;
     position: fixed;
     z-index: 100;
+    background-color: #000;
+    color: #FFF;
+    padding: 1px 3px;
 }
 
-.icon-primary-null              { width: 10px; height: 10px; background-position: 0 0;         position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-primary-not-null          { width: 10px; height: 10px; background-position: -11px 0;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-field-null                { width: 10px; height: 10px; background-position: 0 -11px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-field-not-null            { width: 10px; height: 10px; background-position: -11px -11px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-foreign-null              { width: 10px; height: 10px; background-position: 0 -22px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-foreign-not-null          { width: 10px; height: 10px; background-position: -11px -22px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-primary-foreign-null      { width: 10px; height: 10px; background-position: 0 -33px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
-.icon-primary-foreign-not-null  { width: 10px; height: 10px; background-position: -11px -33px; position: relative; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png); float: left; margin-right: 4px; margin-top: 3px; }
+#menu span {
+    cursor: pointer;
+}
 
-.icon-inheritance-top    { width: 9px;  height: 14px; background-position: -22px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-top            { width: 9px;  height: 14px; background-position: -37px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-null-top       { width: 11px; height: 14px; background-position: -52px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-top           { width: 11px; height: 14px; background-position: -67px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-null-top      { width: 11px; height: 14px; background-position: -82px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-none-top           { width: 11px; height: 14px; background-position: -97px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+#draggy-area {
+    top: 20px;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    clear: left;
+    xbackground-color: #35ccb4;
+}
 
-.icon-inheritance-bottom { width: 9px;  height: 14px; background-position: -22px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-bottom         { width: 9px;  height: 14px; background-position: -37px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-null-bottom    { width: 11px; height: 14px; background-position: -52px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-bottom        { width: 11px; height: 14px; background-position: -67px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-null-bottom   { width: 11px; height: 14px; background-position: -82px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-none-bottom        { width: 11px; height: 14px; background-position: -97px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.droppable-hover, #draggy-area.droppable-hover {
+    border: 1px solid red;
+    background-color: #ffdb8c;
+}
 
-.icon-inheritance-left   { width: 14px; height: 9px;  background-position: -22px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-left           { width: 14px; height: 9px;  background-position: -37px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-null-left      { width: 14px; height: 11px; background-position: -52px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-left          { width: 14px; height: 11px; background-position: -67px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-null-left     { width: 14px; height: 11px; background-position: -82px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-none-left          { width: 14px; height: 11px; background-position: -97px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+#contextual-menu-overlay {
+    top: 20px;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    clear: left;
+    xbackground-color: rgba(204, 178, 142, 0.52);
+}
 
-.icon-inheritance-right  { width: 14px; height: 9px;  background-position: -22px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-right          { width: 14px; height: 9px;  background-position: -37px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-one-null-right     { width: 14px; height: 11px; background-position: -52px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-right         { width: 14px; height: 11px; background-position: -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-many-null-right    { width: 14px; height: 11px; background-position: -82px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
-.icon-none-right         { width: 14px; height: 11px; background-position: -97px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat;  background-image: url(er_icons.png);  }
+.icon-primary-null              { width: 10px; height: 10px; background: url('er_icons.png') no-repeat 0 0;         position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-primary-not-null          { width: 10px; height: 10px; background: url('er_icons.png') no-repeat -11px 0;     position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-field-null                { width: 10px; height: 10px; background: url('er_icons.png') no-repeat 0 -11px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-field-not-null            { width: 10px; height: 10px; background: url('er_icons.png') no-repeat -11px -11px; position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-foreign-null              { width: 10px; height: 10px; background: url('er_icons.png') no-repeat 0 -22px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-foreign-not-null          { width: 10px; height: 10px; background: url('er_icons.png') no-repeat -11px -22px; position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-primary-foreign-null      { width: 10px; height: 10px; background: url('er_icons.png') no-repeat 0 -33px;     position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+.icon-primary-foreign-not-null  { width: 10px; height: 10px; background: url('er_icons.png') no-repeat -11px -33px; position: relative; display: block; text-indent: -99999px; overflow: hidden; float: left; margin-right: 4px; margin-top: 3px; }
+
+.icon-inheritance-top    { width: 9px;  height: 14px; background: url('er_icons.png') no-repeat -22px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-top            { width: 9px;  height: 14px; background: url('er_icons.png') no-repeat -37px -15px; bottom: 0; left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-null-top       { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -52px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-top           { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -67px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-null-top      { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -82px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-none-top           { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -97px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+
+.icon-inheritance-bottom { width: 9px;  height: 14px; background: url('er_icons.png') no-repeat -22px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-bottom         { width: 9px;  height: 14px; background: url('er_icons.png') no-repeat -37px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-null-bottom    { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -52px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-bottom        { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -67px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-null-bottom   { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -82px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-none-bottom        { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -97px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+
+.icon-inheritance-left   { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -22px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-left           { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -37px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-null-left      { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -52px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-left          { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -67px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-null-left     { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -82px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-none-left          { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -97px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+
+.icon-inheritance-right  { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -22px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-right          { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -37px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-one-null-right     { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -52px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-right         { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-many-null-right    { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -82px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-none-right         { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -97px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 
 div.connector {
     z-index: 1;
@@ -329,3 +390,35 @@ div.cornerBottomLeft div.rightConnectorMarker {
 div.brokenLink {
     border: 0;
 }
+
+/* Context menu icons */
+/*.context-menu-item.icon-class::before { width: 16px;  height: 16px; background: url('icons.png') no-repeat 0 0;     top: 0;    left: 0; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }*/
+.context-menu-list {
+    font-size: 12px;
+}
+
+.context-menu-item.icon {
+    padding: 4px 2px 0 24px;
+}
+
+.context-menu-item.icon-class:before,
+.context-menu-item.icon-abstract:before,
+.context-menu-item.icon-interface:before,
+.context-menu-item.icon-trait:before,
+.context-menu-item.icon-module:before,
+.context-menu-item.icon-edit:before
+{
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: url('icons.png') 0 0 no-repeat;
+    float: left;
+    margin: 0 0 0 -22px;
+}
+
+.context-menu-item.icon-class:before        { background-position: 0 0;         }
+.context-menu-item.icon-abstract:before     { background-position: 0 -16px;     }
+.context-menu-item.icon-interface:before    { background-position: 0 -32px;     }
+.context-menu-item.icon-trait:before        { background-position: 0 -48px;     }
+.context-menu-item.icon-module:before       { background-position: -16px 0;     }
+.context-menu-item.icon-edit:before         { background-position: -16px -16px; }

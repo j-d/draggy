@@ -6,6 +6,7 @@ function ScreenItem () {
 
 ScreenItem.prototype.innitScreenItem = function (desiredId) {
     this.innitItem(desiredId);
+    this.drawn = false;
 };
 
 ScreenItem.prototype.destroyScreenItem = function () {
@@ -15,49 +16,67 @@ ScreenItem.prototype.destroyScreenItem = function () {
 };
 
 ScreenItem.prototype.moveTo = function(x,y) {
-    $(this.hashId).css('left',x);
-    $(this.hashId).css('top',y);
+    $(this.hashId).css({'left': x, 'top': y});
+
+    return this;
 };
 
-ScreenItem.prototype.move = function(x,y) {
-    $(this.hashId).css('left',(parseInt($(this.hashId).css('left')) + x) + 'px');
-    $(this.hashId).css('top',(parseInt($(this.hashId).css('top')) + y) + 'px');
-};
-
-ScreenItem.prototype.getValidName = function (category, name) {
+ScreenItem.prototype.getValidName = function (category, desiredName, folder) {
     var valid = true;
     var i;
     var arrayItems;
+    var fullyQualifiedDesiredName;
+
+    if (folder === '') {
+        fullyQualifiedDesiredName = desiredName;
+    } else {
+        fullyQualifiedDesiredName = folder + '\\' + desiredName;
+    }
 
     if (category == 'Connectable') {
-        arrayItems = Connectable.prototype.connectables
-    }
-    else if (category == 'Container') {
-        arrayItems = Container.prototype.containers;
+        arrayItems = Connectable.prototype.connectableList;
+    } else if (category == 'Container') {
+        arrayItems = Container.prototype.containerList;
     }
 
-    for (i in arrayItems)
-        if (arrayItems[i].getName() == name) {
+    for (i = 0; i < arrayItems.length; i++) {
+        if (arrayItems[i].getId() !== this.getId() && arrayItems[i].getFullyQualifiedName() === fullyQualifiedDesiredName) {
             valid = false;
             break;
         }
+    }
 
-    if (valid)
-        return name;
+    if (valid) {
+        return desiredName;
+    }
 
     var number = 1;
 
     while (!valid) {
         valid = true;
 
-        for (i in arrayItems)
-            if (arrayItems[i].getName() == name + number) {
+        for (i = 0; i < arrayItems.length; i++) {
+            if (arrayItems[i].getId() !== this.getId() && arrayItems[i].getFullyQualifiedName() === fullyQualifiedDesiredName + number) {
                 valid = false
             }
+        }
 
-        if (valid)
-            return name + number;
+        if (valid) {
+            return desiredName + number;
+        }
 
         number++;
     }
+
+    return null;
+};
+
+ScreenItem.prototype.getDrawn = function() {
+    return this.drawn;
+};
+
+ScreenItem.prototype.setDrawn = function(drawn) {
+    this.drawn = drawn;
+
+    return this;
 };

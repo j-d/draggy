@@ -23,13 +23,9 @@ Item.prototype.getHashId = function () {
     return this.hashId;
 };
 
-Item.prototype.getNameFromId = function(id) {
-    return Item.prototype.items[id].getName();
-}
-
 Item.prototype.setName = function (name) {
     this.name = name;
-}
+};
 
 Item.prototype.getName = function () {
     return this.name;

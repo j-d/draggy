@@ -1,0 +1,58 @@
+<div id="link-item-dialog" class="draggy-dialog" title="Link class">
+	<table border="2">
+		<tr>
+			<td>
+				<label for="link-item-source-class">Source:</label>
+			</td>
+			<td class="center">
+				<label for="link-item-type">Relation:</label>
+			</td>
+			<td class="right">
+				<label for="link-item-destination-class">Destination:</label>
+			</td>
+		</tr>
+		<tr>
+            <td>
+                <input id="link-item-source-class" type="text" name="class" class="text ui-widget-content ui-corner-all" disabled="disabled"/>
+                <div class="attribute-selector">
+                    <label for="link-item-source">Source attribute:</label>
+                    <select id="link-item-source" name="sourceAttribute" class="text ui-widget-content ui-corner-all"></select>
+                </div>
+			</td>
+            <td rowspan="2" class="center">
+                <select id="link-item-type" name="type" class="text ui-widget-content ui-corner-all">
+                </select>
+            </td>
+            <td class="right">
+                <select id="link-item-destination-class" name="destinationItem" class="text ui-widget-content ui-corner-all"></select>
+                <div class="attribute-selector">
+                    <label for="link-item-destination">Destination attribute:</label>
+                    <select id="link-item-destination" name="destinationAttribute" class="text ui-widget-content ui-corner-all"></select>
+                </div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<script>
+	$(function() {
+        $("#link-item-dialog").dialog({
+	        autoOpen: false,
+            //height: 300,
+            width: 650,
+            modal: true,
+	        buttons: {
+                'Link': function() {
+                    LinkClassDialog.prototype.createLink();
+
+                    $( this ).dialog("close");
+                },
+                Cancel: function() {
+                    $( this ).dialog("close");
+                }
+            }
+        });
+
+		LinkClassDialog.prototype.innit();
+    });
+</script>

@@ -2,6 +2,26 @@ Link.prototype = new ScreenItem();           // Inheritance
 Link.prototype.constructor = Link;
 
 Link.prototype.links = {};      // Static associative array
+Link.prototype.linkList = [];
+
+//Link.prototype.mode = 'JSPLUMB';
+Link.prototype.mode = 'JS';
+
+Link.prototype.suffixes = [
+    '-top',
+    '-right',
+    '-bottom',
+    '-left'
+];
+
+Link.prototype.iconNames = {
+    inheritance:    'icon-inheritance',
+    one:            'icon-one',
+    oneNull:        'icon-one-null',
+    many:           'icon-many',
+    manyNull:       'icon-many-null',
+    null:           'icon-none'
+};
 
 function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.innitScreenItem('Link');
@@ -20,55 +40,48 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.forceRender = false;
     this.broken = false;
 
-    if (type != 'Inheritance') {
-        this.fromAttribute = Connectable.prototype.connectables[this.from].getAttributeFromName(fromAttributeName);
-        this.toAttribute = Connectable.prototype.connectables[this.to].getAttributeFromName(toAttributeName);
+    if (type !== 'Inheritance') {
+        if (!Draggy.prototype.options.linkClasses) {
+            this.fromAttribute = Connectable.prototype.connectables[this.from].getAttributeFromName(fromAttributeName);
+            var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
 
-        var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
+            if (fromAttribute instanceof InheritedAttribute) {
+                fromAttribute.getParent().links.push(this.getId());
+            } else {
+                fromAttribute.links.push(this.getId());
+            }
+        }
+
+        this.toAttribute = Connectable.prototype.connectables[this.to].getAttributeFromName(toAttributeName);
         var toAttribute = Attribute.prototype.attributes[this.toAttribute];
 
-        if (fromAttribute instanceof InheritedAttribute)
-            fromAttribute.getParent().links.push(this.getId());
-        else
-            fromAttribute.links.push(this.getId());
-
-        if (toAttribute instanceof InheritedAttribute)
+        if (toAttribute instanceof InheritedAttribute) {
             toAttribute.getParent().links.push(this.getId());
-        else
+        } else {
             toAttribute.links.push(this.getId());
+        }
     }
     else {
         Item.prototype.items[this.from].setInheritingFrom(this.to);
 
-        if (System.prototype.runtime)
+        if (System.prototype.runtime) {
             Item.prototype.items[this.from].inheritAttributes();
+        }
 
         Item.prototype.items[this.from].reDraw();
     }
 
-    this.adjustConnectors();
+    if (Link.prototype.mode !== 'JSPLUMB') {
+        this.adjustConnectors();
+    }
 
     Link.prototype.links[this.id] = this;
+    Link.prototype.linkList.push(this);
 
-    if (System.prototype.runtime && Connectable.prototype.connectables[this.from].getModule() != Connectable.prototype.connectables[this.to].getModule())
+    if (System.prototype.runtime && Connectable.prototype.connectables[this.from].getModule() != Connectable.prototype.connectables[this.to].getModule()) {
         this.broken = true;
+    }
 }
-
-Link.prototype.suffixes = [
-    '-top',
-    '-right',
-    '-bottom',
-    '-left'
-];
-
-Link.prototype.iconNames = {
-    inheritance:    'icon-inheritance',
-    one:            'icon-one',
-    oneNull:        'icon-one-null',
-    many:           'icon-many',
-    manyNull:       'icon-many-null',
-    null:           'icon-none'
-};
 
 Link.prototype.getId = function () {
     return this.id;
@@ -99,45 +112,58 @@ Link.prototype.toXML = function () {
 
     if (this.getType() == 'Inheritance') {
         ret += '<relation ' +
-            'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
-            'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
+            'from="' + Item.prototype.items[this.getFrom()].getFullyQualifiedName() + '" ' +
+            'to="' + Item.prototype.items[this.getTo()].getFullyQualifiedName() + '" ' +
             'type="' + this.getType() + '"' +
             ( this.getBroken() ? ' broken="' + this.getBroken() + '"' : '') +
             ' />' + '\n';
     }
     else {
-        ret += '<relation ' +
-            'from="' + Item.prototype.getNameFromId(this.getFrom()) + '" ' +
-            'to="' + Item.prototype.getNameFromId(this.getTo()) + '" ' +
-            'type="' + this.getType() + '" ' +
-            ( this.getBroken() ? 'broken="' + this.getBroken() + '" ' : '') +
-            'fromAttribute="' + Attribute.prototype.attributes[this.fromAttribute].getName() + '" ' +
-            'toAttribute="' + Attribute.prototype.attributes[this.toAttribute].getName() + '" />' + '\n';
-    }
+        ret += '<relation ';
+        ret += 'from="' + Item.prototype.items[this.getFrom()].getFullyQualifiedName() + '" ';
 
-    //ret += '</relation>';
+        if (!Draggy.prototype.options.linkClasses) {
+            ret += 'fromAttribute="' + Attribute.prototype.attributes[this.fromAttribute].getName() + '" ';
+        }
+
+        ret += 'to="' + Item.prototype.items[this.getTo()].getFullyQualifiedName() + '" ';
+        ret += 'toAttribute="' + Attribute.prototype.attributes[this.toAttribute].getName() + '" ';
+        ret += 'type="' + this.getType() + '" ';
+
+        if (this.getBroken()) {
+            ret += 'broken="' + this.getBroken() + '" ';
+        }
+
+        ret += '/>' + '\n';
+    }
 
     return ret;
 };
 
 Link.prototype.reDrawLinks = function () {
-    for (var i in Link.prototype.links)
-        if (Link.prototype.links[i].needsRedraw)
-            Link.prototype.links[i].reDraw();
+    for (var i = 0; i < Link.prototype.linkList.length; i++) {
+        if (Link.prototype.linkList[i].needsRedraw) {
+            Link.prototype.linkList[i].reDraw();
+        }
+    }
 };
 
 Link.prototype.reDraw = function () {
-    this.calculateDistance();
+    if (Link.prototype.mode !== 'JSPLUMB') {
+        this.calculateDistance();
 
-    Item.prototype.items[this.from].removeConnector(this.id);
-    Item.prototype.items[this.to].removeConnector(this.id);
+        Item.prototype.items[this.from].removeConnector(this.id);
+        Item.prototype.items[this.to].removeConnector(this.id);
 
-    Item.prototype.items[this.from].addConnector(this.fromConnector,this.id);
-    Item.prototype.items[this.to].addConnector(this.toConnector,this.id);
+        Item.prototype.items[this.from].addConnector(this.fromConnector,this.id);
+        Item.prototype.items[this.to].addConnector(this.toConnector,this.id);
 
-    this.adjustConnectors();
+        this.adjustConnectors();
 
-    this.reLocate();
+        this.reLocate();
+    }
+
+    this.draw();
 
     this.needsRedraw = false;
 };
@@ -145,8 +171,6 @@ Link.prototype.reDraw = function () {
 Link.prototype.reLocate = function () {
     Item.prototype.items[this.from].assignPositions(this.fromConnector);
     Item.prototype.items[this.to].assignPositions(this.toConnector);
-
-    this.draw();
 };
 
 Link.prototype.calculateDistance = function () {
@@ -233,176 +257,6 @@ Link.prototype.calculateDistance = function () {
     }
 };
 
-Link.prototype.draw = function () {
-    var fromX = Item.prototype.items[this.from].getLinkX(this.id,this.fromConnector);
-    var fromY = Item.prototype.items[this.from].getLinkY(this.id,this.fromConnector);
-    var toX = Item.prototype.items[this.to].getLinkX(this.id,this.toConnector);
-    var toY = Item.prototype.items[this.to].getLinkY(this.id,this.toConnector);
-
-    var width = Math.abs(toX - fromX);
-    var left = Math.min(fromX, toX);
-    var height = Math.abs(toY - fromY);
-    var top = Math.min(fromY, toY);
-
-
-    var shape = this.fromConnector * 10 + this.toConnector + (fromX < toX ? 'x0' : 'x1') + (fromY < toY ?  'y0' : 'y1');
-
-    if (!this.forceRender && shape == this.shape) { // Only needs to be resized
-        $(this.hashId).css('top',top).css('left',left).css('width',width).css('height',height);
-        return;
-    }
-
-    this.forceRender = false;
-
-    $(this.hashId).remove();
-
-    this.shape = shape;
-
-    // Connector types
-    // 0 = Top
-    // 1 = Right
-    // 2 = Bottom
-    // 3 = Left
-
-    var fromConnector = this.fromConnector;
-    var toConnector = this.toConnector;
-
-    var firstItem;
-    var secondItem;
-    var firstType;
-    var secondType;
-
-    var fromType = Link.prototype.iconNames[this.fromType] + Link.prototype.suffixes[fromConnector];
-    var toType = Link.prototype.iconNames[this.toType] + Link.prototype.suffixes[toConnector];
-
-    var div = '';
-
-    div += '<div id="' + this.id + '" class="connector" style="width: ' + width + 'px; height: ' + height + 'px; left: ' + left + 'px; top: ' + top + 'px;">';
-
-    if ( ( fromConnector == 1 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 1 ) ) { // Case ¯¯|__ or __|¯¯
-        if (fromY < toY ^ fromConnector == 3 ) { // Case ¯¯|__
-            firstItem =  'horizontalTopFrom' + (this.getBroken() ? ' brokenLink' : '');
-            secondItem = 'horizontalBottomTo' + (this.getBroken() ? ' brokenLink' : '');
-        }
-        else { // Case __|¯¯
-            firstItem =  'horizontalBottomFrom' + (this.getBroken() ? ' brokenLink' : '');
-            secondItem = 'horizontalTopTo' + (this.getBroken() ? ' brokenLink' : '');
-        }
-
-        if (fromConnector == 3) {
-            firstType = toType;
-            secondType = fromType;
-        }
-        else {
-            firstType = fromType;
-            secondType = toType;
-        }
-
-        div +=  '<div class="' + firstItem + '">' +
-                    '<div class="connectorMarker">' +
-                        '<span class="' + firstType + '"></span>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="' + secondItem + '">' +
-                    '<div class="connectorMarker">' +
-                        '<span class="' + secondType + '"></span>' +
-                    '</div>' +
-                '</div>';
-    }
-    else if ( ( fromConnector == 0 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 0 ) ) { // Case '-, or ,-'
-        if ( fromX < toX ^ fromConnector == 2 ) { // Case ,-'
-            firstItem = 'verticalTopRight' + (this.getBroken() ? ' brokenLink' : '');
-            secondItem = 'verticalBottomLeft' + (this.getBroken() ? ' brokenLink' : '');
-        }
-        else { // Case '-,
-            firstItem = 'verticalTopLeft' + (this.getBroken() ? ' brokenLink' : '');
-            secondItem = 'verticalBottomRight' + (this.getBroken() ? ' brokenLink' : '');
-        }
-
-        if (fromConnector == 0) {
-            firstType = toType;
-            secondType = fromType;
-        }
-        else {
-            firstType = fromType;
-            secondType = toType;
-        }
-
-        div +=  '<div class="' + firstItem + '">' +
-                    '<div class="connectorMarker">' +
-                        '<span class="' + firstType + '"></span>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="' + secondItem + '">' +
-                    '<div class="connectorMarker">' +
-                        '<span class="' + secondType + '"></span>' +
-                    '</div>' +
-                '</div>';
-    } else { // Corner
-        if ( ( fromConnector == 1 && toConnector == 0 ) || ( fromConnector == 0 && toConnector == 1 ) ) { // Case ¯¯|
-            firstItem = 'cornerTopRight' + (this.getBroken() ? ' brokenLink' : '');
-
-            if (fromConnector == 0) {
-                firstType = toType;
-                secondType = fromType;
-            }
-            else {
-                firstType = fromType;
-                secondType = toType;
-            }
-        }
-        else if ( ( fromConnector == 1 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 1 ) ) { // Case _|
-            firstItem = 'cornerBottomRight' + (this.getBroken() ? ' brokenLink' : '');
-
-            if (fromConnector == 2) {
-                firstType = toType;
-                secondType = fromType;
-            }
-            else {
-                firstType = fromType;
-                secondType = toType;
-            }
-        }
-        else if ( ( fromConnector == 0 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 0 ) ) { // Case |¯¯
-            firstItem = 'cornerTopLeft' + (this.getBroken() ? ' brokenLink' : '');
-
-            if (fromConnector == 0) {
-                firstType = toType;
-                secondType = fromType;
-            }
-            else {
-                firstType = fromType;
-                secondType = toType;
-            }
-        }
-        else if ( ( fromConnector == 2 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 2 ) ) { // Case |_
-            firstItem = 'cornerBottomLeft' + (this.getBroken() ? ' brokenLink' : '');
-
-            if (fromConnector == 2) {
-                firstType = toType;
-                secondType = fromType;
-            }
-            else {
-                firstType = fromType;
-                secondType = toType;
-            }
-        }
-
-        div +=  '<div class="' + firstItem + '">' +
-                    '<div class="leftConnectorMarker">' +
-                        '<span class="' + firstType + '"></span>' +
-                    '</div>' +
-                    '<div class="rightConnectorMarker">' +
-                        '<span class="' + secondType + '"></span>' +
-                    '</div>' +
-                '</div>';
-    }
-
-    div += '</div>';
-
-    $(div).appendTo('body');
-};
-
 Link.prototype.adjustConnectors = function () {
     var newFrom;
     var newTo;
@@ -413,11 +267,21 @@ Link.prototype.adjustConnectors = function () {
             newTo = 'inheritance';
             break;
         case 'OneToOne':
-            newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
+            if (!Draggy.prototype.options.linkClasses) {
+                newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
+            } else {
+                newFrom = 'one';
+            }
+
             newTo = Attribute.prototype.attributes[this.toAttribute].getNull() ? 'oneNull' : 'one';
             break;
         case 'OneToMany':
-            newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
+            if (!Draggy.prototype.options.linkClasses) {
+                newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
+            } else {
+                newFrom = 'one';
+            }
+
             newTo = Attribute.prototype.attributes[this.toAttribute].getNull() ? 'manyNull' : 'many';
             break;
         default:
@@ -449,14 +313,17 @@ Link.prototype.remove = function () {
     Item.prototype.items[this.from].removeConnector(this.id);
     Item.prototype.items[this.to].removeConnector(this.id);
 
-    if (this.type != 'Inheritance') {
-        var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
-        var toAttribute = Attribute.prototype.attributes[this.toAttribute];
+    if (this.type !== 'Inheritance') {
+        if (!Draggy.prototype.options.linkClasses) {
+            var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
 
-        if (fromAttribute instanceof InheritedAttribute)
-            fromAttribute.getParent().links.remove(this.getId());
-        else
-            fromAttribute.links.remove(this.getId());
+            if (fromAttribute instanceof InheritedAttribute)
+                fromAttribute.getParent().links.remove(this.getId());
+            else
+                fromAttribute.links.remove(this.getId());
+        }
+
+        var toAttribute = Attribute.prototype.attributes[this.toAttribute];
 
         if (toAttribute instanceof InheritedAttribute)
             toAttribute.getParent().links.remove(this.getId());
@@ -465,7 +332,7 @@ Link.prototype.remove = function () {
 
         toAttribute.setForeign(false);
     }
-    else {
+    else { // Type === Inheritance
         Item.prototype.items[this.from].unInheritAttributes();
 
         Item.prototype.items[this.from].setInheritingFrom(null);
@@ -476,15 +343,236 @@ Link.prototype.remove = function () {
     Item.prototype.items[this.from].removeConnector(this.id);
     Item.prototype.items[this.to].removeConnector(this.id);
 
-    for (var i in Link.prototype.links)
-        if (Link.prototype.links[i].getId() == this.id) {
-            delete Link.prototype.links[i];
-            break;
-        }
-
     delete Link.prototype.links[this.id];
+    Link.prototype.linkList.remove(this);
 
     Connectable.prototype.connectables[this.to].reDraw();
 
     this.destroyScreenItem();
+};
+
+Link.prototype.reDrawConnectableLinks = function (connectable) {
+    if (Link.prototype.mode === 'JSPLUMB') {
+        jsPlumb.repaint(connectable.getId());
+    } else {
+        connectable.calculateMiddlePoints();
+        connectable.markLinksToBeRedrawn();
+        Link.prototype.reDrawLinks();
+    }
+};
+
+Link.prototype.draw = function () {
+    if (Link.prototype.mode === 'JSPLUMB') {
+        if (!System.prototype.runtime) {
+            //jsPlumb.draggable(jsPlumb.getSelector(".connectable"));
+
+            jsPlumb.connect({
+                source: this.from,
+                target: this.to,
+                //anchors:["RightMiddle", "LeftMiddle" ]
+                //endpointStyle:{ fillStyle: 'yellow' }
+                connector: [ 'Flowchart', {stub: 20} ],
+                paintStyle: {
+                    lineWidth: 2,
+                    strokeStyle: "#F00",
+                    joinstyle: "round"
+                },
+                hoverPaintStyle: {
+                    lineWidth: 4,
+                    strokeStyle: "#00F",
+                    joinstyle: "round"
+                },
+    //            anchor: [ "Perimeter", { shape: "rectangle" } ],
+                anchor: "Continuous",
+                endpoint:'Blank',
+                //endpoint:[ "Image", { src:"js/contextMenu/images/1353844791_trash.png" } ],
+                overlays:[
+//                    [ "Arrow", {
+//                        location:1,
+//                        id:'arrow',
+//                        length:14,
+//                        foldback:0.6
+//                    }],
+                    [ 'Custom', {
+                        create: function () { return $('<div style="width: 10px; height: 10px; background-color: red;"></div>') },
+                        location: 0.99
+                    }]
+                ]
+
+            });
+        }
+        else {
+            jsPlumb.repaint( [ this.from, this.to ] );
+        }
+    }
+    else {
+        var fromX = Item.prototype.items[this.from].getLinkX(this.id,this.fromConnector);
+        var fromY = Item.prototype.items[this.from].getLinkY(this.id,this.fromConnector);
+        var toX = Item.prototype.items[this.to].getLinkX(this.id,this.toConnector);
+        var toY = Item.prototype.items[this.to].getLinkY(this.id,this.toConnector);
+
+        var width = Math.abs(toX - fromX);
+        var left = Math.min(fromX, toX);
+        var height = Math.abs(toY - fromY);
+        var top = Math.min(fromY, toY);
+
+        var shape = this.fromConnector * 10 + this.toConnector + (fromX < toX ? 'x0' : 'x1') + (fromY < toY ?  'y0' : 'y1');
+
+        if (!this.forceRender && shape == this.shape) { // Only needs to be resized
+            $(this.hashId).css('top',top).css('left',left).css('width',width).css('height',height);
+            return;
+        }
+
+        this.forceRender = false;
+
+        $(this.hashId).remove();
+
+        this.shape = shape;
+
+        // Connector types
+        // 0 = Top
+        // 1 = Right
+        // 2 = Bottom
+        // 3 = Left
+
+        var fromConnector = this.fromConnector;
+        var toConnector = this.toConnector;
+
+        var firstItem;
+        var secondItem;
+        var firstType;
+        var secondType;
+
+        var fromType = Link.prototype.iconNames[this.fromType] + Link.prototype.suffixes[fromConnector];
+        var toType = Link.prototype.iconNames[this.toType] + Link.prototype.suffixes[toConnector];
+
+        var div = '';
+
+        div += '<div id="' + this.id + '" class="connector" style="width: ' + width + 'px; height: ' + height + 'px; left: ' + left + 'px; top: ' + top + 'px;">';
+
+        if ( ( fromConnector == 1 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 1 ) ) { // Case ¯¯|__ or __|¯¯
+            if (fromY < toY ^ fromConnector == 3 ) { // Case ¯¯|__
+                firstItem =  'horizontalTopFrom' + (this.getBroken() ? ' brokenLink' : '');
+                secondItem = 'horizontalBottomTo' + (this.getBroken() ? ' brokenLink' : '');
+            }
+            else { // Case __|¯¯
+                firstItem =  'horizontalBottomFrom' + (this.getBroken() ? ' brokenLink' : '');
+                secondItem = 'horizontalTopTo' + (this.getBroken() ? ' brokenLink' : '');
+            }
+
+            if (fromConnector == 3) {
+                firstType = toType;
+                secondType = fromType;
+            }
+            else {
+                firstType = fromType;
+                secondType = toType;
+            }
+
+            div +=  '<div class="' + firstItem + '">' +
+                '<div class="connectorMarker">' +
+                '<span class="' + firstType + '"></span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="' + secondItem + '">' +
+                '<div class="connectorMarker">' +
+                '<span class="' + secondType + '"></span>' +
+                '</div>' +
+                '</div>';
+        }
+        else if ( ( fromConnector == 0 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 0 ) ) { // Case '-, or ,-'
+            if ( fromX < toX ^ fromConnector == 2 ) { // Case ,-'
+                firstItem = 'verticalTopRight' + (this.getBroken() ? ' brokenLink' : '');
+                secondItem = 'verticalBottomLeft' + (this.getBroken() ? ' brokenLink' : '');
+            }
+            else { // Case '-,
+                firstItem = 'verticalTopLeft' + (this.getBroken() ? ' brokenLink' : '');
+                secondItem = 'verticalBottomRight' + (this.getBroken() ? ' brokenLink' : '');
+            }
+
+            if (fromConnector == 0) {
+                firstType = toType;
+                secondType = fromType;
+            }
+            else {
+                firstType = fromType;
+                secondType = toType;
+            }
+
+            div +=  '<div class="' + firstItem + '">' +
+                '<div class="connectorMarker">' +
+                '<span class="' + firstType + '"></span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="' + secondItem + '">' +
+                '<div class="connectorMarker">' +
+                '<span class="' + secondType + '"></span>' +
+                '</div>' +
+                '</div>';
+        } else { // Corner
+            if ( ( fromConnector == 1 && toConnector == 0 ) || ( fromConnector == 0 && toConnector == 1 ) ) { // Case ¯¯|
+                firstItem = 'cornerTopRight' + (this.getBroken() ? ' brokenLink' : '');
+
+                if (fromConnector == 0) {
+                    firstType = toType;
+                    secondType = fromType;
+                }
+                else {
+                    firstType = fromType;
+                    secondType = toType;
+                }
+            }
+            else if ( ( fromConnector == 1 && toConnector == 2 ) || ( fromConnector == 2 && toConnector == 1 ) ) { // Case _|
+                firstItem = 'cornerBottomRight' + (this.getBroken() ? ' brokenLink' : '');
+
+                if (fromConnector == 2) {
+                    firstType = toType;
+                    secondType = fromType;
+                }
+                else {
+                    firstType = fromType;
+                    secondType = toType;
+                }
+            }
+            else if ( ( fromConnector == 0 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 0 ) ) { // Case |¯¯
+                firstItem = 'cornerTopLeft' + (this.getBroken() ? ' brokenLink' : '');
+
+                if (fromConnector == 0) {
+                    firstType = toType;
+                    secondType = fromType;
+                }
+                else {
+                    firstType = fromType;
+                    secondType = toType;
+                }
+            }
+            else if ( ( fromConnector == 2 && toConnector == 3 ) || ( fromConnector == 3 && toConnector == 2 ) ) { // Case |_
+                firstItem = 'cornerBottomLeft' + (this.getBroken() ? ' brokenLink' : '');
+
+                if (fromConnector == 2) {
+                    firstType = toType;
+                    secondType = fromType;
+                }
+                else {
+                    firstType = fromType;
+                    secondType = toType;
+                }
+            }
+
+            div +=  '<div class="' + firstItem + '">' +
+                '<div class="leftConnectorMarker">' +
+                '<span class="' + firstType + '"></span>' +
+                '</div>' +
+                '<div class="rightConnectorMarker">' +
+                '<span class="' + secondType + '"></span>' +
+                '</div>' +
+                '</div>';
+        }
+
+        div += '</div>';
+
+        $(div).appendTo('body');
+
+        this.setDrawn(true);
+    }
 };

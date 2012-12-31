@@ -1,8 +1,8 @@
-<div id="edit-item-dialog" title="Edit item">
-    Name:
-	<input type="text" name="name" size="30" class="text ui-widget-content ui-corner-all" />
-	Description:
-	<input type="text" name="description" size="40" class="text ui-widget-content ui-corner-all" /><br/>
+<div id="edit-item-dialog" class="draggy-dialog" title="Edit item">
+    <label for="edit-item-name">Name:</label>
+	<input id="edit-item-name" type="text" name="name" size="30" class="text ui-widget-content ui-corner-all" />
+    <label for="edit-item-description">Description:</label>
+	<input id="edit-item-description" type="text" name="description" size="40" class="text ui-widget-content ui-corner-all" /><br/>
 
 	<div id="edit-item-tabs">
         <ul>
@@ -19,8 +19,7 @@
 	                <tr>
 	                    <th></th>
 	                    <th>Name</th>
-	                    <th>Type</th>
-	                    <th>Size</th>
+	                    <th>Type / Size</th>
 	                    <th>Null</th>
 	                    <th>PK</th>
 	                    <!--<th>FK</th>-->
@@ -57,6 +56,7 @@
 		</div>
         <div id="edit-item-tabs-programming-attributes">
             <div id="edit-item-buttons">
+                <input id="edit-item-constructor" type="checkbox"><label for="edit-item-constructor">Constructor?</label>
                 <input id="edit-item-repository" type="checkbox"><label for="edit-item-repository">Repository?</label>
                 <input id="edit-item-form" type="checkbox"><label for="edit-item-form">Form?</label>
                 <input id="edit-item-controller" type="checkbox"><label for="edit-item-controller">Controller?</label>
@@ -96,6 +96,7 @@
                         <th>Email</th>
                         <th>Min</th>
                         <th>Max</th>
+                        <th>Static</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -120,7 +121,7 @@
         $('#edit-item-dialog').dialog({
             autoOpen: false,
             //height: 300,
-            width: 850,
+            width: 900,
             modal: true,
             buttons: {
                 'Change': function() {

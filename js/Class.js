@@ -2,27 +2,25 @@ Class.prototype = new ClassLike();           // Inheritance
 Class.prototype.constructor = Class;
 
 Class.prototype.classes = {};           // Static associative array
+Class.prototype.classList = [];           // Static associative array
 
-function Class (name,container) {
-    this.innitClassLike('Class');
-
-    if (name == undefined)
-        this.name = this.getValidName('Connectable','Class');
-    else
-        this.name = name;
+function Class (name, container) {
+    this.innitClassLike('Class', container);
 
     Class.prototype.classes[this.id] = this;
+    Class.prototype.classList.push(this);
 
-    if (container != undefined) {
-        var c = Container.prototype.getContainerByName(container);
-        c.addObject(this.id);
+    if (name == undefined) {
+        this.name = this.getValidName('Connectable', 'Class', this.getFolder());
+    } else {
+        this.name = name;
     }
 
     $(
-        '<div id="' + this.getId() + '" class="connectable class" style="position: absolute; top: ' + Math.floor((Math.random()*15)+1)*20 + 'px; left: ' + Math.floor((Math.random()*15)+1)*20 + 'px;">' +
-        '</div>'
-    ).appendTo(container == undefined ? 'body' : c.hashId);
+        '<div id="' + this.getId() + '" class="connectable class" style="position: absolute;"></div>'
+    ).appendTo(container === undefined ? 'body' : Container.prototype.getContainerByName(container).getHashId());
 
+    this.setDrawn(true);
 
     this.reDraw();
 
@@ -50,7 +48,7 @@ Class.prototype.toXML = function () {
         'name="' + this.getName() + '" ' +
         'top="' + parseInt($(this.hashId).css('top')) + '" ' +
         'left="' + parseInt($(this.hashId).css('left')) + '"' +
-        (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getName() + '"' : '' ) +
+        (this.getParent() != null ? ' inheritingFrom="' + this.getParent().getFullyQualifiedName() + '"' : '' ) +
         (this.getRepository() ? ' repository="' + this.getRepository() + '"' : '' ) +
         (this.getForm() ? ' form="' + this.getForm() + '"' : '' ) +
         (this.getController() ? ' controller="' + this.getController() + '"' : '' ) +
@@ -59,14 +57,14 @@ Class.prototype.toXML = function () {
         (this.getDescription() != null ? ' description="' + this.getDescription() + '"' : '' ) +
         (this.getCrud() != null ? ' crud="' + this.getCrud() + '"' : '' ) +
         (this.isPureManyToMany() ? ' manyToMany="true"' : '' ) +
+        (this.getConstructor() ? ' constructor="true"' : '' ) +
     '';
 
-    if (this.getNumberAttributes() == 0)
+    if (this.getNumberAttributes() == 0) {
         ret += ' />' + '\n';
-    else {
+    } else {
         ret += '>' + '\n';
 
-        var a;
         for (var i = 0; i < this.getNumberAttributes(); i++)
             ret += '\t\t\t' + this.getAttribute(i).toXML() + '\n';
 
@@ -77,11 +75,8 @@ Class.prototype.toXML = function () {
 };
 
 Class.prototype.remove = function () {
-    for (var i in Class.prototype.classes)
-        if (Class.prototype.classes[i].getId() == this.getId()) {
-            delete Class.prototype.classes[i];
-            break;
-        }
+    delete Class.prototype.classes[this.id];
+    Class.prototype.classList.remove(this);
 
     this.destroyClassLike();
 };
@@ -119,10 +114,13 @@ Class.prototype.getFixtures = function () {
 };
 
 Class.prototype.setCrud = function (crud) {
-    if (crud)
+    if (crud) {
         this.crud = crud;
-    else
+    } else {
         this.crud = null;
+    }
+
+    return this;
 };
 
 Class.prototype.getCrud = function () {

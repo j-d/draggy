@@ -4,64 +4,98 @@ function LinkClassDialog () {
 LinkClassDialog.prototype.connectable = null;
 
 LinkClassDialog.prototype.innit = function () {
-    $('#link-item-dialog select[name=type]').change(function () {
-        if ($('#link-item-dialog select[name=type]').val() != 'Inheritance') {
-            $('#link-item-dialog .attribute-selector').show();
+    $('#link-item-type').change(function () {
+        var attributeSelectors = $('#link-item-dialog').find('.attribute-selector');
+
+        if ($('#link-item-type').val() !== 'Inheritance') {
+            attributeSelectors.show();
             //LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=sourceAttribute]',$('#link-item-dialog input[name=class]').val(),true);
             //LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-dialog select[name=destinationItem]').val());
+
+            if (Draggy.prototype.options.linkClasses) {
+                $('#link-item-source').parents('.attribute-selector').hide();
+            }
         }
-        else
-            $('#link-item-dialog .attribute-selector').hide();
+        else {
+            attributeSelectors.hide();
+        }
     });
 
     // Change when changing target
-    $('#link-item-dialog select[name=destinationItem]').change(function () {
-        LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-dialog select[name=destinationItem]').val());
+    $('#link-item-destination-class').change(function () {
+        LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-destination-class').val());
     });
 };
 
 LinkClassDialog.prototype.openDialog = function (connectableId) {
-    var c = LinkClassDialog.prototype.connectable = Connectable.prototype.connectables[connectableId];
-    var i;
+    var
+        c = LinkClassDialog.prototype.connectable = Connectable.prototype.connectables[connectableId],
+        i,
+        $destinationAttribute = $('#link-item-destination'),
+        $destinationClass = $('#link-item-destination-class'),
+        $sourceClass = $('#link-item-source-class'),
+        $type = $('#link-item-type'),
+        $dialog = $('#link-item-dialog');
+
+    // Show attribute selectors
+    $dialog.find('.attribute-selector').show();
 
     // Remove previous dropdowns
-    $('#link-item-dialog select[name=destinationItem] option').remove();
-    $('#link-item-dialog select[name=type] option').remove();
+    $destinationClass.find('option').remove();
+    $destinationAttribute.find('option').remove();
+    $type.find('option').remove();
 
-    // Add other items
-    for (i in Connectable.prototype.connectables)
-        if (Connectable.prototype.connectables[i].getId() != connectableId)
-            $('<option value="' + Connectable.prototype.connectables[i].getName() + '">' + Connectable.prototype.connectables[i].getName() + '</option>').appendTo($('#link-item-dialog select[name=destinationItem]'));
+    // Add other connectables
+    for (i = 0; i < Connectable.prototype.connectableList.length; i++) {
+        //if (Connectable.prototype.connectableList[i].getId() != connectableId) {
+            $('<option value="' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '">' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '</option>').appendTo($destinationClass);
+        //}
+    }
 
     // Add types
-    for (i = 0; i < Config.prototype.relationships.length; i++)
-        if ( Config.prototype.relationships[i].internalName != 'Inheritance' || c.getInheritedFrom() == null )
-            $('<option value="' + Config.prototype.relationships[i].internalName + '">' + Config.prototype.relationships[i].nameSelf + '</option>').appendTo($('#link-item-dialog select[name=type]'));
+    for (i = 0; i < Config.prototype.relationships.length; i++) {
+        if (Draggy.prototype.options[Config.prototype.relationships[i].optionsName]) {
+            if ( Config.prototype.relationships[i].internalName !== 'Inheritance' || c.getInheritedFrom() == null ) {
+                $('<option value="' + Config.prototype.relationships[i].internalName + '">' + Config.prototype.relationships[i].nameSelf + '</option>').appendTo($type);
+            }
+        }
+    }
 
     //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
-    $('#link-item-dialog input[name=class]').attr('value',c.getName());
+    $sourceClass.attr('value',c.getFullyQualifiedName());
 
     // Populate options for the first time
-    LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=sourceAttribute]',$('#link-item-dialog input[name=class]').val(),true);
-    LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-dialog select[name=destinationItem]').val());
+    LinkClassDialog.prototype.populateOptions('#link-item-source',$sourceClass.val(),true);
+    LinkClassDialog.prototype.populateOptions('#link-item-destination',$destinationClass.val());
 
-    $('#link-item-dialog').dialog('open');
+    if (Draggy.prototype.options.linkClasses) {
+        $('#link-item-source').parents('.attribute-selector').hide();
+    }
+
+    $dialog.dialog('open');
 };
 
 LinkClassDialog.prototype.createLink = function () {
-    var source = Connectable.prototype.getConnectableFromName($('#link-item-dialog input[name=class]').val());
-    var destination = Connectable.prototype.getConnectableFromName($('#link-item-dialog select[name=destinationItem]').val());
-    var type = $('#link-item-dialog select[name=type]').val();
+    var $sourceSelector = $('#link-item-source');
+    var $destinationSelector = $('#link-item-destination');
+    var source = Connectable.prototype.getConnectableFromName($('#link-item-source-class').val());
+    var destination = Connectable.prototype.getConnectableFromName($('#link-item-destination-class').val());
+    var type = $('#link-item-type').val();
 
-    if (type != 'Inheritance') {
-        var sourceAttribute = Attribute.prototype.attributes[$('#link-item-dialog select[name=sourceAttribute]').val()];
-
-        var destinationAttribute = $('#link-item-dialog select[name=destinationAttribute]').val();
+    if (type !== 'Inheritance') {
+        var sourceAttribute;
+        var destinationAttribute = $destinationSelector.val();
 
         if (destinationAttribute == '**new**') {
             destinationAttribute = new Attribute('');
-            destinationAttribute.copyFrom(sourceAttribute);
-            destinationAttribute.setName(source.getName() + '_' + sourceAttribute.getName());
+            if (!Draggy.prototype.options.linkClasses) {
+                sourceAttribute = Attribute.prototype.attributes[$sourceSelector.val()];
+                destinationAttribute.copyFrom(sourceAttribute);
+                destinationAttribute.setName(source.getName() + '_' + sourceAttribute.getName());
+            } else {
+                destinationAttribute.setName(source.getName() + '_autoName');
+            }
+
             destinationAttribute.setPrimary(false);
             destinationAttribute.setAutoincrement(false);
             destinationAttribute.setForeign(true);
@@ -69,30 +103,48 @@ LinkClassDialog.prototype.createLink = function () {
         }
         else {
             destinationAttribute = Attribute.prototype.attributes[destinationAttribute];
-            var name = destinationAttribute.getName();
-            destinationAttribute.copyFrom(sourceAttribute);
-            destinationAttribute.setName(name);
+            if (!Draggy.prototype.options.linkClasses) {
+                sourceAttribute = Attribute.prototype.attributes[$sourceSelector.val()];
+                var name = destinationAttribute.getName();
+                destinationAttribute.copyFrom(sourceAttribute);
+                destinationAttribute.setName(name);
+            }
+
             destinationAttribute.setPrimary(false);
             destinationAttribute.setAutoincrement(false);
             destinationAttribute.setForeign(true);
         }
 
-        Draggy.prototype.addLink(
-            source.getName(),
-            destination.getName(),
-            type,
-            sourceAttribute.getName(),
-            destinationAttribute.getName()
-        );
+        if (Draggy.prototype.options.linkClasses) {
+            Draggy.prototype.addLink(
+                source.getFullyQualifiedName(),
+                destination.getFullyQualifiedName(),
+                type,
+                undefined,
+                destinationAttribute.getName()
+            );
+        } else {
+            Draggy.prototype.addLink(
+                source.getFullyQualifiedName(),
+                destination.getFullyQualifiedName(),
+                type,
+                sourceAttribute.getName(),
+                destinationAttribute.getName()
+            );
+        }
 
         destination.reDraw();
     }
-    else {
-        Draggy.prototype.addLink(
-            source.getName(),
-            destination.getName(),
-            type
-        );
+    else { // Type == inheritance
+        if (source.canInheritFrom(destination)) {
+            Draggy.prototype.addLink(
+                source.getFullyQualifiedName(),
+                destination.getFullyQualifiedName(),
+                type
+            );
+        } else {
+            alert('The entity ' + source.getName() + ' cannot inherit from the entity ' + destination.getName() + ' because there is at least one attribute with the same name on it or any of its descendants.');
+        }
     }
 
     Link.prototype.reDrawLinks();
@@ -106,7 +158,7 @@ LinkClassDialog.prototype.populateOptions = function (select,itemName,key) {
     var item = Connectable.prototype.getConnectableFromName(itemName);
     var attribute;
 
-    s.children().remove();
+    s.find('option').remove();
 
     if (!key)
         s.append('<option value="**new**">** New attribute **</option>');
