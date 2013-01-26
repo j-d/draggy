@@ -75,15 +75,19 @@ Attribute.prototype.getType = function () {
 };
 
 Attribute.prototype.setSubtype = function (subtype) {
-    if (subtype != this.subtype) {
+    if (subtype !== this.subtype) {
         var oldSubtype = this.subtype;
 
-        if (subtype !== '' && subtype !== null) {
+        if (subtype === '') {
+            subtype = null;
+        }
+
+        if (subtype !== null) {
             this.subtype = subtype;
         }
 
         if (oldSubtype !== '' && oldSubtype !== null && Config.prototype.types.indexOf(oldSubtype) === -1) { // It was a class subtype
-            Connectable.prototype.getConnectableFromName(subtype).removeDependantAttribute(this.getId());
+            Connectable.prototype.getConnectableFromName(oldSubtype).removeDependantAttribute(this.getId());
         }
 
         if (subtype !== '' && subtype !== null && Config.prototype.types.indexOf(subtype) === -1) { // Is a class subtype
@@ -239,7 +243,7 @@ Attribute.prototype.getDefault = function () {
 
 Attribute.prototype.setOwner = function (owner) {
     this.owner = owner;
-}
+};
 
 Attribute.prototype.getOwner = function () {
     return this.owner;

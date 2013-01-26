@@ -67,7 +67,7 @@ abstract class EntityBase
     protected $renderizable = true;
 
     /**
-     * @var Attribute $toString
+     * @var string $toString
      */
     protected $toString = null;
 
@@ -111,6 +111,11 @@ abstract class EntityBase
      */
     protected $project;
 
+    /**
+     * @var boolean $hasConstructor
+     */
+    protected $hasConstructor = false;
+
     // </editor-fold>
 
     // <editor-fold desc="Setters and getters">
@@ -126,8 +131,10 @@ abstract class EntityBase
     public function setNamespace($namespace)
     {
         if (!is_string($namespace)) {
-            throw new \InvalidArgumentException('The attribute namespace on the class Entity has to be a string.');
-        } elseif (strlen($namespace) < 1) {
+            throw new \InvalidArgumentException('The attribute namespace on the class Entity has to be string (' . gettype($namespace) . ('object' === gettype($namespace) ? ' ' . get_class($namespace) : '') . ' given).');
+        }
+
+        if (strlen($namespace) < 1) {
             throw new \InvalidArgumentException('On the attribute namespace, the length of the string ' . $namespace . ' is ' . strlen($namespace) . ' which is shorter than the minimum allowed (1).');
         }
 
@@ -158,7 +165,7 @@ abstract class EntityBase
     public function setModule($module)
     {
         if (!is_string($module)) {
-            throw new \InvalidArgumentException('The attribute module on the class Entity has to be a string.');
+            throw new \InvalidArgumentException('The attribute module on the class Entity has to be string (' . gettype($module) . ('object' === gettype($module) ? ' ' . get_class($module) : '') . ' given).');
         }
 
         $this->module = $module;
@@ -188,7 +195,7 @@ abstract class EntityBase
     public function setName($name)
     {
         if (!is_string($name)) {
-            throw new \InvalidArgumentException('The attribute name on the class Entity has to be a string.');
+            throw new \InvalidArgumentException('The attribute name on the class Entity has to be string (' . gettype($name) . ('object' === gettype($name) ? ' ' . get_class($name) : '') . ' given).');
         }
 
         $this->name = $name;
@@ -218,7 +225,7 @@ abstract class EntityBase
     public function setDescription($description)
     {
         if (!is_string($description)) {
-            throw new \InvalidArgumentException('The attribute description on the class Entity has to be a string.');
+            throw new \InvalidArgumentException('The attribute description on the class Entity has to be string (' . gettype($description) . ('object' === gettype($description) ? ' ' . get_class($description) : '') . ' given).');
         }
 
         $this->description = $description;
@@ -254,12 +261,15 @@ abstract class EntityBase
      * Add attribute
      *
      * @param Attribute $attribute
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttribute(Attribute $attribute)
+    public function addAttribute(Attribute $attribute, $allowRepeatedValues = true)
     {
-        $this->attributes[] = $attribute;
+        if ($allowRepeatedValues || !$this->attributes->contains($attribute)) {
+            $this->attributes[] = $attribute;
+        }
 
         return $this;
     }
@@ -268,16 +278,49 @@ abstract class EntityBase
      * Add attributes
      *
      * @param Attribute[] $attributes
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttributes(array $attributes)
+    public function addAttributes(array $attributes, $allowRepeatedValues = true)
     {
         foreach ($attributes as $attribute) {
-            $this->attributes[] = $attribute;
+            if ($allowRepeatedValues || !$this->attributes->contains($attribute)) {
+                $this->attributes[] = $attribute;
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * Contains attribute
+     *
+     * @param Attribute $attribute
+     *
+     * @return bool
+     */
+    public function containsAttribute(Attribute $attribute)
+    {
+        return $this->attributes->contains($attribute);
+    }
+
+    /**
+     * Contains attributes
+     *
+     * @param Attribute[] $attributes
+     *
+     * @return bool
+     */
+    public function containsAttributes(array $attributes)
+    {
+        foreach ($attributes as $attribute) {
+            if (!$this->attributes->contains($attribute)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -343,12 +386,15 @@ abstract class EntityBase
      * Add attributeName
      *
      * @param string $attributeName
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttributeName($attributeName)
+    public function addAttributeName($attributeName, $allowRepeatedValues = true)
     {
-        $this->attributeNames[] = $attributeName;
+        if ($allowRepeatedValues || !$this->attributeNames->contains($attributeName)) {
+            $this->attributeNames[] = $attributeName;
+        }
 
         return $this;
     }
@@ -357,16 +403,49 @@ abstract class EntityBase
      * Add attributeNames
      *
      * @param string[] $attributeNames
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttributeNames(array $attributeNames)
+    public function addAttributeNames(array $attributeNames, $allowRepeatedValues = true)
     {
         foreach ($attributeNames as $attributeName) {
-            $this->attributeNames[] = $attributeName;
+            if ($allowRepeatedValues || !$this->attributeNames->contains($attributeName)) {
+                $this->attributeNames[] = $attributeName;
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * Contains attributeName
+     *
+     * @param string $attributeName
+     *
+     * @return bool
+     */
+    public function containsAttributeName($attributeName)
+    {
+        return $this->attributeNames->contains($attributeName);
+    }
+
+    /**
+     * Contains attributeNames
+     *
+     * @param string[] $attributeNames
+     *
+     * @return bool
+     */
+    public function containsAttributeNames(array $attributeNames)
+    {
+        foreach ($attributeNames as $attributeName) {
+            if (!$this->attributeNames->contains($attributeName)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -432,12 +511,15 @@ abstract class EntityBase
      * Add primaryAttribute
      *
      * @param Attribute $primaryAttribute
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addPrimaryAttribute(Attribute $primaryAttribute)
+    public function addPrimaryAttribute(Attribute $primaryAttribute, $allowRepeatedValues = true)
     {
-        $this->primaryAttributes[] = $primaryAttribute;
+        if ($allowRepeatedValues || !$this->primaryAttributes->contains($primaryAttribute)) {
+            $this->primaryAttributes[] = $primaryAttribute;
+        }
 
         return $this;
     }
@@ -446,16 +528,49 @@ abstract class EntityBase
      * Add primaryAttributes
      *
      * @param Attribute[] $primaryAttributes
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addPrimaryAttributes(array $primaryAttributes)
+    public function addPrimaryAttributes(array $primaryAttributes, $allowRepeatedValues = true)
     {
         foreach ($primaryAttributes as $primaryAttribute) {
-            $this->primaryAttributes[] = $primaryAttribute;
+            if ($allowRepeatedValues || !$this->primaryAttributes->contains($primaryAttribute)) {
+                $this->primaryAttributes[] = $primaryAttribute;
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * Contains primaryAttribute
+     *
+     * @param Attribute $primaryAttribute
+     *
+     * @return bool
+     */
+    public function containsPrimaryAttribute(Attribute $primaryAttribute)
+    {
+        return $this->primaryAttributes->contains($primaryAttribute);
+    }
+
+    /**
+     * Contains primaryAttributes
+     *
+     * @param Attribute[] $primaryAttributes
+     *
+     * @return bool
+     */
+    public function containsPrimaryAttributes(array $primaryAttributes)
+    {
+        foreach ($primaryAttributes as $primaryAttribute) {
+            if (!$this->primaryAttributes->contains($primaryAttribute)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -515,7 +630,7 @@ abstract class EntityBase
     public function setRenderizable($renderizable)
     {
         if (!is_bool($renderizable)) {
-            throw new \InvalidArgumentException('The attribute renderizable on the class Entity has to be boolean.');
+            throw new \InvalidArgumentException('The attribute renderizable on the class Entity has to be boolean (' . gettype($renderizable) . ('object' === gettype($renderizable) ? ' ' . get_class($renderizable) : '') . ' given).');
         }
 
         $this->renderizable = $renderizable;
@@ -536,12 +651,18 @@ abstract class EntityBase
     /**
      * Set toString
      *
-     * @param Attribute|null $toString
+     * @param string|null $toString
      *
      * @return Entity
+     *
+     * @throws \InvalidArgumentException
      */
     public function setToString($toString)
     {
+        if (!is_string($toString) && null !== $toString) {
+            throw new \InvalidArgumentException('The attribute toString on the class Entity has to be string or null (' . gettype($toString) . ('object' === gettype($toString) ? ' ' . get_class($toString) : '') . ' given).');
+        }
+
         $this->toString = $toString;
 
         return $this;
@@ -550,7 +671,7 @@ abstract class EntityBase
     /**
      * Get toString
      *
-     * @return Attribute
+     * @return string|null
      */
     public function getToString()
     {
@@ -563,9 +684,15 @@ abstract class EntityBase
      * @param Entity|null $parentEntity
      *
      * @return Entity
+     *
+     * @throws \InvalidArgumentException
      */
     public function setParentEntity($parentEntity)
     {
+        if (!$parentEntity instanceof Entity && null !== $parentEntity) {
+            throw new \InvalidArgumentException('The attribute parentEntity on the class Entity has to be Entity or null (' . gettype($parentEntity) . ('object' === gettype($parentEntity) ? ' ' . get_class($parentEntity) : '') . ' given).');
+        }
+
         $this->parentEntity = $parentEntity;
 
         return $this;
@@ -574,7 +701,7 @@ abstract class EntityBase
     /**
      * Get parentEntity
      *
-     * @return Entity
+     * @return Entity|null
      */
     public function getParentEntity()
     {
@@ -599,12 +726,15 @@ abstract class EntityBase
      * Add childrenEntity
      *
      * @param Entity $childrenEntity
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addChildrenEntity(Entity $childrenEntity)
+    public function addChildrenEntity(Entity $childrenEntity, $allowRepeatedValues = true)
     {
-        $this->childrenEntities[] = $childrenEntity;
+        if ($allowRepeatedValues || !$this->childrenEntities->contains($childrenEntity)) {
+            $this->childrenEntities[] = $childrenEntity;
+        }
 
         return $this;
     }
@@ -613,16 +743,49 @@ abstract class EntityBase
      * Add childrenEntities
      *
      * @param Entity[] $childrenEntities
+     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addChildrenEntities(array $childrenEntities)
+    public function addChildrenEntities(array $childrenEntities, $allowRepeatedValues = true)
     {
         foreach ($childrenEntities as $childrenEntity) {
-            $this->childrenEntities[] = $childrenEntity;
+            if ($allowRepeatedValues || !$this->childrenEntities->contains($childrenEntity)) {
+                $this->childrenEntities[] = $childrenEntity;
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * Contains childrenEntity
+     *
+     * @param Entity $childrenEntity
+     *
+     * @return bool
+     */
+    public function containsChildrenEntity(Entity $childrenEntity)
+    {
+        return $this->childrenEntities->contains($childrenEntity);
+    }
+
+    /**
+     * Contains childrenEntities
+     *
+     * @param Entity[] $childrenEntities
+     *
+     * @return bool
+     */
+    public function containsChildrenEntities(array $childrenEntities)
+    {
+        foreach ($childrenEntities as $childrenEntity) {
+            if (!$this->childrenEntities->contains($childrenEntity)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -682,7 +845,7 @@ abstract class EntityBase
     public function setHasRepository($hasRepository)
     {
         if (!is_bool($hasRepository)) {
-            throw new \InvalidArgumentException('The attribute hasRepository on the class Entity has to be boolean.');
+            throw new \InvalidArgumentException('The attribute hasRepository on the class Entity has to be boolean (' . gettype($hasRepository) . ('object' === gettype($hasRepository) ? ' ' . get_class($hasRepository) : '') . ' given).');
         }
 
         $this->hasRepository = $hasRepository;
@@ -712,7 +875,7 @@ abstract class EntityBase
     public function setHasForm($hasForm)
     {
         if (!is_bool($hasForm)) {
-            throw new \InvalidArgumentException('The attribute hasForm on the class Entity has to be boolean.');
+            throw new \InvalidArgumentException('The attribute hasForm on the class Entity has to be boolean (' . gettype($hasForm) . ('object' === gettype($hasForm) ? ' ' . get_class($hasForm) : '') . ' given).');
         }
 
         $this->hasForm = $hasForm;
@@ -742,7 +905,7 @@ abstract class EntityBase
     public function setHasController($hasController)
     {
         if (!is_bool($hasController)) {
-            throw new \InvalidArgumentException('The attribute hasController on the class Entity has to be boolean.');
+            throw new \InvalidArgumentException('The attribute hasController on the class Entity has to be boolean (' . gettype($hasController) . ('object' === gettype($hasController) ? ' ' . get_class($hasController) : '') . ' given).');
         }
 
         $this->hasController = $hasController;
@@ -772,7 +935,7 @@ abstract class EntityBase
     public function setHasFixtures($hasFixtures)
     {
         if (!is_bool($hasFixtures)) {
-            throw new \InvalidArgumentException('The attribute hasFixtures on the class Entity has to be boolean.');
+            throw new \InvalidArgumentException('The attribute hasFixtures on the class Entity has to be boolean (' . gettype($hasFixtures) . ('object' === gettype($hasFixtures) ? ' ' . get_class($hasFixtures) : '') . ' given).');
         }
 
         $this->hasFixtures = $hasFixtures;
@@ -802,7 +965,7 @@ abstract class EntityBase
     public function setCrud($crud)
     {
         if (!is_string($crud)) {
-            throw new \InvalidArgumentException('The attribute crud on the class Entity has to be a string.');
+            throw new \InvalidArgumentException('The attribute crud on the class Entity has to be string (' . gettype($crud) . ('object' === gettype($crud) ? ' ' . get_class($crud) : '') . ' given).');
         }
 
         $this->crud = $crud;
@@ -827,7 +990,7 @@ abstract class EntityBase
      *
      * @return Entity
      */
-    public function setProject($project)
+    public function setProject(Project $project)
     {
         $this->project = $project;
 
@@ -842,6 +1005,36 @@ abstract class EntityBase
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set hasConstructor
+     *
+     * @param boolean $hasConstructor
+     *
+     * @return Entity
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setHasConstructor($hasConstructor)
+    {
+        if (!is_bool($hasConstructor)) {
+            throw new \InvalidArgumentException('The attribute hasConstructor on the class Entity has to be boolean (' . gettype($hasConstructor) . ('object' === gettype($hasConstructor) ? ' ' . get_class($hasConstructor) : '') . ' given).');
+        }
+
+        $this->hasConstructor = $hasConstructor;
+
+        return $this;
+    }
+
+    /**
+     * Get hasConstructor
+     *
+     * @return boolean
+     */
+    public function getHasConstructor()
+    {
+        return $this->hasConstructor;
     }
 
     // </editor-fold>

@@ -29,18 +29,20 @@ class PHPAttribute extends PHPAttributeBase
 {
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
-    public static $PHP_VARS = ['string'   => 'string',
-                               'boolean'  => 'boolean',
-                               'integer'  => 'integer',
-                               'smallint' => 'integer',
-                               'bigint'   => 'integer',
-                               'text'     => 'string',
-                               'date'     => '\\DateTime',
-                               'time'     => '\\DateTime',
-                               'datetime' => '\\DateTime',
-                               'array'    => 'array',
-                               'decimal'  => 'float',
-                               'object'   => 'ERROR'];
+    public static $PHP_VARS = [
+        'string' => 'string',
+        'boolean' => 'boolean',
+        'integer' => 'integer',
+        'smallint' => 'integer',
+        'bigint' => 'integer',
+        'text' => 'string',
+        'date' => '\\DateTime',
+        'time' => '\\DateTime',
+        'datetime' => '\\DateTime',
+        'array' => 'array',
+        'decimal' => 'float',
+        'object' => 'ERROR'
+    ];
     // </user-additions>
     // </editor-fold>
 
@@ -53,14 +55,22 @@ class PHPAttribute extends PHPAttributeBase
                 throw new \InvalidArgumentException('Attribute ' . $this->getName() . ' on the entity ' . $this->getEntity()->getName() . ' is marked as an object but doesn\'t have a subtype');
             }
 
-            return $this->getSubtype();
-        } elseif ($this->type === 'array' && !is_null($this->getSubtype())) {
-            return $this->getSubtype() . '[]';
+            if ($this->isEntitySubtype()) {
+                return $this->getEntitySubtype()->getName();
+            } else {
+                return $this->getSubtype();
+            }
+        } elseif ($this->type === 'array' && null !== $this->getSubtype()) {
+            if ($this->isEntitySubtype()) {
+                return $this->getEntitySubtype()->getName() . '[]';
+            } else {
+                return $this->getSubtype() . '[]';
+            }
         } else {
             if (is_null($this->getForeign())) {
                 return self::$PHP_VARS[$this->getType()];
             } else {
-                if ($this->getForeign() !== 'ManyToMany') {
+                if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                     return $this->getForeignEntity()->getName();
                 } else {
                     return $this->getForeignEntity()->getName() . '[]|Collection';
@@ -82,7 +92,11 @@ class PHPAttribute extends PHPAttributeBase
                     throw new \InvalidArgumentException('Attribute ' . $this->getName() . ' on the entity ' . $this->getEntity()->getName() . ' is marked as an object but doesn\'t have a subtype');
                 }
 
-                return $this->getSubtype();
+                if ($this->isEntitySubtype()) {
+                    return $this->getEntitySubtype()->getName();
+                } else {
+                    return $this->getSubtype();
+                }
             } elseif ($this->getType() === 'array') {
                 return 'array';
             } else {
@@ -90,7 +104,7 @@ class PHPAttribute extends PHPAttributeBase
                 return null;
             }
         } else {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 return $this->getForeignEntity()->getName();
             } else {
                 return 'Collection';
@@ -100,20 +114,35 @@ class PHPAttribute extends PHPAttributeBase
 
     public function getPhpAnnotationType()
     {
-        if (is_null($this->getForeign())) {
+        if (null === $this->getForeign()) {
             if ($this->type === 'object') {
                 if (is_null($this->getSubtype())) {
                     throw new \InvalidArgumentException('Attribute ' . $this->getName() . ' on the entity ' . $this->getEntity()->getName() . ' is marked as an object but doesn\'t have a subtype');
                 }
 
-                $ret = $this->getSubtype();
+                if ($this->isEntitySubtype()) {
+                    $ret = $this->getEntitySubtype()->getName();
+                } else {
+                    $ret = $this->getSubtype();
+                }
             } elseif ($this->getType() === 'array') {
-                $ret = 'array';
+                // TODO: REMOVE THIS NOTE
+                // Addition on 6th Jan, it was $ret = 'array';
+                if (null !== $this->getSubtype()) {
+                    if ($this->isEntitySubtype()) {
+                        return $this->getEntitySubtype()->getName() . '[]';
+                    } else {
+                        return $this->getSubtype() . '[]';
+                    }
+                } else {
+                    $ret = 'array';
+                }
+                // End of Addition
             } else {
                 $ret = self::$PHP_VARS[$this->getType()];
             }
         } else {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 $ret = $this->getForeignEntity()->getName();
             } else {
                 $ret = $this->getForeignEntity()->getName() . '[]|Collection';
@@ -130,7 +159,7 @@ class PHPAttribute extends PHPAttributeBase
     public function getPhpTypeBase()
     {
         if ($this->getEntity()->getProject()->getBase() && null !== $this->getForeign()) {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 return $this->getForeignEntity()->getName() . 'Base|' . $this->getPhpType();
             } else {
                 return $this->getForeignEntity()->getName() . 'Base[]|' . $this->getPhpType();
@@ -143,7 +172,7 @@ class PHPAttribute extends PHPAttributeBase
     public function getPhpParameterTypeBase()
     {
         if ($this->getEntity()->getProject()->getBase() && null !== $this->getForeign()) {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 return $this->getForeignEntity()->getName() . 'Base|' . $this->getPhpParameterType();
             } else {
                 return $this->getPhpParameterType();
@@ -156,7 +185,7 @@ class PHPAttribute extends PHPAttributeBase
     public function getPhpAnnotationTypeBase()
     {
         if ($this->getEntity()->getProject()->getBase() && null !== $this->getForeign()) {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 return $this->getForeignEntity()->getName() . 'Base|' . $this->getPhpAnnotationType();
             } else {
                 return $this->getForeignEntity()->getName() . 'Base[]|' . $this->getPhpAnnotationType();
@@ -171,7 +200,7 @@ class PHPAttribute extends PHPAttributeBase
         if (is_null($this->getForeign())) {
             return null;
         } else {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 return ($this->getEntity()->getProject()->getBase() ? $this->getForeignEntity()->getName() . 'Base|' : '') . $this->getForeignEntity()->getName();
             } else {
                 return $this->getForeignEntity()->getName();
@@ -181,9 +210,9 @@ class PHPAttribute extends PHPAttributeBase
 
     public function getPhpSingleParameterType()
     {
-        if ($this->type === 'array' && !is_null($this->getSubtype())) {
+        if ($this->type === 'array' && null !== $this->getSubtype()) {
             if ($this->isEntitySubtype()) {
-                return $this->getSubtype();
+                return $this->getEntitySubtype()->getName();
             } else {
                 return '';
             }
@@ -191,7 +220,7 @@ class PHPAttribute extends PHPAttributeBase
             if (is_null($this->getForeign())) {
                 return 'array';
             } else {
-                if ($this->getForeign() !== 'ManyToMany') {
+                if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                     return ($this->getEntity()->getProject()->getBase() ? $this->getForeignEntity()->getName() . 'Base|' : '') . $this->getForeignEntity()->getName();
                 } else {
                     return $this->getForeignEntity()->getName();
@@ -207,9 +236,17 @@ class PHPAttribute extends PHPAttributeBase
                 throw new \InvalidArgumentException('Attribute ' . $this->getName() . ' on the entity ' . $this->getEntity()->getName() . ' is marked as an object but doesn\'t have a subtype');
             }
 
-            return $this->getSubtype();
-        } elseif ($this->type === 'array' && !is_null($this->getSubtype())) {
-            return $this->getSubtype();
+            if ($this->isEntitySubtype()) {
+                return $this->getEntitySubtype()->getName();
+            } else {
+                return $this->getSubtype();
+            }
+        } elseif ($this->type === 'array' && null !== $this->getSubtype()) {
+            if ($this->isEntitySubtype()) {
+                return $this->getEntitySubtype()->getName();
+            } else {
+                return $this->getSubtype();
+            }
         } else {
             if (is_null($this->getForeign())) {
                 return self::$PHP_VARS[$this->getType()];
@@ -224,7 +261,7 @@ class PHPAttribute extends PHPAttributeBase
         if (is_null($this->getForeign())) {
             return null;
         } else {
-            if ($this->getForeign() !== 'ManyToMany') {
+            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
                 return ($this->getEntity()->getProject()->getBase() ? $this->getForeignEntity()->getName() . 'Base|' : '') . $this->getForeignEntity()->getName();
             } else {
                 return $this->getForeignEntity()->getName() . ($this->getEntity()->getProject()->getBase() ? 'Base' : '');
@@ -250,7 +287,6 @@ class PHPAttribute extends PHPAttributeBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-
     public function describe()
     {
         $ret = '';

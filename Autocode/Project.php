@@ -125,7 +125,7 @@ class Project extends ProjectBase
         $reservedWords = [];
 
         // MySQL 5.5 reserved words as per http://dev.mysql.com/doc/refman/5.5/en/reserved-words.html
-        $reservedWords = array_merge($reservedWords, ['ACCESSIBLE', 'ADD', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ASENSITIVE', 'BEFORE', 'BETWEEN', 'BIGINT', 'BINARY', 'BLOB', 'BOTH', 'BY', 'CALL', 'CASCADE', 'CASE', 'CHANGE', 'CHAR', 'CHARACTER', 'CHECK', 'COLLATE', 'COLUMN', 'CONDITION', 'CONSTRAINT', 'CONTINUE', 'CONVERT', 'CREATE', 'CROSS', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'CURRENT_USER', 'CURSOR', 'DATABASE', 'DATABASES', 'DAY_HOUR', 'DAY_MICROSECOND', 'DAY_MINUTE', 'DAY_SECOND', 'DEC', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELAYED', 'DELETE', 'DESC', 'DESCRIBE', 'DETERMINISTIC', 'DISTINCT', 'DISTINCTROW', 'DIV', 'DOUBLE', 'DROP', 'DUAL', 'EACH', 'ELSE', 'ELSEIF', 'ENCLOSED', 'ESCAPED', 'EXISTS', 'EXIT', 'EXPLAIN', 'FETCH', 'FLOAT', 'FLOAT4', 'FLOAT8', 'FOR', 'FORCE', 'FOREIGN', 'FROM', 'FULLTEXT', 'GENERAL', 'GRANT', 'GROUP', 'HAVING', 'HIGH_PRIORITY', 'HOUR_MICROSECOND', 'HOUR_MINUTE', 'HOUR_SECOND', 'IF', 'IGNORE', 'IGNORE_SERVER_IDS', 'IN', 'INDEX', 'INFILE', 'INNER', 'INOUT', 'INSENSITIVE', 'INSERT', 'INT', 'INT1', 'INT2', 'INT3', 'INT4', 'INT8', 'INTEGER', 'INTERVAL', 'INTO', 'IS', 'ITERATE', 'JOIN', 'KEY', 'KEYS', 'KILL', 'LEADING', 'LEAVE', 'LEFT', 'LIKE', 'LIMIT', 'LINEAR', 'LINES', 'LOAD', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCK', 'LONG', 'LONGBLOB', 'LONGTEXT', 'LOOP', 'LOW_PRIORITY', 'MASTER_HEARTBEAT_PERIOD', 'MASTER_SSL_VERIFY_SERVER_CERT', 'MATCH', 'MAXVALUE', 'MEDIUMBLOB', 'MEDIUMINT', 'MEDIUMTEXT', 'MIDDLEINT', 'MINUTE_MICROSECOND', 'MINUTE_SECOND', 'MOD', 'MODIFIES', 'NATURAL', 'NO_WRITE_TO_BINLOG', 'NOT', 'NULL', 'NUMERIC', 'ON', 'OPTIMIZE', 'OPTION', 'OPTIONALLY', 'OR', 'ORDER', 'OUT', 'OUTER', 'OUTFILE', 'PRECISION', 'PRIMARY', 'PROCEDURE', 'PURGE', 'RANGE', 'READ', 'READ_WRITE', 'READS', 'REAL', 'REFERENCES', 'REGEXP', 'RELEASE', 'RENAME', 'REPEAT', 'REPLACE', 'REQUIRE', 'RESIGNAL', 'RESTRICT', 'RETURN', 'REVOKE', 'RIGHT', 'RLIKE', 'SCHEMA', 'SCHEMAS', 'SECOND_MICROSECOND', 'SELECT', 'SENSITIVE', 'SEPARATOR', 'SET', 'SHOW', 'SIGNAL', 'SLOW', 'SMALLINT', 'SPATIAL', 'SPECIFIC', 'SQL', 'SQL_BIG_RESULT', 'SQL_CALC_FOUND_ROWS', 'SQL_SMALL_RESULT', 'SQLEXCEPTION', 'SQLSTATE', 'SQLWARNING', 'SSL', 'STARTING', 'STRAIGHT_JOIN', 'TABLE', 'TERMINATED', 'THEN', 'TINYBLOB', 'TINYINT', 'TINYTEXT', 'TO', 'TRAILING', 'TRIGGER', 'UNDO', 'UNION', 'UNIQUE', 'UNLOCK', 'UNSIGNED', 'UPDATE', 'USAGE', 'USE', 'USING', 'UTC_DATE', 'UTC_TIME', 'UTC_TIMESTAMP', 'VALUES', 'VARBINARY', 'VARCHAR', 'VARCHARACTER', 'VARYING', 'WHEN', 'WHERE', 'WHILE', 'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL', 'FALSE', 'TRUE']);
+        $reservedWords = array_merge($reservedWords, ['ACCESSIBLE', 'ADD', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ASENSITIVE', 'BEFORE', 'BETWEEN', 'BIGINT', 'BINARY', 'BLOB', 'BOTH', 'BY', 'CALL', 'CASCADE', 'CASE', 'CHANGE', 'CHAR', 'CHARACTER', 'CHECK', 'COLLATE', 'COLUMN', 'CONDITION', 'CONSTRAINT', 'CONTINUE', 'CONVERT', 'CREATE', 'CROSS', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'CURRENT_USER', 'CURSOR', 'DATABASE', 'DATABASES', 'DAY_HOUR', 'DAY_MICROSECOND', 'DAY_MINUTE', 'DAY_SECOND', 'DEC', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELAYED', 'DELETE', 'DESC', 'DESCRIBE', 'DETERMINISTIC', 'DISTINCT', 'DISTINCTROW', 'DIV', 'DOUBLE', 'DROP', 'DUAL', 'EACH', 'ELSE', 'ELSEIF', 'ENCLOSED', 'ESCAPED', 'EXISTS', 'EXIT', 'EXPLAIN', 'FETCH', 'FLOAT', 'FLOAT4', 'FLOAT8', 'FOR', 'FORCE', 'FOREIGN', 'FROM', 'FULLTEXT', 'GENERAL', 'GRANT', 'GROUP', 'HAVING', 'HIGH_PRIORITY', 'HOUR_MICROSECOND', 'HOUR_MINUTE', 'HOUR_SECOND', 'IF', 'IGNORE', 'IGNORE_SERVER_IDS', 'IN', 'INDEX', 'INFILE', 'INNER', 'INOUT', 'INSENSITIVE', 'INSERT', 'INT', 'INT1', 'INT2', 'INT3', 'INT4', 'INT8', 'INTEGER', 'INTERVAL', 'INTO', 'IS', 'ITERATE', 'JOIN', 'KEY', 'KEYS', 'KILL', 'LEADING', 'LEAVE', 'LEFT', 'LIKE', 'LIMIT', 'LINEAR', 'LINES', 'LOAD', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCK', 'LONG', 'LONGBLOB', 'LONGTEXT', 'LOOP', 'LOW_PRIORITY', 'MASTER_HEARTBEAT_PERIOD', 'MASTER_SSL_VERIFY_SERVER_CERT', 'MATCH', 'MAXVALUE', 'MEDIUMBLOB', 'MEDIUMINT', 'MEDIUMTEXT', 'MIDDLEINT', 'MINUTE_MICROSECOND', 'MINUTE_SECOND', 'MOD', 'MODIFIES', 'NATURAL', 'NO_WRITE_TO_BINLOG', 'NOT', 'NULL', 'NUMERIC', 'ON', 'OPTIMIZE', 'OPTION', 'OPTIONALLY', 'OR', 'ORDER', 'OUT', 'OUTER', 'OUTFILE', 'PRECISION', 'PRIMARY', 'PROCEDURE', 'PURGE', 'RANGE', 'READ', 'READ_WRITE', 'READS', 'REAL', /*'REFERENCES',*/ 'REGEXP', 'RELEASE', 'RENAME', 'REPEAT', 'REPLACE', 'REQUIRE', 'RESIGNAL', 'RESTRICT', 'RETURN', 'REVOKE', 'RIGHT', 'RLIKE', 'SCHEMA', 'SCHEMAS', 'SECOND_MICROSECOND', 'SELECT', 'SENSITIVE', 'SEPARATOR', 'SET', 'SHOW', 'SIGNAL', 'SLOW', 'SMALLINT', 'SPATIAL', 'SPECIFIC', 'SQL', 'SQL_BIG_RESULT', 'SQL_CALC_FOUND_ROWS', 'SQL_SMALL_RESULT', 'SQLEXCEPTION', 'SQLSTATE', 'SQLWARNING', 'SSL', 'STARTING', 'STRAIGHT_JOIN', 'TABLE', 'TERMINATED', 'THEN', 'TINYBLOB', 'TINYINT', 'TINYTEXT', 'TO', 'TRAILING', 'TRIGGER', 'UNDO', 'UNION', 'UNIQUE', 'UNLOCK', 'UNSIGNED', 'UPDATE', 'USAGE', 'USE', 'USING', 'UTC_DATE', 'UTC_TIME', 'UTC_TIMESTAMP', 'VALUES', 'VARBINARY', 'VARCHAR', 'VARCHARACTER', 'VARYING', 'WHEN', 'WHERE', 'WHILE', 'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL', 'FALSE', 'TRUE']);
 
         return !in_array(strtoupper($term), $reservedWords);
     }
@@ -380,9 +380,9 @@ class Project extends ProjectBase
         // Mark many to many virtual entities
         foreach ($manyToManyRelationships as $manyToManyRelationship) {
             $manyToManyEntityName = (array)$manyToManyRelationship->attributes();
-            $manyToManyEntityName = $manyToManyEntityName['@attributes']['name'];
+            $manyToManyEntityFullyQualifiedName = $manyToManyEntityName['@attributes']['fullyQualifiedName'];
 
-            $manyToManyEntity = &$this->getEntityByFullyQualifiedName($manyToManyEntityName);
+            $manyToManyEntity = &$this->getEntityByFullyQualifiedName($manyToManyEntityFullyQualifiedName);
 
             $manyToManyEntityAttributes = $manyToManyEntity->getAttributes();
 
@@ -416,29 +416,9 @@ class Project extends ProjectBase
                 $sourceAttribute->setForeign('ManyToOne');
 	        */
             $type = (string)$foreignKey->attributes()->type;
-            if ($type == 'OneToOne') {
+            if ($type === 'OneToOne') {
                 $targetAttribute->setForeign('OneToOne');
-
-                if ($targetEntity->getRenderizable()) {
-                    /** @var Attribute $inverseAttribute */
-                    $inverseAttribute = new $attributeClass($sourceEntity,$targetEntity->getLowerName(),'object');
-                    $inverseAttribute
-                        ->setInverse(true)
-                        ->setSubtype($targetEntity->getName())
-                        ->setForeign('OneToOne')
-                        ->setForeignEntity($targetEntity)
-                        ->setForeignKey($targetAttribute)
-                        ->setNull($targetAttribute->getNull()); // TODO: CHECK
-
-                    try {
-                        $sourceEntity->addAttribute($inverseAttribute);
-                    } catch (DuplicateAttributeException $e) {
-                        $existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
-
-                        $this->log = '*** The OneToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.' . "\n" . $this->log;
-                    }
-                }
-            } else {
+            } else { // ManyToOne
                 $targetAttribute->setForeign('ManyToOne');
             }
 
@@ -452,10 +432,11 @@ class Project extends ProjectBase
         }
 
         foreach ($manyToManyRelationships as $manyToManyRelationship) {
-            $manyToManyEntityName = (array)$manyToManyRelationship->attributes();
-            $manyToManyEntityName = $manyToManyEntityName['@attributes']['name'];
+            $manyToManyEntityNameArray          = (array)$manyToManyRelationship->attributes();
+            $manyToManyEntityName               = $manyToManyEntityNameArray['@attributes']['name'];
+            $manyToManyEntityFullyQualifiedName = $manyToManyEntityNameArray['@attributes']['fullyQualifiedName'];
 
-            $manyToManyEntity = &$this->getEntityByFullyQualifiedName($manyToManyEntityName);
+            $manyToManyEntity = & $this->getEntityByFullyQualifiedName($manyToManyEntityFullyQualifiedName);
 
             $manyToManyEntityAttributes = $manyToManyEntity->getAttributes();
 
@@ -495,6 +476,67 @@ class Project extends ProjectBase
             }
         }
 
+        // Add OneToOne and OneToMany inverse attributes
+        $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
+
+        foreach ($foreignKeys as $foreignKey) {
+            $sourceEntityName    = (string)$foreignKey->attributes()->from;
+            $sourceAttributeName = (string)$foreignKey->attributes()->fromAttribute;
+
+            $targetEntityName    = (string)$foreignKey->attributes()->to;
+            $targetAttributeName = (string)$foreignKey->attributes()->toAttribute;
+
+            $sourceEntity    = &$this->getEntityByFullyQualifiedName($sourceEntityName);
+            $sourceAttribute = &$sourceEntity->getAttributeByName($sourceAttributeName);
+
+            $targetEntity    = &$this->getEntityByFullyQualifiedName($targetEntityName);
+            $targetAttribute = &$targetEntity->getAttributeByName($targetAttributeName);
+
+            $type = (string)$foreignKey->attributes()->type;
+            if ($targetEntity->getRenderizable()) {
+                if ($type === 'OneToOne') {
+                    /** @var Attribute $inverseAttribute */
+                    $inverseAttribute = new $attributeClass($sourceEntity,$targetEntity->getLowerName(),'object');
+                    $inverseAttribute
+                        ->setInverse(true)
+                        ->setSubtype($targetEntity->getRelativePathName())
+                        ->setForeign('OneToOne')
+                        ->setForeignEntity($targetEntity)
+                        ->setForeignKey($targetAttribute)
+                        ->setNull($targetAttribute->getNull()); // TODO: CHECK
+
+                    try {
+                        $sourceEntity->addAttribute($inverseAttribute);
+                    } catch (DuplicateAttributeException $e) {
+                        //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
+
+                        $this->log = '*** The OneToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.' . "\n" . $this->log;
+                    }
+                } else { // ManyToOne
+                    /** @var Attribute $inverseAttribute */
+                    $inverseAttribute = new $attributeClass($sourceEntity,$targetEntity->getPluralLowerName(),'array');
+                    $inverseAttribute
+                        ->setInverse(true)
+                        ->setSubtype($targetEntity->getRelativePathName())
+                        ->setForeign('ManyToOne')
+                        ->setForeignEntity($targetEntity)
+                        ->setForeignKey($targetAttribute)
+                        ->setNull($targetAttribute->getNull()) // TODO: CHECK
+                        ->setReverseAttribute($targetAttribute);
+
+                    $targetAttribute->setReverseAttribute($inverseAttribute);
+
+                    try {
+                        $sourceEntity->addAttribute($inverseAttribute);
+                    } catch (DuplicateAttributeException $e) {
+                        //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
+
+                        $this->log = '*** The ManyToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.' . "\n" . $this->log;
+                    }
+                }
+            }
+        }
+
         return $this;
     }
 
@@ -510,7 +552,7 @@ class Project extends ProjectBase
                             $file = str_replace('Repository.php','.php',$file); // Repositories are allowed
 
                             try {
-                                $entity = $this->getEntityByFullyQualifiedName(substr($file, 0, -4));
+                                $entity = $this->getEntityByFullyQualifiedName($folder . '\\' .  substr($file, 0, -4));
 
                                 if (!$entity->getRenderizable())
                                     $this->log = '*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an it belongs to an implicit ManyToMany relationship.' . "\n" . $this->log;
@@ -546,7 +588,7 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getEntityBaseTemplate())) {
-            $this->setEntityBaseTemplate(new PHPTemplates\EntityBase());
+            $this->setEntityBaseTemplate(new PHPTemplates\EntityBase1());
         }
 
         if (is_null($this->getRepositoryTemplate())) {
@@ -558,7 +600,7 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getFormBaseTemplate())) {
-            $this->setFormBaseTemplate(new PHPTemplates\FormBase());
+            $this->setFormBaseTemplate(new PHPTemplates\FormBase1());
         }
 
         if (is_null($this->getControllerTemplate())) {
@@ -588,8 +630,6 @@ class Project extends ProjectBase
         if (is_null($this->getCrudUpdateTwigTemplate())) {
             $this->setCrudUpdateTwigTemplate(new PHPTemplates\CrudUpdateTwig());
         }
-
-
     }
 
     public function saveTo($path)

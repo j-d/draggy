@@ -16,14 +16,14 @@
 
 namespace Autocode\Templates\PHP;
 
-use Autocode\Templates\PHP\Base\FormCodeBase;
+use Autocode\Templates\PHP\Base\FormBase;
 // <user-additions part="use">
 // </user-additions>
 
 /**
  * Autocode\Templates\PHP\Entity\Form
  */
-class Form extends FormCodeBase
+class Form extends FormBase
     // <user-additions part="implements">
     // </user-additions>
 {

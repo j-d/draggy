@@ -19,24 +19,20 @@ function autoload($className)
     require $fileName;
 }
 
-$modelFile = '/var/www/draggy/saves/autocode.xml';
-$namespace = 'Autocode';
-
-//$targetFolder = pathinfo($modelFile,PATHINFO_DIRNAME) . '/ORM/';
-//$targetFolder = '/var/www/draggy/model/';
-$targetFolder = '/var/www/draggy/';
-//$targetFolder = __DIR__ . '/../../../Draggy/'; // src folder
+$modelFile = '/var/www/draggy/saves/test.xml';
+$namespace = 'Test';
+$targetFolder = '/var/www/test/src/';
 
 $project = new Project($namespace);
 
 //try {
-    $project
-        ->setBase(true)
-        ->loadFile($modelFile)
-        ->setOverwrite(true)
-        ->setValidation(false)
-    //->setDeleteUnmapped(true)
-        ->saveTo($targetFolder);
+$project
+    ->setBase(true)
+    ->loadFile($modelFile)
+    ->setOverwrite(true)
+    ->setValidation(false)
+//->setDeleteUnmapped(true)
+    ->saveTo($targetFolder);
 //}
 //catch (\Exception $e) {
 //    die($e->getMessage());

@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\JS\EntityBase1.php
+// Autocode\Templates\JS\EntityBase2.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,15 +16,15 @@
 
 namespace Autocode\Templates\JS;
 
-use Autocode\Templates\JS\Base\EntityBase1Base;
+use Autocode\Templates\JS\Base\EntityBase2Base;
 // <user-additions part="use">
 use Autocode\Entity;
 // </user-additions>
 
 /**
- * Autocode\Templates\JS\Entity\EntityBase1
+ * Autocode\Templates\JS\Entity\EntityBase2
  */
-class EntityBase1 extends EntityBase1Base
+class EntityBase2 extends EntityBase2Base
     // <user-additions part="implements">
     // </user-additions>
 {

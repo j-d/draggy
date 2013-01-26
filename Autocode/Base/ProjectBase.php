@@ -206,7 +206,7 @@ abstract class ProjectBase
     /**
      * Set entities
      *
-     * @param array $entities
+     * @param Entity[] $entities
      *
      * @return Project
      */
@@ -321,7 +321,7 @@ abstract class ProjectBase
     /**
      * Get entities
      *
-     * @return array
+     * @return Entity[]
      */
     public function getEntities()
     {
@@ -451,7 +451,7 @@ abstract class ProjectBase
     /**
      * Set modules
      *
-     * @param array $modules
+     * @param string[] $modules
      *
      * @return Project
      */
@@ -566,7 +566,7 @@ abstract class ProjectBase
     /**
      * Get modules
      *
-     * @return array
+     * @return string[]
      */
     public function getModules()
     {
@@ -576,7 +576,7 @@ abstract class ProjectBase
     /**
      * Set moduleEntities
      *
-     * @param array $moduleEntities
+     * @param string[] $moduleEntities
      *
      * @return Project
      */
@@ -691,7 +691,7 @@ abstract class ProjectBase
     /**
      * Get moduleEntities
      *
-     * @return array
+     * @return string[]
      */
     public function getModuleEntities()
     {
@@ -701,7 +701,7 @@ abstract class ProjectBase
     /**
      * Set moduleNamespaces
      *
-     * @param array $moduleNamespaces
+     * @param string[] $moduleNamespaces
      *
      * @return Project
      */
@@ -816,7 +816,7 @@ abstract class ProjectBase
     /**
      * Get moduleNamespaces
      *
-     * @return array
+     * @return string[]
      */
     public function getModuleNamespaces()
     {
@@ -837,7 +837,6 @@ abstract class ProjectBase
         if (!is_string($language)) {
             throw new \InvalidArgumentException('The attribute language on the class Project has to be string (' . gettype($language) . ('object' === gettype($language) ? ' ' . get_class($language) : '') . ' given).');
         }
-
 
         $this->language = $language;
 
@@ -899,7 +898,6 @@ abstract class ProjectBase
             throw new \InvalidArgumentException('The attribute orm on the class Project has to be string (' . gettype($orm) . ('object' === gettype($orm) ? ' ' . get_class($orm) : '') . ' given).');
         }
 
-
         $this->orm = $orm;
 
         return $this;
@@ -929,7 +927,6 @@ abstract class ProjectBase
         if (!is_string($framework)) {
             throw new \InvalidArgumentException('The attribute framework on the class Project has to be string (' . gettype($framework) . ('object' === gettype($framework) ? ' ' . get_class($framework) : '') . ' given).');
         }
-
 
         $this->framework = $framework;
 
@@ -991,7 +988,6 @@ abstract class ProjectBase
             throw new \InvalidArgumentException('The attribute attributeClass on the class Project has to be string (' . gettype($attributeClass) . ('object' === gettype($attributeClass) ? ' ' . get_class($attributeClass) : '') . ' given).');
         }
 
-
         $this->attributeClass = $attributeClass;
 
         return $this;
@@ -1021,7 +1017,6 @@ abstract class ProjectBase
         if (!is_string($entityClass)) {
             throw new \InvalidArgumentException('The attribute entityClass on the class Project has to be string (' . gettype($entityClass) . ('object' === gettype($entityClass) ? ' ' . get_class($entityClass) : '') . ' given).');
         }
-
 
         $this->entityClass = $entityClass;
 

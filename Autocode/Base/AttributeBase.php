@@ -256,7 +256,6 @@ abstract class AttributeBase
             throw new \InvalidArgumentException('The attribute type on the class Attribute has to be string (' . gettype($type) . ('object' === gettype($type) ? ' ' . get_class($type) : '') . ' given).');
         }
 
-
         $this->type = $type;
 
         return $this;
@@ -286,7 +285,6 @@ abstract class AttributeBase
         if (!is_string($subtype) && null !== $subtype) {
             throw new \InvalidArgumentException('The attribute subtype on the class Attribute has to be string or null (' . gettype($subtype) . ('object' === gettype($subtype) ? ' ' . get_class($subtype) : '') . ' given).');
         }
-
 
         $this->subtype = $subtype;
 
@@ -468,7 +466,6 @@ abstract class AttributeBase
             throw new \InvalidArgumentException('The attribute minSizeMessage on the class Attribute has to be string (' . gettype($minSizeMessage) . ('object' === gettype($minSizeMessage) ? ' ' . get_class($minSizeMessage) : '') . ' given).');
         }
 
-
         $this->minSizeMessage = $minSizeMessage;
 
         return $this;
@@ -498,7 +495,6 @@ abstract class AttributeBase
         if (!is_string($maxSizeMessage)) {
             throw new \InvalidArgumentException('The attribute maxSizeMessage on the class Attribute has to be string (' . gettype($maxSizeMessage) . ('object' === gettype($maxSizeMessage) ? ' ' . get_class($maxSizeMessage) : '') . ' given).');
         }
-
 
         $this->maxSizeMessage = $maxSizeMessage;
 
@@ -530,7 +526,6 @@ abstract class AttributeBase
             throw new \InvalidArgumentException('The attribute exactSizeMessage on the class Attribute has to be string (' . gettype($exactSizeMessage) . ('object' === gettype($exactSizeMessage) ? ' ' . get_class($exactSizeMessage) : '') . ' given).');
         }
 
-
         $this->exactSizeMessage = $exactSizeMessage;
 
         return $this;
@@ -561,7 +556,6 @@ abstract class AttributeBase
             throw new \InvalidArgumentException('The attribute minMessage on the class Attribute has to be string (' . gettype($minMessage) . ('object' === gettype($minMessage) ? ' ' . get_class($minMessage) : '') . ' given).');
         }
 
-
         $this->minMessage = $minMessage;
 
         return $this;
@@ -591,7 +585,6 @@ abstract class AttributeBase
         if (!is_string($maxMessage)) {
             throw new \InvalidArgumentException('The attribute maxMessage on the class Attribute has to be string (' . gettype($maxMessage) . ('object' === gettype($maxMessage) ? ' ' . get_class($maxMessage) : '') . ' given).');
         }
-
 
         $this->maxMessage = $maxMessage;
 
@@ -652,7 +645,6 @@ abstract class AttributeBase
         if (!is_string($description)) {
             throw new \InvalidArgumentException('The attribute description on the class Attribute has to be string (' . gettype($description) . ('object' === gettype($description) ? ' ' . get_class($description) : '') . ' given).');
         }
-
 
         $this->description = $description;
 
@@ -744,7 +736,6 @@ abstract class AttributeBase
             throw new \InvalidArgumentException('The attribute defaultValue on the class Attribute has to be string (' . gettype($defaultValue) . ('object' === gettype($defaultValue) ? ' ' . get_class($defaultValue) : '') . ' given).');
         }
 
-
         $this->defaultValue = $defaultValue;
 
         return $this;
@@ -774,7 +765,6 @@ abstract class AttributeBase
         if (!is_string($foreign) && null !== $foreign) {
             throw new \InvalidArgumentException('The attribute foreign on the class Attribute has to be string or null (' . gettype($foreign) . ('object' === gettype($foreign) ? ' ' . get_class($foreign) : '') . ' given).');
         }
-
 
         $this->foreign = $foreign;
 
@@ -875,7 +865,6 @@ abstract class AttributeBase
         if (!is_string($manyToManyEntityName)) {
             throw new \InvalidArgumentException('The attribute manyToManyEntityName on the class Attribute has to be string (' . gettype($manyToManyEntityName) . ('object' === gettype($manyToManyEntityName) ? ' ' . get_class($manyToManyEntityName) : '') . ' given).');
         }
-
 
         $this->manyToManyEntityName = $manyToManyEntityName;
 

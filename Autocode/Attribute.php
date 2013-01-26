@@ -29,18 +29,35 @@ abstract class Attribute extends AttributeBase
 {
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
-    public static $SYMFONY_VARS = ['string'   => 'string',
-                                   'boolean'  => 'boolean',
-                                   'integer'  => 'integer',
-                                   'smallint' => 'integer',
-                                   'bigint'   => 'integer',
-                                   'text'     => 'string',
-                                   'date'     => 'object',
-                                   'time'     => 'object',
-                                   'datetime' => 'object',
-                                   'array'    => 'array',
-                                   'decimal'  => 'float',
-                                   'object'   => 'ERROR'];
+    public static $SYMFONY_VARS = [
+        'string'   => 'string',
+        'boolean' => 'boolean',
+        'integer' => 'integer',
+        'smallint' => 'integer',
+        'bigint' => 'integer',
+        'text' => 'string',
+        'date' => 'object',
+        'time' => 'object',
+        'datetime' => 'object',
+        'array' => 'array',
+        'decimal' => 'float',
+        'object' => 'ERROR'
+    ];
+
+    public static $BASIC_TYPES = [
+        'string',
+        'boolean',
+        'integer',
+        'smallint',
+        'bigint',
+        'text',
+        'date',
+        'time',
+        'datetime',
+        'array',
+        'decimal',
+        'object',
+    ];
     // </user-additions>
     // </editor-fold>
 
@@ -180,7 +197,16 @@ abstract class Attribute extends AttributeBase
     // <user-additions part="otherMethods">
     public function isEntitySubtype()
     {
-        return (!is_null($this->getSubtype()) && !in_array($this->getSubtype(),array_keys(self::$SYMFONY_VARS)));
+        return $this->getSubtype() !== null && !in_array($this->getSubtype(), self::$BASIC_TYPES);
+    }
+
+    public function getEntitySubtype()
+    {
+        if ($this->isEntitySubtype()) {
+            return $this->getEntity()->getProject()->getEntityByFullyQualifiedName($this->getSubtype());
+        } else {
+            throw new \RuntimeException('Tried to get a class subtype when is not a class subtype.');
+        }
     }
 
     public function setForeignEntity(Entity &$foreignEntity)

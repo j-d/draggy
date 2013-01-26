@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\JS\Base\EntityBase1.php
+// Autocode\Templates\JS\Base\EntityBase2.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,14 +16,14 @@
 
 namespace Autocode\Templates\JS\Base;
 
-use Autocode\Templates\JS\EntityBase1;
+use Autocode\Templates\JS\EntityBase2;
 use Autocode\Templates\EntityTemplate;
 use Autocode\Entity;
 
 /**
- * Autocode\Templates\JS\Entity\Base\EntityBase1
+ * Autocode\Templates\JS\Entity\Base\EntityBase2
  */
-abstract class EntityBase1Base extends EntityTemplate
+abstract class EntityBase2Base extends EntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class EntityBase1Base extends EntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * EntityBase1 to string (Default)
+     * EntityBase2 to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'EntityBase1';
+        return 'EntityBase2';
     }
     // </editor-fold>
 }

@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\FormBase.php
+// Autocode\Templates\PHP\FormBase1.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,14 +16,14 @@
 
 namespace Autocode\Templates\PHP;
 
-use Autocode\Templates\PHP\Base\FormBaseBase;
+use Autocode\Templates\PHP\Base\FormBase1Base;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\FormBase
+ * Autocode\Templates\PHP\Entity\FormBase1
  */
-class FormBase extends FormBaseBase
+class FormBase1 extends FormBase1Base
     // <user-additions part="implements">
     // </user-additions>
 {

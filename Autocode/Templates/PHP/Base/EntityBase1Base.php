@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Base\Form.php
+// Autocode\Templates\PHP\Base\EntityBase1.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,14 +16,14 @@
 
 namespace Autocode\Templates\PHP\Base;
 
-use Autocode\Templates\PHP\Form;
+use Autocode\Templates\PHP\EntityBase1;
 use Autocode\Templates\PHPEntityTemplate;
 use Autocode\Entity;
 
 /**
- * Autocode\Templates\PHP\Entity\Base\Form
+ * Autocode\Templates\PHP\Entity\Base\EntityBase1
  */
-abstract class FormCodeBase extends PHPEntityTemplate
+abstract class EntityBase1Base extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class FormCodeBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Form to string (Default)
+     * EntityBase1 to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'Form';
+        return 'EntityBase1';
     }
     // </editor-fold>
 }

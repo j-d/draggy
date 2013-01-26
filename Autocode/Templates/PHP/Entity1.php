@@ -61,6 +61,7 @@ class Entity1 extends Entity1Base
         $ret .= '     * @var ' . $attribute->getPhpType() . ' $' . $attribute->getLowerName() . "\n";
 
         // ORM
+        // <editor-fold desc="ORM">
         if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') {
             $ret .= '     *' . "\n";
             $ret .= ($attribute->getPrimary() ? '     * @ORM\\Id' . "\n" : '');
@@ -71,16 +72,19 @@ class Entity1 extends Entity1Base
             } else {
                 switch ($attribute->getForeign()) {
                     case 'ManyToOne':
-                        $ret .= '     * @ORM\\' . $attribute->getForeign() . '(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '")' . "\n";
-                        //$ret .= '     * @ORM\\' . $attribute->getForeign() . '(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '")' . "\n";
-                        $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
+                        if ($attribute->getOwnerSide()) {
+                            $ret .= '     * @ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist"})' . "\n";
+                            $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
+                        } else {
+                            $ret .= '     * @ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";
+                        }
                         break;
                     case 'OneToOne':
                         if ($attribute->getOwnerSide()) {
-                            $ret .= '     * @ORM\\' . $attribute->getForeign() . '(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist"})' . "\n";
+                            $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist"})' . "\n";
                             $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
                         } else {
-                            $ret .= '     * @ORM\\' . $attribute->getForeign() . '(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";
+                            $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";
                         }
                         break;
                     case 'ManyToMany':
@@ -101,8 +105,10 @@ class Entity1 extends Entity1Base
             }
             $ret .= ($attribute->getAutoIncrement() && !$attribute->getForeignTick() ? '     * @ORM\GeneratedValue(strategy="AUTO")' . "\n" : '');
         }
+        // </editor-fold>
 
         // Asserts
+        // <editor-fold desc="Asserts">
         if (!$attribute->getInverse()) {
             if ($attribute->getEntity()->getProject()->getValidation()) {
                 $asserts = '';
@@ -151,6 +157,7 @@ class Entity1 extends Entity1Base
                     $ret .= "     *\n" . $asserts;
             }
         }
+        // </editor-fold>
 
         $ret .= '     */' . "\n";
 
@@ -316,6 +323,7 @@ class Entity1 extends Entity1Base
                         $val .= '        if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {' . "\n";
                         $val .= '            throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');' . "\n";
                         $val .= '        }' . "\n";
+                        $val .= "\n";
                     }
                 } else {
                     $val .= $this->getTypeCheck($attribute, ['string', 'null']);
@@ -327,9 +335,9 @@ class Entity1 extends Entity1Base
                         $val .= '        if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {' . "\n";
                         $val .= '            throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');' . "\n";
                         $val .= '        }' . "\n";
+                        $val .= "\n";
                     }
                 }
-                $val .= "\n";
             } elseif ($attribute->getType() === 'text') {
                 if (!$attribute->getNull()) {
                     $val .= $this->getTypeCheck($attribute, ['string']);
@@ -345,7 +353,7 @@ class Entity1 extends Entity1Base
 
             // The not null case doesn't make sense because it will go on the parameter line
             if ($attribute->getNull()) {
-                $val .= $this->getTypeCheck($attribute, [['object'=>$attribute->getSubtype()], 'null']);
+                $val .= $this->getTypeCheck($attribute, [['object'=>$attribute->getEntitySubtype()->getName()], 'null']);
                 $val .= "\n";
             }
         }
@@ -420,6 +428,7 @@ class Entity1 extends Entity1Base
         } else {
             if ($attribute->getForeign() === 'ManyToMany') {
                 $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                $ret .= '            /** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */' . "\n";
                 $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '(new ArrayCollection([$this]));' . "\n";
                 $ret .= '        }' . "\n";
             } elseif ($attribute->getForeign() === 'OneToOne') {
@@ -441,9 +450,17 @@ class Entity1 extends Entity1Base
                     $ret .= '            ' . $attribute->getThisName() . ' = null;' . "\n";
                     $ret .= '        }' . "\n";
                 }
-            } else {
-                // Default to normal setter
-                $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
+            } else { // ManyToOne
+                if ($attribute->getInverse()) {
+                    $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                    $ret .= '            /** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */' . "\n";
+                    $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
+                    $ret .= '        }' . "\n";
+                } else {
+                    // Default normal setter
+                    throw new \RuntimeException('Unknown scenario');
+                    //$ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
+                }
             }
         }
 
@@ -485,7 +502,9 @@ class Entity1 extends Entity1Base
         $ret .= '     * Add ' . $attribute->getSingleName() . "\n";
         $ret .= '     *' . "\n";
         $ret .= '     * @param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName() . "\n";
-        $ret .= '     * @param bool $allowRepeatedValues' . "\n";
+        if ($attribute->getForeign() === 'ManyToMany') {
+            $ret .= '     * @param bool $allowRepeatedValues' . "\n";
+        }
 
         if (!$attribute->getStatic()) {
             $ret .= '     *' . "\n";
@@ -493,17 +512,21 @@ class Entity1 extends Entity1Base
         }
 
         $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ', $allowRepeatedValues = true)' . "\n";
+        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ($attribute->getForeign() === 'ManyToMany' ? ', $allowRepeatedValues = true' : '') . ')' . "\n";
         $ret .= '    {' . "\n";
 
-        if (!$attribute->getSettingFromInverse()) {
-            $ret .= '        if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
-            $ret .= '            ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
-            $ret .= '        }' . "\n";
-        } else {
-            $ret .= '        if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
-            $ret .= '            $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-            $ret .= '        }' . "\n";
+        if ($attribute->getForeign() === 'ManyToMany') {
+            if (!$attribute->getSettingFromInverse()) {
+                $ret .= '        if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
+                $ret .= '            ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
+                $ret .= '        }' . "\n";
+            } else {
+                $ret .= '        if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
+                $ret .= '            $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+                $ret .= '        }' . "\n";
+            }
+        } else { // ManyToOne
+            $ret .= '        $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
         }
 
         if (!$attribute->getStatic()) {
@@ -517,8 +540,10 @@ class Entity1 extends Entity1Base
         $ret .= '    /**' . "\n";
         $ret .= '     * Add ' . $attribute->getLowerName() . "\n";
         $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpTypeBase() . ' $' . $attribute->getLowerName() . "\n";
-        $ret .= '     * @param bool $allowRepeatedValues' . "\n";
+        $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
+        if ($attribute->getForeign() === 'ManyToMany') {
+            $ret .= '     * @param bool $allowRepeatedValues' . "\n";
+        }
 
         if (!$attribute->getStatic()) {
             $ret .= '     *' . "\n";
@@ -526,20 +551,26 @@ class Entity1 extends Entity1Base
         }
 
         $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ', $allowRepeatedValues = true)' . "\n";
+        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ($attribute->getForeign() === 'ManyToMany' ? ', $allowRepeatedValues = true' : '') . ')' . "\n";
         $ret .= '    {' . "\n";
 
-        if (!$attribute->getSettingFromInverse()) {
+        if ($attribute->getForeign() === 'ManyToMany') {
+            if (!$attribute->getSettingFromInverse()) {
+                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                $ret .= '            if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
+                $ret .= '                ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
+                $ret .= '            }' . "\n";
+                $ret .= '        }' . "\n";
+            } else {
+                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                $ret .= '            if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
+                $ret .= '                $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+                $ret .= '            }' . "\n";
+                $ret .= '        }' . "\n";
+            }
+        } else { // ManyToOne
             $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '            if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
-            $ret .= '                ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
-            $ret .= '            }' . "\n";
-            $ret .= '        }' . "\n";
-        } else {
-            $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '            if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
-            $ret .= '                $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-            $ret .= '            }' . "\n";
+            $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
             $ret .= '        }' . "\n";
         }
 
@@ -551,52 +582,54 @@ class Entity1 extends Entity1Base
 
         $ret .= "\n";
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Contains ' . $attribute->getSingleName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @return bool' . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
-        $ret .= '    {' . "\n";
+        if ($attribute->getForeign() !== 'ManyToOne') {
+            $ret .= '    /**' . "\n";
+            $ret .= '     * Contains ' . $attribute->getSingleName() . "\n";
+            $ret .= '     *' . "\n";
+            $ret .= '     * @param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName() . "\n";
+            $ret .= '     *' . "\n";
+            $ret .= '     * @return bool' . "\n";
+            $ret .= '     */' . "\n";
+            $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
+            $ret .= '    {' . "\n";
 
-        if (!$attribute->getSettingFromInverse()) {
-            $ret .= '        return ' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ');' . "\n";
-        } else {
-            $ret .= '        return $' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+            if (!$attribute->getSettingFromInverse()) {
+                $ret .= '        return ' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ');' . "\n";
+            } else {
+                $ret .= '        return $' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+            }
+            $ret .= '    }' . "\n";
+
+            $ret .= "\n";
+
+            $ret .= '    /**' . "\n";
+            $ret .= '     * Contains ' . $attribute->getLowerName() . "\n";
+            $ret .= '     *' . "\n";
+            $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
+            $ret .= '     *' . "\n";
+            $ret .= '     * @return bool' . "\n";
+            $ret .= '     */' . "\n";
+            $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
+            $ret .= '    {' . "\n";
+
+            if (!$attribute->getSettingFromInverse()) {
+                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                $ret .= '            if (!' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
+                $ret .= '                return false;' . "\n";
+                $ret .= '            }' . "\n";
+                $ret .= '        }' . "\n";
+            } else {
+                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                $ret .= '            if (!$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
+                $ret .= '                return false;' . "\n";
+                $ret .= '            }' . "\n";
+                $ret .= '        }' . "\n";
+            }
+
+            $ret .= "\n";
+            $ret .= '        return true;' . "\n";
+            $ret .= '    }' . "\n";
         }
-        $ret .= '    }' . "\n";
-
-        $ret .= "\n";
-
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Contains ' . $attribute->getLowerName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpTypeBase() . ' $' . $attribute->getLowerName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @return bool' . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
-        $ret .= '    {' . "\n";
-
-        if (!$attribute->getSettingFromInverse()) {
-            $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '            if (!' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
-            $ret .= '                return false;' . "\n";
-            $ret .= '            }' . "\n";
-            $ret .= '        }' . "\n";
-        } else {
-            $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '            if (!$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
-            $ret .= '                return false;' . "\n";
-            $ret .= '            }' . "\n";
-            $ret .= '        }' . "\n";
-        }
-
-        $ret .= "\n";
-        $ret .= '        return true;' . "\n";
-        $ret .= '    }' . "\n";
 
         return $ret;
     }
@@ -645,7 +678,7 @@ class Entity1 extends Entity1Base
         $ret .= '    /**' . "\n";
         $ret .= '     * Remove ' . $attribute->getLowerName() . "\n";
         $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpTypeBase() . ' $' . $attribute->getLowerName() . "\n";
+        $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
 
         if (!$attribute->getStatic()) {
             $ret .= '     *' . "\n";
@@ -695,7 +728,7 @@ class Entity1 extends Entity1Base
             $retArray[] = $this->getSetterCode($attribute);
         }
 
-        if ($attribute->getPhpParameterType() == 'Collection' || $attribute->getType() === 'array') {
+        if ($attribute->getPhpParameterType() === 'Collection' || $attribute->getType() === 'array') {
             $retArray[] = $this->getAddersCode($attribute);
             $retArray[] = $this->getRemoversCode($attribute);
         }
@@ -728,7 +761,7 @@ class Entity1 extends Entity1Base
                 $ret .= '        return \'' . $entity->getName() . '\';' . "\n";
             }
         } else {
-            $ret .= '        return $this->' . $entity->getAttributeByName($entity->getToString())->getName() . ';' . "\n";
+            $ret .= '        return strval($this->' . $entity->getAttributeByName($entity->getToString())->getName() . ');' . "\n";
         }
 
         $ret .= '    }' . "\n";
@@ -814,7 +847,7 @@ class Entity1 extends Entity1Base
 
             if ($useArrayCollection) {
                 $file .= 'use Doctrine\\Common\\Collections\\Collection;' . "\n";
-                $file .= 'use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n";
+                $file .= 'use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n"; // Is needed when doing new ArrayCollection();
             }
         }
 

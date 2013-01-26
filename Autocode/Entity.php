@@ -16,7 +16,7 @@
 
 namespace Autocode;
 
-use Autocode\Base\EntityCodeBase;
+use Autocode\Base\EntityBase;
 // <user-additions part="use">
 use Autocode\Exceptions\DuplicateAttributeException;
 // </user-additions>
@@ -24,7 +24,7 @@ use Autocode\Exceptions\DuplicateAttributeException;
 /**
  * Autocode\Entity\Entity
  */
-abstract class Entity extends EntityCodeBase
+abstract class Entity extends EntityBase
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -80,7 +80,9 @@ abstract class Entity extends EntityCodeBase
 
     public function getPluralLowerName()
     {
-        return $this->getLowerName() . 's';
+        $plural = $this->getPluralName();
+
+        return strtolower($plural[0]) . substr($plural,1);
     }
 
     public function getNameBase()

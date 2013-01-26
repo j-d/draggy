@@ -83,7 +83,7 @@ $(document).ready(function () {
                     $classAttributes = $classAttributes['@attributes'];
 
                     echo 'var c = new Class(\'' . $classAttributes['name'] . '\',\'' . str_replace('\\','\\\\',$moduleAttributes['name']) . '\');' . "\n";
-                    echo 'c.moveTo(\'' . ($classAttributes['left'] - 1) . 'px\',\'' . ($classAttributes['top'] - 1) . 'px\');' . "\n";
+                    echo 'c.moveTo(\'' . ($classAttributes['left'] /*- 1*/) . 'px\',\'' . ($classAttributes['top'] /*- 1*/) . 'px\');' . "\n";
 
                     if (isset($classAttributes['description']))
                         echo 'c.setDescription("' . $classAttributes['description'] . '");' . "\n";
@@ -117,7 +117,7 @@ $(document).ready(function () {
                     $abstractAttributes = $abstractAttributes['@attributes'];
 
                     echo 'var s = new Abstract(\'' . $abstractAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
-                    echo 's.moveTo(\'' . ($abstractAttributes['left'] - 1) . 'px\',\'' . ($abstractAttributes['top'] - 1) . 'px\');' . "\n";
+                    echo 's.moveTo(\'' . ($abstractAttributes['left'] /*- 1*/) . 'px\',\'' . ($abstractAttributes['top'] /*- 1*/) . 'px\');' . "\n";
 
                     if (isset($abstractAttributes['description']))
                         echo 's.setDescription("' . $abstractAttributes['description'] . '");' . "\n";
@@ -152,7 +152,7 @@ $(document).ready(function () {
                     $interfaceAttributes = $interfaceAttributes['@attributes'];
 
                     echo 'var i = new Interface(\'' . $interfaceAttributes['name'] . '\',\'' . $moduleAttributes['name'] . '\');' . "\n";
-                    echo 'i.moveTo(\'' . ($interfaceAttributes['left'] - 1) . 'px\',\'' . ($interfaceAttributes['top'] - 1) . 'px\');' . "\n";
+                    echo 'i.moveTo(\'' . ($interfaceAttributes['left'] /*- 1*/) . 'px\',\'' . ($interfaceAttributes['top'] /*- 1*/) . 'px\');' . "\n";
 
                     if (isset($classAttributes['description']))
                         echo 'i.setDescription("' . $classAttributes['description'] . '");' . "\n";

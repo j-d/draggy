@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\EntityBase.php
+// Autocode\Templates\PHP\EntityBase1.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,14 +16,14 @@
 
 namespace Autocode\Templates\PHP;
 
-use Autocode\Templates\PHP\Base\EntityBaseBase;
+use Autocode\Templates\PHP\Base\EntityBase1Base;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\EntityBase
+ * Autocode\Templates\PHP\Entity\EntityBase1
  */
-class EntityBase extends EntityBaseBase
+class EntityBase1 extends EntityBase1Base
     // <user-additions part="implements">
     // </user-additions>
 {
