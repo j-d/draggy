@@ -1,17 +1,18 @@
 {
     "name": "jd/draggy",
+    "description": "Draggy project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jose Diaz",
+            "email": "jose@diazangulo.com",
+            "homepage": "http://www.diazangulo.com"
+        }
+    ],
     "require": {
         "php": ">=5.4.0"
     },
-	"authors": [
-		{
-			"name": "Jose Diaz",
-			"email": "jose@diazangulo.com",
-			"homepage": "http://www.diazangulo.com"
-		}
-	],
-	"support": {
-		"source": "https://github.com/j-d/draggy/"
-	},
-	
+    "support": {
+        "source": "https://github.com/j-d/draggy/"
+    }	
 }
