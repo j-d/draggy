@@ -3,15 +3,15 @@ draggy
 
 Draggy project
 
-Installation
-------------
+Installation (if you know what you are doing)
+---------------------------------------------
 The easiest way to install dragyy is by using Composer:
 
     curl -s https://getcomposer.org/installer | php
     php composer.phar create-project jd/draggy /path/to/draggy master-dev
 
-Installation for dummies
-------------------------
+Installation (for dummies)
+--------------------------
 Make sure you have all the necessary dependencies installed
 
     sudo apt-get install subversion git apache2 php5 php5-sqlite php-apc php5-intl mysql-server php5-mysql phpmyadmin php5-xdebug php-apc php5-intl php5-xdebug curl
