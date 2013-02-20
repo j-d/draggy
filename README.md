@@ -8,15 +8,15 @@ Installation (if you know what you are doing)
 The easiest way to install dragyy is by using Composer:
 
     curl -s https://getcomposer.org/installer | php
-    php composer.phar create-project jd/draggy /path/to/draggy master-dev
+    php composer.phar create-project jd/draggy /PATH/TO/DRAGGY master-dev
 
 Installation (for dummies)
 --------------------------
-Make sure you have all the necessary dependencies installed
+Make sure you have all the necessary dependencies installed:
 
     sudo apt-get install subversion git apache2 php5 php5-sqlite php-apc php5-intl mysql-server php5-mysql phpmyadmin php5-xdebug php-apc php5-intl php5-xdebug curl
     
-Configure a new site on apache
+Configure a new site on apache called draggy.local:
 
     echo date.timezone = Europe/London | sudo tee -a /etc/php5/cli/php.ini
     echo date.timezone = Europe/London | sudo tee -a /etc/php5/apache2/php.ini
@@ -40,10 +40,30 @@ Configure a new site on apache
     sudo a2ensite draggy
     sudo service apache2 reload
 
-Download composer and install draggy
+Download composer and install draggy:
 
     cd
     curl -s https://getcomposer.org/installer | php
     php composer.phar create-project jd/draggy /var/www/draggy master-dev
     
+It is now installed, now open:
+
+    http://draggy.local/?f=test
     
+To generate the entities:
+    
+    http://draggy.local/generateentities-test.php
+    
+Usage
+-----
+Design phase:
+* Create a project: http://draggy.local/?f=NAME_OF_PROJECT
+* Click on Project properties and configure the type of project
+* Add the modules and classes that you need
+* Click Save (make sure that www-data has write access on the installation folder)
+
+Auto-coding phase:
+* Create a PHP to render the files
+  * Look at /generateentities-test.php for inspiration
+* Create the necessary bundles on Symfony first (if applicable)
+* Open that PHP on your browser
