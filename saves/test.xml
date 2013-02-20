@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<draggy>
+	<project>
+		<language>PHP</language>
+		<description>Draggy example</description>
+		<orm>Doctrine2</orm>
+		<framework>Symfony2</framework>
+	</project>
+	<module name="TestModule" left="144" top="39" width="699" height="589">
+		<abstract name="Vehicle" top="62" left="245">
+			<attribute id="attribute" name="id" type="integer" primary="true" autoincrement="true" />
+			<attribute id="attribute1" name="numberSeats" type="integer" />
+		</abstract>
+		<class name="Car" top="206" left="80" inheritingFrom="TestModule\Vehicle">
+			<attribute id="attribute2" name="registration" type="string" size="10" />
+			<attribute id="attribute3" name="colour" type="string" size="20" />
+			<attribute id="attribute" inherited="true" />
+			<attribute id="attribute1" inherited="true" />
+		</class>
+		<class name="Person" top="401" left="479">
+			<attribute id="attribute4" name="passport" type="string" size="10" primary="true" />
+			<attribute id="attribute5" name="name" type="string" size="20" />
+			<attribute id="attribute6" name="surname" type="string" size="20" />
+		</class>
+		<class name="PersonToCar" top="422" left="127" manyToMany="true">
+			<attribute id="attribute8" name="person" type="string" size="10" foreign="true" />
+			<attribute id="attribute7" name="car" type="integer" foreign="true" />
+		</class>
+		<class name="Plane" top="241" left="424" inheritingFrom="TestModule\Vehicle">
+			<attribute id="attribute9" name="model" type="string" size="20" />
+			<attribute id="attribute10" name="numberEngines" type="smallint" default="2" />
+			<attribute id="attribute" inherited="true" />
+			<attribute id="attribute1" inherited="true" />
+		</class>
+	</module>
+	<loose>
+	</loose>
+	<relationships>
+		<relation from="TestModule\Car" to="TestModule\Vehicle" type="Inheritance" />
+		<relation from="TestModule\Person" fromAttribute="passport" to="TestModule\PersonToCar" toAttribute="person" type="OneToMany" />
+		<relation from="TestModule\Car" fromAttribute="id" to="TestModule\PersonToCar" toAttribute="car" type="OneToMany" />
+		<relation from="TestModule\Plane" to="TestModule\Vehicle" type="Inheritance" />
+	</relationships>
+</draggy>

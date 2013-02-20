@@ -391,7 +391,6 @@ class Project extends ProjectBase
             }
         }
 
-
         // Find and map foreign keys (OneToMany, ManyToOne or OneToOne)
         $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
 
@@ -401,6 +400,8 @@ class Project extends ProjectBase
 
             $targetEntityName    = (string)$foreignKey->attributes()->to;
             $targetAttributeName = (string)$foreignKey->attributes()->toAttribute;
+
+		echo $sourceEntityName; echo $sourceAttributeName;
 
             $sourceEntity    = &$this->getEntityByFullyQualifiedName($sourceEntityName);
             $sourceAttribute = &$sourceEntity->getAttributeByName($sourceAttributeName);

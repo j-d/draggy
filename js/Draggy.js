@@ -100,7 +100,7 @@ Draggy.prototype.getModelXML = function () {
      ret += '\t</modules>\n';
      */
 
-    ret += '</draggy>';
+    ret += '</draggy>\n';
 
     return ret;
 };
