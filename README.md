@@ -44,7 +44,7 @@ Download composer and install draggy:
 
     cd
     curl -s https://getcomposer.org/installer | php
-    php composer.phar create-project jd/draggy /var/www/draggy master-dev
+    sudo php composer.phar create-project jd/draggy /var/www/draggy master-dev
     
 It is now installed, now open:
 
