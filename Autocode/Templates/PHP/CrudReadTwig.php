@@ -45,42 +45,42 @@ class CrudReadTwig extends CrudReadTwigBase
 
         $file = '';
 
-        $file .= '<?php' . "\n";
-        $file .= "\n";
-        $file .= '// <user-additions' . ' part="template">' . "\n";
-        $file .= 'use Common\Twig as T;' . "\n";
-        $file .= 'use Common\Html\Table;' . "\n";
-        $file .= 'use Common\Html\Row;' . "\n";
-        $file .= 'use Common\Html\Cell;' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::extends_(\'CommonBundle:Default:base.html.twig\');' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::block_(\'title\'), \'Add ' . $entity->getName() . '\', T::_BLOCK;' . "\n";
-        $file .= "\n";
-        $file .= '$table = new Table();' . "\n";
-        $file .= '$table' . "\n";
-        $file .= '    ->addHeadingRow(' . "\n";
+        $file .= '<?php' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '// <user-additions' . ' part="template">' . PHP_EOL;
+        $file .= 'use Common\Twig as T;' . PHP_EOL;
+        $file .= 'use Common\Html\Table;' . PHP_EOL;
+        $file .= 'use Common\Html\Row;' . PHP_EOL;
+        $file .= 'use Common\Html\Cell;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    \'{% block title %}\', \'List ' . $entity->getPluralName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '$table = new Table();' . PHP_EOL;
+        $file .= '$table' . PHP_EOL;
+        $file .= '    ->addHeadingRow(' . PHP_EOL;
 
         foreach ($entity->getAttributes() as $attr) {
-            $file .= '        \'' . $attr->getUpperName() . '\',' . "\n";
+            $file .= '        \'' . $attr->getUpperName() . '\',' . PHP_EOL;
         }
 
-        $file .= '        \'Actions\'' . "\n";
-        $file .= '    );' . "\n";
-        $file .= "\n";
-        $file .= '$tableRow = new Row(' . "\n";
-        $file .= '                $table,' . "\n";
+        $file .= '        \'Actions\'' . PHP_EOL;
+        $file .= '    );' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '$tableRow = new Row(' . PHP_EOL;
+        $file .= '                $table,' . PHP_EOL;
 
         foreach ($entity->getAttributes() as $attr) {
             if ($attr->getPhpType() !== 'boolean') {
-                $file .= '                \'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() }}\',' . "\n";
+                $file .= '                \'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() }}\',' . PHP_EOL;
             }
             else {
-                $file .= '                new Cell(\'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() ? \\\'Y\\\' : \\\'\\\' }}\', \'center\'),' . "\n";
+                $file .= '                new Cell(\'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() ? \\\'Y\\\' : \\\'\\\' }}\', \'center\'),' . PHP_EOL;
             }
         }
 
-        $file .= '                new Cell(' . "\n";
+        $file .= '                new Cell(' . PHP_EOL;
 
         $actionsArray = [];
 
@@ -91,32 +91,32 @@ class CrudReadTwig extends CrudReadTwigBase
             $actionsArray[] = '                    T::a(\'Delete\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_delete\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
         }
 
-        $file .= implode(' . \' \' .' . "\n",$actionsArray) . "\n";
+        $file .= implode(' . \' \' .' . PHP_EOL,$actionsArray) . PHP_EOL;
 
-        $file .= '                    ,\'center\'' . "\n";
-        $file .= '                )' . "\n";
-        $file .= '            );' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::block(\'body\'),' . "\n";
-        $file .= '            T::PARENT,' . "\n";
-        $file .= '            T::IFNEMPTY(\'' . $entity->getPluralLowerName() . '\'),' . "\n";
-        $file .= '                $table->toHtmlSections(' . "\n";
-        $file .= '                    true,' . "\n";
-        $file .= '                    true,' . "\n";
-        $file .= '                    T::FOR_(\'' . $entity->getLowerName() . '\',\'' . $entity->getPluralLowerName() . '\') .' . "\n";
-        $file .= '                        $tableRow->toHtml() .' . "\n";
-        $file .= '                    T::_FOR,' . "\n";
-        $file .= '                    true,' . "\n";
-        $file .= '                    true' . "\n";
-        $file .= '                ),' . "\n";
-        $file .= '            T::ELSE_,' . "\n";
-        $file .= '                T::P,' . "\n";
-        $file .= '                    \'There are no ' . $entity->getPluralName() . ' at present.\',' . "\n";
-        $file .= '                T::_P,' . "\n";
-        $file .= '            T::_IF,' . "\n";
-        $file .= '            T::a(\'Add  ' . $entity->getName() . '\',\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\'),' . "\n";
-        $file .= '        T::_BLOCK;' . "\n";
-        $file .= '// </user-additions' . '>' . "\n";
+        $file .= '                    ,\'center\'' . PHP_EOL;
+        $file .= '                )' . PHP_EOL;
+        $file .= '            );' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    \'{% block body %}\', PHP_EOL,' . PHP_EOL;
+        $file .= '            \'{{ parent() }}\', PHP_EOL,' . PHP_EOL;
+        $file .= '            \'{% if ' . $entity->getPluralLowerName() . ' is not empty %}\', PHP_EOL,' . PHP_EOL;
+        $file .= '                $table->toHtmlSections(' . PHP_EOL;
+        $file .= '                    true,' . PHP_EOL;
+        $file .= '                    true,' . PHP_EOL;
+        $file .= '                    \'{% for ' . $entity->getLowerName() . ' in ' . $entity->getPluralLowerName() . ' %}\' . PHP_EOL .' . PHP_EOL;
+        $file .= '                        $tableRow->toHtml() .' . PHP_EOL;
+        $file .= '                    \'{% endfor %}\' . PHP_EOL,' . PHP_EOL;
+        $file .= '                    true,' . PHP_EOL;
+        $file .= '                    true' . PHP_EOL;
+        $file .= '                ),' . PHP_EOL;
+        $file .= '            \'{% else %}\', PHP_EOL,' . PHP_EOL;
+        $file .= '                T::P, PHP_EOL,' . PHP_EOL;
+        $file .= '                    \'There are no ' . $entity->getPluralName() . ' at present.\', PHP_EOL,' . PHP_EOL;
+        $file .= '                T::_P,' . PHP_EOL;
+        $file .= '            \'{% endif %}\', PHP_EOL,' . PHP_EOL;
+        $file .= '            T::a(\'Add  ' . $entity->getName() . '\',\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\'),' . PHP_EOL;
+        $file .= '        \'{% endblock %}\', PHP_EOL;' . PHP_EOL;
+        $file .= '// </user-additions' . '>' . PHP_EOL;
 
         return $file;
     }

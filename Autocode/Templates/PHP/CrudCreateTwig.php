@@ -45,52 +45,52 @@ class CrudCreateTwig extends CrudCreateTwigBase
 
         $file = '';
 
-        $file .= '<?php' . "\n";
-        $file .= "\n";
-        $file .= '// <user-additions' . ' part="template">' . "\n";
-        $file .= 'use Common\Twig as T;' . "\n";
-        $file .= 'use Common\Html\FormItem;' . "\n";
-        $file .= 'use Common\Html\Table;' . "\n";
-        $file .= 'use Common\Html\Cell;' . "\n";
-        $file .= 'use Common\Html\Submit;' . "\n";
-        $file .= "\n";
-        $file .= '/** @var $type FormItem[] */' . "\n";
-        $file .= '$type = $GLOBALS[\'twigPhpParameters\'];' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::extends_(\'CommonBundle:Default:base.html.twig\');' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::block_(\'title\'), \'Add ' . $entity->getName() . '\', T::_BLOCK;' . "\n";
-        $file .= "\n";
-        $file .= '$form = new Table();' . "\n";
-        $file .= "\n";
-        $file .= '$form' . "\n";
-        $file .= '    ->setRenderModeParameter(\'form\')' . "\n";
-        $file .= '    ->addCss(\'noBorder\');' . "\n";
-        $file .= "\n";
-        $file .= '$form' . "\n";
-        $file .= '    ->addRows(' . "\n";
+        $file .= '<?php' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '// <user-additions' . ' part="template">' . PHP_EOL;
+        $file .= 'use Common\Twig as T;' . PHP_EOL;
+        $file .= 'use Common\Html\FormItem;' . PHP_EOL;
+        $file .= 'use Common\Html\Table;' . PHP_EOL;
+        $file .= 'use Common\Html\Cell;' . PHP_EOL;
+        $file .= 'use Common\Html\Submit;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '/** @var $type FormItem[] */' . PHP_EOL;
+        $file .= '$type = $GLOBALS[\'twigPhpParameters\'];' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    \'{% block title %}\', \'Add ' . $entity->getName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '$form = new Table();' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '$form' . PHP_EOL;
+        $file .= '    ->setRenderModeParameter(\'form\')' . PHP_EOL;
+        $file .= '    ->addCss(\'noBorder\');' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '$form' . PHP_EOL;
+        $file .= '    ->addRows(' . PHP_EOL;
 
         foreach ($entity->getFormAttributes() as $attr) {
-            $file .= '        [' . "\n";
-            $file .= '            $type[\'' . $attr->getName() . '\']->toTwigLabel(),' . "\n";
-            $file .= '            $type[\'' . $attr->getName() . '\']' . "\n";
-            $file .= '        ],' . "\n";
+            $file .= '        [' . PHP_EOL;
+            $file .= '            $type[\'' . $attr->getName() . '\']->toTwigLabel(),' . PHP_EOL;
+            $file .= '            $type[\'' . $attr->getName() . '\']' . PHP_EOL;
+            $file .= '        ],' . PHP_EOL;
         }
 
-        $file .= '        new Cell(new Submit(\'#submit\',\'Add\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')' . "\n";
-        $file .= '    );' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::block(\'body\'),' . "\n";
-        $file .= '            T::PARENT,' . "\n";
-        $file .= '            T::form(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\',\'form\'),' . "\n";
-        $file .= '                T::formErrors(\'form\'),' . "\n";
-        $file .= '                    $form->toHtml(),' . "\n";
-        $file .= '                T::formRest(\'form\'),' . "\n";
-        $file .= '            T::_FORM,' . "\n";
-        $file .= '        T::_BLOCK;' . "\n";
-        $file .= "\n";
-        $file .= 'echo    T::blockJS($form->getJS());' . "\n";
-        $file .= '// </user-additions' . '>' . "\n";
+        $file .= '        new Cell(new Submit(\'#submit\',\'Add\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')' . PHP_EOL;
+        $file .= '    );' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    \'{% block body %}\', PHP_EOL,' . PHP_EOL;
+        $file .= '            \'{{ parent() }}\', PHP_EOL,' . PHP_EOL;
+        $file .= '            T::form(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\',\'form\'),' . PHP_EOL;
+        $file .= '                T::formErrors(\'form\'),' . PHP_EOL;
+        $file .= '                    $form->toHtml(),' . PHP_EOL;
+        $file .= '                T::formRest(\'form\'),' . PHP_EOL;
+        $file .= '            T::_FORM,' . PHP_EOL;
+        $file .= '        \'{% endblock %}\' . PHP_EOL;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'echo    T::blockJS($form->getJS());' . PHP_EOL;
+        $file .= '// </user-additions' . '>' . PHP_EOL;
 
         return $file;
     }
