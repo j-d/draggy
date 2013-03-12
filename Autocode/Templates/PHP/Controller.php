@@ -274,7 +274,7 @@ class Controller extends ControllerBase
             $file .= '        $' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\'=>$id]);' . "\n";
             $file .= "\n";
             $file .= '        if (!$' . $entity->getLowerName() . ') {' . "\n";
-            $file .= '            throw $this->createNotFoundException(\'No area found for id \' . $id);' . "\n";
+            $file .= '            throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);' . "\n";
             $file .= '        }' . "\n";
             $file .= "\n";
             $file .= '        $em->remove($' . $entity->getLowerName() . ');' . "\n";
