@@ -85,7 +85,7 @@ class Form extends FormBase
 
         foreach ($entity->getFormAttributes() as $attr) {
             if (!is_null($attr->getForeign())) {
-                $file .= '        /** @var Entity $' . $attr->getName() . ' /' . "\n";
+                $file .= '        /** @var Entity $' . $attr->getName() . ' */' . "\n";
                 $file .= '        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
                 $file .= '        $' . $attr->getName() . '' . "\n";
                 $file .= '            ->setSymfonyExpanded(true)' . "\n";
