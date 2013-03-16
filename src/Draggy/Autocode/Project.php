@@ -21,6 +21,8 @@ use Draggy\Autocode\Base\ProjectBase;
 use Draggy\Autocode\Templates\PHP as PHPTemplates;
 use Draggy\Autocode\Templates\JS as JSTemplates;
 use Draggy\Autocode\Exceptions\DuplicateAttributeException;
+use Draggy\Log;
+
 // </user-additions>
 
 /**
@@ -32,6 +34,10 @@ class Project extends ProjectBase
 {
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
+    /**
+     * @var Log
+     */
+    protected $log;
     // </user-additions>
     // </editor-fold>
 
@@ -46,6 +52,8 @@ class Project extends ProjectBase
         }
 
         $this->setNamespace($namespace);
+
+        $this->log = new Log();
         // </user-additions>
     }
     // </editor-fold>
@@ -89,6 +97,14 @@ class Project extends ProjectBase
         list($ent,$attr) = explode(':',$str);
 
         return $this->getEntityByFullyQualifiedName($ent)->setToString($attr);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLog()
+    {
+        return $this->log->getLog();
     }
     // </user-additions>
     // </editor-fold>
@@ -186,9 +202,9 @@ class Project extends ProjectBase
             }
 
         if ($moduleName !== '') {
-            $this->log .= 'Found entity: ' . $moduleName . '\\' . $entityName . "\n";
+            $this->log->appendExtended('Found entity: ' . $moduleName . '\\' . $entityName);
         } else {
-            $this->log .= 'Found entity: ' . $entityName . "\n";
+            $this->log->appendExtended('Found entity: ' . $entityName);
         }
 
         if ( ($entity->getCrudCreate() || $entity->getCrudUpdate()) && !$entity->getHasForm() ) {
@@ -238,7 +254,7 @@ class Project extends ProjectBase
         foreach ($modules as $module) {
             $moduleName = (string)$module->attributes()->name;
 
-            $this->log .= 'Found module: ' . $moduleName . "\n";
+            $this->log->appendExtended('Found module: ' . $moduleName);
 
             // Classes
             $classes = $module->xpath('*[self::class or self::abstract]');
@@ -509,7 +525,7 @@ class Project extends ProjectBase
                     } catch (DuplicateAttributeException $e) {
                         //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
 
-                        $this->log = '*** The OneToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.' . "\n" . $this->log;
+                        $this->log->prepend('*** The OneToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.');
                     }
                 } else { // ManyToOne
                     /** @var Attribute $inverseAttribute */
@@ -530,7 +546,7 @@ class Project extends ProjectBase
                     } catch (DuplicateAttributeException $e) {
                         //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
 
-                        $this->log = '*** The ManyToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.' . "\n" . $this->log;
+                        $this->log->prepend('*** The ManyToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.');
                     }
                 }
             }
@@ -553,24 +569,26 @@ class Project extends ProjectBase
                             try {
                                 $entity = $this->getEntityByFullyQualifiedName($folder . '\\' .  substr($file, 0, -4));
 
-                                if (!$entity->getRenderizable())
-                                    $this->log = '*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an it belongs to an implicit ManyToMany relationship.' . "\n" . $this->log;
+                                if (!$entity->getRenderizable()) {
+                                    $this->log->prepend('*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an it belongs to an implicit ManyToMany relationship.');
+                                }
 
-                                if ($entity->getModule() != $folder)
-                                    $this->log = '*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should be in the project ' . $entity->getModule() . '.' . "\n" . $this->log;
+                                if ($entity->getModule() != $folder) {
+                                    $this->log->prepend('*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should be in the project ' . $entity->getModule() . '.');
+                                }
                             } catch (\RuntimeException $e) {
-                                if (!$this->deleteUnmapped)
-                                    $this->log = '*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an entity linked to it.' . "\n" . $this->log;
-                                else {
+                                if (!$this->deleteUnmapped) {
+                                    $this->log->prepend('*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an entity linked to it.');
+                                } else {
                                     if (file_exists($path . '/' . $folder . '/Entity/' . $file)) {
                                         unlink($path . '/' . $folder . '/Entity/' . $file);
-                                        $this->log = '*** The file ' . $path . '/' . $folder . '/Entity/' . $file . ' has been deleted as there is not an entity linked to it.' . "\n" . $this->log;
+                                        $this->log->prepend('*** The file ' . $path . '/' . $folder . '/Entity/' . $file . ' has been deleted as there is not an entity linked to it.');
                                     }
                                     if ($this->base) {
                                         $baseFile = $path . '/' . $folder . '/Entity/Base/' . str_replace('.php','Base.php',$file);
                                         if (file_exists($baseFile)) {
                                             unlink($baseFile);
-                                            $this->log = '*** The file ' . $baseFile . ' has been deleted as there is not an entity linked to it.' . "\n" . $this->log;
+                                            $this->log->prepend('*** The file ' . $baseFile . ' has been deleted as there is not an entity linked to it.');
                                         }
                                     }
                                 }
@@ -725,9 +743,8 @@ class Project extends ProjectBase
 
         if ($entity->getHasRepository()) {
             $this->saveFile($targetFile,'Repository',$this->getRepositoryTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a repository.' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a repository.');
         }
     }
 
@@ -764,14 +781,13 @@ class Project extends ProjectBase
                     $this->saveFile($targetComponentFile,'Component Form', $attr->getForeignEntity()->toFormComponentFile($entity));
                 }
             }*/
-        }
-        else {
+        } else {
             if (file_exists($targetFile)) {
-                $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a form.' . "\n" . $this->log;
+                $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a form.');
             }
 
             if (file_exists($targetBaseFile)) {
-                $this->log = '*** Perhaps the file ' . $targetBaseFile . ' should not be there as the entity is not marked to have a form.' . "\n" . $this->log;
+                $this->log->prepend('*** Perhaps the file ' . $targetBaseFile . ' should not be there as the entity is not marked to have a form.');
             }
         }
     }
@@ -788,9 +804,8 @@ class Project extends ProjectBase
 
         if ($entity->getHasController()) {
             $this->saveFile($targetFile,$entity->getName() . 'Controller',$this->getControllerTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a controller.' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a controller.');
         }
     }
 
@@ -806,9 +821,8 @@ class Project extends ProjectBase
 
         if ($entity->getHasFixtures()) {
             $this->saveFile($targetFile,$entity->getName() . 'Fixtures',$this->getFixturesTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have fixtures.' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have fixtures.');
         }
     }
 
@@ -824,9 +838,8 @@ class Project extends ProjectBase
 
         if (!is_null($entity->getCrud())) {
             $this->saveFile($targetFile,$entity->getName() . '-CRUD',$this->getRoutesTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD.' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD.');
         }
     }
 
@@ -869,9 +882,8 @@ class Project extends ProjectBase
 
         if ($entity->getCrudCreate()) {
             $this->saveFile($targetFile,$entity->getName() . '-CRUD(C)',$this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(C).' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(C).');
         }
     }
 
@@ -887,9 +899,8 @@ class Project extends ProjectBase
 
         if ($entity->getCrudCreate()) {
             $this->saveFile($targetFile,$entity->getName() . '-CRUD(U)',$this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(U).' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(U).');
         }
     }
 
@@ -905,9 +916,8 @@ class Project extends ProjectBase
 
         if ($entity->getCrudCreate()) {
             $this->saveFile($targetFile,$entity->getName() . '-CRUD(R)',$this->getCrudReadTwigTemplate()->setEntity($entity)->render());
-        }
-        elseif (file_exists($targetFile)) {
-            $this->log = '*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(R).' . "\n" . $this->log;
+        } elseif (file_exists($targetFile)) {
+            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(R).');
         }
     }
 
@@ -921,18 +931,16 @@ class Project extends ProjectBase
 
         if (!file_exists($targetFile)) {
             file_put_contents($targetFile, $contents);
-            $this->log .= 'Saved ' . $description . ' to ' . $targetFile . "\n";
-        }
-        elseif ($this->overwrite) {
+            $this->log->append('Saved ' . $description . ' to ' . $targetFile);
+        } elseif ($this->overwrite) {
             $existingFile = file_get_contents($targetFile);
             $newFile = $this->keepUserAdditions($contents,$existingFile, $description);
 
             file_put_contents($targetFile, $newFile);
 
-            $this->log .= $description . ' file existed and modified: ' . $targetFile . "\n";
-        }
-        else {
-            $this->log = '*** You may need to manually change the ' . $description . ' file ' . $targetFile . ' as the template might have changed since you started using it.' . "\n" . $this->log;
+            $this->log->appendExtended($description . ' file existed and modified: ' . $targetFile);
+        } else {
+            $this->log->prepend('*** You may need to manually change the ' . $description . ' file ' . $targetFile . ' as the template might have changed since you started using it.');
         }
     }
 
@@ -946,15 +954,14 @@ class Project extends ProjectBase
 
         if (!file_exists($targetFile)) {
             file_put_contents($targetFile, $contents);
-            $this->log .= 'Saved ' . $description . ' to ' . $targetFile . "\n";
-        }
-        else {
+            $this->log->append('Saved ' . $description . ' to ' . $targetFile);
+        } else {
             $existingFile = file_get_contents($targetFile);
             $newFile = $this->addSystemAdditions($contents,$existingFile, $description, $addAtEndIfMissing);
 
             file_put_contents($targetFile, $newFile);
 
-            $this->log .= $description . ' file existed and added modifications: ' . $targetFile . "\n";
+            $this->log->appendExtended($description . ' file existed and added modifications: ' . $targetFile);
         }
     }
 
@@ -1000,8 +1007,7 @@ class Project extends ProjectBase
         foreach ($masterParts as $part) {
             if (!in_array($part,$userParts)) {
                 $userFile .= "\n" . $masterFile;
-            }
-            elseif (preg_match('%<system-additions part="' . $part . '">.+?</system-additions>%s', $masterFile, $regs)) {
+            } elseif (preg_match('%<system-additions part="' . $part . '">.+?</system-additions>%s', $masterFile, $regs)) {
                 $newPart = $regs[0];
 
                 $userFile = preg_replace('%<system-additions part="' . $part . '">.+?</system-additions>%s',$newPart,$userFile,1);

@@ -6,10 +6,12 @@ use Draggy\Exceptions\InvalidFileException;
 use Draggy\Loader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Application\DevBundle\Resources\AutocodeTemplates;
+use Draggy\Autocode\Project;
 
 class DefaultController extends Controller
 {
-    public function draggyAction()
+    private function checkModelFile()
     {
         try {
             $file = $this->container->getParameter('draggy.model_filename');
@@ -31,13 +33,29 @@ class DefaultController extends Controller
             );
         }
 
-        $fileFullPath = $this->get('kernel')->getRootDir() . '/../doc/' . $file;
+        return null;
+    }
 
-        if (!is_writable($fileFullPath)) {
+    private function getModelFile()
+    {
+        $file = $this->container->getParameter('draggy.model_filename');
+
+        return $this->get('kernel')->getRootDir() . '/../doc/' . $file;
+    }
+
+    public function draggyAction()
+    {
+        if (null !== $this->checkModelFile()) {
+            return $this->checkModelFile();
+        }
+
+        $modelFile = $this->getModelFile();
+
+        if (!is_writable($modelFile)) {
 
         }
 
-        $loader = new Loader( $fileFullPath );
+        $loader = new Loader( $modelFile );
 
         return $this->render(
             'DraggyBundle:Default:draggy.html.twig',
@@ -49,6 +67,33 @@ class DefaultController extends Controller
 
     public function generateAction()
     {
+        if (null !== $this->checkModelFile()) {
+            return $this->checkModelFile();
+        }
+
+        $modelFile = $this->getModelFile();
+
+        $namespace = 'Application';
+
+        $targetFolder = $this->get('kernel')->getRootDir() . '/../src/';
+
+        $project = new Project($namespace);
+
+        $project
+            ->setBase(true)
+            ->loadFile($modelFile)
+            ->setOverwrite(true)
+            //->setDeleteUnmapped(true)
+            ->setValidation(true)
+            ->setRoutesTemplate(new AutocodeTemplates\Routes())
+            ->setCrudReadTwigTemplate(new AutocodeTemplates\CrudReadTwig())
+            ->setCrudCreateTwigTemplate(new AutocodeTemplates\CrudCreateUpdateTwig())
+            ->saveTo($targetFolder);
+
+        echo nl2br($project->getLog());
+
+        return $this->render('CommonBundle:Default:nothing.html.twig');
+
         return $this->render('DraggyBundle:Default:index.html.twig');
     }
 }
