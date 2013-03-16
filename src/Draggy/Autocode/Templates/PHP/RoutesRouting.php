@@ -14,9 +14,9 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\PHP;
+namespace Draggy\Autocode\Templates\PHP;
 
-use Autocode\Templates\PHP\Base\RoutesRoutingBase;
+use Draggy\Autocode\Templates\PHP\Base\RoutesRoutingBase;
 // <user-additions part="use">
 // </user-additions>
 

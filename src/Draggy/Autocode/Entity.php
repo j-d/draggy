@@ -14,11 +14,11 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode;
+namespace Draggy\Autocode;
 
-use Autocode\Base\EntityBase;
+use Draggy\Autocode\Base\EntityBase;
 // <user-additions part="use">
-use Autocode\Exceptions\DuplicateAttributeException;
+use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 // </user-additions>
 
 /**

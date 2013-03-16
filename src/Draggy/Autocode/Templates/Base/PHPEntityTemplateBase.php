@@ -14,11 +14,11 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\Base;
+namespace Draggy\Autocode\Templates\Base;
 
-use Autocode\Templates\PHPEntityTemplate;
-use Autocode\Templates\EntityTemplate;
-use Autocode\Entity;
+use Draggy\Autocode\Templates\PHPEntityTemplate;
+use Draggy\Autocode\Templates\EntityTemplate;
+use Draggy\Autocode\Entity;
 
 /**
  * Autocode\Templates\Entity\Base\PHPEntityTemplate

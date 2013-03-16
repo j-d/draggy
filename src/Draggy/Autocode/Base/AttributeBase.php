@@ -14,10 +14,10 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Base;
+namespace Draggy\Autocode\Base;
 
-use Autocode\Attribute;
-use Autocode\Entity;
+use Draggy\Autocode\Attribute;
+use Draggy\Autocode\Entity;
 
 /**
  * Autocode\Entity\Base\Attribute

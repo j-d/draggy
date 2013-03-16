@@ -14,9 +14,9 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates;
+namespace Draggy\Autocode\Templates;
 
-use Autocode\Templates\Base\AttributeTemplateBase;
+use Draggy\Autocode\Templates\Base\AttributeTemplateBase;
 // <user-additions part="use">
 // </user-additions>
 

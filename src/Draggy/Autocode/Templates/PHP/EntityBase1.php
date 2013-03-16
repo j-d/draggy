@@ -14,9 +14,9 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\PHP;
+namespace Draggy\Autocode\Templates\PHP;
 
-use Autocode\Templates\PHP\Base\EntityBase1Base;
+use Draggy\Autocode\Templates\PHP\Base\EntityBase1Base;
 // <user-additions part="use">
 // </user-additions>
 

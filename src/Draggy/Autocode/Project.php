@@ -14,13 +14,13 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode;
+namespace Draggy\Autocode;
 
-use Autocode\Base\ProjectBase;
+use Draggy\Autocode\Base\ProjectBase;
 // <user-additions part="use">
-use Autocode\Templates\PHP as PHPTemplates;
-use Autocode\Templates\JS as JSTemplates;
-use Autocode\Exceptions\DuplicateAttributeException;
+use Draggy\Autocode\Templates\PHP as PHPTemplates;
+use Draggy\Autocode\Templates\JS as JSTemplates;
+use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 // </user-additions>
 
 /**

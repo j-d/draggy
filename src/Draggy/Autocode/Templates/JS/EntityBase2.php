@@ -14,11 +14,11 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\JS;
+namespace Draggy\Autocode\Templates\JS;
 
-use Autocode\Templates\JS\Base\EntityBase2Base;
+use Draggy\Autocode\Templates\JS\Base\EntityBase2Base;
 // <user-additions part="use">
-use Autocode\Entity;
+use Draggy\Autocode\Entity;
 // </user-additions>
 
 /**

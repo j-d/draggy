@@ -1,6 +1,6 @@
 <?php
 
-namespace Autocode\Interfaces;
+namespace Draggy\Autocode\Interfaces;
 
 interface RepositoryFileInterface
 {

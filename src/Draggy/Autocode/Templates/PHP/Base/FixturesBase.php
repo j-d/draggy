@@ -14,11 +14,11 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Base;
 
-use Autocode\Templates\PHP\Fixtures;
-use Autocode\Templates\PHPEntityTemplate;
-use Autocode\Entity;
+use Draggy\Autocode\Templates\PHP\Fixtures;
+use Draggy\Autocode\Templates\PHPEntityTemplate;
+use Draggy\Autocode\Entity;
 
 /**
  * Autocode\Templates\PHP\Entity\Base\Fixtures

@@ -1,6 +1,6 @@
 <?php
 
-namespace Autocode\Exceptions;
+namespace Draggy\Autocode\Exceptions;
 
 class DuplicateAttributeException extends \RuntimeException {
 }

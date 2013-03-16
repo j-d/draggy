@@ -14,11 +14,11 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Base;
+namespace Draggy\Autocode\Base;
 
-use Autocode\JSAttribute;
-use Autocode\Attribute;
-use Autocode\Entity;
+use Draggy\Autocode\JSAttribute;
+use Draggy\Autocode\Attribute;
+use Draggy\Autocode\Entity;
 
 /**
  * Autocode\Entity\Base\JSAttribute

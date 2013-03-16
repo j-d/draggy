@@ -14,9 +14,9 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode;
+namespace Draggy\Autocode;
 
-use Autocode\Base\PHPAttributeBase;
+use Draggy\Autocode\Base\PHPAttributeBase;
 // <user-additions part="use">
 // </user-additions>
 

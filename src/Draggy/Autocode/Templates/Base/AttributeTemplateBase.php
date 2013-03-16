@@ -14,11 +14,11 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\Base;
+namespace Draggy\Autocode\Templates\Base;
 
-use Autocode\Templates\AttributeTemplate;
-use Autocode\Templates\Template;
-use Autocode\Attribute;
+use Draggy\Autocode\Templates\AttributeTemplate;
+use Draggy\Autocode\Templates\Template;
+use Draggy\Autocode\Attribute;
 
 /**
  * Autocode\Templates\Entity\Base\AttributeTemplate

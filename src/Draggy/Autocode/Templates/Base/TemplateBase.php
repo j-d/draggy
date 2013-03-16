@@ -14,7 +14,7 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Autocode\Templates\Base;
+namespace Draggy\Autocode\Templates\Base;
 
 
 /**
