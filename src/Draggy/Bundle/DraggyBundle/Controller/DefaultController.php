@@ -1,8 +1,8 @@
 <?php
 
-namespace Draggy\DraggyBundle\Controller;
+namespace Draggy\Bundle\DraggyBundle\Controller;
 
-use Common\Symfony\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
