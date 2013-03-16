@@ -2,7 +2,6 @@
 
 namespace Draggy;
 
-use Draggy\Exceptions\FileNotFoundException;
 use Draggy\Exceptions\InvalidFileException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,7 +18,7 @@ class Loader
     protected $modules = [];
 
     /**
-     * @var string[]
+     * @var array
      */
     protected $insideClasses = [];
 
@@ -29,7 +28,7 @@ class Loader
     protected $outsideClasses = [];
 
     /**
-     * @var string[]
+     * @var array
      */
     protected $insideAbstracts = [];
 
@@ -39,7 +38,7 @@ class Loader
     protected $outsideAbstracts = [];
 
     /**
-     * @var string[]
+     * @var array
      */
     protected $insideInterfaces = [];
 
@@ -92,7 +91,7 @@ class Loader
     private function getProjectProperties()
     {
         $projectOptions = (array)$this->xml->xpath('/draggy/project');
-        $projectOptions = $projectOptions[0];
+        $projectOptions = (array)$projectOptions[0];
 
         $this->checkMandatoryAttributes('Project', $projectOptions, ['language', 'description', 'orm', 'framework']);
 
@@ -119,7 +118,7 @@ class Loader
 
         foreach ($modules as $module) {
             $moduleAttributes = (array)$module;
-            $moduleAttributes = $moduleAttributes['@attributes'];
+            $moduleAttributes = (array)$moduleAttributes['@attributes'];
 
             $this->checkMandatoryAttributes('Modules', $moduleAttributes, ['name', 'left', 'top', 'width', 'height']);
 
@@ -128,9 +127,9 @@ class Loader
             $r .= 'var o = new Container(\'' . str_replace('\\', '\\\\', $moduleName) . '\');' . PHP_EOL;
             $r .= 'o.moveTo(\'' . ( $moduleAttributes['left'] - 1 ) . 'px\',\'' . ( $moduleAttributes['top'] - 1 ) . 'px\',\'' . $moduleAttributes['width'] . 'px\',\'' . $moduleAttributes['height'] . 'px\')' . PHP_EOL;
 
-            $this->modules[]                = $moduleName;
-            $this->insideClasses[$module]   = [];
-            $this->insideAbstracts[$module] = [];
+            $this->modules[]                    = $moduleName;
+            $this->insideClasses[$moduleName]   = [];
+            $this->insideAbstracts[$moduleName] = [];
         }
 
         return $r;
@@ -192,7 +191,7 @@ class Loader
 
             foreach ($classes as $class) {
                 $classAttributes = (array)$class;
-                $classAttributes = $classAttributes['@attributes'];
+                $classAttributes = (array)$classAttributes['@attributes'];
 
                 $this->checkMandatoryAttributes('Class in module ' . $module, $classAttributes, ['name']);
 
@@ -415,13 +414,15 @@ class Loader
             $attributeProperties = (array)$attribute;
             $attributeProperties = $attributeProperties['@attributes'];
 
-            $this->checkMandatoryAttributes('Attributes ' . $classLike, $attributeProperties, ['id', 'name']);
-
             if (isset( $attributeProperties['inherited'] )) {
+                $this->checkMandatoryAttributes('Attributes ' . $classLike, $attributeProperties, ['id']);
+
                 $r .= 'var a = new InheritedAttribute(\'' . $attributeProperties['id'] . '\');' . PHP_EOL;
 
                 $r .= $varName . '.addInheritedAttribute(a);' . PHP_EOL;
             } else {
+                $this->checkMandatoryAttributes('Attributes ' . $classLike, $attributeProperties, ['id', 'name']);
+
                 $r .= 'var a = new Attribute(\'' . $attributeProperties['name'] . '\',\'' . $attributeProperties['id'] . '\');' . PHP_EOL;
                 if (isset( $attributeProperties['type'] )) {
                     $r .= 'a.setType(\'' . $attributeProperties['type'] . '\');' . PHP_EOL;
@@ -500,40 +501,44 @@ class Loader
         $r = '';
 
         // Inside classes
-        foreach ($this->insideClasses as $insideClassModule => $insideClass) {
-            $attributes = $this->xml->xpath(
-                '/draggy/module[@name=\'' . $insideClassModule . '\']/class[@name=\'' . $insideClass . '\']/attribute'
-            );
+        foreach ($this->insideClasses as $insideClassModule => $insideClasses) {
+            foreach ($insideClasses as $insideClass) {
+                $attributes = $this->xml->xpath(
+                    '/draggy/module[@name=\'' . $insideClassModule . '\']/class[@name=\'' . $insideClass . '\']/attribute'
+                );
 
-            $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . str_replace(
-                '\\',
-                '\\\\',
-                $insideClassModule . '\\'
-            ) . $insideClass . '\');' . PHP_EOL;
+                $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . str_replace(
+                    '\\',
+                    '\\\\',
+                    $insideClassModule . '\\'
+                ) . $insideClass . '\');' . PHP_EOL;
 
-            $this->getClassLikeAttributeProperties($insideClass, $attributes, 'c');
+                $this->getClassLikeAttributeProperties($insideClass, $attributes, 'c');
 
-            if (isset( $classAttributes['toString'] )) {
-                $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
+                if (isset( $classAttributes['toString'] )) {
+                    $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
+                }
             }
         }
 
         // Inside abstracts
-        foreach ($this->insideAbstracts as $insideAbstractModule => $insideAbstract) {
-            $attributes = $this->xml->xpath(
-                '/draggy/module[@name=\'' . $$insideAbstractModule . '\']/abstract[@name=\'' . $insideAbstract . '\']/attribute'
-            );
+        foreach ($this->insideAbstracts as $insideAbstractModule => $insideAbstracts) {
+            foreach ($insideAbstracts as $insideAbstract) {
+                $attributes = $this->xml->xpath(
+                    '/draggy/module[@name=\'' . $insideAbstractModule . '\']/abstract[@name=\'' . $insideAbstract . '\']/attribute'
+                );
 
-            $r .= 's = Connectable.prototype.getConnectableFromName(\'' . str_replace(
-                '\\',
-                '\\\\',
-                $insideAbstractModule . '\\'
-            ) . $insideAbstract . '\');' . PHP_EOL;
+                $r .= 's = Connectable.prototype.getConnectableFromName(\'' . str_replace(
+                    '\\',
+                    '\\\\',
+                    $insideAbstractModule . '\\'
+                ) . $insideAbstract . '\');' . PHP_EOL;
 
-            $this->getClassLikeAttributeProperties($insideAbstract, $attributes, 's');
+                $this->getClassLikeAttributeProperties($insideAbstract, $attributes, 's');
 
-            if (isset( $abstractAttributes['toString'] )) {
-                $r .= 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
+                if (isset( $abstractAttributes['toString'] )) {
+                    $r .= 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
+                }
             }
         }
 

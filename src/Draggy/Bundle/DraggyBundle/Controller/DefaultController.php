@@ -31,13 +31,13 @@ class DefaultController extends Controller
             );
         }
 
-        $fullPath = $this->get('kernel')->getRootDir() . '/../doc/' . $file;
+        $fileFullPath = $this->get('kernel')->getRootDir() . '/../doc/' . $file;
 
-        if (!is_writable($fullPath)) {
+        if (!is_writable($fileFullPath)) {
 
         }
 
-        $loader = new Loader( $file );
+        $loader = new Loader( $fileFullPath );
 
         return $this->render(
             'DraggyBundle:Default:draggy.html.twig',
