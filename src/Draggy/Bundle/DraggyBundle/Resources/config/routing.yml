@@ -1,0 +1,7 @@
+draggy_model:
+    pattern:  /
+    defaults: { _controller: DraggyBundle:Default:draggy }
+
+draggy_generate:
+    pattern:  /generate
+    defaults: { _controller: DraggyBundle:Default:generate }
