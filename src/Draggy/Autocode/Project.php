@@ -401,8 +401,6 @@ class Project extends ProjectBase
             $targetEntityName    = (string)$foreignKey->attributes()->to;
             $targetAttributeName = (string)$foreignKey->attributes()->toAttribute;
 
-		echo $sourceEntityName; echo $sourceAttributeName;
-
             $sourceEntity    = &$this->getEntityByFullyQualifiedName($sourceEntityName);
             $sourceAttribute = &$sourceEntity->getAttributeByName($sourceAttributeName);
 
