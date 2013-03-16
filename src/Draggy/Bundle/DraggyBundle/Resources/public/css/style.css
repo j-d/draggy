@@ -422,3 +422,8 @@ div.brokenLink {
 .context-menu-item.icon-trait:before        { background-position: 0 -48px;     }
 .context-menu-item.icon-module:before       { background-position: -16px 0;     }
 .context-menu-item.icon-edit:before         { background-position: -16px -16px; }
+
+/* Error style */
+html.error {
+    background-color: rgb(245, 167, 167);
+}
