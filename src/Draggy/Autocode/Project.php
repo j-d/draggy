@@ -218,11 +218,11 @@ class Project extends ProjectBase
         $this->setFramework((string) $projectProperties['framework']);
 
         if ($this->getLanguage() === 'PHP') {
-            $this->setAttributeClass('Autocode\\PHPAttribute');
-            $this->setEntityClass('Autocode\\PHPEntity');
+            $this->setAttributeClass('Draggy\\Autocode\\PHPAttribute');
+            $this->setEntityClass('Draggy\\Autocode\\PHPEntity');
         } elseif ($this->getLanguage() === 'JS') {
-            $this->setAttributeClass('Autocode\\JSAttribute');
-            $this->setEntityClass('Autocode\\Entity');
+            $this->setAttributeClass('Draggy\\Autocode\\JSAttribute');
+            $this->setEntityClass('Draggy\\Autocode\\Entity');
         }
 
         $attributeClass = $this->getAttributeClass();
