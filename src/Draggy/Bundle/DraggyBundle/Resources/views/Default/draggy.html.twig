@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
         <title>Draggy</title>
         <meta charset="utf-8">
         <link type="text/css" href="{{ asset('bundles/draggy/css/ui-lightness/jquery-ui-1.9.0.custom.css') }}" rel="stylesheet"/>
@@ -52,13 +51,10 @@
             ContextMenu.prototype.enableMenus();
         </script>
 
-        <?php
-            $file = 'saves/' . $_GET['f'] . '.xml';
-
-            require 'js/load.php';
-        ?>
-
         <script>
+            // Load data
+            {{ loaderJS }}}
+
             // Enable items to drop onto the background
             $('#draggy-area').droppable({
                 greedy: true,
