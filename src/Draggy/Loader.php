@@ -1,5 +1,21 @@
-$(document).ready(function () {
-    <?php
+<?php
+
+    namespace Draggy;
+
+    class Loader
+    {
+        public function __construct($file)
+        {
+            if (!file_exists($file)) {
+                
+            }
+        }
+    }
+
+
+
+
+
 		function assignAttributesToClassLike($attributes,$classLikeVarName) {
 			foreach ($attributes as $attribute) {
 				$attributeProperties = (array) $attribute;
