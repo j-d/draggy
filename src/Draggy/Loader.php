@@ -513,7 +513,7 @@ class Loader
                     $insideClassModule . '\\'
                 ) . $insideClass . '\');' . PHP_EOL;
 
-                $this->getClassLikeAttributeProperties($insideClass, $attributes, 'c');
+                $r .= $this->getClassLikeAttributeProperties($insideClass, $attributes, 'c');
 
                 if (isset( $classAttributes['toString'] )) {
                     $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
@@ -534,7 +534,7 @@ class Loader
                     $insideAbstractModule . '\\'
                 ) . $insideAbstract . '\');' . PHP_EOL;
 
-                $this->getClassLikeAttributeProperties($insideAbstract, $attributes, 's');
+                $r .= $this->getClassLikeAttributeProperties($insideAbstract, $attributes, 's');
 
                 if (isset( $abstractAttributes['toString'] )) {
                     $r .= 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
@@ -548,7 +548,7 @@ class Loader
 
             $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . $outsideClass . '\');' . PHP_EOL;
 
-            $this->getClassLikeAttributeProperties($outsideClass, $attributes, 'c');
+            $r .= $this->getClassLikeAttributeProperties($outsideClass, $attributes, 'c');
 
             if (isset( $classAttributes['toString'] )) {
                 $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
@@ -561,7 +561,7 @@ class Loader
 
             $r .= 's = Connectable.prototype.getConnectableFromName(\'' . $outsideAbstract . '\');' . PHP_EOL;
 
-            $this->getClassLikeAttributeProperties($outsideAbstract, $attributes, 'c');
+            $r .= $this->getClassLikeAttributeProperties($outsideAbstract, $attributes, 'c');
 
             if (isset( $abstractAttributes['toString'] )) {
                 $r .= 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
