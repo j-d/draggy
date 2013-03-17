@@ -90,10 +90,11 @@ class DefaultController extends Controller
             ->setCrudCreateTwigTemplate(new AutocodeTemplates\CrudCreateUpdateTwig())
             ->saveTo($targetFolder);
 
-        echo nl2br($project->getLog());
-
-        return $this->render('CommonBundle:Default:nothing.html.twig');
-
-        return $this->render('DraggyBundle:Default:index.html.twig');
+        return $this->render(
+            'DraggyBundle:Default:generateEntities.html.twig',
+            [
+            'log' => $project->getLog()
+            ]
+        );
     }
 }
