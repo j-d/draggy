@@ -132,10 +132,15 @@ class DefaultController extends Controller
 
         $project = new Project( $namespace );
 
-        $project->setBase(true)->loadFile($modelFile)->setOverwrite(true) //->setDeleteUnmapped(true)
-            ->setValidation(true)->setRoutesTemplate(new AutocodeTemplates\Routes())->setCrudReadTwigTemplate(
-                new AutocodeTemplates\CrudReadTwig()
-            )->setCrudCreateTwigTemplate(new AutocodeTemplates\CrudCreateUpdateTwig())->saveTo($targetFolder);
+        $project
+            ->setBase(true)
+            ->loadFile($modelFile)
+            ->setOverwrite(true) //->setDeleteUnmapped(true)
+            ->setValidation(true)
+            ->setRoutesTemplate(new AutocodeTemplates\Routes())
+            ->setCrudReadTwigTemplate(new AutocodeTemplates\CrudReadTwig())
+            ->setCrudCreateTwigTemplate(new AutocodeTemplates\CrudCreateUpdateTwig())
+            ->saveTo($targetFolder);
 
         return $this->render(
             'DraggyBundle:Default:generateEntities.html.twig',
