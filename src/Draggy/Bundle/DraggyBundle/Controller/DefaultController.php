@@ -117,6 +117,12 @@ class DefaultController extends Controller
 
         $modelFile = $this->getModelFile();
 
+        try {
+            $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
+        } catch (\Exception $exception) {
+            $targetFolder = '(not defined)';
+        }
+
         $saveable         = true;
         $noSaveableReason = '';
 
@@ -135,6 +141,7 @@ class DefaultController extends Controller
             'loaderJS'         => $loader->getLoaderJS(),
             'saveable'         => $saveable,
             'noSaveableReason' => $noSaveableReason,
+            'targetFolder'     => $targetFolder,
             ]
         );
     }
