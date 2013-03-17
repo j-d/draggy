@@ -1,23 +1,34 @@
-{#{% for i in 1..2 %}#}
-<div class="autocode-change">
-    <div class="autocode-change-summary">
-        <div class="full-file-name">
-            <span class="folder-name">\src\patata\maspatata\</span><span class="file-name">patatafile.php</span>
+{% for change in changes %}
+    <div class="autocode-change">
+        <div class="autocode-change-summary">
+            <div class="full-file-name">
+                <span class="folder-name">{{ change.path }}</span><span class="file-name">{{ change.name }}</span>
+            </div>
+            {% if change.what == 'DIFF' %}
+                <div class="unfold-icon">
+                    <span class="icon-down ui-icon ui-icon-triangle-1-s"></span>
+                    <span class="icon-up ui-icon ui-icon-triangle-1-n"></span>
+                </div>
+            {% endif %}
         </div>
-        <div class="unfold-icon">
-            <span class="icon-down ui-icon ui-icon-triangle-1-s"></span>
-            <span class="icon-up ui-icon ui-icon-triangle-1-n"></span>
-        </div>
+        {% if change.what == 'DIFF' %}
+            <div class="autocode-change-lines">
+                {% for line in change.diff %}
+                    {% if line['d'] is not defined  %}
+                        <div class="autocode-line">{{ line }}</div>
+                    {% else %}
+                        {% for lineInserted in line['i'] %}
+                            <div class="autocode-line autocode-line-inserted">{{ lineInserted }}</div>
+                        {% endfor %}
+                        {% for lineDeleted in line['d'] %}
+                            <div class="autocode-line autocode-line-deleted">{{ lineDeleted }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
-    <div class="autocode-change-lines">
-        <div class="autocode-line">line 1</div>
-        <div class="autocode-line">line 1</div>
-        <div class="autocode-line">line 1</div>
-        <div class="autocode-line">line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 line 1 </div>
-        <div class="autocode-line">line 1</div>
-    </div>
-</div>
-{#{% endfor %}#}
+{% endfor %}
 
 <script>
     $("div.autocode-change").click(function () {

@@ -523,4 +523,14 @@ div.autocode-change-lines {
 div.autocode-line {
     height: 20px;
     overflow: hidden;
+    font-family: monospace;
+    white-space: pre;
+}
+
+div.autocode-line-inserted {
+    background-color: #dfd;
+}
+
+div.autocode-line-deleted {
+    background-color: #fdd;
 }

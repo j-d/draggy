@@ -789,35 +789,55 @@ class Project extends ProjectBase
         }
     }
 
+    public function getChanges($path)
+    {
+        $fileCollection = $this->getModelFiles($path);
+        $fileCollection->setOverwrite($this->getOverwrite());
+
+        $diffArray = $fileCollection->getDiff();
+
+        return $diffArray;
+    }
+
+
     public function saveTo($path)
     {
-        $this->completeMissingTemplates();
-
-        $this->findExistingExtraFiles($path);
-
         if (!is_dir($path)) {
             user_error('Was expecting to find the path ' . $path, E_USER_WARNING);
             mkdir($path);
         }
 
+        $fileCollection = $this->getModelFiles($path);
+        $fileCollection->setOverwrite($this->getOverwrite());
+
+        $fileCollection->save();
+
+        $this->log->append($fileCollection->getLog());
+    }
+
+    /**
+     * Returns a collection of files
+     *
+     * @param string $path The path where they would be saved
+     *
+     * @return FileCollection
+     */
+    public function getModelFiles($path)
+    {
+        $fileCollection = new FileCollection();
+
+        $this->completeMissingTemplates();
+
+        $this->findExistingExtraFiles($path);
+
         $namespacePath = str_replace('\\', '/', $path . $this->namespace . '/');
 
-        if (!is_dir($namespacePath)) {
-            user_error('Was expecting to find the path ' . $namespacePath, E_USER_WARNING);
-            mkdir($namespacePath);
-        }
-
-        foreach ($this->entities as $entity) {
+        foreach ($this->getEntities() as $entity) {
             if ($entity->getRenderizable()) {
                 if ($entity->getNamespace() === '') {
                     $targetPath = $namespacePath;
                 } else {
                     $targetPath = $path . str_replace('\\', '/', $entity->getNamespace()) . '/';
-                }
-
-                if (!is_dir($targetPath)) {
-                    user_error('Was expecting to find the path ' . $targetPath . '. Have you created the package or bundle?', E_USER_WARNING);
-                    mkdir($targetPath);
                 }
 
                 $entityPath = $targetPath;
@@ -833,82 +853,88 @@ class Project extends ProjectBase
                 }
 
                 if ($this->getLanguage() === 'PHP') {
-                    $targetFile = $basePath . $entity->getNameBase() . '.php';
-                    $this->saveFile($targetFile,'File',$this->getEntityTemplate()->setEntity($entity)->render());
+                    $fileCollection->add(new File($basePath, $entity->getNameBase() . '.php', $this->getEntityTemplate()->setEntity($entity)->render()));
 
                     if ($this->getBase()) {
-                        $targetFile = $entityPath . $entity->getName() . '.php';
-                        $this->saveFile($targetFile,'Base file',$this->getEntityBaseTemplate()->setEntity($entity)->render());
+                        $fileCollection->add(new File($entityPath, $entity->getName() . '.php', $this->getEntityBaseTemplate()->setEntity($entity)->render()));
+                    } else {
+                        // NoFile
                     }
 
-                    $this->saveRepository($entity, $targetPath);
-                    $this->saveForm($entity, $targetPath);
-                    $this->saveController($entity, $targetPath);
-                    $this->saveFixtures($entity, $targetPath);
-                    $this->saveRoutes($entity, $targetPath);
-                    $this->saveTwigCreate($entity, $targetPath);
-                    $this->saveTwigUpdate($entity, $targetPath);
-                    $this->saveTwigRead($entity, $targetPath);
-
-                } elseif ($this->getLanguage() === 'JS') {
-                    $targetFile = $basePath . $entity->getNameBase() . '.js';
-                    $this->saveFile($targetFile,'File',$this->getEntityTemplate()->setEntity($entity)->render());
+                    $this->getRepositoryFile($entity, $targetPath);
+                    $fileCollection->add($this->getFormFile($entity, $targetPath));
+                    $fileCollection->add($this->getControllerFile($entity, $targetPath));
+                    $fileCollection->add($this->getFixturesFile($entity, $targetPath));
+                    $fileCollection->add($this->getRoutesFile($entity, $targetPath));
+                    $fileCollection->add($this->getTwigCreateFile($entity, $targetPath));
+                    $fileCollection->add($this->getTwigReadFile($entity, $targetPath));
+                    $fileCollection->add($this->getTwigUpdateFile($entity, $targetPath));
+                } elseif ($this->getLanguage() === 'JS') { // TODO
+                    $fileCollection->add(new File($basePath, $entity->getNameBase() . '.js', $this->getEntityTemplate()->setEntity($entity)->render()));
 
                     if ($this->getBase()) {
-                        $targetFile = $entityPath . $entity->getName() . '.js';
-                        $this->saveFile($targetFile,'Base file',$this->getEntityBaseTemplate()->setEntity($entity)->render());
+                        $fileCollection->add(new File($entityPath, $entity->getName() . '.js', $this->getEntityBaseTemplate()->setEntity($entity)->render()));
+                    } else {
+                        // NoFile
                     }
                 }
 
             }
         }
 
-        foreach ($this->modules as $module) {
-            if ($this->getLanguage() === 'PHP') {
+        if ($this->getLanguage() === 'PHP') {
+            foreach ($this->modules as $module) {
                 $targetPath = $path . str_replace('\\', '/', $this->moduleNamespaces[$module]) . '/';
 
-                $this->saveRoutesRouting($module, $targetPath);
+                $fileCollection->add($this->getRoutesRoutingFile($module, $targetPath));
             }
         }
+
+        return $fileCollection;
     }
 
     /**
      * @param Entity $entity
      * @param string $path
-     */
-    private function saveRepository(Entity $entity, $path)
-    {
-        $path .= 'Entity/';
 
-        $targetFile = $path . $entity->getName() . 'Repository.php';
+     * @return FileInterface
+     */
+    private function getRepositoryFile(Entity $entity, $path)
+    {
+        $repositoryPath = $path . 'Entity/';
+        $repositoryName = $entity->getName() . 'Repository.php';
 
         if ($entity->getHasRepository()) {
-            $this->saveFile($targetFile,'Repository',$this->getRepositoryTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a repository.');
+            return new File($repositoryPath, $repositoryName, $this->getRepositoryTemplate()->setEntity($entity)->render());
+        } else {
+            return new NoFile($repositoryPath, $repositoryName, sprintf('The entity \'%s\' is not marked to have a repository.', $entity->getFullyQualifiedName()));
         }
     }
 
     /**
      * @param Entity $entity
      * @param string $path
+     *
+     * @return FileInterface
      */
-    private function saveForm($entity, $path)
+    private function getFormFile($entity, $path)
     {
-        $path .= 'Form/';
-        $formBasePath = $path . 'Base/';
+        $formPath     = $path . 'Form/';
+        $formBasePath = $formPath . 'Base/';
 
-        $targetFile = $path . $entity->getName() . 'Type.php';
-        $targetBaseFile = $formBasePath . $entity->getName() . 'TypeBase.php';
+        $formName     = $entity->getName() . 'Type.php';
+        $formBaseName = $entity->getName() . 'TypeBase.php';
+
+        $fileCollection = new FileCollection();
 
         if ($entity->getHasForm()) {
             // Form
-            $this->saveFile($targetFile,'Form',$this->getFormTemplate()->setEntity($entity)->render());
+            $fileCollection->add(new File($formPath, $formName, $this->getFormTemplate()->setEntity($entity)->render()));
 
             // Form Base
-            $this->saveFile($targetBaseFile,'Form Base',$this->getFormBaseTemplate()->setEntity($entity)->render());
+            $fileCollection->add(new File($formBasePath, $formBaseName, $this->getFormBaseTemplate()->setEntity($entity)->render()));
 
-            // Form Dependencies
+            // Form Dependencies TODO: WHAT IS THIS DOING?!
             /*foreach ($entity->getAttributes() as $attr) {
                 if(!is_null($attr->getForeignEntity()) && $attr->getOwnerSide()) {
                     $componentName = $entity->getName() . '_' . $attr->getForeignEntity()->getName();
@@ -923,75 +949,77 @@ class Project extends ProjectBase
                 }
             }*/
         } else {
-            if (file_exists($targetFile)) {
-                $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a form.');
-            }
-
-            if (file_exists($targetBaseFile)) {
-                $this->log->prepend('*** Perhaps the file ' . $targetBaseFile . ' should not be there as the entity is not marked to have a form.');
-            }
+            $fileCollection->add(new NoFile($formPath, $formName, sprintf('The entity \'%s\' is not marked to have a form.', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($formBasePath, $formBaseName, sprintf('The entity \'%s\' is not marked to have a form.', $entity->getFullyQualifiedName())));
         }
+
+        return $fileCollection;
     }
 
     /**
      * @param Entity $entity
      * @param string $path
+     *
+     * @return FileInterface
      */
-    private function saveController($entity, $path)
+    private function getControllerFile($entity, $path)
     {
-        $path .= 'Controller/';
-
-        $targetFile = $path . $entity->getName() . 'Controller.php';
+        $controllerPath = $path . 'Controller/';
+        $controllerName = $entity->getName() . 'Controller.php';
 
         if ($entity->getHasController()) {
-            $this->saveFile($targetFile,$entity->getName() . 'Controller',$this->getControllerTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have a controller.');
+            return new File($controllerPath, $controllerName, $this->getControllerTemplate()->setEntity($entity)->render());
+        } else {
+            return new NoFile($controllerPath, $controllerName, sprintf('The entity \'%s\' is not marked to have a controller.', $entity->getFullyQualifiedName()));
         }
     }
 
     /**
      * @param Entity $entity
      * @param string $path
+     *
+     * @return FileInterface
      */
-    private function saveFixtures($entity, $path)
+    private function getFixturesFile($entity, $path)
     {
-        $path .= 'DataFixtures/ORM/';
-
-        $targetFile = $path . $entity->getName() . 'Fixtures.php';
+        $fixturesPath = $path . 'DataFixtures/ORM/';
+        $fixturesName = $entity->getName() . 'Fixtures.php';
 
         if ($entity->getHasFixtures()) {
-            $this->saveFile($targetFile,$entity->getName() . 'Fixtures',$this->getFixturesTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have fixtures.');
+            return new File($fixturesPath, $fixturesName, $this->getFixturesTemplate()->setEntity($entity)->render());
+        } else {
+            return new NoFile($fixturesPath, $fixturesName, sprintf('The entity \'%s\'is not marked to have fixtures.', $entity->getFullyQualifiedName()));
         }
     }
 
     /**
      * @param Entity $entity
      * @param string $path
+     *
+     * @return FileInterface
      */
-    private function saveRoutes($entity, $path)
+    private function getRoutesFile($entity, $path)
     {
-        $path .= 'Resources/config/';
-
-        $targetFile = $path . 'auto_' . $entity->getLowerName() . '.yml';
+        $routesPath = $path . 'Resources/config/';
+        $routesName = 'auto_' . $entity->getLowerName() . '.yml';
 
         if (!is_null($entity->getCrud())) {
-            $this->saveFile($targetFile,$entity->getName() . '-CRUD',$this->getRoutesTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD.');
+            return new File($routesPath, $routesName, $this->getRoutesTemplate()->setEntity($entity)->render());
+        } else {
+            return new NoFile($routesPath, $routesName, sprintf('The entity \'%s\' is not marked to have CRUD.', $entity->getFullyQualifiedName()));
         }
     }
 
     /**
      * @param string $module
      * @param string $path
+     *
+     * @return File|null
      */
-    private function saveRoutesRouting($module, $path)
+    private function getRoutesRoutingFile($module, $path)
     {
-        $path .= 'Resources/config/';
-        $targetFile = $path . 'routing.yml';
+        $routesRoutingPath = $path . 'Resources/config/';
+        $routesRoutingName = 'routing.yml';
 
         $routesArray = [];
 
@@ -1003,159 +1031,72 @@ class Project extends ProjectBase
         }
 
         if (count($routesArray) > 0) {
-            $routes =   '# <system-additions part="routes">' . "\n" .
-                implode("\n",$routesArray) .
-                '# </system-additions>' . "\n";
+            $routes =   '# <system-additions part="routes">' . PHP_EOL .
+                        implode(PHP_EOL,$routesArray) .
+                        '# </system-additions>' . PHP_EOL;
 
-            $this->addToFile($targetFile, $this->namespace, $routes);
+
+            $file = new File($routesRoutingPath, $routesRoutingName, $routes);
+            $file->setAddToFile(true);
+
+            return $file;
         }
+
+        return null;
     }
 
     /**
      * @param Entity $entity
      * @param string $path
+     *
+     * @return FileInterface
      */
-    private function saveTwigCreate($entity, $path)
+    private function getTwigCreateFile($entity, $path)
     {
-        $path .= 'Resources/views/' . $entity->getName() . '/';
-
-        $targetFile = $path . 'add' . $entity->getName() . '.html.twig.php';
+        $twigCreatePath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigCreateName = 'add' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudCreate()) {
-            $this->saveFile($targetFile,$entity->getName() . '-CRUD(C)',$this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(C).');
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     */
-    private function saveTwigUpdate($entity, $path)
-    {
-        $path .= 'Resources/views/' . $entity->getName() . '/';
-
-        $targetFile = $path . 'edit' . $entity->getName() . '.html.twig.php';
-
-        if ($entity->getCrudCreate()) {
-            $this->saveFile($targetFile,$entity->getName() . '-CRUD(U)',$this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(U).');
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     */
-    private function saveTwigRead($entity, $path)
-    {
-        $path .= 'Resources/views/' . $entity->getName() . '/';
-
-        $targetFile = $path . 'list' . $entity->getName() . '.html.twig.php';
-
-        if ($entity->getCrudCreate()) {
-            $this->saveFile($targetFile,$entity->getName() . '-CRUD(R)',$this->getCrudReadTwigTemplate()->setEntity($entity)->render());
-        } elseif (file_exists($targetFile)) {
-            $this->log->prepend('*** Perhaps the file ' . $targetFile . ' should not be there as the entity is not marked to have CRUD(R).');
-        }
-    }
-
-    public function saveFile ($targetFile, $description, $contents)
-    {
-        $folder = pathinfo($targetFile,PATHINFO_DIRNAME);
-
-        if(!is_dir($folder)) {
-            mkdir($folder, 0777, true);
-        }
-
-        if (!file_exists($targetFile)) {
-            file_put_contents($targetFile, $contents);
-            $this->log->append('Saved ' . $description . ' to ' . $targetFile);
-        } elseif ($this->overwrite) {
-            $existingFile = file_get_contents($targetFile);
-            $newFile = $this->keepUserAdditions($contents,$existingFile, $description);
-
-            file_put_contents($targetFile, $newFile);
-
-            $this->log->appendExtended($description . ' file existed and modified: ' . $targetFile);
+            return new File($twigCreatePath, $twigCreateName, $this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
         } else {
-            $this->log->prepend('*** You may need to manually change the ' . $description . ' file ' . $targetFile . ' as the template might have changed since you started using it.');
+            return new NoFile($twigCreatePath, $twigCreateName, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName()));
         }
     }
 
-    public function addToFile ($targetFile, $description, $contents, $addAtEndIfMissing=true)
+    /**
+     * @param Entity $entity
+     * @param string $path
+     *
+     * @return FileInterface
+     */
+    private function getTwigReadFile($entity, $path)
     {
-        $folder = pathinfo($targetFile,PATHINFO_DIRNAME);
+        $twigReadPath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigReadName = 'list' . $entity->getName() . '.html.twig.php';
 
-        if(!is_dir($folder)) {
-            mkdir($folder);
-        }
-
-        if (!file_exists($targetFile)) {
-            file_put_contents($targetFile, $contents);
-            $this->log->append('Saved ' . $description . ' to ' . $targetFile);
+        if ($entity->getCrudRead()) {
+            return new File($twigReadPath, $twigReadName, $this->getCrudReadTwigTemplate()->setEntity($entity)->render());
         } else {
-            $existingFile = file_get_contents($targetFile);
-            $newFile = $this->addSystemAdditions($contents,$existingFile, $description, $addAtEndIfMissing);
-
-            file_put_contents($targetFile, $newFile);
-
-            $this->log->appendExtended($description . ' file existed and added modifications: ' . $targetFile);
+            return new NoFile($twigReadPath, $twigReadName, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName()));
         }
     }
 
-    public function keepUserAdditions($masterFile, $userFile, $fileName)
+    /**
+     * @param Entity $entity
+     * @param string $path
+     *
+     * @return FileInterface
+     */
+    private function getTwigUpdateFile($entity, $path)
     {
-        preg_match_all('/(<user-additions' . ' part=")(.+)(">)/', $masterFile, $masterParts);
-        $masterParts = $masterParts[2];
+        $twigUpdatePath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigUpdateName = 'edit' . $entity->getName() . '.html.twig.php';
 
-        preg_match_all('/(<user-additions' . ' part=")(.+)(">)/', $userFile, $userParts);
-        $userParts = $userParts[2];
-
-        foreach ($userParts as $part) {
-            if (!in_array($part,$masterParts)) {
-                throw new \RuntimeException('Found a user-additions part (' . $part . ') on ' . $fileName . ' but there is no section for it on the master file');
-            }
+        if ($entity->getCrudCreate()) {
+            return new File($twigUpdatePath, $twigUpdateName, $this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
+        } else {
+            return new NoFile($twigUpdatePath, $twigUpdateName, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName()));
         }
-
-        foreach ($masterParts as $part) {
-            if (preg_match('%<user-additions' . ' part="' . $part . '">.+?</user-additions' . '>%s', $userFile, $regs)) {
-                $newPart = $regs[0];
-
-                $masterFile = preg_replace('%<user-additions' . ' part="' . $part . '">.+?</user-additions' . '>%s',str_replace('\\','\\\\',$newPart),$masterFile,1);
-            }
-        }
-
-        return $masterFile;
-    }
-
-    public function addSystemAdditions($masterFile, $userFile, $fileName, $addAtEndIfMissing=true)
-    {
-        preg_match_all('/(<system-additions part=")(.+)(">)/', $masterFile, $masterParts);
-        $masterParts = $masterParts[2];
-
-        preg_match_all('/(<system-additions part=")(.+)(">)/', $userFile, $userParts);
-        $userParts = $userParts[2];
-
-        foreach ($masterParts as $part) {
-            if (!in_array($part,$userParts) && !$addAtEndIfMissing) {
-                throw new \RuntimeException('Found a system-additions part (' . $part . ') on ' . $fileName . ' but there is no section for it on the user file and is not allowed to add at the end');
-            }
-        }
-
-        foreach ($masterParts as $part) {
-            if (!in_array($part,$userParts)) {
-                $userFile .= "\n" . $masterFile;
-            } elseif (preg_match('%<system-additions part="' . $part . '">.+?</system-additions>%s', $masterFile, $regs)) {
-                $newPart = $regs[0];
-
-                $userFile = preg_replace('%<system-additions part="' . $part . '">.+?</system-additions>%s',$newPart,$userFile,1);
-            }
-        }
-
-        return $userFile;
     }
     // </user-additions>
     // </editor-fold>

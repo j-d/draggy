@@ -187,6 +187,12 @@ class DefaultController extends Controller
 
         $xml = simplexml_load_string($xmlString);
 
+        try {
+            $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
+        } catch (\Exception $exception) {
+            $targetFolder = '/dev/null/';
+        }
+
         if (false === $xml) {
             throw new \LogicException( 'There is something wrong on the xml that was received. It cannot be saved.' );
         }
@@ -198,7 +204,7 @@ class DefaultController extends Controller
         return $this->render(
             'DraggyBundle:Default:parts/autocodeChanges.html.twig',
             [
-            //'changes' => $project->getChanges()
+            'changes' => $project->getChanges($targetFolder)
             ]
         );
     }
