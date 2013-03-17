@@ -10,9 +10,11 @@
     </head>
     <body>
         <div id="menu">
-            <span onClick="Draggy.prototype.save('<?php echo $file; ?>');">Save</span>
+            <span onClick="Draggy.prototype.save();">Save</span>
             |
             <span onClick="ProjectPropertiesDialog.prototype.openDialog();">Project properties</span>
+            |
+            <span onClick="$('#generate-entities-dialog').dialog('open');">Generate entities</span>
             <span id="contextMenus" style="display: none;">| <span onClick="ContextMenu.prototype.enableMenus();">Show context menus</span></span>
         </div>
         <div id="draggy-area">
@@ -70,5 +72,6 @@
         {% include 'DraggyBundle:Default:dialogs/editModuleDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/linkClassDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/projectPropertiesDialog.html.twig' %}
+        {% include 'DraggyBundle:Default:dialogs/generateEntitiesDialog.html.twig' %}
     </body>
 </html>
