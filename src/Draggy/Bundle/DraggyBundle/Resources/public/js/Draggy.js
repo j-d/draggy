@@ -20,12 +20,11 @@ Draggy.prototype.save = function () {
         type: 'POST',
         url: Draggy.prototype.saveAddress,
         data: { xml: this.getModelXML() },
-        done: function (html) {
-            alert('Saved successfully!\n' + html);
-            Draggy.prototype.statusMsg('Saved');
+        success: function (msg) {
+            Notification.prototype.ok('The model was saved correctly.');
         },
-        error: function (html) {
-            alert('Something went wrong!\n' + html);
+        error: function (msg) {
+            Notification.prototype.error('Error: ' + msg.responseText);
         }
     });
 };

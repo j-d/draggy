@@ -431,3 +431,39 @@ html.error {
 #menu span.model-no-saveable {
     color: #FF6666;
 }
+
+/* Notifications */
+div.notification {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    line-height: 2.5;
+    overflow: hidden;
+    box-shadow: 0 0 5px black;
+    height: 35px;
+    display: none;
+}
+
+div.notification span.ui-icon {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+div.notification span.message {
+
+}
+
+div#notification-error {
+    background: #FF6666;
+}
+
+div#notification-warning {
+    background: #fde073;
+}
+
+div#notification-ok {
+    background-color: palegreen;
+}

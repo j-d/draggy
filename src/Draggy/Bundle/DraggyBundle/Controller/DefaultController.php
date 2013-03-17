@@ -175,12 +175,16 @@ class DefaultController extends Controller
                 throw new \RuntimeException( 'The model history file could not be saved.' );
             }
         } catch (\Exception $exception) {
-            return $this->render(
+            $response = $this->render(
                 'DraggyBundle:Default:ajaxMessage.txt.twig',
                 [
                 'message' => $exception->getMessage(),
                 ]
             );
+
+            $response->setStatusCode(400);
+
+            return $response;
         }
 
         return $this->render(
