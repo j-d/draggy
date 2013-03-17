@@ -238,6 +238,8 @@ class Project extends ProjectBase
         $xmlDesign = simplexml_load_file($file);
 
         $this->loadDesign($xmlDesign);
+
+        return $this;
     }
 
     public function loadDesign(\SimpleXMLElement $xmlDesign)
