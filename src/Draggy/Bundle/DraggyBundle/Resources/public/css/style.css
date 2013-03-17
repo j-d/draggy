@@ -467,3 +467,60 @@ div#notification-warning {
 div#notification-ok {
     background-color: palegreen;
 }
+
+/* Autocode report styles */
+
+div.autocode-change {
+    background-color: #ededed;
+    padding: 10px;
+    width: 952px;
+}
+
+div.autocode-change-summary {
+}
+
+div.full-file-name {
+    overflow: hidden;
+    display: inline-block;
+    max-width: 930px;
+}
+
+div.autocode-change div.full-file-name span.folder-name {
+    color: #888;
+}
+
+div.autocode-change div.full-file-name span.file-name {
+    color: #444;
+}
+
+div.autocode-change div.unfold-icon {
+    display: inline-block;
+    margin: -3px;
+    visibility: hidden;
+    width: 16px;
+}
+
+div.autocode-change:hover div.unfold-icon {
+    visibility: visible;
+}
+
+div.autocode-change div.unfold-icon span.icon-down, div.autocode-change div.unfold-icon span.icon-up {
+}
+
+div.autocode-change div.unfold-icon span.icon-up {
+    display: none;
+}
+
+div.autocode-change-lines {
+    margin-top: 10px;
+    xbackground-color: #fff;
+    border: 1px solid #ccc;
+    display: none;
+    overflow-x: auto;
+}
+
+div.autocode-line {
+    height: 20px;
+    background-color: #fff;
+    overflow: hidden;
+}
