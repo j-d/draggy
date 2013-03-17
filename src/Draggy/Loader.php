@@ -571,6 +571,89 @@ class Loader
         return $r;
     }
 
+    private function getClassLikeAfterAttributesProperties()
+    {
+        $r = '';
+
+        // Inside classes
+        foreach ($this->insideClasses as $insideClassModule => $insideClasses) {
+            foreach ($insideClasses as $insideClass) {
+                $class = $this->xml->xpath(
+                    '/draggy/module[@name=\'' . $insideClassModule . '\']/class[@name=\'' . $insideClass . '\']'
+                );
+
+                $classAttributes = (array)$class[0];
+                $classAttributes = (array)$classAttributes['@attributes'];
+
+                $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . str_replace(
+                    '\\',
+                    '\\\\',
+                    $insideClassModule . '\\'
+                ) . $insideClass . '\');' . PHP_EOL;
+
+                if (isset( $classAttributes['toString'] )) {
+                    $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
+                }
+            }
+        }
+
+        // Inside abstracts
+        foreach ($this->insideAbstracts as $insideAbstractModule => $insideAbstracts) {
+            foreach ($insideAbstracts as $insideAbstract) {
+                $abstract = $this->xml->xpath(
+                    '/draggy/module[@name=\'' . $insideAbstractModule . '\']/abstract[@name=\'' . $insideAbstract . '\']'
+                );
+
+                $abstractAttributes = (array)$abstract[0];
+                $abstractAttributes = (array)$abstractAttributes['@attributes'];
+
+                $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . str_replace(
+                    '\\',
+                    '\\\\',
+                    $insideAbstractModule . '\\'
+                ) . $insideAbstract . '\');' . PHP_EOL;
+
+                if (isset( $abstractAttributes['toString'] )) {
+                    $r .= 'c.setToString(c.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
+                }
+            }
+        }
+
+        // Outside classes
+        foreach ($this->outsideClasses as $outsideClass) {
+            $class = $this->xml->xpath(
+                '/draggy/loose/class[@name=\'' . $outsideClass . '\']'
+            );
+
+            $classAttributes = (array)$class[0];
+            $classAttributes = (array)$classAttributes['@attributes'];
+
+            $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . $outsideClass . '\');' . PHP_EOL;
+
+            if (isset( $classAttributes['toString'] )) {
+                $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
+            }
+        }
+
+        // Outside abstracts
+        foreach ($this->outsideAbstracts as $outsideAbstract) {
+            $class = $this->xml->xpath(
+                '/draggy/loose/abstract[@name=\'' . $outsideAbstract . '\']'
+            );
+
+            $abstractAttributes = (array)$class[0];
+            $abstractAttributes = (array)$abstractAttributes['@attributes'];
+
+            $r .= 'c = Connectable.prototype.getConnectableFromName(\'' . $outsideAbstract . '\');' . PHP_EOL;
+
+            if (isset( $abstractAttributes['toString'] )) {
+                $r .= 'c.setToString(c.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
+            }
+        }
+
+        return $r;
+    }
+
     /**
      * Get the project attributes
      *
@@ -625,7 +708,10 @@ class Loader
         // SECOND STEP: Add the attributes
         $r .= $this->getAttributes();
 
-        // THIRD STEP: Relationships
+        // THIRD STEP: After attributes entity properties
+        $r .= $this->getClassLikeAfterAttributesProperties();
+
+        // FOURTH STEP: Relationships
         $r .= $this->getRelationships();
 
         // Finalise
