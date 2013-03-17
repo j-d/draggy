@@ -427,3 +427,7 @@ div.brokenLink {
 html.error {
     background-color: rgb(245, 167, 167);
 }
+
+#menu span.model-no-saveable {
+    color: #FF6666;
+}

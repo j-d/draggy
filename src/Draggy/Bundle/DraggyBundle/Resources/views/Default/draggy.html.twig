@@ -10,7 +10,11 @@
     </head>
     <body>
         <div id="menu">
-            <span onClick="Draggy.prototype.save();">Save</span>
+            {% if saveable %}
+                <span onClick="Draggy.prototype.save();">Save</span>
+            {% else %}
+                <span class="model-no-saveable" onClick="Draggy.prototype.save();"><a title="{{ noSaveableReason }}">Save</a></span>
+            {% endif %}
             |
             <span onClick="ProjectPropertiesDialog.prototype.openDialog();">Project properties</span>
             |
