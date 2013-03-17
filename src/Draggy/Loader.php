@@ -515,8 +515,8 @@ class Loader
 
                 $r .= $this->getClassLikeAttributeProperties($insideClass, $attributes, 'c');
 
-                if (isset( $classAttributes['toString'] )) {
-                    $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
+                if (isset( $insideClass['toString'] )) {
+                    $r .= 'c.setToString(c.getAttributeFromName("' . $insideClass['toString'] . '"))' . PHP_EOL;
                 }
             }
         }
@@ -536,8 +536,8 @@ class Loader
 
                 $r .= $this->getClassLikeAttributeProperties($insideAbstract, $attributes, 's');
 
-                if (isset( $abstractAttributes['toString'] )) {
-                    $r .= 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
+                if (isset( $insideAbstract['toString'] )) {
+                    $r .= 's.setToString(s.getAttributeFromName("' . $insideAbstract['toString'] . '"))' . PHP_EOL;
                 }
             }
         }
@@ -550,8 +550,8 @@ class Loader
 
             $r .= $this->getClassLikeAttributeProperties($outsideClass, $attributes, 'c');
 
-            if (isset( $classAttributes['toString'] )) {
-                $r .= 'c.setToString(c.getAttributeFromName("' . $classAttributes['toString'] . '"))' . PHP_EOL;
+            if (isset( $outsideClass['toString'] )) {
+                $r .= 'c.setToString(c.getAttributeFromName("' . $outsideClass['toString'] . '"))' . PHP_EOL;
             }
         }
 
@@ -563,8 +563,8 @@ class Loader
 
             $r .= $this->getClassLikeAttributeProperties($outsideAbstract, $attributes, 'c');
 
-            if (isset( $abstractAttributes['toString'] )) {
-                $r .= 's.setToString(s.getAttributeFromName("' . $abstractAttributes['toString'] . '"))' . PHP_EOL;
+            if (isset( $outsideAbstract['toString'] )) {
+                $r .= 's.setToString(s.getAttributeFromName("' . $outsideAbstract['toString'] . '"))' . PHP_EOL;
             }
         }
 
