@@ -198,7 +198,7 @@ class DefaultController extends Controller
         return $this->render(
             'DraggyBundle:Default:parts/autocodeChanges.html.twig',
             [
-            'changes' => $project->getChanges()
+            //'changes' => $project->getChanges()
             ]
         );
     }

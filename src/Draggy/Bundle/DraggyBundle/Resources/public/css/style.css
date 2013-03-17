@@ -474,6 +474,7 @@ div.autocode-change {
     background-color: #ededed;
     padding: 10px;
     width: 952px;
+    border-bottom: 2px solid #fff;
 }
 
 div.autocode-change-summary {
@@ -513,7 +514,7 @@ div.autocode-change div.unfold-icon span.icon-up {
 
 div.autocode-change-lines {
     margin-top: 10px;
-    xbackground-color: #fff;
+    background-color: #fff;
     border: 1px solid #ccc;
     display: none;
     overflow-x: auto;
@@ -521,6 +522,5 @@ div.autocode-change-lines {
 
 div.autocode-line {
     height: 20px;
-    background-color: #fff;
     overflow: hidden;
 }

@@ -807,7 +807,7 @@ class Project extends ProjectBase
             mkdir($namespacePath);
         }
 
-        foreach ($this->entities as $entity)
+        foreach ($this->entities as $entity) {
             if ($entity->getRenderizable()) {
                 if ($entity->getNamespace() === '') {
                     $targetPath = $namespacePath;
@@ -861,6 +861,7 @@ class Project extends ProjectBase
                 }
 
             }
+        }
 
         foreach ($this->modules as $module) {
             if ($this->getLanguage() === 'PHP') {
