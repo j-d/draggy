@@ -6,6 +6,7 @@ Draggy.prototype.description = null;
 Draggy.prototype.orm = null;
 Draggy.prototype.framework = null;
 Draggy.prototype.saveAddress = null;
+Draggy.prototype.previewAddress = null;
 
 Draggy.prototype.addClass = function (name,container) {
     new Class(name,container);

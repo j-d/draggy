@@ -231,11 +231,17 @@ class Project extends ProjectBase
 
     public function loadFile($file)
     {
-        if (!is_file($file))
+        if (!is_file($file)) {
             throw new \Exception( 'Not valid model file provided (' . $file . ')' );
+        }
 
         $xmlDesign = simplexml_load_file($file);
 
+        $this->loadDesign($xmlDesign);
+    }
+
+    public function loadDesign(\SimpleXMLElement $xmlDesign)
+    {
         // Load project properties
         $projectProperties = (array) $xmlDesign->xpath('project')[0];
 

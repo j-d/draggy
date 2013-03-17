@@ -19,7 +19,7 @@
             |
             <span onClick="ProjectPropertiesDialog.prototype.openDialog();">Project properties</span>
             |
-            <span onClick="$('#generate-entities-dialog').dialog('open');">Generate entities</span>
+            <span onClick="GenerateEntitiesDialog.prototype.openDialog();">Generate entities</span>
             <span id="contextMenus" style="display: none;">| <span onClick="ContextMenu.prototype.enableMenus();">Show context menus</span></span>
         </div>
         <div id="draggy-area">
@@ -54,10 +54,12 @@
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Exceptions/NameNotFoundException.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Notification.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Autocode.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/draggy/js/GenerateEntitiesDialog.js') }}"></script>
 
         <script>
             ContextMenu.prototype.enableMenus();
             Draggy.prototype.saveAddress = '{{ path('draggy_save') }}';
+            Draggy.prototype.previewAddress = '{{ path('draggy_preview') }}';
         </script>
 
         <script>

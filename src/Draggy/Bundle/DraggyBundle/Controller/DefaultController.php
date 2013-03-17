@@ -177,6 +177,32 @@ class DefaultController extends Controller
         );
     }
 
+    public function previewAction(Request $request)
+    {
+        $xmlString = $request->request->get('xml');
+
+        if (empty( $xmlString )) {
+            throw new \LogicException( 'Wrong request.' );
+        }
+
+        $xml = simplexml_load_string($xmlString);
+
+        if (false === $xml) {
+            throw new \LogicException( 'There is something wrong on the xml that was received. It cannot be saved.' );
+        }
+
+        $project = new Project();
+
+        $project->loadDesign($xml);
+
+        return $this->render(
+            'DraggyBundle:Default:parts/autocodeChanges.html.twig',
+            [
+            'changes' => $project->getChanges()
+            ]
+        );
+    }
+
     public function saveAction(Request $request)
     {
         try {
