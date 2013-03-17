@@ -104,7 +104,13 @@ class Project extends ProjectBase
      */
     public function getLog()
     {
-        return $this->log->getLog();
+        $log = $this->log->getLog();
+
+        if (null === $log) {
+            return '--There are no messages--';
+        } else {
+            return $log;
+        }
     }
     // </user-additions>
     // </editor-fold>
