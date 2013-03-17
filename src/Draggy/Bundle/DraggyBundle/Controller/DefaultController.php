@@ -16,24 +16,12 @@ class DefaultController extends Controller
         try {
             $file = $this->container->getParameter('draggy.model_filename');
         } catch (\InvalidArgumentException $e) {
-            return $this->render(
-                'DraggyBundle:Default:error.html.twig',
-                [
-                'message' => 'The model filename was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.'
-                ]
-            );
+            throw new \InvalidArgumentException('The model filename was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.');
         }
 
         if (empty( $file )) {
-            return $this->render(
-                'DraggyBundle:Default:error.html.twig',
-                [
-                'message' => 'The model filename was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.'
-                ]
-            );
+            throw new \InvalidArgumentException('The model filename was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.');
         }
-
-        return null;
     }
 
     private function getModelFile()
@@ -52,8 +40,15 @@ class DefaultController extends Controller
 
     public function draggyAction()
     {
-        if (null !== $this->checkModelFile()) {
-            return $this->checkModelFile();
+        try {
+            $this->checkModelFile();
+        } catch (\Exception $exception) {
+            return $this->render(
+                'DraggyBundle:Default:error.html.twig',
+                [
+                'message' => $exception->getMessage()
+                ]
+            );
         }
 
         $modelFile = $this->getModelFile();
@@ -74,8 +69,15 @@ class DefaultController extends Controller
 
     public function generateAction()
     {
-        if (null !== $this->checkModelFile()) {
-            return $this->checkModelFile();
+        try {
+            $this->checkModelFile();
+        } catch (\Exception $exception) {
+            return $this->render(
+                'DraggyBundle:Default:error.html.twig',
+                [
+                'message' => $exception->getMessage()
+                ]
+            );
         }
 
         $modelFile = $this->getModelFile();
@@ -107,80 +109,52 @@ class DefaultController extends Controller
 
     public function saveAction(Request $request)
     {
-        if (null !== $this->checkModelFile()) {
-            return $this->checkModelFile();
-        }
+        try {
+            $this->checkModelFile();
 
-        $modelFile = $this->getModelFile();
-        $modelHistoryFile = $this->getModelHistoryFile();
+            $modelFile = $this->getModelFile();
+            $modelHistoryFile = $this->getModelHistoryFile();
 
-        if (!is_writable($modelFile)) {
+            if (!is_writable($modelFile)) {
+                throw new \RuntimeException(sprintf('The model file located at \'%s\' is read only.', $modelFile));
+            }
+
+            $modelHistoryFolder = pathinfo($modelHistoryFile, PATHINFO_DIRNAME);
+
+            if (!is_dir($modelHistoryFolder)) {
+                throw new \RuntimeException(sprintf('The model history folder located at \'%s\' does not exist.', $modelHistoryFolder));
+            }
+
+            if (!is_writable($modelHistoryFile)) {
+                throw new \RuntimeException(sprintf('The model file located at \'%s\' is read only.', $modelHistoryFile));
+            }
+
+            $xmlString = $request->request->get('xml');
+
+            if (empty($xmlString)) {
+                throw new \LogicException('Wrong request.');
+            }
+
+            $xml = simplexml_load_string($xmlString);
+
+            if (false === $xml) {
+                throw new \LogicException('There is something wrong on the xml that was received. It cannot be saved.');
+            }
+
+            $xmlString = $xml->asXML();
+
+            if (false === file_put_contents($modelFile, $xmlString)) {
+                throw new \RuntimeException('The model file could not be saved.');
+            }
+
+            if (false === file_put_contents($modelFile, $xmlString)) {
+                throw new \RuntimeException('The model history file could not be saved.');
+            }
+        } catch (\Exception $exception) {
             return $this->render(
                 'DraggyBundle:Default:ajaxMessage.txt.twig',
                 [
-                'message' => sprintf('The model file located at \'%s\' is read only.', $modelFile),
-                ]
-            );
-        }
-
-        $modelHistoryFolder = pathinfo($modelHistoryFile, PATHINFO_DIRNAME);
-
-        if (!is_dir($modelHistoryFolder)) {
-            return $this->render(
-                'DraggyBundle:Default:ajaxMessage.txt.twig',
-                [
-                'message' => sprintf('The model history folder located at \'%s\' does not exist.', $modelHistoryFolder),
-                ]
-            );
-        }
-
-        if (!is_writable($modelHistoryFile)) {
-            return $this->render(
-                'DraggyBundle:Default:ajaxMessage.txt.twig',
-                [
-                'message' => sprintf('The model file located at \'%s\' is read only.', $modelHistoryFile),
-                ]
-            );
-        }
-
-        $xmlString = $request->request->get('xml');
-
-        if (empty($xmlString)) {
-            return $this->render(
-                'DraggyBundle:Default:ajaxMessage.txt.twig',
-                [
-                'message' => 'Wrong request.',
-                ]
-            );
-        }
-
-        $xml = simplexml_load_string($xmlString);
-
-        if (false === $xml) {
-            return $this->render(
-                'DraggyBundle:Default:ajaxMessage.txt.twig',
-                [
-                'message' => 'There is something wrong on the xml that was received. It cannot be saved.',
-                ]
-            );
-        }
-
-        $xmlString = $xml->asXML();
-
-        if (false === file_put_contents($modelFile, $xmlString)) {
-            return $this->render(
-                'DraggyBundle:Default:ajaxMessage.txt.twig',
-                [
-                'message' => 'The model file could not be saved.',
-                ]
-            );
-        }
-
-        if (false === file_put_contents($modelFile, $xmlString)) {
-            return $this->render(
-                'DraggyBundle:Default:ajaxMessage.txt.twig',
-                [
-                'message' => 'The model history file could not be saved.',
+                'message' => $exception->getMessage(),
                 ]
             );
         }
