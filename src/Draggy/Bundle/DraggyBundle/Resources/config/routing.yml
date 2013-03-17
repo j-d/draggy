@@ -5,3 +5,9 @@ draggy_model:
 draggy_generate:
     pattern:  /generate
     defaults: { _controller: DraggyBundle:Default:generate }
+
+draggy_save:
+    pattern:  /save
+    defaults: { _controller: DraggyBundle:Default:save }
+    requirements:
+        _method:  POST

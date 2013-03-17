@@ -5,7 +5,7 @@ Draggy.prototype.language = null;
 Draggy.prototype.description = null;
 Draggy.prototype.orm = null;
 Draggy.prototype.framework = null;
-
+Draggy.prototype.saveAddress = null;
 
 Draggy.prototype.addClass = function (name,container) {
     new Class(name,container);
@@ -15,14 +15,17 @@ Draggy.prototype.removeConnectable = function (connectableId) {
     Connectable.prototype.connectables[connectableId].remove();
 };
 
-Draggy.prototype.save = function (file) {
+Draggy.prototype.save = function () {
     $.ajax({
-        type:'POST',
-        url:'save.php?f=' + file,
+        type: 'POST',
+        url: Draggy.prototype.saveAddress,
         data: { xml: this.getModelXML() },
-        success:function () {
-            alert('Saved successfully!');
+        done: function (html) {
+            alert('Saved successfully!\n' + html);
             Draggy.prototype.statusMsg('Saved');
+        },
+        error: function (html) {
+            alert('Something went wrong!\n' + html);
         }
     });
 };

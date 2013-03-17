@@ -43,6 +43,13 @@ class DefaultController extends Controller
         return $this->get('kernel')->getRootDir() . '/../doc/' . $file;
     }
 
+    private function getModelHistoryFile()
+    {
+        $file = $this->container->getParameter('draggy.model_filename');
+
+        return $this->get('kernel')->getRootDir() . '/../doc/history/' . str_replace('.xml', '.' . time() . '.xml', $file);
+    }
+
     public function draggyAction()
     {
         if (null !== $this->checkModelFile()) {
@@ -94,6 +101,94 @@ class DefaultController extends Controller
             'DraggyBundle:Default:generateEntities.html.twig',
             [
             'log' => $project->getLog()
+            ]
+        );
+    }
+
+    public function saveAction(Request $request)
+    {
+        if (null !== $this->checkModelFile()) {
+            return $this->checkModelFile();
+        }
+
+        $modelFile = $this->getModelFile();
+        $modelHistoryFile = $this->getModelHistoryFile();
+
+        if (!is_writable($modelFile)) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => sprintf('The model file located at \'%s\' is read only.', $modelFile),
+                ]
+            );
+        }
+
+        $modelHistoryFolder = pathinfo($modelHistoryFile, PATHINFO_DIRNAME);
+
+        if (!is_dir($modelHistoryFolder)) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => sprintf('The model history folder located at \'%s\' does not exist.', $modelHistoryFolder),
+                ]
+            );
+        }
+
+        if (!is_writable($modelHistoryFile)) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => sprintf('The model file located at \'%s\' is read only.', $modelHistoryFile),
+                ]
+            );
+        }
+
+        $xmlString = $request->request->get('xml');
+
+        if (empty($xmlString)) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => 'Wrong request.',
+                ]
+            );
+        }
+
+        $xml = simplexml_load_string($xmlString);
+
+        if (false === $xml) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => 'There is something wrong on the xml that was received. It cannot be saved.',
+                ]
+            );
+        }
+
+        $xmlString = $xml->asXML();
+
+        if (false === file_put_contents($modelFile, $xmlString)) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => 'The model file could not be saved.',
+                ]
+            );
+        }
+
+        if (false === file_put_contents($modelFile, $xmlString)) {
+            return $this->render(
+                'DraggyBundle:Default:ajaxMessage.txt.twig',
+                [
+                'message' => 'The model history file could not be saved.',
+                ]
+            );
+        }
+
+        return $this->render(
+            'DraggyBundle:Default:ajaxMessage.txt.twig',
+            [
+            'message' => 'OK',
             ]
         );
     }
