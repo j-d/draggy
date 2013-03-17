@@ -43,16 +43,10 @@ class Project extends ProjectBase
 
     // <editor-fold desc="Constructor">
     // <user-additions part="constructorDeclaration">
-    public function __construct($namespace)
+    public function __construct()
     // </user-additions>
     {
         // <user-additions part="constructor">
-        if (substr($namespace, 0, -1) == '\\') {
-            $namespace = substr($namespace, 0, -1);
-        }
-
-        $this->setNamespace($namespace);
-
         $this->log = new Log();
         // </user-additions>
     }
@@ -60,6 +54,17 @@ class Project extends ProjectBase
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
+    /**
+     * @inheritDoc
+     */
+    public function setNamespace($namespace) {
+        if (substr($namespace, 0, -1) == '\\') {
+            $namespace = substr($namespace, 0, -1);
+        }
+
+        return parent::setNamespace($namespace);
+    }
+
     /**
      * @inheritDoc
      */
@@ -248,6 +253,127 @@ class Project extends ProjectBase
         }
 
         $attributeClass = $this->getAttributeClass();
+
+        // Load autocode settings
+        $autocodeProperties = (array) $xmlDesign->xpath('autocode')[0];
+
+        if (!empty($autocodeProperties['base'])) {
+            $this->setBase($autocodeProperties['base'] === 'true');
+        }
+
+        if (!empty($autocodeProperties['overwrite'])) {
+            $this->setOverwrite($autocodeProperties['overwrite'] === 'true');
+        }
+
+        if (!empty($autocodeProperties['delete-unmapped'])) {
+            $this->setDeleteUnmapped($autocodeProperties['delete-unmapped'] === 'true');
+        }
+
+        if (!empty($autocodeProperties['validation'])) {
+            $this->setValidation($autocodeProperties['validation'] === 'true');
+        }
+
+        if (!empty($autocodeProperties['namespace'])) {
+            $this->setNamespace($autocodeProperties['namespace']);
+        }
+
+        $autocodeTemplateProperties = (array) $xmlDesign->xpath('autocode/templates')[0];
+
+        if (!empty($autocodeTemplateProperties['entity'])) {
+            if (!class_exists($autocodeTemplateProperties['entity'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['entity']));
+            }
+
+            $this->setEntityTemplate(new $autocodeTemplateProperties['entity']);
+        }
+
+        if (!empty($autocodeTemplateProperties['entity-base'])) {
+            if (!class_exists($autocodeTemplateProperties['entity-base'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['entity-base']));
+            }
+
+            $this->setEntityBaseTemplate(new $autocodeTemplateProperties['entity-base']);
+        }
+
+        if (!empty($autocodeTemplateProperties['repository'])) {
+            if (!class_exists($autocodeTemplateProperties['repository'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['repository']));
+            }
+
+            $this->setRepositoryTemplate(new $autocodeTemplateProperties['repository']);
+        }
+
+        if (!empty($autocodeTemplateProperties['form'])) {
+            if (!class_exists($autocodeTemplateProperties['form'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['form']));
+            }
+
+            $this->setFormTemplate(new $autocodeTemplateProperties['form']);
+        }
+
+        if (!empty($autocodeTemplateProperties['form-base'])) {
+            if (!class_exists($autocodeTemplateProperties['form-base'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['form-base']));
+            }
+
+            $this->setFormBaseTemplate(new $autocodeTemplateProperties['form-base']);
+        }
+
+        if (!empty($autocodeTemplateProperties['controller'])) {
+            if (!class_exists($autocodeTemplateProperties['controller'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['controller']));
+            }
+
+            $this->setControllerTemplate(new $autocodeTemplateProperties['controller']);
+        }
+
+        if (!empty($autocodeTemplateProperties['fixtures'])) {
+            if (!class_exists($autocodeTemplateProperties['fixtures'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['fixtures']));
+            }
+
+            $this->setFixturesTemplate(new $autocodeTemplateProperties['fixtures']);
+        }
+
+        if (!empty($autocodeTemplateProperties['routes'])) {
+            if (!class_exists($autocodeTemplateProperties['routes'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['routes']));
+            }
+
+            $this->setRoutesTemplate(new $autocodeTemplateProperties['routes']);
+        }
+
+        if (!empty($autocodeTemplateProperties['routes-routing'])) {
+            if (!class_exists($autocodeTemplateProperties['routes-routing'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['routes-routing']));
+            }
+
+            $this->setRoutesRoutingTemplate(new $autocodeTemplateProperties['routes-routing']);
+        }
+
+        if (!empty($autocodeTemplateProperties['crud-create-twig'])) {
+            if (!class_exists($autocodeTemplateProperties['crud-create-twig'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['crud-create-twig']));
+            }
+
+            $this->setCrudCreateTwigTemplate(new $autocodeTemplateProperties['crud-create-twig']);
+        }
+
+        if (!empty($autocodeTemplateProperties['crud-read-twig'])) {
+            if (!class_exists($autocodeTemplateProperties['crud-read-twig'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['crud-read-twig']));
+            }
+
+            $this->setCrudReadTwigTemplate(new $autocodeTemplateProperties['crud-read-twig']);
+        }
+
+        if (!empty($autocodeTemplateProperties['crud-update-twig'])) {
+            if (!class_exists($autocodeTemplateProperties['crud-update-twig'])) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['crud-update-twig']));
+            }
+
+            $this->setCrudUpdateTwigTemplate(new $autocodeTemplateProperties['crud-update-twig']);
+        }
 
         // Process entities
 
