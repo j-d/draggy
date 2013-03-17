@@ -95,6 +95,8 @@ Draggy.prototype.getModelXML = function () {
     }
     ret += '\t</relationships>\n';
 
+    ret += Autocode.prototype.toXML();
+
     /*
      ret += '\t<modules>\n';
      for (var i in Container.prototype.containers)

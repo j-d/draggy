@@ -469,52 +469,58 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
 
     var a, i;
     var c = EditItemDialog.prototype.connectable;
-    var constructor, repository, form, controller, fixtures, crud;
+    var $constructor, $repository, $form, $controller, $fixtures, $crud;
 
     // Repository
 
     if (c instanceof Class) {
-        constructor = $('#edit-item-constructor');
-        repository = $('#edit-item-repository');
-        form = $('#edit-item-form');
-        controller = $('#edit-item-controller');
-        fixtures = $('#edit-item-fixtures');
-        crud = $('#edit-item-crud');
+        $constructor = $('#edit-item-constructor');
+        $repository = $('#edit-item-repository');
+        $form = $('#edit-item-form');
+        $controller = $('#edit-item-controller');
+        $fixtures = $('#edit-item-fixtures');
+        $crud = $('#edit-item-crud');
 
-        if (c.getConstructor())
-            constructor.attr('checked','checked');
-        else
-            constructor.removeAttr('checked');
-        constructor.button('refresh');
+        if (c.getConstructor()) {
+            $constructor.attr('checked','checked');
+        } else {
+            $constructor.removeAttr('checked');
+        }
+        $constructor.button('refresh');
 
-        if (c.getRepository())
-            repository.attr('checked','checked');
-        else
-            repository.removeAttr('checked');
-        repository.button('refresh');
+        if (c.getRepository()) {
+            $repository.attr('checked','checked');
+        } else {
+            $repository.removeAttr('checked');
+        }
+        $repository.button('refresh');
 
-        if (c.getForm())
-            form.attr('checked','checked');
-        else
-            form.removeAttr('checked');
-        form.button('refresh');
+        if (c.getForm()) {
+            $form.attr('checked','checked');
+        } else {
+            $form.removeAttr('checked');
+        }
+        $form.button('refresh');
 
-        if (c.getController())
-            controller.attr('checked','checked');
-        else
-            controller.removeAttr('checked');
-        controller.button('refresh');
+        if (c.getController()) {
+            $controller.attr('checked','checked');
+        } else {
+            $controller.removeAttr('checked');
+        }
+        $controller.button('refresh');
 
-        if (c.getFixtures())
-            fixtures.attr('checked','checked');
-        else
-            fixtures.removeAttr('checked');
-        fixtures.button('refresh');
+        if (c.getFixtures()) {
+            $fixtures.attr('checked','checked');
+        } else {
+            $fixtures.removeAttr('checked');
+        }
+        $fixtures.button('refresh');
 
-        if (c.getCrud() !== null)
-            crud.val(c.getCrud());
-        else
-            crud.val('');
+        if (c.getCrud() !== null) {
+            $crud.val(c.getCrud());
+        } else {
+            $crud.val('');
+        }
     }
 
     // ToString

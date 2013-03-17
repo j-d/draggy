@@ -90,17 +90,104 @@ class Loader
      */
     private function getProjectProperties()
     {
+        $r = '';
+
         $projectOptions = (array)$this->xml->xpath('/draggy/project');
         $projectOptions = (array)$projectOptions[0];
 
         $this->checkMandatoryAttributes('Project', $projectOptions, ['language', 'description', 'orm', 'framework']);
 
-        $r = '';
-
         $r .= 'Draggy.prototype.setLanguage(\'' . $projectOptions['language'] . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setDescription(\'' . $projectOptions['description'] . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setORM(\'' . $projectOptions['orm'] . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setFramework(\'' . $projectOptions['framework'] . '\');' . PHP_EOL;
+
+        return $r;
+    }
+
+    /**
+     * Get the project autocode properties from the saved file
+     *
+     * @return string
+     */
+    private function getAutocodeProperties()
+    {
+        $r = '';
+
+        $autocodeOptions = (array)$this->xml->xpath('/draggy/autocode');
+        $autocodeOptions = (array)$autocodeOptions[0];
+
+        if (isset($autocodeOptions['base'])) {
+            $r .= 'Autocode.prototype.setBase(' . $autocodeOptions['base']  . ' === true);' . PHP_EOL;
+        }
+
+        if (isset($autocodeOptions['overwrite'])) {
+            $r .= 'Autocode.prototype.setOverwrite(' . $autocodeOptions['overwrite']  . ' === true);' . PHP_EOL;
+        }
+
+        if (isset($autocodeOptions['delete-unmapped'])) {
+            $r .= 'Autocode.prototype.setDeleteUnmapped(' . $autocodeOptions['delete-unmapped']  . ' === true);' . PHP_EOL;
+        }
+
+        if (isset($autocodeOptions['validation'])) {
+            $r .= 'Autocode.prototype.setValidation(' . $autocodeOptions['validation']  . ' === true);' . PHP_EOL;
+        }
+
+        if (isset($autocodeOptions['namespace'])) {
+            $r .= 'Autocode.prototype.setNamespace("' . str_replace('\\', '\\\\', $autocodeOptions['namespace']) . '");' . PHP_EOL;
+        }
+
+        if (isset($autocodeOptions['templates'])) {
+            $templateOptions = (array)$autocodeOptions['templates'];
+
+            if (isset($templateOptions['entity'])) {
+                $r .= 'Autocode.prototype.setEntityTemplate("' . str_replace('\\', '\\\\', $templateOptions['entity']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['entity-base'])) {
+                $r .= 'Autocode.prototype.setEntityBaseTemplate("' . str_replace('\\', '\\\\', $templateOptions['entity-base']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['repository'])) {
+                $r .= 'Autocode.prototype.setRepositoryTemplate("' . str_replace('\\', '\\\\', $templateOptions['repository']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['form'])) {
+                $r .= 'Autocode.prototype.setFormTemplate("' . str_replace('\\', '\\\\', $templateOptions['form']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['form-base'])) {
+                $r .= 'Autocode.prototype.setFormBaseTemplate("' . str_replace('\\', '\\\\', $templateOptions['form-base']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['controller'])) {
+                $r .= 'Autocode.prototype.setControllerTemplate("' . str_replace('\\', '\\\\', $templateOptions['controller']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['fixtures'])) {
+                $r .= 'Autocode.prototype.setFixturesTemplate("' . str_replace('\\', '\\\\', $templateOptions['fixtures']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['routes'])) {
+                $r .= 'Autocode.prototype.setRoutesTemplate("' . str_replace('\\', '\\\\', $templateOptions['routes']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['routes-routing'])) {
+                $r .= 'Autocode.prototype.setRoutesRoutingTemplate("' . str_replace('\\', '\\\\', $templateOptions['routes-routing']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['crud-create-twig'])) {
+                $r .= 'Autocode.prototype.setCrudCreateTwigTemplate("' . str_replace('\\', '\\\\', $templateOptions['crud-create-twig']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['crud-read-twig'])) {
+                $r .= 'Autocode.prototype.setCrudReadTwigTemplate("' . str_replace('\\', '\\\\', $templateOptions['crud-read-twig']) . '");' . PHP_EOL;
+            }
+
+            if (isset($templateOptions['crud-update-twig'])) {
+                $r .= 'Autocode.prototype.setCrudUpdateTwigTemplate("' . str_replace('\\', '\\\\', $templateOptions['crud-update-twig']) . '");' . PHP_EOL;
+            }
+        }
 
         return $r;
     }
@@ -713,6 +800,8 @@ class Loader
 
         // FOURTH STEP: Relationships
         $r .= $this->getRelationships();
+
+        $r .= $this->getAutocodeProperties();
 
         // Finalise
         $r .= 'for (var i in Connectable.prototype.connectables) Connectable.prototype.connectables[i].reDraw();' . PHP_EOL;

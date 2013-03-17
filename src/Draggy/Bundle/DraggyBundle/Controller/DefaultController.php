@@ -135,7 +135,8 @@ class DefaultController extends Controller
         $project
             ->setBase(true)
             ->loadFile($modelFile)
-            ->setOverwrite(true) //->setDeleteUnmapped(true)
+            ->setOverwrite(true)
+            //->setDeleteUnmapped(true)
             ->setValidation(true)
             ->setRoutesTemplate(new AutocodeTemplates\Routes())
             ->setCrudReadTwigTemplate(new AutocodeTemplates\CrudReadTwig())
