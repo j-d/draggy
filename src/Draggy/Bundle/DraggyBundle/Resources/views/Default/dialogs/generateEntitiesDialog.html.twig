@@ -1,0 +1,45 @@
+<div id="generate-entities-dialog" class="draggy-dialog" title="Generate entities">
+    <div id="generate-entities-messages">
+        <p>WARNING: If you continue your project will be saved</p>
+        <p>It is recommended that you double check that you have a copy of the '{{ targetFolder }}' folder before continuing.</p>
+        <p>Please review the changes and confirm by pressing 'Generate'...</p>
+        <div id="autocode-changes"></div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#generate-entities-dialog").dialog({
+            autoOpen: false,
+            height: 800,
+            width: 1000,
+            modal: true,
+            buttons: {
+                'Generate': function () {
+                    Draggy.prototype.save();
+
+                    var $dialog = $('#generate-entities-dialog');
+                    var buttons = $dialog.dialog("option", "buttons");
+
+                    delete buttons['Generate'];
+
+                    $dialog.dialog("option", "buttons", buttons);
+
+                    $("#generate-entities-messages").html('Generating...');
+
+                    $.ajax({
+                        url: "{{ path('draggy_generate') }}",
+                        cache: false
+                    }).done(function (html) {
+                        $("#generate-entities-messages").html(html);
+                    }).fail(function (html) {
+                        $("#generate-entities-messages").html('There was some sort of error generating the entities.').append(html);
+                    });
+                },
+                Close: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    });
+</script>

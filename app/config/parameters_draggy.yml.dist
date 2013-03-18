@@ -1,0 +1,6 @@
+parameters:
+    draggy.model_filename:      model.xml
+    draggy.model_path:          %kernel.root_dir%/../doc/
+    draggy.model_history_path:  %kernel.root_dir%/../doc/history/
+    draggy.model_xml_extension: .xml
+    draggy.autocode.src_path:   %kernel.root_dir%/../src/

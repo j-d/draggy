@@ -1,0 +1,23 @@
+<div class="notification" id="notification-ok">
+    <span class="message"></span>
+</div>
+<div class="notification" id="notification-warning">
+    <span class="ui-icon ui-icon-alert"></span>
+    <span class="message"></span>
+</div>
+<div class="notification" id="notification-error">
+    <span class="ui-icon ui-icon-alert"></span>
+    <span class="message"></span>
+</div>
+
+<script>
+    $("#notification-ok").click(function () {
+        $("#notification-ok").hide();
+    });
+    $("#notification-warning").click(function () {
+        $("#notification-warning").hide();
+    });
+    $("#notification-error").click(function () {
+        $("#notification-error").hide()
+    });
+</script>
