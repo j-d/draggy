@@ -85,14 +85,14 @@ Modify the `routing.yml` file to add Draggy routes
 ... 
 DraggyBundle:
     resource: "@DraggyBundle/Resources/config/routing.yml"
-    prefix:   /draggy/
+    prefix:   /_draggy/
 ```
 
 Install the Draggy assets
 
     sudo php app/console assets:install --symlink
 
-That's it! To use it just browse to the path you created, e.g. `http://myproject.local/app_dev.php/draggy/`
+That's it! To use it just browse to the path you created, e.g. `http://myproject.local/app_dev.php/_draggy/`
 
 Remember to start by configuring your project!
 
