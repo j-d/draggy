@@ -21,7 +21,10 @@ class File extends AbstractFile
         $this->setPath($path);
         $this->setName($name);
         $this->contents = $contents;
-        $this->oldContents = file_get_contents($this->getPath() . $this->getName());
+
+        if (file_exists($this->getFullName()) && is_readable($this->getFullName())) {
+            $this->oldContents = file_get_contents($this->getFullName());
+        }
 
         $this->log = new Log();
     }
@@ -50,6 +53,15 @@ class File extends AbstractFile
         return $this->overwrite;
     }
 
+    public function getContents()
+    {
+        if (!$this->addToFile) {
+            return $this->keepUserAdditions($this->contents, $this->oldContents, $this->path, $this->name);
+        } else {
+            return $this->addSystemAdditions($this->contents, $this->oldContents, $this->path, $this->name);
+        }
+    }
+
     public function getLog()
     {
         return $this->log->getLog();
@@ -63,6 +75,8 @@ class File extends AbstractFile
             $this->addToFile($this->path, $this->name, $this->contents, true);
         }
     }
+
+    //TODO: REMOVE PATH AND NAME
 
     public function saveFile ($path, $name, $contents)
     {
@@ -192,7 +206,7 @@ class File extends AbstractFile
             return null;
         }
 
-        $newFile = $this->contents;
+        $newFile = $this->getContents();
         $oldFile = $this->oldContents;
 
         $context = 3;
@@ -202,7 +216,7 @@ class File extends AbstractFile
         $keepLines = [];
 
         for ($i = 0; $i < count($diff); $i++) {
-            $keepLines[$i] = is_array($diff[$i]);
+            $keepLines[$i] = is_array($diff[$i]) && count($diff[$i]['d']) > 0 && count($diff[$i]['i']) > 0;
         }
 
         $contextLines = [];

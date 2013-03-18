@@ -119,12 +119,16 @@ class FileCollection implements FileInterface
                 //    'diff' => null,
                 //];
             } else {
-                $ret[$fullName] = [
-                    'what' => 'DIFF',
-                    'path' => $file->getPath(),
-                    'name' => $file->getName(),
-                    'diff' => $file->getDiff(),
-                ];
+                $diff = $file->getDiff();
+
+                if (count($diff) > 0) {         // Ignore insignificant differences
+                    $ret[$fullName] = [
+                        'what' => 'DIFF',
+                        'path' => $file->getPath(),
+                        'name' => $file->getName(),
+                        'diff' => $diff,
+                    ];
+                }
             }
         }
 

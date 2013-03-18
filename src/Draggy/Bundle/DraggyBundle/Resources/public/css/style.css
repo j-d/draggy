@@ -473,11 +473,21 @@ div#notification-ok {
 div.autocode-change {
     background-color: #ededed;
     padding: 10px;
-    width: 952px;
+    width: 947px;
     border-bottom: 2px solid #fff;
 }
 
 div.autocode-change-summary {
+}
+
+div.autocode-change-summary span.autocode-new-file {
+    font-weight: bold;
+    color: rgb(71, 196, 19)
+}
+
+div.autocode-change-summary span.autocode-deleted-file {
+    font-weight: bold;
+    color: #cc4235;
 }
 
 div.full-file-name {
@@ -521,10 +531,7 @@ div.autocode-change-lines {
 }
 
 div.autocode-line {
-    height: 20px;
-    overflow: hidden;
-    font-family: monospace;
-    white-space: pre;
+    height: 21px;
 }
 
 div.autocode-line-inserted {
@@ -533,4 +540,42 @@ div.autocode-line-inserted {
 
 div.autocode-line-deleted {
     background-color: #fdd;
+}
+
+div.autocode-line-jump {
+    background-color: #eaf2f5;
+}
+
+div.autocode-line-number {
+    display: inline-block;
+    width: 40px;
+    height: 18px;
+    margin-top: 1px;
+    font-family: monospace;
+    white-space: pre;
+    border-right: 2px solid #eee;
+}
+
+div.autocode-line-text {
+    display: inline-block;
+    clear: right;
+    width: 895px;
+    xheight: 18px;
+    overflow: hidden;
+    font-family: monospace;
+    white-space: pre;
+}
+
+div.autocode-no-changes {
+    background-color: #96d137;
+    padding: 20px;
+    color: #444;
+    font-size: 14pt;
+}
+
+div.autocode-error {
+    background-color: #d1605c;
+    padding: 20px;
+    color: #444;
+    font-size: 14pt;
 }

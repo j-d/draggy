@@ -1,34 +1,72 @@
-{% for change in changes %}
-    <div class="autocode-change">
-        <div class="autocode-change-summary">
-            <div class="full-file-name">
-                <span class="folder-name">{{ change.path }}</span><span class="file-name">{{ change.name }}</span>
+{% if error is empty %}
+    {% for change in changes %}
+        <div class="autocode-change">
+            <div class="autocode-change-summary">
+                <div class="full-file-name">
+                    {% if change.what == 'NEW' %}
+                        <span class="autocode-new-file">New file</span>
+                    {% endif %}
+                    {% if change.what == 'BEING_REMOVED' %}
+                        <span class="autocode-deleted-file">Deleted</span>
+                    {% endif %}
+                    <span class="folder-name">{{ change.path }}</span><span class="file-name">{{ change.name }}</span>
+                </div>
+                {% if change.what == 'DIFF' %}
+                    <div class="unfold-icon">
+                        <span class="icon-down ui-icon ui-icon-triangle-1-s"></span>
+                        <span class="icon-up ui-icon ui-icon-triangle-1-n"></span>
+                    </div>
+                {% endif %}
             </div>
             {% if change.what == 'DIFF' %}
-                <div class="unfold-icon">
-                    <span class="icon-down ui-icon ui-icon-triangle-1-s"></span>
-                    <span class="icon-up ui-icon ui-icon-triangle-1-n"></span>
+                <div class="autocode-change-lines">
+                    {#<div class="autocode-line">#}
+                        {#<div class="autocode-line-number">{{ "%4s" | format("old") }}#}
+                    {#</div>#}
+                    {% set currentLine = -1 %}
+                    {% for lineNumber, line in change.diff %}
+                        {% if lineNumber - 1 != currentLine %}
+                            <div class="autocode-line autocode-line-jump">
+                                <div class="autocode-line-number">{{ "%4s" | format("...") }}</div>
+                                <div class="autocode-line-text"></div>
+                            </div>
+                        {% endif %}
+
+                        {% set currentLine = lineNumber %}
+
+                        {% if line['d'] is not defined  %}
+                            <div class="autocode-line">
+                                <div class="autocode-line-number">{{ "%4s" | format(lineNumber) }}</div>
+                                <div class="autocode-line-text">{{ line }}</div>
+                            </div>
+                        {% else %}
+                            {% set lineNumberPrinted = false %}
+
+                            {% for lineInserted in line['i'] %}
+                                <div class="autocode-line autocode-line-inserted">
+                                    <div class="autocode-line-number">{{ lineNumberPrinted ? " " : "%4s" | format(lineNumber) }}</div>
+                                    <div class="autocode-line-text">{{ lineInserted }}</div>
+                                </div>
+                                {% set lineNumberPrinted = true %}
+                            {% endfor %}
+                            {% for lineDeleted in line['d'] %}
+                                <div class="autocode-line autocode-line-deleted">
+                                    <div class="autocode-line-number">{{ lineNumberPrinted ? " " : "%4s" | format(lineNumber) }}</div>
+                                    <div class="autocode-line-text">{{ lineDeleted }}</div>
+                                </div>
+                                {% set lineNumberPrinted = true %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>
-        {% if change.what == 'DIFF' %}
-            <div class="autocode-change-lines">
-                {% for line in change.diff %}
-                    {% if line['d'] is not defined  %}
-                        <div class="autocode-line">{{ line }}</div>
-                    {% else %}
-                        {% for lineInserted in line['i'] %}
-                            <div class="autocode-line autocode-line-inserted">{{ lineInserted }}</div>
-                        {% endfor %}
-                        {% for lineDeleted in line['d'] %}
-                            <div class="autocode-line autocode-line-deleted">{{ lineDeleted }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-{% endfor %}
+    {% else %}
+        <div class="autocode-no-changes">There are no outstanding changes!</div>
+    {% endfor %}
+{% else %}
+    <div class="autocode-error">{{ error }}</div>
+{% endif %}
 
 <script>
     $("div.autocode-change").click(function () {

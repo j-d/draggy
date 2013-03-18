@@ -199,12 +199,21 @@ class DefaultController extends Controller
 
         $project = new Project();
 
-        $project->loadDesign($xml);
+        try {
+            $project->loadDesign($xml);
+
+            $changes = $project->getChanges($targetFolder);
+            $error = '';
+        } catch (\Exception $exception) {
+            $changes = [];
+            $error = $exception->getMessage();
+        }
 
         return $this->render(
             'DraggyBundle:Default:parts/autocodeChanges.html.twig',
             [
-            'changes' => $project->getChanges($targetFolder)
+            'changes' => $changes,
+            'error' => $error,
             ]
         );
     }
