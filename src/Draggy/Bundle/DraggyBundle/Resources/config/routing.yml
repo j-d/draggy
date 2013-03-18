@@ -1,0 +1,17 @@
+draggy_model:
+    pattern:  /
+    defaults: { _controller: DraggyBundle:Default:draggy }
+
+draggy_generate:
+    pattern:  /generate
+    defaults: { _controller: DraggyBundle:Default:generate }
+
+draggy_preview:
+    pattern:  /preview
+    defaults: { _controller: DraggyBundle:Default:preview }
+
+draggy_save:
+    pattern:  /save
+    defaults: { _controller: DraggyBundle:Default:save }
+    requirements:
+        _method:  POST

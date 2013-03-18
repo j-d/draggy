@@ -14,5 +14,10 @@
     },
     "support": {
         "source": "https://github.com/j-d/draggy/"
-    }	
+    },
+    "autoload": {
+        "psr-0": {
+            "Draggy": "src/"
+        }
+    }
 }
