@@ -1,9 +1,2 @@
 subcontainers
-oneclick autocode
-easier diff
 individual class or module templates
-
-target folder
-base
-overwrite
-validation
