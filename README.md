@@ -7,7 +7,7 @@ Installation (as a vendor)
 --------------------------
 Edit your `composer.json` file and add draggy as a dependency
 
-    sudo anno composer.json
+    sudo nano composer.json
 
 ```json
     "require": {
