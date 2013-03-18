@@ -1,7 +1,8 @@
-draggy
+Draggy
 ======
 
-Draggy project
+Draggy is a visual browser modelling tool that enables the user to create and maintain a functional
+Skelleton of an application.
 
 Installation (as a vendor)
 --------------------------
@@ -92,6 +93,8 @@ Install the Draggy assets
     sudo php app/console assets:install --symlink
 
 That's it! To use it just browse to the path you created, e.g. `http://myproject.local/app_dev.php/draggy/`
+
+Remember to start by configuring your project!
 
 Happy Draggy-ing!
 
