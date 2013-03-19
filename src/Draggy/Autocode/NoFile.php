@@ -42,7 +42,7 @@ class NoFile extends AbstractFile
 
     public function isBeingRemoved()
     {
-        return file_exists($this->getPath() . $this->getName());
+        return file_exists($this->getFullName());
     }
 
     public function isChanged()

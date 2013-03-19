@@ -494,6 +494,7 @@ div.full-file-name {
     overflow: hidden;
     display: inline-block;
     max-width: 930px;
+    white-space: nowrap;
 }
 
 div.autocode-change div.full-file-name span.folder-name {
