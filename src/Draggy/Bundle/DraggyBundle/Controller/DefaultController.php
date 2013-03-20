@@ -117,6 +117,15 @@ class DefaultController extends Controller
         return $historyPath . str_replace($extension, '.' . time() . $extension, $file);
     }
 
+    private function getSourcePath($file = null, $self = false)
+    {
+        if (!$self) {
+            return $this->container->getParameter('draggy.autocode.src_path');
+        } else {
+            return __DIR__ . '/../../../../';
+        }
+    }
+
     public function draggyAction($file = null, $self = false)
     {
         try {
@@ -133,9 +142,9 @@ class DefaultController extends Controller
         $modelFile = $this->getModelFile($file, $self);
 
         try {
-            $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
+            $targetFolder = $this->getSourcePath($file, $self);
         } catch (\Exception $exception) {
-            $targetFolder = '(not defined)';
+            $targetFolder = null;
         }
 
         $saveable         = true;
@@ -163,7 +172,7 @@ class DefaultController extends Controller
         );
     }
 
-    public function generateAction()
+    public function generateAction($file = null, $self = false)
     {
         try {
             $this->checkModelFile();
@@ -176,9 +185,9 @@ class DefaultController extends Controller
             );
         }
 
-        $modelFile = $this->getModelFile();
+        $modelFile = $this->getModelFile($file, $self);
 
-        $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
+        $targetFolder = $this->getSourcePath($file, $self);
 
         $project = new Project();
 
@@ -194,7 +203,7 @@ class DefaultController extends Controller
         );
     }
 
-    public function previewAction(Request $request, $self = false)
+    public function previewAction(Request $request, $file = null, $self = false)
     {
         $xmlString = $request->request->get('xml');
 
@@ -204,14 +213,10 @@ class DefaultController extends Controller
 
         $xml = simplexml_load_string($xmlString);
 
-        if (!$self) {
-            try {
-                $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
-            } catch (\Exception $exception) {
-                $targetFolder = '/dev/null/';
-            }
-        } else {
-            $targetFolder = __DIR__ . '/../../../../';;
+        try {
+            $targetFolder = $this->getSourcePath($file, $self);
+        } catch (\Exception $exception) {
+            $targetFolder = '/dev/null/';
         }
 
         if (false === $xml) {

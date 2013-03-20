@@ -36,6 +36,7 @@ self_autocode_preview:
     pattern: /_self/preview/autocode
     defaults:
         _controller: DraggyBundle:Default:preview
+        file: 'autocode.xml'
         self: true
 
 self_autocode_save:
