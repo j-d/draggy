@@ -1,5 +1,5 @@
 <?php
-// Autocode\Base\PHPAttribute.php
+// Draggy\Autocode\Base\PHPAttribute.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Attribute;
 use Draggy\Autocode\Entity;
 
 /**
- * Autocode\Entity\Base\PHPAttribute
+ * Draggy\Autocode\Entity\Base\PHPAttribute
  */
 abstract class PHPAttributeBase extends Attribute
 {

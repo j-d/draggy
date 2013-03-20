@@ -1,5 +1,5 @@
 <?php
-// Autocode\Base\JSAttribute.php
+// Draggy\Autocode\Base\JSAttribute.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Attribute;
 use Draggy\Autocode\Entity;
 
 /**
- * Autocode\Entity\Base\JSAttribute
+ * Draggy\Autocode\Entity\Base\JSAttribute
  */
 abstract class JSAttributeBase extends Attribute
 {

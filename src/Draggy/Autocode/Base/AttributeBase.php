@@ -1,5 +1,5 @@
 <?php
-// Autocode\Base\Attribute.php
+// Draggy\Autocode\Base\Attribute.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -20,7 +20,7 @@ use Draggy\Autocode\Attribute;
 use Draggy\Autocode\Entity;
 
 /**
- * Autocode\Entity\Base\Attribute
+ * Draggy\Autocode\Entity\Base\Attribute
  */
 abstract class AttributeBase
 {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <draggy>
 	<project>
 		<language>PHP</language>
@@ -7,275 +7,275 @@
 		<framework/>
 	</project>
 	<module name="Templates" left="81" top="940" width="629" height="337">
-		<abstract name="Template" top="17" left="305" />
+		<abstract name="Template" top="17" left="305"/>
 		<abstract name="PHPEntityTemplate" top="241" left="72" inheritingFrom="Templates\EntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</abstract>
 		<abstract name="AttributeTemplate" top="144" left="363" inheritingFrom="Templates\Template">
-			<attribute id="attribute64" name="attribute" type="object" subtype="Attribute" />
+			<attribute id="attribute64" name="attribute" type="object" subtype="Attribute"/>
 		</abstract>
 		<abstract name="EntityTemplate" top="124" left="94" inheritingFrom="Templates\Template">
-			<attribute id="attribute70" name="entity" type="object" subtype="Entity" />
+			<attribute id="attribute70" name="entity" type="object" subtype="Entity"/>
 		</abstract>
 	</module>
 	<module name="Templates\PHP" left="77" top="1328" width="531" height="384">
 		<class name="Repository" top="56" left="31" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Entity1" top="51" left="209" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="EntityBase1" top="49" left="352" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Form" top="146" left="25" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="FormBase1" top="145" left="169" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Controller" top="240" left="23" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Routes" top="239" left="180" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="RoutesRouting" top="236" left="335" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="CrudReadTwig" top="327" left="50" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="CrudCreateTwig" top="325" left="202" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="CrudUpdateTwig" top="322" left="367" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Fixtures" top="142" left="341" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
 	<module name="Templates\JS" left="653" top="1328" width="347" height="139">
 		<class name="Entity2" top="40" left="21" inheritingFrom="Templates\EntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="EntityBase2" top="41" left="194" inheritingFrom="Templates\EntityTemplate">
-			<attribute id="attribute70" inherited="true" />
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
 	<loose>
 		<class name="Project" top="58" left="46" constructor="true">
-			<attribute id="attribute" name="namespace" type="string" minSize="1" />
-			<attribute id="attribute1" name="entities" type="array" subtype="Entity" default="[]" />
-			<attribute id="attribute2" name="log" type="text" default="''" />
-			<attribute id="attribute3" name="base" type="boolean" default="false" />
-			<attribute id="attribute4" name="overwrite" type="boolean" default="false" />
-			<attribute id="attribute5" name="deleteUnmapped" type="boolean" default="false" />
-			<attribute id="attribute6" name="modules" type="array" subtype="string" default="[]" />
-			<attribute id="attribute7" name="moduleEntities" type="array" subtype="string" default="[]" />
-			<attribute id="attribute8" name="moduleNamespaces" type="array" subtype="string" default="[]" />
-			<attribute id="attribute54" name="language" type="string" default="PHP" />
-			<attribute id="attribute55" name="description" type="text" />
-			<attribute id="attribute56" name="orm" type="string" default="Doctrine2" />
-			<attribute id="attribute58" name="framework" type="string" />
-			<attribute id="attribute59" name="validation" type="boolean" />
-			<attribute id="attribute61" name="attributeClass" type="string" default="''" />
-			<attribute id="attribute63" name="entityClass" type="string" default="''" />
-			<attribute id="attribute65" name="entityTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute66" name="entityBaseTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute67" name="repositoryTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute68" name="formTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute69" name="formBaseTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute72" name="controllerTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute73" name="fixturesTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute74" name="routesTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute75" name="routesRoutingTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute76" name="crudCreateTwigTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute77" name="crudReadTwigTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
-			<attribute id="attribute78" name="crudUpdateTwigTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null" />
+			<attribute id="attribute" name="namespace" type="string" minSize="1"/>
+			<attribute id="attribute1" name="entities" type="array" subtype="Entity" default="[]"/>
+			<attribute id="attribute2" name="log" type="text" default="''"/>
+			<attribute id="attribute3" name="base" type="boolean" default="false"/>
+			<attribute id="attribute4" name="overwrite" type="boolean" default="false"/>
+			<attribute id="attribute5" name="deleteUnmapped" type="boolean" default="false"/>
+			<attribute id="attribute6" name="modules" type="array" subtype="string" default="[]"/>
+			<attribute id="attribute7" name="moduleEntities" type="array" subtype="string" default="[]"/>
+			<attribute id="attribute8" name="moduleNamespaces" type="array" subtype="string" default="[]"/>
+			<attribute id="attribute54" name="language" type="string" default="PHP"/>
+			<attribute id="attribute55" name="description" type="text"/>
+			<attribute id="attribute56" name="orm" type="string" default="Doctrine2"/>
+			<attribute id="attribute58" name="framework" type="string"/>
+			<attribute id="attribute59" name="validation" type="boolean"/>
+			<attribute id="attribute61" name="attributeClass" type="string" default="''"/>
+			<attribute id="attribute63" name="entityClass" type="string" default="''"/>
+			<attribute id="attribute65" name="entityTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute66" name="entityBaseTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute67" name="repositoryTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute68" name="formTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute69" name="formBaseTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute72" name="controllerTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute73" name="fixturesTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute74" name="routesTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute75" name="routesRoutingTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute76" name="crudCreateTwigTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute77" name="crudReadTwigTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
+			<attribute id="attribute78" name="crudUpdateTwigTemplate" type="object" subtype="Templates\EntityTemplate" null="true" default="null"/>
 		</class>
 		<class name="PHPAttribute" top="668" left="1094" inheritingFrom="Attribute">
-			<attribute id="attribute26" inherited="true" />
-			<attribute id="attribute27" inherited="true" />
-			<attribute id="attribute28" inherited="true" />
-			<attribute id="attribute60" inherited="true" />
-			<attribute id="attribute29" inherited="true" />
-			<attribute id="attribute30" inherited="true" />
-			<attribute id="attribute31" inherited="true" />
-			<attribute id="attribute32" inherited="true" />
-			<attribute id="attribute33" inherited="true" />
-			<attribute id="attribute34" inherited="true" />
-			<attribute id="attribute35" inherited="true" />
-			<attribute id="attribute36" inherited="true" />
-			<attribute id="attribute52" inherited="true" />
-			<attribute id="attribute53" inherited="true" />
-			<attribute id="attribute37" inherited="true" />
-			<attribute id="attribute38" inherited="true" />
-			<attribute id="attribute39" inherited="true" />
-			<attribute id="attribute40" inherited="true" />
-			<attribute id="attribute41" inherited="true" />
-			<attribute id="attribute42" inherited="true" />
-			<attribute id="attribute43" inherited="true" />
-			<attribute id="attribute44" inherited="true" />
-			<attribute id="attribute45" inherited="true" />
-			<attribute id="attribute46" inherited="true" />
-			<attribute id="attribute47" inherited="true" />
-			<attribute id="attribute48" inherited="true" />
-			<attribute id="attribute49" inherited="true" />
-			<attribute id="attribute50" inherited="true" />
-			<attribute id="attribute51" inherited="true" />
-			<attribute id="attribute62" inherited="true" />
-			<attribute id="attribute71" inherited="true" />
+			<attribute id="attribute26" inherited="true"/>
+			<attribute id="attribute27" inherited="true"/>
+			<attribute id="attribute28" inherited="true"/>
+			<attribute id="attribute60" inherited="true"/>
+			<attribute id="attribute29" inherited="true"/>
+			<attribute id="attribute30" inherited="true"/>
+			<attribute id="attribute31" inherited="true"/>
+			<attribute id="attribute32" inherited="true"/>
+			<attribute id="attribute33" inherited="true"/>
+			<attribute id="attribute34" inherited="true"/>
+			<attribute id="attribute35" inherited="true"/>
+			<attribute id="attribute36" inherited="true"/>
+			<attribute id="attribute52" inherited="true"/>
+			<attribute id="attribute53" inherited="true"/>
+			<attribute id="attribute37" inherited="true"/>
+			<attribute id="attribute38" inherited="true"/>
+			<attribute id="attribute39" inherited="true"/>
+			<attribute id="attribute40" inherited="true"/>
+			<attribute id="attribute41" inherited="true"/>
+			<attribute id="attribute42" inherited="true"/>
+			<attribute id="attribute43" inherited="true"/>
+			<attribute id="attribute44" inherited="true"/>
+			<attribute id="attribute45" inherited="true"/>
+			<attribute id="attribute46" inherited="true"/>
+			<attribute id="attribute47" inherited="true"/>
+			<attribute id="attribute48" inherited="true"/>
+			<attribute id="attribute49" inherited="true"/>
+			<attribute id="attribute50" inherited="true"/>
+			<attribute id="attribute51" inherited="true"/>
+			<attribute id="attribute62" inherited="true"/>
+			<attribute id="attribute71" inherited="true"/>
 		</class>
 		<class name="JSAttribute" top="662" left="1401" inheritingFrom="Attribute">
-			<attribute id="attribute26" inherited="true" />
-			<attribute id="attribute27" inherited="true" />
-			<attribute id="attribute28" inherited="true" />
-			<attribute id="attribute60" inherited="true" />
-			<attribute id="attribute29" inherited="true" />
-			<attribute id="attribute30" inherited="true" />
-			<attribute id="attribute31" inherited="true" />
-			<attribute id="attribute32" inherited="true" />
-			<attribute id="attribute33" inherited="true" />
-			<attribute id="attribute34" inherited="true" />
-			<attribute id="attribute35" inherited="true" />
-			<attribute id="attribute36" inherited="true" />
-			<attribute id="attribute52" inherited="true" />
-			<attribute id="attribute53" inherited="true" />
-			<attribute id="attribute37" inherited="true" />
-			<attribute id="attribute38" inherited="true" />
-			<attribute id="attribute39" inherited="true" />
-			<attribute id="attribute40" inherited="true" />
-			<attribute id="attribute41" inherited="true" />
-			<attribute id="attribute42" inherited="true" />
-			<attribute id="attribute43" inherited="true" />
-			<attribute id="attribute44" inherited="true" />
-			<attribute id="attribute45" inherited="true" />
-			<attribute id="attribute46" inherited="true" />
-			<attribute id="attribute47" inherited="true" />
-			<attribute id="attribute48" inherited="true" />
-			<attribute id="attribute49" inherited="true" />
-			<attribute id="attribute50" inherited="true" />
-			<attribute id="attribute51" inherited="true" />
-			<attribute id="attribute62" inherited="true" />
-			<attribute id="attribute71" inherited="true" />
+			<attribute id="attribute26" inherited="true"/>
+			<attribute id="attribute27" inherited="true"/>
+			<attribute id="attribute28" inherited="true"/>
+			<attribute id="attribute60" inherited="true"/>
+			<attribute id="attribute29" inherited="true"/>
+			<attribute id="attribute30" inherited="true"/>
+			<attribute id="attribute31" inherited="true"/>
+			<attribute id="attribute32" inherited="true"/>
+			<attribute id="attribute33" inherited="true"/>
+			<attribute id="attribute34" inherited="true"/>
+			<attribute id="attribute35" inherited="true"/>
+			<attribute id="attribute36" inherited="true"/>
+			<attribute id="attribute52" inherited="true"/>
+			<attribute id="attribute53" inherited="true"/>
+			<attribute id="attribute37" inherited="true"/>
+			<attribute id="attribute38" inherited="true"/>
+			<attribute id="attribute39" inherited="true"/>
+			<attribute id="attribute40" inherited="true"/>
+			<attribute id="attribute41" inherited="true"/>
+			<attribute id="attribute42" inherited="true"/>
+			<attribute id="attribute43" inherited="true"/>
+			<attribute id="attribute44" inherited="true"/>
+			<attribute id="attribute45" inherited="true"/>
+			<attribute id="attribute46" inherited="true"/>
+			<attribute id="attribute47" inherited="true"/>
+			<attribute id="attribute48" inherited="true"/>
+			<attribute id="attribute49" inherited="true"/>
+			<attribute id="attribute50" inherited="true"/>
+			<attribute id="attribute51" inherited="true"/>
+			<attribute id="attribute62" inherited="true"/>
+			<attribute id="attribute71" inherited="true"/>
 		</class>
 		<class name="Entity" top="67" left="627" constructor="true">
-			<attribute id="attribute9" name="namespace" type="string" minSize="1" />
-			<attribute id="attribute10" name="module" type="string" />
-			<attribute id="attribute11" name="name" type="string" />
-			<attribute id="attribute12" name="description" type="string" default="null" />
-			<attribute id="attribute13" name="attributes" type="array" subtype="Attribute" default="[]" />
-			<attribute id="attribute14" name="attributeNames" type="array" subtype="string" default="[]" />
-			<attribute id="attribute15" name="primaryAttributes" type="array" subtype="Attribute" default="[]" />
-			<attribute id="attribute16" name="renderizable" type="boolean" default="true" />
-			<attribute id="attribute18" name="toString" type="string" subtype="Attribute" null="true" default="null" />
-			<attribute id="attribute19" name="parentEntity" type="object" subtype="Entity" null="true" default="null" />
-			<attribute id="attribute20" name="childrenEntities" type="array" subtype="Entity" default="[]" />
-			<attribute id="attribute21" name="hasRepository" type="boolean" default="false" />
-			<attribute id="attribute22" name="hasForm" type="boolean" default="false" />
-			<attribute id="attribute23" name="hasController" type="boolean" default="false" />
-			<attribute id="attribute24" name="hasFixtures" type="boolean" default="false" />
-			<attribute id="attribute25" name="crud" type="string" default="null" />
-			<attribute id="attribute57" name="project" type="object" subtype="Project" />
-			<attribute id="attribute17" name="hasConstructor" type="boolean" default="false" />
+			<attribute id="attribute9" name="namespace" type="string" minSize="1"/>
+			<attribute id="attribute10" name="module" type="string"/>
+			<attribute id="attribute11" name="name" type="string"/>
+			<attribute id="attribute12" name="description" type="string" default="null"/>
+			<attribute id="attribute13" name="attributes" type="array" subtype="Attribute" default="[]"/>
+			<attribute id="attribute14" name="attributeNames" type="array" subtype="string" default="[]"/>
+			<attribute id="attribute15" name="primaryAttributes" type="array" subtype="Attribute" default="[]"/>
+			<attribute id="attribute16" name="renderizable" type="boolean" default="true"/>
+			<attribute id="attribute18" name="toString" type="string" subtype="Attribute" null="true" default="null"/>
+			<attribute id="attribute19" name="parentEntity" type="object" subtype="Entity" null="true" default="null"/>
+			<attribute id="attribute20" name="childrenEntities" type="array" subtype="Entity" default="[]"/>
+			<attribute id="attribute21" name="hasRepository" type="boolean" default="false"/>
+			<attribute id="attribute22" name="hasForm" type="boolean" default="false"/>
+			<attribute id="attribute23" name="hasController" type="boolean" default="false"/>
+			<attribute id="attribute24" name="hasFixtures" type="boolean" default="false"/>
+			<attribute id="attribute25" name="crud" type="string" default="null"/>
+			<attribute id="attribute57" name="project" type="object" subtype="Project"/>
+			<attribute id="attribute17" name="hasConstructor" type="boolean" default="false"/>
 		</class>
 		<class name="PHPEntity" top="507" left="527" inheritingFrom="Entity">
-			<attribute id="attribute9" inherited="true" />
-			<attribute id="attribute10" inherited="true" />
-			<attribute id="attribute11" inherited="true" />
-			<attribute id="attribute12" inherited="true" />
-			<attribute id="attribute13" inherited="true" />
-			<attribute id="attribute14" inherited="true" />
-			<attribute id="attribute15" inherited="true" />
-			<attribute id="attribute16" inherited="true" />
-			<attribute id="attribute18" inherited="true" />
-			<attribute id="attribute19" inherited="true" />
-			<attribute id="attribute20" inherited="true" />
-			<attribute id="attribute21" inherited="true" />
-			<attribute id="attribute22" inherited="true" />
-			<attribute id="attribute23" inherited="true" />
-			<attribute id="attribute24" inherited="true" />
-			<attribute id="attribute25" inherited="true" />
-			<attribute id="attribute57" inherited="true" />
-			<attribute id="attribute17" inherited="true" />
+			<attribute id="attribute9" inherited="true"/>
+			<attribute id="attribute10" inherited="true"/>
+			<attribute id="attribute11" inherited="true"/>
+			<attribute id="attribute12" inherited="true"/>
+			<attribute id="attribute13" inherited="true"/>
+			<attribute id="attribute14" inherited="true"/>
+			<attribute id="attribute15" inherited="true"/>
+			<attribute id="attribute16" inherited="true"/>
+			<attribute id="attribute18" inherited="true"/>
+			<attribute id="attribute19" inherited="true"/>
+			<attribute id="attribute20" inherited="true"/>
+			<attribute id="attribute21" inherited="true"/>
+			<attribute id="attribute22" inherited="true"/>
+			<attribute id="attribute23" inherited="true"/>
+			<attribute id="attribute24" inherited="true"/>
+			<attribute id="attribute25" inherited="true"/>
+			<attribute id="attribute57" inherited="true"/>
+			<attribute id="attribute17" inherited="true"/>
 		</class>
 		<abstract name="Attribute" top="58" left="1153" constructor="true">
-			<attribute id="attribute26" name="entity" type="object" subtype="Entity" />
-			<attribute id="attribute27" name="name" type="string" minSize="1" />
-			<attribute id="attribute28" name="type" type="string" />
-			<attribute id="attribute60" name="subtype" type="string" null="true" default="null" />
-			<attribute id="attribute29" name="primary" type="boolean" default="false" />
-			<attribute id="attribute30" name="size" type="integer" default="null" />
-			<attribute id="attribute31" name="minSize" type="integer" default="null" />
-			<attribute id="attribute32" name="min" type="integer" default="null" />
-			<attribute id="attribute33" name="max" type="integer" default="null" />
-			<attribute id="attribute34" name="minSizeMessage" type="string" default="''" />
-			<attribute id="attribute35" name="maxSizeMessage" type="string" default="''" />
-			<attribute id="attribute36" name="exactSizeMessage" type="string" default="''" />
-			<attribute id="attribute52" name="minMessage" type="string" default="''" />
-			<attribute id="attribute53" name="maxMessage" type="string" default="''" />
-			<attribute id="attribute37" name="null" type="boolean" default="false" />
-			<attribute id="attribute38" name="description" type="string" default="null" />
-			<attribute id="attribute39" name="unique" type="boolean" default="false" />
-			<attribute id="attribute40" name="autoIncrement" type="boolean" default="false" />
-			<attribute id="attribute41" name="defaultValue" type="string" default="null" />
-			<attribute id="attribute42" name="foreign" type="string" null="true" default="null" />
-			<attribute id="attribute43" name="foreignEntity" type="object" subtype="Entity" null="true" default="null" setter="false" />
-			<attribute id="attribute44" name="foreignKey" type="object" subtype="Attribute" null="true" default="null" />
-			<attribute id="attribute45" name="foreignTick" type="boolean" default="false" />
-			<attribute id="attribute46" name="manyToManyEntityName" type="string" default="null" />
-			<attribute id="attribute47" name="getter" type="boolean" default="true" />
-			<attribute id="attribute48" name="setter" type="boolean" default="true" />
-			<attribute id="attribute49" name="email" type="boolean" default="false" />
-			<attribute id="attribute50" name="ownerSide" type="boolean" default="false" />
-			<attribute id="attribute51" name="reverseAttribute" type="object" subtype="Attribute" null="true" default="null" setter="false" />
-			<attribute id="attribute62" name="static" type="boolean" default="false" />
-			<attribute id="attribute71" name="inverse" type="boolean" default="false" />
+			<attribute id="attribute26" name="entity" type="object" subtype="Entity"/>
+			<attribute id="attribute27" name="name" type="string" minSize="1"/>
+			<attribute id="attribute28" name="type" type="string"/>
+			<attribute id="attribute60" name="subtype" type="string" null="true" default="null"/>
+			<attribute id="attribute29" name="primary" type="boolean" default="false"/>
+			<attribute id="attribute30" name="size" type="integer" default="null"/>
+			<attribute id="attribute31" name="minSize" type="integer" default="null"/>
+			<attribute id="attribute32" name="min" type="integer" default="null"/>
+			<attribute id="attribute33" name="max" type="integer" default="null"/>
+			<attribute id="attribute34" name="minSizeMessage" type="string" default="''"/>
+			<attribute id="attribute35" name="maxSizeMessage" type="string" default="''"/>
+			<attribute id="attribute36" name="exactSizeMessage" type="string" default="''"/>
+			<attribute id="attribute52" name="minMessage" type="string" default="''"/>
+			<attribute id="attribute53" name="maxMessage" type="string" default="''"/>
+			<attribute id="attribute37" name="null" type="boolean" default="false"/>
+			<attribute id="attribute38" name="description" type="string" default="null"/>
+			<attribute id="attribute39" name="unique" type="boolean" default="false"/>
+			<attribute id="attribute40" name="autoIncrement" type="boolean" default="false"/>
+			<attribute id="attribute41" name="defaultValue" type="string" default="null"/>
+			<attribute id="attribute42" name="foreign" type="string" null="true" default="null"/>
+			<attribute id="attribute43" name="foreignEntity" type="object" subtype="Entity" null="true" default="null" setter="false"/>
+			<attribute id="attribute44" name="foreignKey" type="object" subtype="Attribute" null="true" default="null"/>
+			<attribute id="attribute45" name="foreignTick" type="boolean" default="false"/>
+			<attribute id="attribute46" name="manyToManyEntityName" type="string" default="null"/>
+			<attribute id="attribute47" name="getter" type="boolean" default="true"/>
+			<attribute id="attribute48" name="setter" type="boolean" default="true"/>
+			<attribute id="attribute49" name="email" type="boolean" default="false"/>
+			<attribute id="attribute50" name="ownerSide" type="boolean" default="false"/>
+			<attribute id="attribute51" name="reverseAttribute" type="object" subtype="Attribute" null="true" default="null" setter="false"/>
+			<attribute id="attribute62" name="static" type="boolean" default="false"/>
+			<attribute id="attribute71" name="inverse" type="boolean" default="false"/>
 		</abstract>
 	</loose>
 	<relationships>
-		<relation from="PHPAttribute" to="Attribute" type="Inheritance" />
-		<relation from="JSAttribute" to="Attribute" type="Inheritance" />
-		<relation from="Templates\EntityTemplate" to="Templates\Template" type="Inheritance" />
-		<relation from="Templates\PHPEntityTemplate" to="Templates\EntityTemplate" type="Inheritance" />
-		<relation from="Templates\AttributeTemplate" to="Templates\Template" type="Inheritance" />
-		<relation from="Templates\PHP\Repository" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\EntityBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\Form" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\FormBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\Controller" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\Routes" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\RoutesRouting" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\CrudReadTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\CrudCreateTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\CrudUpdateTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\Entity1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\PHP\Fixtures" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\JS\Entity2" to="Templates\EntityTemplate" type="Inheritance" broken="true" />
-		<relation from="Templates\JS\EntityBase2" to="Templates\EntityTemplate" type="Inheritance" broken="true" />
-		<relation from="PHPEntity" to="Entity" type="Inheritance" />
+		<relation from="PHPAttribute" to="Attribute" type="Inheritance"/>
+		<relation from="JSAttribute" to="Attribute" type="Inheritance"/>
+		<relation from="Templates\EntityTemplate" to="Templates\Template" type="Inheritance"/>
+		<relation from="Templates\PHPEntityTemplate" to="Templates\EntityTemplate" type="Inheritance"/>
+		<relation from="Templates\AttributeTemplate" to="Templates\Template" type="Inheritance"/>
+		<relation from="Templates\PHP\Repository" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\EntityBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Form" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\FormBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Controller" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Routes" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\RoutesRouting" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudReadTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudCreateTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudUpdateTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Entity1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Fixtures" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\JS\Entity2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\JS\EntityBase2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="PHPEntity" to="Entity" type="Inheritance"/>
 	</relationships>
-    <autocode>
-        <base>true</base>
-        <overwrite>true</overwrite>
-        <delete-unmapped>true</delete-unmapped>
-        <validation>false</validation>
-        <namespace>Draggy\Autocode</namespace>
-        <templates>
-            <entity/>
-            <entity-base/>
-            <repository/>
-            <form/>
-            <form-base/>
-            <controller/>
-            <fixtures/>
-            <routes/>
-            <routes-routing/>
-            <crud-create-twig/>
-            <crud-read-twig/>
-            <crud-update-twig/>
-        </templates>
-    </autocode>
+	<autocode>
+		<base>true</base>
+		<overwrite>true</overwrite>
+		<delete-unmapped>true</delete-unmapped>
+		<validation>false</validation>
+		<namespace>Draggy\Autocode</namespace>
+		<templates>
+			<entity/>
+			<entity-base/>
+			<repository/>
+			<form/>
+			<form-base/>
+			<controller/>
+			<fixtures/>
+			<routes/>
+			<routes-routing/>
+			<crud-create-twig/>
+			<crud-read-twig/>
+			<crud-update-twig/>
+		</templates>
+	</autocode>
 </draggy>

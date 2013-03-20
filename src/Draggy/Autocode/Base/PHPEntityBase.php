@@ -1,5 +1,5 @@
 <?php
-// Autocode\Base\PHPEntity.php
+// Draggy\Autocode\Base\PHPEntity.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -22,7 +22,7 @@ use Draggy\Autocode\Attribute;
 use Draggy\Autocode\Project;
 
 /**
- * Autocode\Entity\Base\PHPEntity
+ * Draggy\Autocode\Entity\Base\PHPEntity
  */
 abstract class PHPEntityBase extends Entity
 {
