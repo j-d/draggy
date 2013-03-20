@@ -28,7 +28,7 @@
                     $("#generate-entities-messages").html('Generating...');
 
                     $.ajax({
-                        url: "{{ path('draggy_generate') }}",
+                        url: Draggy.prototype.generateAddress,
                         cache: false
                     }).done(function (html) {
                         $("#generate-entities-messages").html(html);
