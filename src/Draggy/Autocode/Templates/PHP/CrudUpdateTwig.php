@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\CrudUpdateTwig.php
+// Draggy\Autocode\Templates\PHP\CrudUpdateTwig.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHP\Base\CrudUpdateTwigBase;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\CrudUpdateTwig
+ * Draggy\Autocode\Templates\PHP\Entity\CrudUpdateTwig
  */
 class CrudUpdateTwig extends CrudUpdateTwigBase
     // <user-additions part="implements">

@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Controller.php
+// Draggy\Autocode\Templates\PHP\Controller.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHP\Base\ControllerBase;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\Controller
+ * Draggy\Autocode\Templates\PHP\Entity\Controller
  */
 class Controller extends ControllerBase
     // <user-additions part="implements">

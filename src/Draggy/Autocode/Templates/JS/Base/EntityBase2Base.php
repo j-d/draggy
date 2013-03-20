@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\JS\Base\EntityBase2.php
+// Draggy\Autocode\Templates\JS\Base\EntityBase2.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\EntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Autocode\Templates\JS\Entity\Base\EntityBase2
+ * Draggy\Autocode\Templates\JS\Entity\Base\EntityBase2
  */
 abstract class EntityBase2Base extends EntityTemplate
 {

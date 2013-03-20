@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Fixtures.php
+// Draggy\Autocode\Templates\PHP\Fixtures.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHP\Base\FixturesBase;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\Fixtures
+ * Draggy\Autocode\Templates\PHP\Entity\Fixtures
  */
 class Fixtures extends FixturesBase
     // <user-additions part="implements">

@@ -1,5 +1,5 @@
 <?php
-// Autocode\PHPEntity.php
+// Draggy\Autocode\PHPEntity.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Base\PHPEntityBase;
 // </user-additions>
 
 /**
- * Autocode\Entity\PHPEntity
+ * Draggy\Autocode\Entity\PHPEntity
  */
 class PHPEntity extends PHPEntityBase
     // <user-additions part="implements">

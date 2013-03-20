@@ -1,5 +1,5 @@
 <?php
-// Autocode\Project.php
+// Draggy\Autocode\Project.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -26,7 +26,7 @@ use Draggy\Log;
 // </user-additions>
 
 /**
- * Autocode\Entity\Project
+ * Draggy\Autocode\Entity\Project
  */
 class Project extends ProjectBase
     // <user-additions part="implements">

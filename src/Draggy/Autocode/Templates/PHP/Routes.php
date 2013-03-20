@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Routes.php
+// Draggy\Autocode\Templates\PHP\Routes.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHP\Base\RoutesBase;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\Routes
+ * Draggy\Autocode\Templates\PHP\Entity\Routes
  */
 class Routes extends RoutesBase
     // <user-additions part="implements">

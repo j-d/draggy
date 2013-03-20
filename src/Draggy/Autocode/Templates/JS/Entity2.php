@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\JS\Entity2.php
+// Draggy\Autocode\Templates\JS\Entity2.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -23,7 +23,7 @@ use Draggy\Autocode\JSAttribute;
 // </user-additions>
 
 /**
- * Autocode\Templates\JS\Entity\Entity2
+ * Draggy\Autocode\Templates\JS\Entity\Entity2
  */
 class Entity2 extends Entity2Base
     // <user-additions part="implements">

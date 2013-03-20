@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\Base\Template.php
+// Draggy\Autocode\Templates\Base\Template.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -18,7 +18,7 @@ namespace Draggy\Autocode\Templates\Base;
 
 
 /**
- * Autocode\Templates\Entity\Base\Template
+ * Draggy\Autocode\Templates\Entity\Base\Template
  */
 abstract class TemplateBase
 {

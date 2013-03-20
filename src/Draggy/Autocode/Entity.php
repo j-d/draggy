@@ -1,5 +1,5 @@
 <?php
-// Autocode\Entity.php
+// Draggy\Autocode\Entity.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -22,7 +22,7 @@ use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 // </user-additions>
 
 /**
- * Autocode\Entity\Entity
+ * Draggy\Autocode\Entity\Entity
  */
 abstract class Entity extends EntityBase
     // <user-additions part="implements">

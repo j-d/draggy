@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\FormBase1.php
+// Draggy\Autocode\Templates\PHP\FormBase1.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHP\Base\FormBase1Base;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\FormBase1
+ * Draggy\Autocode\Templates\PHP\Entity\FormBase1
  */
 class FormBase1 extends FormBase1Base
     // <user-additions part="implements">

@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Base\Fixtures.php
+// Draggy\Autocode\Templates\PHP\Base\Fixtures.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Autocode\Templates\PHP\Entity\Base\Fixtures
+ * Draggy\Autocode\Templates\PHP\Entity\Base\Fixtures
  */
 abstract class FixturesBase extends PHPEntityTemplate
 {

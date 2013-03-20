@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHPEntityTemplate.php
+// Draggy\Autocode\Templates\PHPEntityTemplate.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -22,7 +22,7 @@ use Draggy\Autocode\PHPEntity;
 // </user-additions>
 
 /**
- * Autocode\Templates\Entity\PHPEntityTemplate
+ * Draggy\Autocode\Templates\Entity\PHPEntityTemplate
  */
 abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     // <user-additions part="implements">

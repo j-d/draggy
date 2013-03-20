@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Repository.php
+// Draggy\Autocode\Templates\PHP\Repository.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHP\Base\RepositoryBase;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\Repository
+ * Draggy\Autocode\Templates\PHP\Entity\Repository
  */
 class Repository extends RepositoryBase
     // <user-additions part="implements">
