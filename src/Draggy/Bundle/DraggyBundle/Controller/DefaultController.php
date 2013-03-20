@@ -9,29 +9,33 @@ use Draggy\Autocode\Project;
 
 class DefaultController extends Controller
 {
-    private function checkModelFile()
+    private function checkModelFile($file = null, $self = false)
     {
-        try {
-            $file = $this->container->getParameter('draggy.model_filename');
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.' );
-        }
+        if (!$self) {
+            try {
+                $file = $this->container->getParameter('draggy.model_filename');
+            } catch (\InvalidArgumentException $e) {
+                throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.' );
+            }
 
-        if (empty( $file )) {
-            throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'on the parameters configuration file.' );
-        }
+            if (empty( $file )) {
+                throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'on the parameters configuration file.' );
+            }
 
-        try {
-            $extension = $this->container->getParameter('draggy.model_xml_extension');
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException( 'The model filename extension was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_xml_extension: \'.xml\'' . "\n" . 'to the parameters configuration file.' );
-        }
+            try {
+                $extension = $this->container->getParameter('draggy.model_xml_extension');
+            } catch (\InvalidArgumentException $e) {
+                throw new \InvalidArgumentException( 'The model filename extension was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_xml_extension: \'.xml\'' . "\n" . 'to the parameters configuration file.' );
+            }
 
-        if (substr($file, -strlen($extension)) !== $extension) {
-            throw new \InvalidArgumentException( sprintf(
-                'The model filename has to end in the \'%s\' extension.',
-                $extension
-            ) );
+            if (substr($file, -strlen($extension)) !== $extension) {
+                throw new \InvalidArgumentException( sprintf(
+                    'The model filename has to end in the \'%s\' extension.',
+                    $extension
+                ) );
+            }
+        } else {
+
         }
     }
 
@@ -63,23 +67,29 @@ class DefaultController extends Controller
         }
     }
 
-    private function getModelFile()
+    private function getModelFile($file = null, $self = false)
     {
         $this->checkModelFile();
 
-        try {
-            $path = $this->container->getParameter('draggy.model_path');
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException( 'The model path was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_path: \'%kernel.root_dir%/../doc/\'' . "\n" . 'to the parameters configuration file.' );
+        if (!$self) {
+            try {
+                $path = $this->container->getParameter('draggy.model_path');
+            } catch (\InvalidArgumentException $e) {
+                throw new \InvalidArgumentException( 'The model path was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_path: \'%kernel.root_dir%/../doc/\'' . "\n" . 'to the parameters configuration file.' );
+            }
+
+            if (empty( $path )) {
+                throw new \InvalidArgumentException( 'The model path was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_path: \'%kernel.root_dir%/../doc/\'' . "\n" . 'on the parameters configuration file.' );
+            }
+
+            $fileName = $this->container->getParameter('draggy.model_filename');
+
+            return $path . $fileName;
+        } else {
+            $path = __DIR__ . '/../../../../../doc/';
+
+            return $path . $file;
         }
-
-        if (empty( $path )) {
-            throw new \InvalidArgumentException( 'The model path was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_path: \'%kernel.root_dir%/../doc/\'' . "\n" . 'on the parameters configuration file.' );
-        }
-
-        $file = $this->container->getParameter('draggy.model_filename');
-
-        return $path . $file;
     }
 
     private function getModelHistoryFile()
@@ -102,10 +112,10 @@ class DefaultController extends Controller
         return $historyPath . str_replace($extension, '.' . time() . $extension, $file);
     }
 
-    public function draggyAction()
+    public function draggyAction($file = null, $self = false)
     {
         try {
-            $this->checkModelFile();
+            $this->checkModelFile($file, $self);
         } catch (\Exception $exception) {
             return $this->render(
                 'DraggyBundle:Default:error.html.twig',
@@ -115,7 +125,7 @@ class DefaultController extends Controller
             );
         }
 
-        $modelFile = $this->getModelFile();
+        $modelFile = $this->getModelFile($file, $self);
 
         try {
             $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
@@ -142,6 +152,8 @@ class DefaultController extends Controller
             'saveable'         => $saveable,
             'noSaveableReason' => $noSaveableReason,
             'targetFolder'     => $targetFolder,
+            'file'             => $file,
+            'self'             => $self,
             ]
         );
     }
@@ -177,7 +189,7 @@ class DefaultController extends Controller
         );
     }
 
-    public function previewAction(Request $request)
+    public function previewAction(Request $request, $self = false)
     {
         $xmlString = $request->request->get('xml');
 
@@ -187,10 +199,14 @@ class DefaultController extends Controller
 
         $xml = simplexml_load_string($xmlString);
 
-        try {
-            $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
-        } catch (\Exception $exception) {
-            $targetFolder = '/dev/null/';
+        if (!$self) {
+            try {
+                $targetFolder = $this->container->getParameter('draggy.autocode.src_path');
+            } catch (\Exception $exception) {
+                $targetFolder = '/dev/null/';
+            }
+        } else {
+            $targetFolder = __DIR__ . '/../../../../';;
         }
 
         if (false === $xml) {

@@ -1,3 +1,4 @@
+# Project routes
 draggy_model:
     pattern:  /
     defaults: { _controller: DraggyBundle:Default:draggy }
@@ -15,3 +16,30 @@ draggy_save:
     defaults: { _controller: DraggyBundle:Default:save }
     requirements:
         _method:  POST
+
+# Self project, autocode routes
+self_autocode_model:
+    pattern: /_self/autocode
+    defaults:
+        _controller: DraggyBundle:Default:draggy
+        file: 'autocode.xml'
+        self: true
+
+self_autocode_generate:
+    pattern: /_self/generate/autocode
+    defaults:
+        _controller: DraggyBundle:Default:generate
+        file: 'autocode.xml'
+        self: true
+
+self_autocode_preview:
+    pattern: /_self/preview/autocode
+    defaults:
+        _controller: DraggyBundle:Default:preview
+        self: true
+
+self_autocode_save:
+    pattern: /_self/save/autocode
+    defaults:
+        _controller: DraggyBundle:Default:save
+        self: true

@@ -257,4 +257,25 @@
 		<relation from="Templates\JS\EntityBase2" to="Templates\EntityTemplate" type="Inheritance" broken="true" />
 		<relation from="PHPEntity" to="Entity" type="Inheritance" />
 	</relationships>
+    <autocode>
+        <base>true</base>
+        <overwrite>true</overwrite>
+        <delete-unmapped>true</delete-unmapped>
+        <validation>false</validation>
+        <namespace>Draggy\Autocode</namespace>
+        <templates>
+            <entity/>
+            <entity-base/>
+            <repository/>
+            <form/>
+            <form-base/>
+            <controller/>
+            <fixtures/>
+            <routes/>
+            <routes-routing/>
+            <crud-create-twig/>
+            <crud-read-twig/>
+            <crud-update-twig/>
+        </templates>
+    </autocode>
 </draggy>
