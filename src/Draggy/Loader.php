@@ -648,7 +648,7 @@ class Loader
 
             $r .= 's = Connectable.prototype.getConnectableFromName(\'' . $outsideAbstract . '\');' . PHP_EOL;
 
-            $r .= $this->getClassLikeAttributeProperties($outsideAbstract, $attributes, 'c');
+            $r .= $this->getClassLikeAttributeProperties($outsideAbstract, $attributes, 's');
 
             if (isset( $outsideAbstract['toString'] )) {
                 $r .= 's.setToString(s.getAttributeFromName("' . $outsideAbstract['toString'] . '"))' . PHP_EOL;
