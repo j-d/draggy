@@ -1163,21 +1163,10 @@ class Project extends ProjectBase
      */
     private function getTraitFile($entity, $path)
     {
-        $fileCollection = new FileCollection();
-
         $traitPath     = $path . 'Traits/';
-        $traitBasePath = $path . 'Traits/Base/';
-
         $traitName     = $entity->getName() . 'Trait.php';
-        $traitBaseName = $entity->getName() . 'TraitBase.php';
 
-        $fileCollection->add(new File($traitPath, $traitName, $this->getTraitTemplate()->setEntity($entity)->render()));
-
-        if ($this->getBase()) {
-            $fileCollection->add(new File($traitBasePath, $traitBaseName, $this->getTraitBaseTemplate()->setEntity($entity)->render()));
-        }
-
-        return $fileCollection;
+        return new File($traitPath, $traitName, $this->getTraitTemplate()->setEntity($entity)->render());
     }
 
 
