@@ -92,22 +92,27 @@ class DefaultController extends Controller
         }
     }
 
-    private function getModelHistoryFile()
+    private function getModelHistoryFile($file = null, $self = false)
     {
         $this->checkModelFile();
 
-        try {
-            $historyPath = $this->container->getParameter('draggy.model_history_path');
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException( 'The model history path was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_history_path: \'%kernel.root_dir%/../doc/history/\'' . "\n" . 'to the parameters configuration file.' );
-        }
+        if (!$self) {
+            try {
+                $historyPath = $this->container->getParameter('draggy.model_history_path');
+            } catch (\InvalidArgumentException $e) {
+                throw new \InvalidArgumentException( 'The model history path was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_history_path: \'%kernel.root_dir%/../doc/history/\'' . "\n" . 'to the parameters configuration file.' );
+            }
 
-        if (empty( $historyPath )) {
-            throw new \InvalidArgumentException( 'The model history path was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_history_path: \'%kernel.root_dir%/../doc/history/\'' . "\n" . 'on the parameters configuration file.' );
-        }
+            if (empty( $historyPath )) {
+                throw new \InvalidArgumentException( 'The model history path was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_history_path: \'%kernel.root_dir%/../doc/history/\'' . "\n" . 'on the parameters configuration file.' );
+            }
 
-        $file      = $this->container->getParameter('draggy.model_filename');
-        $extension = $this->container->getParameter('draggy.model_xml_extension');
+            $file      = $this->container->getParameter('draggy.model_filename');
+            $extension = $this->container->getParameter('draggy.model_xml_extension');
+        } else {
+            $historyPath = __DIR__ . '/../../../../../doc/history/';
+            $extension   = '.xml';
+        }
 
         return $historyPath . str_replace($extension, '.' . time() . $extension, $file);
     }
@@ -234,13 +239,13 @@ class DefaultController extends Controller
         );
     }
 
-    public function saveAction(Request $request)
+    public function saveAction(Request $request, $file = null, $self = false)
     {
         try {
             $this->checkSaveable();
 
-            $modelFile        = $this->getModelFile();
-            $modelHistoryFile = $this->getModelHistoryFile();
+            $modelFile        = $this->getModelFile($file, $self);
+            $modelHistoryFile = $this->getModelHistoryFile($file, $self);
 
             $xmlString = $request->request->get('xml');
 

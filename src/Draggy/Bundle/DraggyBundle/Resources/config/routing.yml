@@ -42,4 +42,5 @@ self_autocode_save:
     pattern: /_self/save/autocode
     defaults:
         _controller: DraggyBundle:Default:save
+        file: 'autocode.xml'
         self: true
