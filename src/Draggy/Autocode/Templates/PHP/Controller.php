@@ -59,6 +59,12 @@ class Controller extends ControllerBase
         $file .= "\n";
         $file .= '// use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n";
         $file .= "\n";
+
+        if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
+            $file .= '// use use Common\\Html\\FormItemArray;;' . "\n";
+            $file .= "\n";
+        }
+
         $file .= '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . "\n";
 
         if ($entity->getHasRepository())
@@ -216,7 +222,7 @@ class Controller extends ControllerBase
             $file .= '                \'form\' => $form->createView(),' . "\n";
             $file .= '            ],' . "\n";
             $file .= '            null,' . "\n";
-            $file .= '            $' . $entity->getLowerName() . 'Type->getFields()' . "\n";
+            $file .= '            new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())' . "\n";
             $file .= '        );' . "\n";
             $file .= '    }' . "\n";
             $file .= '    // </user-additions' . '>' . "\n";
@@ -257,7 +263,7 @@ class Controller extends ControllerBase
             $file .= '                \'id\' => $id,' . "\n";
             $file .= '            ],' . "\n";
             $file .= '            null,' . "\n";
-            $file .= '            $' . $entity->getLowerName() . 'Type->getFields()' . "\n";
+            $file .= '            new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())' . "\n";
             $file .= '        );' . "\n";
             $file .= '    }' . "\n";
             $file .= '    // </user-additions' . '>' . "\n";
