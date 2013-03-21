@@ -61,7 +61,7 @@ class Controller extends ControllerBase
         $file .= "\n";
 
         if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
-            $file .= '// use use Common\\Html\\FormItemArray;;' . "\n";
+            $file .= '// use use Common\\Html\\FormItemArray;' . "\n";
             $file .= "\n";
         }
 
