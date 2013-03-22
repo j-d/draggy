@@ -115,8 +115,15 @@ class DefaultController extends Controller
                 throw new \InvalidArgumentException( 'The model history path was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_history_path: \'%kernel.root_dir%/../doc/history/\'' . "\n" . 'on the parameters configuration file.' );
             }
 
-            $file      = $this->container->getParameter('draggy.model_filename');
             $extension = $this->container->getParameter('draggy.model_xml_extension');
+
+            if (null === $file) {
+                $file = $this->container->getParameter('draggy.model_filename');
+            } else {
+                $file = $file . $extension;
+            }
+
+
         } else {
             $historyPath = __DIR__ . '/../../../../../doc/history/';
             $extension   = '.xml';

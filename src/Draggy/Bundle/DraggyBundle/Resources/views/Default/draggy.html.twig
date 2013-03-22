@@ -59,9 +59,9 @@
         <script>
             ContextMenu.prototype.enableMenus();
             {% if not self %}
-                Draggy.prototype.saveAddress     = '{{ path('draggy_save') }}';
-                Draggy.prototype.previewAddress  = '{{ path('draggy_preview') }}';
-                Draggy.prototype.generateAddress = '{{ path('draggy_generate') }}';
+                Draggy.prototype.saveAddress     = '{{ path('draggy_save',     {'file': file}) }}';
+                Draggy.prototype.previewAddress  = '{{ path('draggy_preview',  {'file': file}) }}';
+                Draggy.prototype.generateAddress = '{{ path('draggy_generate', {'file': file}) }}';
             {% else %}
                 Draggy.prototype.saveAddress     = '{{ path('self_autocode_save') }}';
                 Draggy.prototype.previewAddress  = '{{ path('self_autocode_preview') }}';
