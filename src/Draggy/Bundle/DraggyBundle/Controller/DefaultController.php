@@ -13,19 +13,23 @@ class DefaultController extends Controller
     {
         if (!$self) {
             try {
-                $file = $this->container->getParameter('draggy.model_filename');
+                $extension = $this->container->getParameter('draggy.model_xml_extension');
             } catch (\InvalidArgumentException $e) {
-                throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.' );
+                throw new \InvalidArgumentException( 'The model filename extension was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_xml_extension: \'.xml\'' . "\n" . 'to the parameters configuration file.' );
+            }
+
+            if (null === $file) {
+                try {
+                    $file = $this->container->getParameter('draggy.model_filename');
+                } catch (\InvalidArgumentException $e) {
+                    throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'to the parameters configuration file.' );
+                }
+            } else {
+                $file = $file . $extension;
             }
 
             if (empty( $file )) {
                 throw new \InvalidArgumentException( 'The model filename was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_filename: \'file.xml\'' . "\n" . 'on the parameters configuration file.' );
-            }
-
-            try {
-                $extension = $this->container->getParameter('draggy.model_xml_extension');
-            } catch (\InvalidArgumentException $e) {
-                throw new \InvalidArgumentException( 'The model filename extension was not specified on the parameters file. ' . "\n" . 'Please add a line such as:' . "\n" . 'draggy.model_xml_extension: \'.xml\'' . "\n" . 'to the parameters configuration file.' );
             }
 
             if (substr($file, -strlen($extension)) !== $extension) {
@@ -46,7 +50,7 @@ class DefaultController extends Controller
         $modelFile        = $this->getModelFile();
         $modelHistoryFile = $this->getModelHistoryFile();
 
-        if (!is_writable($modelFile)) {
+        if (file_exists($modelFile) && !is_writable($modelFile)) {
             throw new \RuntimeException( sprintf('The model file located at \'%s\' is read only.', $modelFile) );
         }
 
@@ -82,7 +86,11 @@ class DefaultController extends Controller
                 throw new \InvalidArgumentException( 'The model path was not specified on the parameters file. ' . "\n" . 'Please complete the line such as:' . "\n" . 'draggy.model_path: \'%kernel.root_dir%/../doc/\'' . "\n" . 'on the parameters configuration file.' );
             }
 
-            $fileName = $this->container->getParameter('draggy.model_filename');
+            if (null === $file) {
+                $fileName = $this->container->getParameter('draggy.model_filename');
+            } else {
+                $fileName = $file . $this->container->getParameter('draggy.model_xml_extension');
+            }
 
             return $path . $fileName;
         } else {

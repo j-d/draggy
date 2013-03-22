@@ -1,19 +1,27 @@
 # Project routes
 draggy_model:
-    pattern:  /
-    defaults: { _controller: DraggyBundle:Default:draggy }
+    pattern:  /{file}
+    defaults:
+        _controller: DraggyBundle:Default:draggy
+        file: null
 
 draggy_generate:
-    pattern:  /generate
-    defaults: { _controller: DraggyBundle:Default:generate }
+    pattern:  /generate/{file}
+    defaults:
+        _controller: DraggyBundle:Default:generate
+        file: null
 
 draggy_preview:
-    pattern:  /preview
-    defaults: { _controller: DraggyBundle:Default:preview }
+    pattern:  /preview/{file}
+    defaults:
+        _controller: DraggyBundle:Default:preview
+        file: null
 
 draggy_save:
-    pattern:  /save
-    defaults: { _controller: DraggyBundle:Default:save }
+    pattern:  /save/{file}
+    defaults:
+        _controller: DraggyBundle:Default:save
+        file: null
     requirements:
         _method:  POST
 
