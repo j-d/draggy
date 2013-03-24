@@ -263,11 +263,13 @@ abstract class Attribute extends AttributeBase
                 $type = 'Input';
         }
 
-        if ($this->email)
+        if ($this->email) {
             $type = 'Email';
+        }
 
-        if (!is_null($this->foreignEntity) && $this->getOwnerSide())
+        if (!is_null($this->foreignEntity) && $this->getOwnerSide()) {
             $type = 'Entity';
+        }
 
         return $type;
     }
@@ -291,8 +293,7 @@ abstract class Attribute extends AttributeBase
                 if ($this->size != $this->minSize) {
                     $properties[] = '                [\'minSize\' => ' . $this->minSize . ']';
                     $properties[] = '                [\'minSizeMessage\' => \'' . $this->getMinMessage() . '\']';
-                }
-                else {
+                } else {
                     $properties[] = '                [\'exactSize\' => ' . $this->size . ']';
                     $properties[] = '                [\'exactSize\' => \'' . $this->getExactMessage() . '\']';
                 }
@@ -306,8 +307,7 @@ abstract class Attribute extends AttributeBase
             if (!is_null($this->getForeignEntity())) {
                 if ($this->getForeign() == 'ManyToMany') {
                     $properties[] = '                [\'symfonyMultiple\' => true] /* ' . $this->getForeign() . '*/';
-                }
-                elseif ($this->getForeign() == 'ManyToOne') {
+                } elseif ($this->getForeign() == 'ManyToOne') {
                     $properties[] = '                [\'symfonyMultiple\' => false] /* ' . $this->getForeign() . '*/';
                 }
             }

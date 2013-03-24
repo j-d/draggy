@@ -63,6 +63,7 @@ class FormBase1 extends FormBase1Base
 
         foreach ($entity->getFormAttributes() as $attr) {
             $type = $attr->getFormClassType();
+
             if (!isset($usesIncluded[$type])) {
                 $file .= 'use Common\\Html\\' . $type . ';' . "\n";
                 $usesIncluded[$type] = true;
