@@ -28,6 +28,7 @@
                     $("#generate-entities-messages").html('Generating...');
 
                     $.ajax({
+                        type: 'POST',
                         url: Draggy.prototype.generateAddress,
                         cache: false
                     }).done(function (html) {

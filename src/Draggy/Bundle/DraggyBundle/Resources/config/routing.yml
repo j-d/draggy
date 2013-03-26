@@ -4,18 +4,24 @@ draggy_model:
     defaults:
         _controller: DraggyBundle:Default:draggy
         file: null
+    requirements:
+        _method:  GET
 
 draggy_generate:
     pattern:  /generate/{file}
     defaults:
         _controller: DraggyBundle:Default:generate
         file: null
+    requirements:
+        _method:  POST
 
 draggy_preview:
     pattern:  /preview/{file}
     defaults:
         _controller: DraggyBundle:Default:preview
         file: null
+    requirements:
+        _method:  POST
 
 draggy_save:
     pattern:  /save/{file}
