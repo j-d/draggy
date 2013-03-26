@@ -1,6 +1,0 @@
-subcontainers
-individual class or module templates
-move context to configure/autocode
-add traits
-add interfaces
-target folder to configure/autocode
