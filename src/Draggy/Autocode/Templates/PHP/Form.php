@@ -70,26 +70,27 @@ class Form extends FormBase
         $file .= '// </user-additions' . '>' . "\n";
         $file .= "\n";
         $file .= 'class ' . $entity->getName() . 'Type extends ' . $entity->getName() . 'TypeBase {' . "\n";
-        //$file .= '    public function __construct()' . "\n";
-        //$file .= '    {' . "\n";
-        //$file .= '        parent::__construct();' . "\n";
-        //$file .= '        // <user-additions' . ' part="constructor">' . "\n";
-        //$file .= '        // </user-additions' . '>' . "\n";
-        //$file .= '    }' . "\n";
-        //$file .= '    ' . "\n";
+        $file .= '    // <user-additions' . ' part="constructorDeclaration">' . "\n";
+        $file .= '    public function __construct()' . "\n";
+        $file .= '    // </user-additions>' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '        // <user-additions' . ' part="constructor">' . "\n";
+        $file .= '        parent::__construct();' . "\n";
+        $file .= '        // </user-additions' . '>' . "\n";
+        $file .= '    }' . "\n";
+        $file .= '    ' . "\n";
         $file .= '    public function buildForm(FormBuilderInterface $builder, array $options)' . "\n";
         $file .= '    {' . "\n";
-        $file .= '        /*' . "\n";
-        $file .= '        parent::buildForm($builder,$options);' . "\n";
-        $file .= "\n";
+        $file .= '//        parent::buildForm($builder,$options);' . "\n";
+        $file .= '//' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {
             if (!is_null($attr->getForeign())) {
-                $file .= '        /** @var Entity $' . $attr->getName() . ' */' . "\n";
-                $file .= '        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
-                $file .= '        $' . $attr->getName() . '' . "\n";
-                $file .= '            ->setSymfonyExpanded(true)' . "\n";
-                $file .= '            ->setSymfonyProperty(\'xxx\'); //';
+                $file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
+                $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
+                $file .= '//        $' . $attr->getName() . '' . "\n";
+                $file .= '//            ->setSymfonyExpanded(true)' . "\n";
+                $file .= '//            ->setSymfonyProperty(\'xxx\'); //';
 
                 foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
                     if (is_null($foreignAttr->getForeign()) && $foreignAttr->getPhpType() !== 'boolean') {
@@ -98,19 +99,18 @@ class Form extends FormBase
                 }
 
                 $file .= "\n";
-                $file .= "\n";
+                $file .= '//' . "\n";
             }
         }
 
-        $file .= '        $this->addFormItem(' . "\n";
-        $file .= '            $builder,' . "\n";
+        $file .= '//        $this->addFormItem(' . "\n";
+        $file .= '//            $builder,' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {
-            $file .= '            $this->fields[\'' . $attr->getName() . '\'],' . "\n";
+            $file .= '//            $this->fields[\'' . $attr->getName() . '\'],' . "\n";
         }
 
-        $file .= '        );' . "\n";
-        $file .= '        */' . "\n";
+        $file .= '//        );' . "\n";
         $file .= "\n";
         $file .= '        // <user-additions' . ' part="buildForm">' . "\n";
         $file .= '        parent::buildForm($builder,$options);' . "\n";
