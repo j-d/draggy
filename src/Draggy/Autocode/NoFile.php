@@ -32,7 +32,9 @@ class NoFile extends AbstractFile
 
     public function save()
     {
-        // Do nothing
+        if (file_exists($this->getFullName())) {
+            unlink($this->getFullName());
+        }
     }
 
     public function isNew()

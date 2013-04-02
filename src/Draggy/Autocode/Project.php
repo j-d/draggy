@@ -222,9 +222,11 @@ class Project extends ProjectBase
             throw new \Exception( 'On the entity ' . $entity->getName() . ' you have enabled CRUD (C or U) but it is not set to have a Form' );
         }
 
-        if ( !is_null($entity->getCrud()) && !$entity->getHasController() ) {
-            throw new \Exception( 'On the entity ' . $entity->getName() . ' you have enabled CRUD but it is not set to have a Controller' );
-        }
+        // This is wrong and there could be an entity with CRUD without a controller (composed form)
+        // TODO: Remove this
+//        if ( !is_null($entity->getCrud()) && !$entity->getHasController() ) {
+//            throw new \Exception( 'On the entity ' . $entity->getName() . ' you have enabled CRUD but it is not set to have a Controller' );
+//        }
 
         return $entity;
     }
@@ -1076,7 +1078,6 @@ class Project extends ProjectBase
             $routes =   '# <system-additions part="routes">' . PHP_EOL .
                         implode(PHP_EOL,$routesArray) .
                         '# </system-additions>' . PHP_EOL;
-
 
             $file = new File($routesRoutingPath, $routesRoutingName, $routes);
             $file->setAddToFile(true);
