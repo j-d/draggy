@@ -422,6 +422,10 @@ class Entity1 extends Entity1Base
                     $ret .= '            ' . $attribute->getThisName() . ' = null;' . "\n";
                     $ret .= '        }' . "\n";
                 }
+            } elseif ($attribute->getForeign() === 'ManyToOne') {
+                // TODO: Does it need to do the inverse???
+                //$ret .= '        $' . $attribute->getName() . '->add' . $attribute->getEntity()->getName() . '($this);' . "\n";
+                $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
             } else {
                 $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
             }
@@ -528,6 +532,8 @@ class Entity1 extends Entity1Base
         } else { // ManyToOne
             if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') { // TODO: Double check this
                 $ret .= '        $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
+                $ret .= '        ' . "\n";
+                $ret .= '        ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
             }
         }
 

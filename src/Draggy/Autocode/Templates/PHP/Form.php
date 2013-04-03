@@ -81,7 +81,7 @@ class Form extends FormBase
         $file .= '    ' . "\n";
         $file .= '    public function buildForm(FormBuilderInterface $builder, array $options)' . "\n";
         $file .= '    {' . "\n";
-        $file .= '//        parent::buildForm($builder,$options);' . "\n";
+        $file .= '//        parent::buildForm($builder, $options);' . "\n";
         $file .= '//' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {

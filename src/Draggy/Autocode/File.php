@@ -290,16 +290,4 @@ class File extends AbstractFile
             array_slice($new, $nmax, $maxlen),
             $this->diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen)));
     }
-
-    private function htmlDiff($old, $new){
-        $ret = '';
-        $diff = $this->diff(explode(' ', $old), explode(' ', $new));
-        foreach($diff as $k){
-            if(is_array($k))
-                $ret .= (!empty($k['d'])?"<del>".implode(' ',$k['d'])."</del> ":'').
-                    (!empty($k['i'])?"<ins>".implode(' ',$k['i'])."</ins> ":'');
-            else $ret .= $k . ' ';
-        }
-        return $ret;
-    }
 }
