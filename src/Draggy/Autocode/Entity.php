@@ -204,9 +204,15 @@ abstract class Entity extends EntityBase
         $ret = [];
 
         foreach ($this->attributes as $attr) {
-            if ( is_null($this->parentEntity) || !in_array($attr->getName(),array_keys($this->parentEntity->getAttributes())) ) {
-                if ( !$attr->getAutoIncrement() && ( is_null($attr->getForeignEntity()) || $attr->getOwnerSide() ) ) {
-                    $ret[] = $attr;
+            if ( null === $this->parentEntity || !in_array($attr->getName(), array_keys($this->parentEntity->getAttributes())) ) {
+                if (!$attr->getAutoIncrement()) {
+                    if (null === $attr->getForeignEntity()) {
+                        $ret[] = $attr;
+                    } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'OneToOne' && $attr->getOwnerSide()) {
+                        $ret[] = $attr;
+                    } elseif ($attr->getFormClassType() === 'Collection' && !$attr->getOwnerSide() && $attr->getForeign() === 'ManyToOne' && $attr->getForeignEntity()->getHasForm()) {
+                        $ret[] = $attr;
+                    }
                 }
             }
         }

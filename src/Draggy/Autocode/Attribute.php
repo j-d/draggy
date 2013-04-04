@@ -267,8 +267,10 @@ abstract class Attribute extends AttributeBase
             $type = 'Email';
         }
 
-        if (!is_null($this->foreignEntity) && $this->getOwnerSide()) {
-            $type = 'Entity';
+        if (null !== $this->foreignEntity) {
+            $type = $this->getOwnerSide()
+                ? 'Entity'
+                : 'Collection';
         }
 
         return $type;
@@ -286,8 +288,9 @@ abstract class Attribute extends AttributeBase
         $properties[] = '                [\'renderMode\' => \'twig\']';
 
         if(!$this->autoIncrement) {
-            if(!$this->null && $this->type !== 'boolean')
+            if(!$this->null && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {
                 $properties[] = '                [\'required\' => \'' . $this->getRequiredMessage() . '\']';
+            }
 
             if (!is_null($this->minSize)) {
                 if ($this->size != $this->minSize) {
@@ -304,13 +307,18 @@ abstract class Attribute extends AttributeBase
                 $properties[] = '                [\'maxSizeMessage\' => \'' . $this->getMaxMessage() . '\']';
             }
 
-            if (!is_null($this->getForeignEntity())) {
+            if ($this->getFormClassType() === 'Entity' && null !== $this->getForeignEntity()) {
                 if ($this->getForeign() == 'ManyToMany') {
                     $properties[] = '                [\'symfonyMultiple\' => true] /* ' . $this->getForeign() . '*/';
                 } elseif ($this->getForeign() == 'ManyToOne') {
                     $properties[] = '                [\'symfonyMultiple\' => false] /* ' . $this->getForeign() . '*/';
                 }
             }
+
+            // Is already done on the type collection by default
+            //if ($this->getFormClassType() === 'Collection') {
+            //    $properties[] = '                [\'symfonyByReference\' => false]';
+            //}
 
             if (!is_null($this->min)) {
                 $properties[] = '                [\'min\' => ' . $this->min . ']';
@@ -322,10 +330,17 @@ abstract class Attribute extends AttributeBase
         }
 
         if (count($properties) > 0) {
-            if ($this->getFormClassType() != 'Entity')
-                $ret .= ', null,' . "\n";
-            else
-                $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',' . "\n";
+            switch ($this->getFormClassType()) {
+                case 'Entity':
+                    $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\', ' . ($this->getForeignEntity()->getHasForm() ? 'new ' . $this->getForeignEntity()->getName() . 'Type()' : 'null') . ',' . "\n";
+                    break;
+                case 'Collection':
+                    $ret .= ', new ' . $this->getForeignEntity()->getName() . 'Type(),' . "\n";
+                    break;
+                default:
+                    $ret .= ', null,' . "\n";
+                    break;
+            }
 
             $ret .= implode(',' . "\n", $properties);
             $ret .= "\n";

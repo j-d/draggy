@@ -216,7 +216,7 @@ class File extends AbstractFile
         $keepLines = [];
 
         for ($i = 0; $i < count($diff); $i++) {
-            $keepLines[$i] = is_array($diff[$i]) && count($diff[$i]['d']) > 0 && count($diff[$i]['i']) > 0;
+            $keepLines[$i] = is_array($diff[$i]) && (count($diff[$i]['d']) > 0 || count($diff[$i]['i']) > 0);
         }
 
         $contextLines = [];
@@ -263,15 +263,12 @@ class File extends AbstractFile
         Given two arrays, the function diff will return an array of the changes.
         I won't describe the format of the array, but it will be obvious
         if you use print_r() on the result of a diff on some test data.
-
-        htmlDiff is a wrapper for the diff command, it takes two strings and
-        returns the differences in HTML. The tags used are <ins> and <del>,
-        which can easily be styled with CSS.
     */
 
     private function diff($old, $new){
         $matrix = array();
         $maxlen = 0;
+
         foreach($old as $oindex => $ovalue){
             $nkeys = array_keys($new, $ovalue);
             foreach($nkeys as $nindex){
@@ -284,10 +281,15 @@ class File extends AbstractFile
                 }
             }
         }
-        if($maxlen == 0) return array(array('d'=>$old, 'i'=>$new));
+
+        if($maxlen == 0) {
+            return array(array('d'=>$old, 'i'=>$new));
+        }
+
         return array_merge(
             $this->diff(array_slice($old, 0, $omax), array_slice($new, 0, $nmax)),
             array_slice($new, $nmax, $maxlen),
-            $this->diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen)));
+            $this->diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen))
+        );
     }
 }

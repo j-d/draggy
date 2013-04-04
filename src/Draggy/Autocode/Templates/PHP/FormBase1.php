@@ -70,6 +70,17 @@ class FormBase1 extends FormBase1Base
             }
         }
 
+        $useTypes = [];
+        foreach ($entity->getFormAttributes() as $attr) {
+            if (in_array($attr->getFormClassType(), ['Entity', 'Collection']) && $attr->getForeignEntity()->getHasForm()) {
+                $useTypes['use ' . $attr->getForeignEntity()->getNamespace() . '\\Form\\' . $attr->getForeignEntity()->getName() . 'Type;'] = true;
+            }
+        }
+
+        if (count($useTypes) > 0) {
+            $file .= implode("\n", array_keys($useTypes)) . "\n";
+        }
+
         $file .= "\n";
         $file .= 'abstract class ' . $entity->getName() . 'TypeBase extends AbstractType {' . "\n";
         $file .= '    /**' . "\n";

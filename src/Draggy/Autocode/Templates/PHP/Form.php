@@ -66,6 +66,18 @@ class Form extends FormBase
             $file .= '// use Common\\Html\\Entity;' . "\n";
         }
 
+        $useCollection = false;
+        foreach ($entity->getFormAttributes() as $attr) {
+            if ($attr->getFormClassType() === 'Collection') {
+                $useCollection = true;
+                break;
+            }
+        }
+
+        if ($useCollection) {
+            $file .= '// use Common\\Html\\Collection;' . "\n";
+        }
+
         $file .= '// <user-additions' . ' part="use">' . "\n";
         $file .= '// </user-additions' . '>' . "\n";
         $file .= "\n";
@@ -85,21 +97,33 @@ class Form extends FormBase
         $file .= '//' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {
-            if (!is_null($attr->getForeign())) {
-                $file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
-                $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
-                $file .= '//        $' . $attr->getName() . '' . "\n";
-                $file .= '//            ->setSymfonyExpanded(true)' . "\n";
-                $file .= '//            ->setSymfonyProperty(\'xxx\'); //';
+            switch ($attr->getFormClassType()) {
+                case 'Entity':
+                    $file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
+                    $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
+                    $file .= '//        $' . $attr->getName() . '' . "\n";
+                    $file .= '//            ->setParentForm($this);' . "\n";
+                    $file .= '//        $' . $attr->getName() . '' . "\n";
+                    $file .= '//            ->setSymfonyExpanded(true)' . "\n";
+                    $file .= '//            ->setSymfonyProperty(\'xxx\'); //';
 
-                foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
-                    if (is_null($foreignAttr->getForeign()) && $foreignAttr->getPhpType() !== 'boolean') {
-                        $file .= ' ' . $foreignAttr->getName();
+                    foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
+                        if (is_null($foreignAttr->getForeign()) && $foreignAttr->getPhpType() !== 'boolean') {
+                            $file .= ' ' . $foreignAttr->getName();
+                        }
                     }
-                }
 
-                $file .= "\n";
-                $file .= '//' . "\n";
+                    $file .= "\n";
+                    $file .= '//' . "\n";
+                    break;
+                case 'Collection':
+                    $file .= '//        /** @var Collection $' . $attr->getName() . ' */' . "\n";
+                    $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
+                    $file .= '//        $' . $attr->getName() . '' . "\n";
+                    $file .= '//            ->setSymfonyAllowAdd(true)' . "\n";
+                    $file .= '//            ->setSymfonyAllowDelete(true);' . "\n";
+                    $file .= '//' . "\n";
+                    break;
             }
         }
 
