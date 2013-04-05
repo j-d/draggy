@@ -51,6 +51,7 @@ class Form extends FormBase
 
         $file .= 'namespace ' . $entity->getNamespace() . '\\Form;' . "\n";
         $file .= "\n";
+        $file .= 'use Common\\Html\\FormItem;' . "\n";
         $file .= 'use Symfony\\Component\\Form\\FormBuilderInterface;' . "\n";
         $file .= 'use ' . $entity->getNamespace() . '\\Form\\Base\\' . $entity->getName() . 'TypeBase;' . "\n";
 
@@ -95,7 +96,7 @@ class Form extends FormBase
             switch ($attr->getFormClassType()) {
                 case 'Entity':
                     //$file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
-                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\'];' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->getField(\'' . $attr->getName() . '\');' . "\n";
                     $file .= '//        $this->fields[\'' . $attr->getName() . '\']' . "\n";
                     $file .= '//            ->setParentForm($this);' . "\n";
                     $file .= '//        $this->fields[\'' . $attr->getName() . '\']' . "\n";
@@ -114,7 +115,7 @@ class Form extends FormBase
                     break;
                 case 'Collection':
                     //$file .= '//        /** @var Collection $' . $attr->getName() . ' */' . "\n";
-                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\']; // To prevent loops Collections are not automatically added' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->getField(\'' . $attr->getName() . '\'); // To prevent loops Collections are not automatically added' . "\n";
                     $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
                     $file .= '//        $this->fields[\'' . $attr->getName() . '\']' . "\n";
                     $file .= '//            ->setSymfonyAllowAdd(true)' . "\n";
@@ -123,20 +124,18 @@ class Form extends FormBase
 
                     break;
                 default:
-                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\'];' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->getField(\'' . $attr->getName() . '\');' . "\n";
                     break;
             }
         }
 
         $file .= '        // <user-additions' . ' part="constructor">' . "\n";
-        $file .= '        parent::__construct();' . "\n";
-        $file .= '        ' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {
             if ($attr->getFormClassType() !== 'Collection') {
-                $file .= '        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\'];' . "\n";
+                $file .= '        $this->fields[\'' . $attr->getName() . '\'] = $this->getField(\'' . $attr->getName() . '\');' . "\n";
             } else {
-                $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\']; // To prevent loops Collections are not automatically added' . "\n";
+                $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->getField(\'' . $attr->getName() . '\'); // To prevent loops Collections are not automatically added' . "\n";
             }
         }
 

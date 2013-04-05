@@ -83,28 +83,26 @@ class FormBase1 extends FormBase1Base
 
         $file .= "\n";
         $file .= 'abstract class ' . $entity->getName() . 'TypeBase extends AbstractType {' . "\n";
-        $file .= '    /**' . "\n";
-        $file .= '     * @var FormItem[] Form fields' . "\n";
-        $file .= '     */' . "\n";
-        $file .= '    protected $_fields;' . "\n";
-        $file .= '    ' . "\n";
-        $file .= '    public function __construct()' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '        $this->_fields = [' . "\n";
 
-        $fields = [];
+        $file .= '    /**' . "\n";
+        $file .= '     * @param $field' . "\n";
+        $file .= '     *' . "\n";
+        $file .= '     * @return FormItem|null' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    public function getField($field)' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '        switch ($field) {' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {
-            $fields[]     = $attr->getFormClass($formName);
+            $file .= '            case \'' . $attr->getName() . '\':' . "\n";
+            $file .= '                return ' . $attr->getFormClass($formName) . ';' . "\n";
         }
 
-        if (count($fields) > 0) {
-            $file .= implode(',' . "\n",$fields);
-            $file .= "\n";
-        }
-
-        $file .= '        ];' . "\n";
+        $file .= '            default:' . "\n";
+        $file .= '                return null;' . "\n";
+        $file .= '        }' . "\n";
         $file .= '    }' . "\n";
+
         $file .= '    ' . "\n";
         $file .= '    /**' . "\n";
         $file .= '     * Shortcut for adding FormItems' . "\n";
