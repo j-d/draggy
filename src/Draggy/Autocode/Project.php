@@ -812,7 +812,7 @@ class Project extends ProjectBase
     public function saveTo($path)
     {
         if (!is_dir($path)) {
-            user_error('Was expecting to find the path ' . $path, E_USER_WARNING);
+            //user_error('Was expecting to find the path ' . $path, E_USER_WARNING);
             mkdir($path);
         }
 

@@ -210,7 +210,25 @@ abstract class Entity extends EntityBase
                         $ret[] = $attr;
                     } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'OneToOne' && $attr->getOwnerSide()) {
                         $ret[] = $attr;
+                    } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'ManyToOne' && $attr->getOwnerSide() && $attr->getForeignKey()->getFormClassType() !== 'Entity') {
+                        $ret[] = $attr;
+//                        if ($this->getName()==='ApplicationPPD' && $attr->getName() === 'application') {
+//                            var_dump($attr->getForeignKey()->getFormClassType());
+//                            var_dump($attr->getForeignKey());
+//                            die();
+//                        }
+//                        if ($this->getName()==='ApplicationHearAbout' && $attr->getName() === 'media') {
+//                            var_dump($attr->getForeignKey()->getFormClassType());
+//                            var_dump($attr->getForeignKey());
+//                            die();
+//                        }
                     } elseif ($attr->getFormClassType() === 'Collection' && !$attr->getOwnerSide() && $attr->getForeign() === 'ManyToOne' && $attr->getForeignEntity()->getHasForm()) {
+//                        if ($this->getName()==='Media' && $attr->getName() === 'applicationHearAbouts') {
+//                            var_dump($attr->getForeignKey()->getFormClassType());
+//                            var_dump($attr->getForeignKey());
+//                            die();
+//                        }
+
                         $ret[] = $attr;
                     }
                 }

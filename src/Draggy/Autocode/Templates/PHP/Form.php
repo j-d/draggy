@@ -82,30 +82,25 @@ class Form extends FormBase
         $file .= '// </user-additions' . '>' . "\n";
         $file .= "\n";
         $file .= 'class ' . $entity->getName() . 'Type extends ' . $entity->getName() . 'TypeBase {' . "\n";
+        $file .= '    /**' . "\n";
+        $file .= '     * @var FormItem[] Form fields' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    protected $fields = [];' . "\n";
+        $file .= '    ' . "\n";
         $file .= '    // <user-additions' . ' part="constructorDeclaration">' . "\n";
         $file .= '    public function __construct()' . "\n";
         $file .= '    // </user-additions>' . "\n";
         $file .= '    {' . "\n";
-        $file .= '        // <user-additions' . ' part="constructor">' . "\n";
-        $file .= '        parent::__construct();' . "\n";
-        $file .= '        // </user-additions' . '>' . "\n";
-        $file .= '    }' . "\n";
-        $file .= '    ' . "\n";
-        $file .= '    public function buildForm(FormBuilderInterface $builder, array $options)' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '//        parent::buildForm($builder, $options);' . "\n";
-        $file .= '//' . "\n";
-
         foreach ($entity->getFormAttributes() as $attr) {
             switch ($attr->getFormClassType()) {
                 case 'Entity':
-                    $file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
-                    $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
-                    $file .= '//        $' . $attr->getName() . '' . "\n";
+                    //$file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\'];' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\']' . "\n";
                     $file .= '//            ->setParentForm($this);' . "\n";
-                    $file .= '//        $' . $attr->getName() . '' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\']' . "\n";
                     $file .= '//            ->setSymfonyExpanded(true)' . "\n";
-                    $file .= '//            ->setSymfonyProperty(\'xxx\'); //';
+                    $file .= '//            ->setSymfonyProperty(\'xxx\'); // Possible choices: ';
 
                     foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
                         if (is_null($foreignAttr->getForeign()) && $foreignAttr->getPhpType() !== 'boolean') {
@@ -115,29 +110,86 @@ class Form extends FormBase
 
                     $file .= "\n";
                     $file .= '//' . "\n";
+
                     break;
                 case 'Collection':
-                    $file .= '//        /** @var Collection $' . $attr->getName() . ' */' . "\n";
+                    //$file .= '//        /** @var Collection $' . $attr->getName() . ' */' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\']; // To prevent loops Collections are not automatically added' . "\n";
                     $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
-                    $file .= '//        $' . $attr->getName() . '' . "\n";
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\']' . "\n";
                     $file .= '//            ->setSymfonyAllowAdd(true)' . "\n";
                     $file .= '//            ->setSymfonyAllowDelete(true);' . "\n";
                     $file .= '//' . "\n";
+
+                    break;
+                default:
+                    $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\'];' . "\n";
                     break;
             }
         }
 
-        $file .= '//        $this->addFormItem(' . "\n";
-        $file .= '//            $builder,' . "\n";
+        $file .= '        // <user-additions' . ' part="constructor">' . "\n";
+        $file .= '        parent::__construct();' . "\n";
+        $file .= '        ' . "\n";
 
         foreach ($entity->getFormAttributes() as $attr) {
-            $file .= '//            $this->fields[\'' . $attr->getName() . '\'],' . "\n";
+            if ($attr->getFormClassType() !== 'Collection') {
+                $file .= '        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\'];' . "\n";
+            } else {
+                $file .= '//        $this->fields[\'' . $attr->getName() . '\'] = $this->_fields[\'' . $attr->getName() . '\']; // To prevent loops Collections are not automatically added' . "\n";
+            }
         }
 
-        $file .= '//        );' . "\n";
-        $file .= "\n";
+        $file .= '        // </user-additions' . '>' . "\n";
+        $file .= '    }' . "\n";
+        $file .= '    ' . "\n";
+        $file .= '    public function buildForm(FormBuilderInterface $builder, array $options)' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '//        parent::buildForm($builder, $options);' . "\n";
+        $file .= '//' . "\n";
+
+//        foreach ($entity->getFormAttributes() as $attr) {
+//            switch ($attr->getFormClassType()) {
+//                case 'Entity':
+//                    $file .= '//        /** @var Entity $' . $attr->getName() . ' */' . "\n";
+//                    $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
+//                    $file .= '//        $' . $attr->getName() . '' . "\n";
+//                    $file .= '//            ->setParentForm($this);' . "\n";
+//                    $file .= '//        $' . $attr->getName() . '' . "\n";
+//                    $file .= '//            ->setSymfonyExpanded(true)' . "\n";
+//                    $file .= '//            ->setSymfonyProperty(\'xxx\'); //';
+//
+//                    foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
+//                        if (is_null($foreignAttr->getForeign()) && $foreignAttr->getPhpType() !== 'boolean') {
+//                            $file .= ' ' . $foreignAttr->getName();
+//                        }
+//                    }
+//
+//                    $file .= "\n";
+//                    $file .= '//' . "\n";
+//                    break;
+//                case 'Collection':
+//                    $file .= '//        /** @var Collection $' . $attr->getName() . ' */' . "\n";
+//                    $file .= '//        $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
+//                    $file .= '//        $' . $attr->getName() . '' . "\n";
+//                    $file .= '//            ->setSymfonyAllowAdd(true)' . "\n";
+//                    $file .= '//            ->setSymfonyAllowDelete(true);' . "\n";
+//                    $file .= '//' . "\n";
+//                    break;
+//            }
+//        }
+
+//        $file .= '//        $this->addFormItem(' . "\n";
+//        $file .= '//            $builder,' . "\n";
+//
+//        foreach ($entity->getFormAttributes() as $attr) {
+//            $file .= '//            $this->fields[\'' . $attr->getName() . '\'],' . "\n";
+//        }
+//
+//        $file .= '//        );' . "\n";
+//        $file .= "\n";
         $file .= '        // <user-additions' . ' part="buildForm">' . "\n";
-        $file .= '        parent::buildForm($builder,$options);' . "\n";
+        $file .= '        parent::buildForm($builder, $options);' . "\n";
         $file .= '        // </user-additions' . '>' . "\n";
         $file .= '    }' . "\n";
         $file .= '}' . "\n";

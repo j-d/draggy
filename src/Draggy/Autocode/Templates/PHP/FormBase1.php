@@ -86,11 +86,11 @@ class FormBase1 extends FormBase1Base
         $file .= '    /**' . "\n";
         $file .= '     * @var FormItem[] Form fields' . "\n";
         $file .= '     */' . "\n";
-        $file .= '    protected $fields;' . "\n";
+        $file .= '    protected $_fields;' . "\n";
         $file .= '    ' . "\n";
         $file .= '    public function __construct()' . "\n";
         $file .= '    {' . "\n";
-        $file .= '        $this->fields = [' . "\n";
+        $file .= '        $this->_fields = [' . "\n";
 
         $fields = [];
 
