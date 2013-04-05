@@ -280,38 +280,43 @@ abstract class Attribute extends AttributeBase
     {
         $ret = '';
 
-        $ret .= 'new ' . $this->getFormClassType() . '(\'' . $this->name . '\'';
+        $ret .= '    /**' . "\n";
+        $ret .= '     * @return ' . $this->getFormClassType() . "\n";
+        $ret .= '     */' . "\n";
+        $ret .= '    public function get' . $this->getUpperName() . 'Field()' . "\n";
+        $ret .= '    {' . "\n";
+        $ret .= '        return new ' . $this->getFormClassType() . '(\'' . $this->name . '\'';
 
         $properties = [];
 
-        $properties[] = '                    [\'id\' => \'' . $formName . '_' . $this->name . '\']';
-        $properties[] = '                    [\'renderMode\' => \'twig\']';
+        $properties[] = '            [\'id\' => \'' . $formName . '_' . $this->name . '\']';
+        $properties[] = '            [\'renderMode\' => \'twig\']';
 
         if(!$this->autoIncrement) {
             if(!$this->null && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {
-                $properties[] = '                    [\'required\' => \'' . $this->getRequiredMessage() . '\']';
+                $properties[] = '            [\'required\' => \'' . $this->getRequiredMessage() . '\']';
             }
 
             if (!is_null($this->minSize)) {
                 if ($this->size != $this->minSize) {
-                    $properties[] = '                    [\'minSize\' => ' . $this->minSize . ']';
-                    $properties[] = '                    [\'minSizeMessage\' => \'' . $this->getMinMessage() . '\']';
+                    $properties[] = '            [\'minSize\' => ' . $this->minSize . ']';
+                    $properties[] = '            [\'minSizeMessage\' => \'' . $this->getMinMessage() . '\']';
                 } else {
-                    $properties[] = '                    [\'exactSize\' => ' . $this->size . ']';
-                    $properties[] = '                    [\'exactSize\' => \'' . $this->getExactMessage() . '\']';
+                    $properties[] = '            [\'exactSize\' => ' . $this->size . ']';
+                    $properties[] = '            [\'exactSize\' => \'' . $this->getExactMessage() . '\']';
                 }
             }
 
             if ( (is_null($this->minSize) && !is_null($this->size)) || $this->size != $this->minSize) {
-                $properties[] = '                    [\'maxSize\' => ' . $this->size . ']';
-                $properties[] = '                    [\'maxSizeMessage\' => \'' . $this->getMaxMessage() . '\']';
+                $properties[] = '            [\'maxSize\' => ' . $this->size . ']';
+                $properties[] = '            [\'maxSizeMessage\' => \'' . $this->getMaxMessage() . '\']';
             }
 
             if ($this->getFormClassType() === 'Entity' && null !== $this->getForeignEntity()) {
                 if ($this->getForeign() == 'ManyToMany') {
-                    $properties[] = '                    [\'symfonyMultiple\' => true] // ' . $this->getForeign();
+                    $properties[] = '            [\'symfonyMultiple\' => true] // ' . $this->getForeign();
                 } elseif ($this->getForeign() == 'ManyToOne') {
-                    $properties[] = '                    [\'symfonyMultiple\' => false] // ' . $this->getForeign();
+                    $properties[] = '            [\'symfonyMultiple\' => false] // ' . $this->getForeign();
                 }
             }
 
@@ -321,11 +326,11 @@ abstract class Attribute extends AttributeBase
             //}
 
             if (!is_null($this->min)) {
-                $properties[] = '                [\'min\' => ' . $this->min . ']';
+                $properties[] = '        [\'min\' => ' . $this->min . ']';
             }
 
             if (!is_null($this->max)) {
-                $properties[] = '                [\'max\' => ' . $this->max . ']';
+                $properties[] = '        [\'max\' => ' . $this->max . ']';
             }
         }
 
@@ -344,10 +349,11 @@ abstract class Attribute extends AttributeBase
 
             $ret .= implode(',' . "\n", $properties);
             $ret .= "\n";
-            $ret .= '                ';
+            $ret .= '        ';
         }
 
-        $ret .= ')';
+        $ret .= ');' . "\n";
+        $ret .= '    }' . "\n";
 
 
         return $ret;
