@@ -533,8 +533,9 @@ class Entity1 extends Entity1Base
             if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') { // TODO: Double check this
                 $ret .= '        $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
                 $ret .= '        ' . "\n";
-                $ret .= '        ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
             }
+
+            $ret .= '        ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
         }
 
         if (!$attribute->getStatic()) {
@@ -580,6 +581,10 @@ class Entity1 extends Entity1Base
             if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') { // TODO: Double check this
                 $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
                 $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
+                $ret .= '        }' . "\n";
+            } else {
+                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
+                $ret .= '            ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
                 $ret .= '        }' . "\n";
             }
         }

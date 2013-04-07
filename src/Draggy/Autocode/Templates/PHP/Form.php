@@ -85,7 +85,7 @@ class Form extends FormBase
         $file .= 'class ' . $entity->getName() . 'Type extends ' . $entity->getName() . 'TypeBase {' . "\n";
         $file .= '    // <user-additions' . ' part="constructorDeclaration">' . "\n";
         $file .= '    public function __construct()' . "\n";
-        $file .= '    // </user-additions>' . "\n";
+        $file .= '    // </user-additions' . '>' . "\n";
         $file .= '    {' . "\n";
         foreach ($entity->getFormAttributes() as $attr) {
             switch ($attr->getFormClassType()) {

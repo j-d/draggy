@@ -2,7 +2,7 @@
     {% for change in changes %}
         <div class="autocode-change">
             <div class="autocode-change-summary">
-                <div class="full-file-name">
+                <div class="full-file-name" title="{{ change.path }}{{ change.name }}">
                     {% if change.what == 'NEW' %}
                         <span class="autocode-new-file">New file</span>
                     {% endif %}
