@@ -13,6 +13,8 @@ GenerateEntitiesDialog.prototype.openDialog = function () {
     $generateEntitiesDialog.dialog("option", "buttons", GenerateEntitiesDialog.prototype.defaultButtons);
 
     $("#autocode-changes").html("Loading ...");
+    $("#generate-entities-messages").show();
+    $("#generate-entities-success").hide();
 
     $.ajax({
         type: 'POST',
@@ -22,8 +24,7 @@ GenerateEntitiesDialog.prototype.openDialog = function () {
             //Notification.prototype.ok('Msg to be done');
 
             if (msg.indexOf("autocode-no-changes") != -1 || msg.indexOf("autocode-error") != -1) {
-                var buttons = $.extend({}, GenerateEntitiesDialog.prototype.defaultButtons);
-                delete buttons['Generate'];
+                var buttons = {'Close': GenerateEntitiesDialog.prototype.defaultButtons['Close']};
 
                 $('#generate-entities-dialog').dialog("option", "buttons", buttons);
             }
@@ -31,7 +32,6 @@ GenerateEntitiesDialog.prototype.openDialog = function () {
             $("#autocode-changes").html(msg);
         },
         error: function (msg) {
-
             Notification.prototype.error('Error loading the preview: ' + msg.responseText);
         }
     });

@@ -5,6 +5,7 @@
         <p>Please review the changes and confirm by pressing 'Generate'...</p>
         <div id="autocode-changes"></div>
     </div>
+    <div id="generate-entities-success"></div>
 </div>
 
 <script>
@@ -19,22 +20,21 @@
                     Draggy.prototype.save();
 
                     var $dialog = $('#generate-entities-dialog');
-                    var buttons = $dialog.dialog("option", "buttons");
-
-                    delete buttons['Generate'];
+                    var buttons = {'Close': GenerateEntitiesDialog.prototype.defaultButtons['Close']};
 
                     $dialog.dialog("option", "buttons", buttons);
 
-                    $("#generate-entities-messages").html('Generating...');
+                    $("#generate-entities-messages").hide();
+                    $("#generate-entities-success").html('Generating...').show();
 
                     $.ajax({
                         type: 'POST',
                         url: Draggy.prototype.generateAddress,
                         cache: false
                     }).done(function (html) {
-                        $("#generate-entities-messages").html(html);
+                        $("#generate-entities-success").html(html).show();
                     }).fail(function (html) {
-                        $("#generate-entities-messages").html('There was some sort of error generating the entities.').append(html);
+                        $("#generate-entities-success").html('There was some sort of error generating the entities.').append(html).show();
                     });
                 },
                 Close: function () {
