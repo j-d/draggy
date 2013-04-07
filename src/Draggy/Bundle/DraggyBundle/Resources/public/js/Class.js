@@ -29,6 +29,7 @@ function Class (name, container) {
     this.controller = false;
     this.fixtures = false;
     this.crud = null;
+    this.routes = false;
 }
 
 Class.prototype.isPureManyToMany = function () {
@@ -56,6 +57,7 @@ Class.prototype.toXML = function () {
         (this.getToString() != null ? ' toString="' + Attribute.prototype.attributes[this.getToString()].getName() + '"' : '' ) +
         (this.getDescription() != null ? ' description="' + this.getDescription() + '"' : '' ) +
         (this.getCrud() != null ? ' crud="' + this.getCrud() + '"' : '' ) +
+        (this.getRoutes() ? ' routes="' + this.getRoutes() + '"' : '' ) +
         (this.isPureManyToMany() ? ' manyToMany="true"' : '' ) +
         (this.getConstructor() ? ' constructor="true"' : '' ) +
     '';
@@ -121,6 +123,14 @@ Class.prototype.setCrud = function (crud) {
     }
 
     return this;
+};
+
+Class.prototype.setRoutes = function (routes) {
+    this.routes = routes;
+};
+
+Class.prototype.getRoutes = function () {
+    return this.routes;
 };
 
 Class.prototype.getCrud = function () {

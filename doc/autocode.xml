@@ -178,6 +178,7 @@
 			<attribute id="attribute23" name="hasController" type="boolean" default="false"/>
 			<attribute id="attribute24" name="hasFixtures" type="boolean" default="false"/>
 			<attribute id="attribute25" name="crud" type="string" default="null"/>
+			<attribute id="attribute79" name="hasRoutes" type="boolean" default="false"/>
 			<attribute id="attribute57" name="project" type="object" subtype="Project"/>
 			<attribute id="attribute17" name="hasConstructor" type="boolean" default="false"/>
 		</class>
@@ -198,6 +199,7 @@
 			<attribute id="attribute23" inherited="true"/>
 			<attribute id="attribute24" inherited="true"/>
 			<attribute id="attribute25" inherited="true"/>
+			<attribute id="attribute79" inherited="true"/>
 			<attribute id="attribute57" inherited="true"/>
 			<attribute id="attribute17" inherited="true"/>
 		</class>

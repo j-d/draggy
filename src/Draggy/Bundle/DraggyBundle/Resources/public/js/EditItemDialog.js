@@ -363,6 +363,7 @@ EditItemDialog.prototype.commitChanges = function () {
         c.setController( $('#edit-item-controller').is(':checked') );
         c.setFixtures( $('#edit-item-fixtures').is(':checked') );
         c.setCrud( $('#edit-item-crud').val());
+        c.setRoutes( $('#edit-item-routes').is(":checked"));
     }
 
     if (description.val() != '') {
@@ -469,7 +470,7 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
 
     var a, i;
     var c = EditItemDialog.prototype.connectable;
-    var $constructor, $repository, $form, $controller, $fixtures, $crud;
+    var $constructor, $repository, $form, $controller, $fixtures, $crud, $routes;
 
     // Repository
 
@@ -480,6 +481,7 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
         $controller = $('#edit-item-controller');
         $fixtures = $('#edit-item-fixtures');
         $crud = $('#edit-item-crud');
+        $routes = $("#edit-item-routes");
 
         if (c.getConstructor()) {
             $constructor.attr('checked','checked');
@@ -520,6 +522,25 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
             $crud.val(c.getCrud());
         } else {
             $crud.val('');
+        }
+
+        // Routes
+
+        if (c.getConstructor()) {
+            $constructor.attr('checked','checked');
+        } else {
+            $constructor.removeAttr('checked');
+        }
+        if ($("#edit-item-crud").val() != '') {
+            $routes.show();
+        } else {
+            $routes.hide();
+        }
+
+        if (c.getRoutes()) {
+            $routes.attr("checked", "checked");
+        } else {
+            $routes.removeAttr("checked");
         }
     }
 

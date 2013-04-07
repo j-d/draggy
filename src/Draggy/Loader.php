@@ -260,6 +260,10 @@ class Loader
             $r .= $varName . '.setCrud(\'' . $classLikeAttributes['crud'] . '\');' . PHP_EOL;
         }
 
+        if (isset( $classLikeAttributes['routes'] )) {
+            $r .= $varName . '.setRoutes(' . $classLikeAttributes['routes'] . ');' . PHP_EOL;
+        }
+
         return $r;
     }
 
