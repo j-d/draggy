@@ -525,16 +525,15 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
         }
 
         // Routes
-
         if (c.getConstructor()) {
             $constructor.attr('checked','checked');
         } else {
             $constructor.removeAttr('checked');
         }
         if ($("#edit-item-crud").val() != '') {
-            $routes.show();
+            $routes.parents("label").first().show();
         } else {
-            $routes.hide();
+            $routes.parents("label").first().hide();
         }
 
         if (c.getRoutes()) {

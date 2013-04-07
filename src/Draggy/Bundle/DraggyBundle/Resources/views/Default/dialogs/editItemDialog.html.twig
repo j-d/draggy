@@ -82,7 +82,7 @@
                     <option value="U">U</option>
                     <option value="D">D</option>
                 </select>
-                <input id="edit-item-routes" type="checkbox"><label for="edit-item-routes">Routes?</label>
+                <label for="edit-item-routes"><input id="edit-item-routes" type="checkbox">Routes?</label>
             </label>
             <br>
 	        <label for="edit-item-tostring">toString: <select id="edit-item-tostring"></select></label>
@@ -144,11 +144,11 @@
         var action = function () {
             var $editItemRoutes = $("#edit-item-routes");
             if ($("#edit-item-crud").val() != '') {
-                if ($editItemRoutes.css("display") == "none") {
-                    $editItemRoutes.attr("checked", "checked").show();
+                if ($editItemRoutes.parents("label").first().css("display") == "none") {
+                    $editItemRoutes.attr("checked", "checked").parents("label").first().show();
                 }
             } else {
-                $editItemRoutes.removeAttr("checked").hide();
+                $editItemRoutes.removeAttr("checked").parents("label").first().hide();
             }
         };
 
