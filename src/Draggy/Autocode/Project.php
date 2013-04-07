@@ -1101,7 +1101,7 @@ class Project extends ProjectBase
         $twigCreateNamePhp = 'add' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudCreate()) {
-            return new File($twigCreatePath, $twigCreateName, $this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
+            return new File($twigCreatePath, $twigCreateNamePhp, $this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
         } else {
             $fileCollection = new FileCollection();
 
@@ -1125,7 +1125,7 @@ class Project extends ProjectBase
         $twigReadNamePhp = 'list' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudRead()) {
-            return new File($twigReadPath, $twigReadName, $this->getCrudReadTwigTemplate()->setEntity($entity)->render());
+            return new File($twigReadPath, $twigReadNamePhp, $this->getCrudReadTwigTemplate()->setEntity($entity)->render());
         } else {
             $fileCollection = new FileCollection();
 
@@ -1149,7 +1149,7 @@ class Project extends ProjectBase
         $twigUpdateNamePhp = 'edit' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudUpdate()) {
-            return new File($twigUpdatePath, $twigUpdateName, $this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
+            return new File($twigUpdatePath, $twigUpdateNamePhp, $this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
         } else {
             $fileCollection = new FileCollection();
 
