@@ -3,7 +3,8 @@ Attribute.prototype.constructor = Attribute;
 
 Attribute.prototype.attributes = {};
 
-function Attribute (name, id) {
+function Attribute (name, id)
+{
     this.innitItem(id == undefined ? 'attribute' : id);
 
     this.owner = null;
@@ -32,13 +33,15 @@ function Attribute (name, id) {
     Attribute.prototype.attributes[this.id] = this;
 }
 
-Attribute.prototype.remove = function () {
+Attribute.prototype.remove = function ()
+{
     delete Attribute.prototype.attributes[this.id];
 
     this.destroyItem();
 };
 
-Attribute.prototype.setType = function (type) {
+Attribute.prototype.setType = function (type)
+{
     if (type != this.type) {
         switch (type) {
             case 'array':
@@ -61,20 +64,23 @@ Attribute.prototype.setType = function (type) {
 
         // Update linked attributes
         if (this.links.length > 0) {
-            for (var i = 0; i < this.links.length; i++)
+            for (var i = 0; i < this.links.length; i++) {
                 if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
                     Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setType(type);
                     Connectable.prototype.connectables[Link.prototype.links[this.links[i]].getTo()].reDraw();
                 }
+            }
         }
     }
 };
 
-Attribute.prototype.getType = function () {
+Attribute.prototype.getType = function ()
+{
     return this.type;
 };
 
-Attribute.prototype.setSubtype = function (subtype) {
+Attribute.prototype.setSubtype = function (subtype)
+{
     if (subtype !== this.subtype) {
         var oldSubtype = this.subtype;
 
@@ -90,73 +96,85 @@ Attribute.prototype.setSubtype = function (subtype) {
             Connectable.prototype.getConnectableFromName(oldSubtype).removeDependantAttribute(this.getId());
         }
 
-        if (subtype !== '' && subtype !== null && Config.prototype.types.indexOf(subtype) === -1) { // Is a class subtype
+        if (subtype !== '' && subtype !== null && subtype !== undefined && Config.prototype.types.indexOf(subtype) === -1) { // Is a class subtype
             Connectable.prototype.getConnectableFromName(subtype).addDependantAttribute(this.getId());
         }
 
         // Update linked attributes
         if (this.links.length > 0) {
-            for (var i = 0; i < this.links.length; i++)
+            for (var i = 0; i < this.links.length; i++) {
                 if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
                     Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setSubtype(subtype);
                     Connectable.prototype.connectables[Link.prototype.links[this.links[i]].getTo()].reDraw();
                 }
+            }
         }
     }
 };
 
-Attribute.prototype.getSubtype = function () {
+Attribute.prototype.getSubtype = function ()
+{
     return this.subtype;
 };
 
-Attribute.prototype.setName = function (desiredName) {
+Attribute.prototype.setName = function (desiredName)
+{
     this.name = Connectable.prototype.connectables[this.getOwner()].getValidAttributeName(desiredName, this);
 };
 
-Attribute.prototype.setSize = function (size) {
+Attribute.prototype.setSize = function (size)
+{
     if (size != this.size) {
-        if (size != '')
+        if (size != '') {
             this.size = size;
-        else
+        } else {
             this.size = null;
+        }
 
         // Update linked attributes
         if (this.links.length > 0) {
-            for (var i = 0; i < this.links.length; i++)
+            for (var i = 0; i < this.links.length; i++) {
                 if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
                     Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setSize(size);
                     Connectable.prototype.connectables[Link.prototype.links[this.links[i]].getTo()].reDraw();
                 }
+            }
         }
     }
 };
 
-Attribute.prototype.getSize = function () {
+Attribute.prototype.getSize = function ()
+{
     return this.size;
 };
 
-Attribute.prototype.setMinSize = function (size) {
+Attribute.prototype.setMinSize = function (size)
+{
     if (size != this.minSize) {
-        if (size != '')
+        if (size != '') {
             this.minSize = size;
-        else
+        } else {
             this.minSize = null;
+        }
 
         // Update linked attributes
         if (this.links.length > 0) {
-            for (var i = 0; i < this.links.length; i++)
+            for (var i = 0; i < this.links.length; i++) {
                 if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
                     Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setMinSize(size);
                 }
+            }
         }
     }
 };
 
-Attribute.prototype.getMinSize = function () {
+Attribute.prototype.getMinSize = function ()
+{
     return this.minSize;
 };
 
-Attribute.prototype.setEmail = function (email) {
+Attribute.prototype.setEmail = function (email)
+{
     if (email != this.email) {
         this.email = email;
 
@@ -170,41 +188,50 @@ Attribute.prototype.setEmail = function (email) {
     }
 };
 
-Attribute.prototype.getMinSize = function () {
+Attribute.prototype.getMinSize = function ()
+{
     return this.minSize;
 };
 
 
 
-Attribute.prototype.setNull = function (n) {
+Attribute.prototype.setNull = function (n)
+{
     this.null = n;
 };
 
-Attribute.prototype.getNull = function () {
+Attribute.prototype.getNull = function ()
+{
     return this.null;
 };
 
-Attribute.prototype.setPrimary = function (primary) {
+Attribute.prototype.setPrimary = function (primary)
+{
     this.primary = primary;
 };
 
-Attribute.prototype.getPrimary = function () {
+Attribute.prototype.getPrimary = function ()
+{
     return this.primary;
 };
 
-Attribute.prototype.setForeign = function (foreign) {
+Attribute.prototype.setForeign = function (foreign)
+{
     this.foreign = foreign;
 };
 
-Attribute.prototype.getForeign = function () {
+Attribute.prototype.getForeign = function ()
+{
     return this.foreign;
 };
 
-Attribute.prototype.setAutoincrement = function (autoincrement) {
+Attribute.prototype.setAutoincrement = function (autoincrement)
+{
     this.autoincrement = autoincrement;
 };
 
-Attribute.prototype.getAutoincrement = function () {
+Attribute.prototype.getAutoincrement = function ()
+{
     return this.autoincrement;
 };
 
@@ -213,21 +240,23 @@ Attribute.prototype.getAutoincrement = function () {
  * @param unique
  * @return {Attribute}
  */
-Attribute.prototype.setUnique = function (unique) {
+Attribute.prototype.setUnique = function (unique)
+{
     this.unique = unique;
 
     return this;
 };
 
 /**
- *
  * @return {boolean}
  */
-Attribute.prototype.getUnique = function () {
+Attribute.prototype.getUnique = function ()
+{
     return this.unique;
 };
 
-Attribute.prototype.setDefault = function (def) {
+Attribute.prototype.setDefault = function (def)
+{
     if (def != '') {
         this.default = def;
     } else {
@@ -237,39 +266,45 @@ Attribute.prototype.setDefault = function (def) {
     return this;
 };
 
-Attribute.prototype.getDefault = function () {
+Attribute.prototype.getDefault = function ()
+{
     return this.default;
 };
 
-Attribute.prototype.setOwner = function (owner) {
+Attribute.prototype.setOwner = function (owner)
+{
     this.owner = owner;
 };
 
-Attribute.prototype.getOwner = function () {
+Attribute.prototype.getOwner = function ()
+{
     return this.owner;
 };
 
-Attribute.prototype.getInherited = function () {
+Attribute.prototype.getInherited = function ()
+{
     return false;
 };
 
-Attribute.prototype.toHtml = function () {
+Attribute.prototype.toHtml = function ()
+{
     var iconName = '';
 
     if (this.getPrimary()) {
-        if (!this.getForeign())
+        if (!this.getForeign()) {
             iconName = this.getNull() ? 'icon-primary-null' : 'icon-primary-not-null';
-        else
+        } else {
             iconName = this.getNull() ? 'icon-primary-foreign-null' : 'icon-primary-foreign-not-null';
-    }
-    else if (this.getForeign())
+        }
+    } else if (this.getForeign()) {
         iconName = this.getNull() ? 'icon-foreign-null' : 'icon-foreign-not-null';
-    else
+    } else {
         iconName = this.getNull() ? 'icon-field-null' : 'icon-field-not-null';
+    }
 
     var ret = '<span class="' + iconName + '"></span> ' + this.getName();
 
-    if (this.getType() !== null) {
+    if (null !== this.getType()) {
         ret += ': <span class="attribute-information">' + this.getType();
 
         if (this.getSubtype() !== null) {
@@ -279,13 +314,15 @@ Attribute.prototype.toHtml = function () {
         ret += '</span>';
     }
 
-    if (this.getSize() != null)
+    if (this.getSize() != null) {
         ret += '<span class="attribute-information">(' + this.getSize() + ')</span>';
+    }
 
     return  ret;
 };
 
-Attribute.prototype.toXML = function () {
+Attribute.prototype.toXML = function ()
+{
     return '<attribute ' +
         'id="' + this.getId() + '" ' +
         'name="' + this.getName() + '" ' +
@@ -309,7 +346,8 @@ Attribute.prototype.toXML = function () {
     '/>';
 };
 
-Attribute.prototype.copyFrom = function (attr) {
+Attribute.prototype.copyFrom = function (attr)
+{
     this.setOwner(attr.getOwner());
     this.setName(attr.getName());
     this.setType(attr.getType());
@@ -327,77 +365,93 @@ Attribute.prototype.copyFrom = function (attr) {
     this.setMax(attr.getMax());
 };
 
-Attribute.prototype.getNumberLinks = function () {
+Attribute.prototype.getNumberLinks = function ()
+{
     return this.links.length;
 };
 
-Attribute.prototype.getLink = function (i) {
+Attribute.prototype.getLink = function (i)
+{
     return this.links[i];
 };
 
-Attribute.prototype.setSetter = function (setter) {
+Attribute.prototype.setSetter = function (setter)
+{
     this.setter = setter;
 };
 
-Attribute.prototype.getSetter = function () {
+Attribute.prototype.getSetter = function ()
+{
     return this.setter;
 };
 
-Attribute.prototype.setGetter = function (getter) {
+Attribute.prototype.setGetter = function (getter)
+{
     this.getter = getter;
 };
 
-Attribute.prototype.getGetter = function () {
+Attribute.prototype.getGetter = function ()
+{
     return this.getter;
 };
 
-Attribute.prototype.setEmail = function (email) {
+Attribute.prototype.setEmail = function (email)
+{
     this.email = email;
 };
 
-Attribute.prototype.getEmail = function () {
+Attribute.prototype.getEmail = function ()
+{
     return this.email;
 };
 
-Attribute.prototype.setMin = function (min) {
+Attribute.prototype.setMin = function (min)
+{
     if (min != this.min) {
-        if (min != '')
+        if (min != '') {
             this.min = min;
-        else
+        } else {
             this.min = null;
+        }
 
         // Update linked attributes
         if (this.links.length > 0) {
-            for (var i = 0; i < this.links.length; i++)
+            for (var i = 0; i < this.links.length; i++) {
                 if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
                     Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setMin(min);
                 }
+            }
         }
     }
 };
 
-Attribute.prototype.getMin = function () {
+Attribute.prototype.getMin = function ()
+{
     return this.min;
 };
 
-Attribute.prototype.setMax = function (max) {
+Attribute.prototype.setMax = function (max)
+{
     if (max != this.max) {
-        if (max != '')
+        if (max != '') {
             this.max = max;
-        else
+        } else {
             this.max = null;
+        }
 
         // Update linked attributes
         if (this.links.length > 0) {
-            for (var i = 0; i < this.links.length; i++)
+            for (var i = 0; i < this.links.length; i++) {
                 if (Link.prototype.links[this.links[i]].getFromAttribute() == this.getId()) {
                     Attribute.prototype.attributes[Link.prototype.links[this.links[i]].getToAttribute()].setMax(max);
                 }
+            }
         }
     }
 };
 
-Attribute.prototype.getMax = function () {
+Attribute.prototype.getMax = function ()
+{
     return this.max;
 };
 
