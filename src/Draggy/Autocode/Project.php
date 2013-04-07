@@ -194,6 +194,9 @@ class Project extends ProjectBase
                 case 'crud':
                     $entity->setCrud($classAttributeValue);
                     break;
+                case 'routes':
+                    $entity->setHasRoutes($classAttributeValue == 'true');
+                    break;
                 case 'toString':
                     $entity->setToString($classAttributeValue);
                     break;
@@ -1047,7 +1050,7 @@ class Project extends ProjectBase
         $routesPath = $path . 'Resources/config/';
         $routesName = 'auto_' . $entity->getLowerName() . '.yml';
 
-        if (!is_null($entity->getCrud())) {
+        if ($entity->getHasRoutes()) {
             return new File($routesPath, $routesName, $this->getRoutesTemplate()->setEntity($entity)->render());
         } else {
             return new NoFile($routesPath, $routesName, sprintf('The entity \'%s\' is not marked to have CRUD.', $entity->getFullyQualifiedName()));
@@ -1069,7 +1072,7 @@ class Project extends ProjectBase
 
         /** @var Entity $entity */
         foreach ($this->moduleEntities[$module] as $entity) {
-            if (!is_null($entity->getCrud())) {
+            if ($entity->getHasRoutes()) {
                 $routesArray[] = $this->getRoutesRoutingTemplate()->setEntity($entity)->render();
             }
         }

@@ -144,7 +144,9 @@
         var action = function () {
             var $editItemRoutes = $("#edit-item-routes");
             if ($("#edit-item-crud").val() != '') {
-                $editItemRoutes.attr("checked", "checked").show();
+                if ($editItemRoutes.css("display") == "none") {
+                    $editItemRoutes.attr("checked", "checked").show();
+                }
             } else {
                 $editItemRoutes.removeAttr("checked").hide();
             }
