@@ -1,5 +1,5 @@
 <?php
-// Autocode\Base\Entity.php
+// Draggy\Autocode\Base\Entity.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Attribute;
 use Draggy\Autocode\Project;
 
 /**
- * Autocode\Entity\Base\Entity
+ * Draggy\Autocode\Entity\Base\Entity
  */
 abstract class EntityBase
 {
@@ -105,6 +105,11 @@ abstract class EntityBase
      * @var string $crud
      */
     protected $crud = null;
+
+    /**
+     * @var boolean $hasRoutes
+     */
+    protected $hasRoutes = false;
 
     /**
      * @var Project $project
@@ -261,15 +266,12 @@ abstract class EntityBase
      * Add attribute
      *
      * @param Attribute $attribute
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttribute(Attribute $attribute, $allowRepeatedValues = true)
+    public function addAttribute(Attribute $attribute)
     {
-        if ($allowRepeatedValues || !$this->attributes->contains($attribute)) {
-            $this->attributes[] = $attribute;
-        }
+        $this->attributes[] = $attribute;
 
         return $this;
     }
@@ -278,16 +280,13 @@ abstract class EntityBase
      * Add attributes
      *
      * @param Attribute[] $attributes
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttributes(array $attributes, $allowRepeatedValues = true)
+    public function addAttributes(array $attributes)
     {
         foreach ($attributes as $attribute) {
-            if ($allowRepeatedValues || !$this->attributes->contains($attribute)) {
-                $this->attributes[] = $attribute;
-            }
+            $this->attributes[] = $attribute;
         }
 
         return $this;
@@ -386,15 +385,12 @@ abstract class EntityBase
      * Add attributeName
      *
      * @param string $attributeName
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttributeName($attributeName, $allowRepeatedValues = true)
+    public function addAttributeName($attributeName)
     {
-        if ($allowRepeatedValues || !$this->attributeNames->contains($attributeName)) {
-            $this->attributeNames[] = $attributeName;
-        }
+        $this->attributeNames[] = $attributeName;
 
         return $this;
     }
@@ -403,16 +399,13 @@ abstract class EntityBase
      * Add attributeNames
      *
      * @param string[] $attributeNames
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addAttributeNames(array $attributeNames, $allowRepeatedValues = true)
+    public function addAttributeNames(array $attributeNames)
     {
         foreach ($attributeNames as $attributeName) {
-            if ($allowRepeatedValues || !$this->attributeNames->contains($attributeName)) {
-                $this->attributeNames[] = $attributeName;
-            }
+            $this->attributeNames[] = $attributeName;
         }
 
         return $this;
@@ -511,15 +504,12 @@ abstract class EntityBase
      * Add primaryAttribute
      *
      * @param Attribute $primaryAttribute
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addPrimaryAttribute(Attribute $primaryAttribute, $allowRepeatedValues = true)
+    public function addPrimaryAttribute(Attribute $primaryAttribute)
     {
-        if ($allowRepeatedValues || !$this->primaryAttributes->contains($primaryAttribute)) {
-            $this->primaryAttributes[] = $primaryAttribute;
-        }
+        $this->primaryAttributes[] = $primaryAttribute;
 
         return $this;
     }
@@ -528,16 +518,13 @@ abstract class EntityBase
      * Add primaryAttributes
      *
      * @param Attribute[] $primaryAttributes
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addPrimaryAttributes(array $primaryAttributes, $allowRepeatedValues = true)
+    public function addPrimaryAttributes(array $primaryAttributes)
     {
         foreach ($primaryAttributes as $primaryAttribute) {
-            if ($allowRepeatedValues || !$this->primaryAttributes->contains($primaryAttribute)) {
-                $this->primaryAttributes[] = $primaryAttribute;
-            }
+            $this->primaryAttributes[] = $primaryAttribute;
         }
 
         return $this;
@@ -726,15 +713,12 @@ abstract class EntityBase
      * Add childrenEntity
      *
      * @param Entity $childrenEntity
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addChildrenEntity(Entity $childrenEntity, $allowRepeatedValues = true)
+    public function addChildrenEntity(Entity $childrenEntity)
     {
-        if ($allowRepeatedValues || !$this->childrenEntities->contains($childrenEntity)) {
-            $this->childrenEntities[] = $childrenEntity;
-        }
+        $this->childrenEntities[] = $childrenEntity;
 
         return $this;
     }
@@ -743,16 +727,13 @@ abstract class EntityBase
      * Add childrenEntities
      *
      * @param Entity[] $childrenEntities
-     * @param bool $allowRepeatedValues
      *
      * @return Entity
      */
-    public function addChildrenEntities(array $childrenEntities, $allowRepeatedValues = true)
+    public function addChildrenEntities(array $childrenEntities)
     {
         foreach ($childrenEntities as $childrenEntity) {
-            if ($allowRepeatedValues || !$this->childrenEntities->contains($childrenEntity)) {
-                $this->childrenEntities[] = $childrenEntity;
-            }
+            $this->childrenEntities[] = $childrenEntity;
         }
 
         return $this;
@@ -981,6 +962,36 @@ abstract class EntityBase
     public function getCrud()
     {
         return $this->crud;
+    }
+
+    /**
+     * Set hasRoutes
+     *
+     * @param boolean $hasRoutes
+     *
+     * @return Entity
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setHasRoutes($hasRoutes)
+    {
+        if (!is_bool($hasRoutes)) {
+            throw new \InvalidArgumentException('The attribute hasRoutes on the class Entity has to be boolean (' . gettype($hasRoutes) . ('object' === gettype($hasRoutes) ? ' ' . get_class($hasRoutes) : '') . ' given).');
+        }
+
+        $this->hasRoutes = $hasRoutes;
+
+        return $this;
+    }
+
+    /**
+     * Get hasRoutes
+     *
+     * @return boolean
+     */
+    public function getHasRoutes()
+    {
+        return $this->hasRoutes;
     }
 
     /**

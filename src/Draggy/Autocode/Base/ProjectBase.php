@@ -1,5 +1,5 @@
 <?php
-// Autocode\Base\Project.php
+// Draggy\Autocode\Base\Project.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -21,7 +21,7 @@ use Draggy\Autocode\Entity;
 use Draggy\Autocode\Templates\EntityTemplate;
 
 /**
- * Autocode\Entity\Base\Project
+ * Draggy\Autocode\Entity\Base\Project
  */
 abstract class ProjectBase
 {
@@ -221,15 +221,12 @@ abstract class ProjectBase
      * Add entity
      *
      * @param Entity $entity
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addEntity(Entity $entity, $allowRepeatedValues = true)
+    public function addEntity(Entity $entity)
     {
-        if ($allowRepeatedValues || !$this->entities->contains($entity)) {
-            $this->entities[] = $entity;
-        }
+        $this->entities[] = $entity;
 
         return $this;
     }
@@ -238,16 +235,13 @@ abstract class ProjectBase
      * Add entities
      *
      * @param Entity[] $entities
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addEntities(array $entities, $allowRepeatedValues = true)
+    public function addEntities(array $entities)
     {
         foreach ($entities as $entity) {
-            if ($allowRepeatedValues || !$this->entities->contains($entity)) {
-                $this->entities[] = $entity;
-            }
+            $this->entities[] = $entity;
         }
 
         return $this;
@@ -466,15 +460,12 @@ abstract class ProjectBase
      * Add module
      *
      * @param string $module
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addModule($module, $allowRepeatedValues = true)
+    public function addModule($module)
     {
-        if ($allowRepeatedValues || !$this->modules->contains($module)) {
-            $this->modules[] = $module;
-        }
+        $this->modules[] = $module;
 
         return $this;
     }
@@ -483,16 +474,13 @@ abstract class ProjectBase
      * Add modules
      *
      * @param string[] $modules
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addModules(array $modules, $allowRepeatedValues = true)
+    public function addModules(array $modules)
     {
         foreach ($modules as $module) {
-            if ($allowRepeatedValues || !$this->modules->contains($module)) {
-                $this->modules[] = $module;
-            }
+            $this->modules[] = $module;
         }
 
         return $this;
@@ -591,15 +579,12 @@ abstract class ProjectBase
      * Add moduleEntity
      *
      * @param string $moduleEntity
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addModuleEntity($moduleEntity, $allowRepeatedValues = true)
+    public function addModuleEntity($moduleEntity)
     {
-        if ($allowRepeatedValues || !$this->moduleEntities->contains($moduleEntity)) {
-            $this->moduleEntities[] = $moduleEntity;
-        }
+        $this->moduleEntities[] = $moduleEntity;
 
         return $this;
     }
@@ -608,16 +593,13 @@ abstract class ProjectBase
      * Add moduleEntities
      *
      * @param string[] $moduleEntities
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addModuleEntities(array $moduleEntities, $allowRepeatedValues = true)
+    public function addModuleEntities(array $moduleEntities)
     {
         foreach ($moduleEntities as $moduleEntity) {
-            if ($allowRepeatedValues || !$this->moduleEntities->contains($moduleEntity)) {
-                $this->moduleEntities[] = $moduleEntity;
-            }
+            $this->moduleEntities[] = $moduleEntity;
         }
 
         return $this;
@@ -716,15 +698,12 @@ abstract class ProjectBase
      * Add moduleNamespace
      *
      * @param string $moduleNamespace
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addModuleNamespace($moduleNamespace, $allowRepeatedValues = true)
+    public function addModuleNamespace($moduleNamespace)
     {
-        if ($allowRepeatedValues || !$this->moduleNamespaces->contains($moduleNamespace)) {
-            $this->moduleNamespaces[] = $moduleNamespace;
-        }
+        $this->moduleNamespaces[] = $moduleNamespace;
 
         return $this;
     }
@@ -733,16 +712,13 @@ abstract class ProjectBase
      * Add moduleNamespaces
      *
      * @param string[] $moduleNamespaces
-     * @param bool $allowRepeatedValues
      *
      * @return Project
      */
-    public function addModuleNamespaces(array $moduleNamespaces, $allowRepeatedValues = true)
+    public function addModuleNamespaces(array $moduleNamespaces)
     {
         foreach ($moduleNamespaces as $moduleNamespace) {
-            if ($allowRepeatedValues || !$this->moduleNamespaces->contains($moduleNamespace)) {
-                $this->moduleNamespaces[] = $moduleNamespace;
-            }
+            $this->moduleNamespaces[] = $moduleNamespace;
         }
 
         return $this;
