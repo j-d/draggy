@@ -1135,7 +1135,7 @@ class Project extends ProjectBase
         $twigUpdatePath = $path . 'Resources/views/' . $entity->getName() . '/';
         $twigUpdateName = 'edit' . $entity->getName() . '.html.twig.php';
 
-        if ($entity->getCrudCreate()) {
+        if ($entity->getCrudUpdate()) {
             return new File($twigUpdatePath, $twigUpdateName, $this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
         } else {
             return new NoFile($twigUpdatePath, $twigUpdateName, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName()));
