@@ -1096,13 +1096,19 @@ class Project extends ProjectBase
      */
     private function getTwigCreateFile($entity, $path)
     {
-        $twigCreatePath = $path . 'Resources/views/' . $entity->getName() . '/';
-        $twigCreateName = 'add' . $entity->getName() . '.html.twig.php';
+        $twigCreatePath    = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigCreateName    = 'add' . $entity->getName() . '.html.twig';
+        $twigCreateNamePhp = 'add' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudCreate()) {
             return new File($twigCreatePath, $twigCreateName, $this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
         } else {
-            return new NoFile($twigCreatePath, $twigCreateName, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName()));
+            $fileCollection = new FileCollection();
+
+            $fileCollection->add(new NoFile($twigCreatePath, $twigCreateName, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($twigCreatePath, $twigCreateNamePhp, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName())));
+
+            return $fileCollection;
         }
     }
 
@@ -1114,13 +1120,19 @@ class Project extends ProjectBase
      */
     private function getTwigReadFile($entity, $path)
     {
-        $twigReadPath = $path . 'Resources/views/' . $entity->getName() . '/';
-        $twigReadName = 'list' . $entity->getName() . '.html.twig.php';
+        $twigReadPath    = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigReadName    = 'list' . $entity->getName() . '.html.twig';
+        $twigReadNamePhp = 'list' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudRead()) {
             return new File($twigReadPath, $twigReadName, $this->getCrudReadTwigTemplate()->setEntity($entity)->render());
         } else {
-            return new NoFile($twigReadPath, $twigReadName, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName()));
+            $fileCollection = new FileCollection();
+
+            $fileCollection->add(new NoFile($twigReadPath, $twigReadName, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($twigReadPath, $twigReadNamePhp, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName())));
+
+            return $fileCollection;
         }
     }
 
@@ -1132,13 +1144,19 @@ class Project extends ProjectBase
      */
     private function getTwigUpdateFile($entity, $path)
     {
-        $twigUpdatePath = $path . 'Resources/views/' . $entity->getName() . '/';
-        $twigUpdateName = 'edit' . $entity->getName() . '.html.twig.php';
+        $twigUpdatePath    = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigUpdateName    = 'edit' . $entity->getName() . '.html.twig';
+        $twigUpdateNamePhp = 'edit' . $entity->getName() . '.html.twig.php';
 
         if ($entity->getCrudUpdate()) {
             return new File($twigUpdatePath, $twigUpdateName, $this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
         } else {
-            return new NoFile($twigUpdatePath, $twigUpdateName, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName()));
+            $fileCollection = new FileCollection();
+
+            $fileCollection->add(new NoFile($twigUpdatePath, $twigUpdateName, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($twigUpdatePath, $twigUpdateNamePhp, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName())));
+
+            return $fileCollection;
         }
     }
 
