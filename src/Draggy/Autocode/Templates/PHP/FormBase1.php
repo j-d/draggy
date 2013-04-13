@@ -89,10 +89,57 @@ class FormBase1 extends FormBase1Base
         $file .= '    protected $fields = [];' . "\n";
         $file .= '    ' . "\n";
 
+        $file .= '    /**' . "\n";
+        $file .= '     * @var string' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    protected $defaultOptionsDataClass = \'' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . '\';' . "\n";
+        $file .= '    ' . "\n";
+        $file .= '    /**' . "\n";
+        $file .= '     * @var null|string|callable' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    protected $defaultOptionsEmptyData;' . "\n";
+        $file .= '    ' . "\n";
+
         foreach ($entity->getFormAttributes() as $attr) {
             $file .= $attr->getFormClass($formName);
             $file .= '    ' . "\n";
         }
+
+        $file .= '    /**' . "\n";
+        $file .= '     * @param string $defaultOptionsDataClass' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    public function setDefaultOptionsDataClass($defaultOptionsDataClass)' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '        $this->defaultOptionsDataClass = $defaultOptionsDataClass;' . "\n";
+        $file .= '    }' . "\n";
+        $file .= '    ' . "\n";
+
+        $file .= '    /**' . "\n";
+        $file .= '     * @return string' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    public function getDefaultOptionsDataClass()' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '        return $this->defaultOptionsDataClass;' . "\n";
+        $file .= '    }' . "\n";
+        $file .= '    ' . "\n";
+
+        $file .= '    /**' . "\n";
+        $file .= '     * @param null|string|callable $defaultOptionsEmptyData' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    public function setDefaultOptionsEmptyData($defaultOptionsEmptyData)' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '        $this->defaultOptionsEmptyData = $defaultOptionsEmptyData;' . "\n";
+        $file .= '    }' . "\n";
+        $file .= '    ' . "\n";
+
+        $file .= '    /**' . "\n";
+        $file .= '     * @return null|string|callable' . "\n";
+        $file .= '     */' . "\n";
+        $file .= '    public function getDefaultOptionsEmptyData()' . "\n";
+        $file .= '    {' . "\n";
+        $file .= '        return $this->defaultOptionsEmptyData;' . "\n";
+        $file .= '    }' . "\n";
+        $file .= '    ' . "\n";
 
         $file .= '    /**' . "\n";
         $file .= '     * Shortcut for adding FormItems' . "\n";
@@ -125,9 +172,15 @@ class FormBase1 extends FormBase1Base
         $file .= '    ' . "\n";
         $file .= '    public function setDefaultOptions(OptionsResolverInterface $resolver)' . "\n";
         $file .= '    {' . "\n";
-        $file .= '        $resolver->setDefaults([' . "\n";
-        $file .= '            \'data_class\' => \'' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . '\'' . "\n";
-        $file .= '        ]);' . "\n";
+        $file .= '        $defaults = [' . "\n";
+        $file .= '            \'data_class\' => $this->getDefaultOptionsDataClass()' . "\n";
+        $file .= '        ];' . "\n";
+        $file .= '        ' . "\n";
+        $file .= '        if (null !== $this->getDefaultOptionsEmptyData()) {' . "\n";
+        $file .= '            $defaults[\'empty_data\'] = $this->getDefaultOptionsEmptyData();' . "\n";
+        $file .= '        }' . "\n";
+        $file .= '        ' . "\n";
+        $file .= '        $resolver->setDefaults($defaults);' . "\n";
         $file .= '    }' . "\n";
         $file .= '    ' . "\n";
         $file .= '    public function getName()' . "\n";

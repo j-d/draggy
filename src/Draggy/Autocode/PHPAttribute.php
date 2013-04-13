@@ -299,6 +299,10 @@ class PHPAttribute extends PHPAttributeBase
 
     public function getDefaultValueAttributeInit()
     {
+        if (null === $this->getDefaultValue()) {
+            return null;
+        }
+
         switch ($this->getPhpType()) {
             case 'string':
                 if ($this->getDefaultValue() == 'null') {
@@ -339,7 +343,7 @@ class PHPAttribute extends PHPAttributeBase
                         }
                         break;
                     default:
-                        throw new \RuntimeException('Found a default value (\'' . $this->getDefaultValue() . '\') in a parameter of type \'' . $this->getType() . '\' / \'' . $this->getPhpType() . '\' that doesn\'t know how to process.');
+                        throw new \RuntimeException('Found a default value (\'' . $this->getDefaultValue() . '\') in a parameter of type \'' . $this->getType() . '\' (PHP Type: \'' . $this->getPhpType() . '\') on the entity \'' . $this->getEntity()->getFullyQualifiedName() . '\' that doesn\'t know how to process.');
                 }
         }
     }
