@@ -1151,6 +1151,7 @@ class Entity1 extends Entity1Base
         $file .= '    // </editor-fold>' . "\n";
 
         if ($entity->getArrayAccess()) {
+            $file .= "\n";
             $file .= $this->getArrayAccessCode();
         }
         $file .= '}';
