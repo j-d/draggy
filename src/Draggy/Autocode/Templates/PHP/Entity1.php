@@ -168,53 +168,16 @@ class Entity1 extends Entity1Base
                 $ret .= '    protected static $' . $attribute->getName();
             }
 
-            if (is_null($attribute->getDefaultValue())) {
+            if (null === $attribute->getDefaultValue()) {
                 $ret .= ';' . "\n";
-            }
-            else {
-                switch($attribute->getPhpType()) {
-                    case 'string':
-                        if ($attribute->getDefaultValue() == 'null') {
-                            $ret .= ' = null;' . "\n";
-                        } elseif ($attribute->getDefaultValue() == '\'\'') {
-                            $ret .= ' = \'\';' . "\n";
-                        }
-                        else {
-                            $ret .= ' = \'' . str_replace('\'','\\\'',$attribute->getDefaultValue()) . '\';' . "\n";
-                        }
-                        break;
-                    case 'integer':
-                        $ret .= ' = ' . $attribute->getDefaultValue() . ';' . "\n";
-                        break;
-                    case '\\DateTime':
-                        if ($attribute->getDefaultValue() == 'null') {
-                            $ret .= ' = null;' . "\n";
-                        } else {
-                            $ret .= ';' . "\n"; // Can't initialise here
-                        }
-                        break;
-                    case 'boolean':
-                        if (in_array($attribute->getDefaultValue(), ['null', 'true', 'false'])) {
-                            $ret .= ' = ' . $attribute->getDefaultValue() . ';' . "\n";
-                        }
-                        break;
-                    default:
-                        switch ($attribute->getType()) {
-                            case 'array':
-                                $ret .= ' = ' . $attribute->getDefaultValue() . ';' . "\n";
-                                break;
-                            case 'object':
-                                if ($attribute->getDefaultValue() == 'null') {
-                                    $ret .= ' = null;' . "\n";
-                                } else {
-                                    $ret .= ' = ' . $attribute->getDefaultValue() . ';' . "\n";
-                                }
-                                break;
-                            default:
-                                throw new \RuntimeException('Found a default value (\'' . $attribute->getDefaultValue() . '\') in a parameter of type \'' . $attribute->getType() . '\' / \'' . $attribute->getPhpType() . '\' that doesn\'t know how to process.');
-                        }
-                }
+            } else {
+                $defaultAttributeInit = $attribute->getDefaultValueAttributeInit();
 
+                if ($defaultAttributeInit !== '') {
+                    $ret .= ' = ' . $attribute->getDefaultValueAttributeInit() . ';' . "\n";
+                } else {
+                    $ret .= ';' . "\n";
+                }
             }
         } else {
             if (is_null($attribute->getDefaultValue()))
@@ -755,7 +718,8 @@ class Entity1 extends Entity1Base
         return implode("\n",$retArray);
     }
 
-    protected function entityToString() {
+    protected function entityToString()
+    {
         $entity = $this->getEntity();
 
         $ret = '';
@@ -780,6 +744,184 @@ class Entity1 extends Entity1Base
         }
 
         $ret .= '    }' . "\n";
+
+        return $ret;
+    }
+
+    public function getArrayAccessOffsetSetCode()
+    {
+        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+
+        $ret = '';
+
+        $ret .= '    /**' . "\n";
+        $ret .= '     * OffsetSet implementation of the \\ArrayAccess interface' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @param string $offset' . "\n";
+        $ret .= '     * @param mixed  $value' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set' . "\n";
+        $ret .= '     */' . "\n";
+        $ret .= '    public function offsetSet($offset, $value)' . "\n";
+        $ret .= '    {' . "\n";
+        $ret .= '        if (!$this->offsetExists($offset)) {'  . "\n";
+        $ret .= '            throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');' . "\n";
+        $ret .= '        }' . "\n";
+        $ret .= '        ' . "\n";
+
+        $ret .= '        switch ($offset) {' . "\n";
+
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if ($attr->getSetter()) {
+                $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
+                $ret .= '                $this->' . $attr->getSetterName() . '($offset);' . "\n";
+                $ret .= '                break;' . "\n";
+            }
+        }
+
+        $ret .= '            default:' . "\n";
+        $ret .= '                throw new \\InvalidArgumentException(\'Tried to set the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.\');' . "\n";
+
+        $ret .= '        }' . "\n";
+        $ret .= '    }' . "\n";
+
+        return $ret;
+    }
+
+    public function getArrayAccessOffsetExitsCode()
+    {
+        $ret = '';
+
+        $ret .= '    /**' . "\n";
+        $ret .= '     * OffsetExists implementation of the \\ArrayAccess interface' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @param string $offset' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @return bool' . "\n";
+        $ret .= '     */' . "\n";
+        $ret .= '    public function offsetExists($offset)' . "\n";
+        $ret .= '    {' . "\n";
+
+        $attributes = [];
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            $attributes[] = '\'' . $attr->getName() . '\'';
+        }
+
+        $ret .= '        return in_array($offset, [' . implode(', ', $attributes) . ']);' . "\n";
+
+        $ret .= '    }' . "\n";
+
+        return $ret;
+    }
+
+    public function getArrayAccessOffsetUnsetCode()
+    {
+        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+
+        $ret = '';
+
+        $ret .= '    /**' . "\n";
+        $ret .= '     * OffsetUnset implementation of the \\ArrayAccess interface' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @param string $offset' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set' . "\n";
+        $ret .= '     */' . "\n";
+        $ret .= '    public function offsetUnset($offset)' . "\n";
+        $ret .= '    {' . "\n";
+        $ret .= '        if (!$this->offsetExists($offset)) {'  . "\n";
+        $ret .= '            throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');' . "\n";
+        $ret .= '        }' . "\n";
+        $ret .= '        ' . "\n";
+
+        $ret .= '        switch ($offset) {' . "\n";
+
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if ($attr->getSetter()) {
+                $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
+
+                if ($attr->getDefaultValueAttributeInit() != '') {
+                    $ret .= '                $this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueAttributeInit() . ');' . "\n";
+                } elseif ($attr->getDefaultValueConstructorInit() != '') {
+                    $ret .= '                $this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueConstructorInit() . ');' . "\n";
+                } else {
+                    $ret .= '                $this->' . $attr->getName() . ' = null;' . "\n";
+                }
+
+                $ret .= '                break;' . "\n";
+            }
+        }
+
+        $ret .= '            default:' . "\n";
+        $ret .= '                throw new \\InvalidArgumentException(\'Tried to unset the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.\');' . "\n";
+
+        $ret .= '        }' . "\n";
+        $ret .= '    }' . "\n";
+
+        return $ret;
+    }
+
+    public function getArrayAccessOffsetGetCode()
+    {
+        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+
+        $ret = '';
+
+        $ret .= '    /**' . "\n";
+        $ret .= '     * OffsetGet implementation of the \\ArrayAccess interface' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @param string $offset' . "\n";
+        $ret .= '     *' . "\n";
+        $ret .= '     * @return mixed' . "\n"; // TODO: Improve this
+        $ret .= '     *' . "\n";
+        $ret .= '     * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be retrieved' . "\n";
+        $ret .= '     */' . "\n";
+        $ret .= '    public function offsetGet($offset)' . "\n";
+        $ret .= '    {' . "\n";
+        $ret .= '        if (!$this->offsetExists($offset)) {'  . "\n";
+        $ret .= '            throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');' . "\n";
+        $ret .= '        }' . "\n";
+        $ret .= '        ' . "\n";
+
+        $ret .= '        switch ($offset) {' . "\n";
+
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if ($attr->getSetter()) {
+                $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
+                $ret .= '                return $this->' . $attr->getGetterName() . '();' . "\n";
+            }
+        }
+
+        $ret .= '            default:' . "\n";
+        $ret .= '                throw new \\InvalidArgumentException(\'Tried to get the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow getter access.\');' . "\n";
+
+        $ret .= '        }' . "\n";
+        $ret .= '    }' . "\n";
+
+        return $ret;
+    }
+
+    public function getArrayAccessCode()
+    {
+        $ret = '';
+
+        $ret .= '    // <editor-fold desc="ArrayAccess">' . "\n";
+
+        $ret .= $this->getArrayAccessOffsetSetCode();
+
+        $ret .= "\n";
+
+        $ret .= $this->getArrayAccessOffsetExitsCode();
+
+        $ret .= "\n";
+
+        $ret .= $this->getArrayAccessOffsetUnsetCode();
+
+        $ret .= "\n";
+
+        $ret .= $this->getArrayAccessOffsetGetCode();
+
+        $ret .= '    // </editor-fold>' . "\n";
 
         return $ret;
     }
@@ -951,7 +1093,18 @@ class Entity1 extends Entity1Base
             $file .= 'abstract class ' . $entity->getNameBase() . (!is_null($entity->getParentEntity()) ? ' extends ' . $entity->getParentEntity()->getName() : '') . "\n";
         }
 
+        $implements = [];
+
+        if ($entity->getArrayAccess()) {
+            $implements[] = '\\ArrayAccess';
+        }
+
+        if (count($implements) > 0) {
+            $file .= '    implements ' . implode(',', $implements) . "\n";
+        }
+
         $file .= '{' . "\n";
+
         $file .= '    // <editor-fold desc="Attributes">' . "\n";
 
         if (count($attributes) != 0) {
@@ -996,6 +1149,10 @@ class Entity1 extends Entity1Base
 //        $file .= '//    }' . "\n";
 
         $file .= '    // </editor-fold>' . "\n";
+
+        if ($entity->getArrayAccess()) {
+            $file .= $this->getArrayAccessCode();
+        }
         $file .= '}';
 
         return $file;

@@ -264,6 +264,10 @@ class Loader
             $r .= $varName . '.setRoutes(' . $classLikeAttributes['routes'] . ');' . PHP_EOL;
         }
 
+        if (isset( $classLikeAttributes['arrayAccess'] )) {
+            $r .= $varName . '.setArrayAccess(' . $classLikeAttributes['arrayAccess'] . ');' . PHP_EOL;
+        }
+
         return $r;
     }
 

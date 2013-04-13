@@ -46,6 +46,7 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
     var controller = $('#edit-item-controller').parents('label');
     var fixtures = $('#edit-item-fixtures').parents('label');
     var crud = $('#edit-item-crud').parents('label');
+    var arrayAccess = $('#edit-item-arrayaccess').parents('label');
 
     // Abstracts don't have the repository or form property
     repository.show();
@@ -53,12 +54,14 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
     controller.show();
     fixtures.show();
     crud.show();
+    arrayAccess.show();
     if (EditItemDialog.prototype.connectable instanceof Abstract) {
         repository.hide();
         form.hide();
         controller.hide();
         fixtures.hide();
         crud.hide();
+        arrayAccess.hide();
     }
 
     this.loadProgrammingTab();
@@ -364,6 +367,7 @@ EditItemDialog.prototype.commitChanges = function () {
         c.setFixtures( $('#edit-item-fixtures').is(':checked') );
         c.setCrud( $('#edit-item-crud').val());
         c.setRoutes( $('#edit-item-routes').is(":checked"));
+        c.setArrayAccess( $('#edit-item-arrayaccess').is(':checked') );
     }
 
     if (description.val() != '') {
@@ -470,7 +474,7 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
 
     var a, i;
     var c = EditItemDialog.prototype.connectable;
-    var $constructor, $repository, $form, $controller, $fixtures, $crud, $routes;
+    var $constructor, $repository, $form, $controller, $fixtures, $crud, $routes, $arrayAccess;
 
     // Repository
 
@@ -482,6 +486,7 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
         $fixtures = $('#edit-item-fixtures');
         $crud = $('#edit-item-crud');
         $routes = $("#edit-item-routes");
+        $arrayAccess = $('#edit-item-arrayaccess');
 
         if (c.getConstructor()) {
             $constructor.attr('checked','checked');
@@ -541,6 +546,13 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
         } else {
             $routes.removeAttr("checked");
         }
+
+        if (c.getArrayAccess()) {
+            $arrayAccess.attr('checked','checked');
+        } else {
+            $arrayAccess.removeAttr('checked');
+        }
+        $arrayAccess.button('refresh');
     }
 
     // ToString

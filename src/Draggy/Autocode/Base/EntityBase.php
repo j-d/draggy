@@ -121,6 +121,11 @@ abstract class EntityBase
      */
     protected $hasConstructor = false;
 
+    /**
+     * @var boolean $arrayAccess
+     */
+    protected $arrayAccess;
+
     // </editor-fold>
 
     // <editor-fold desc="Setters and getters">
@@ -1046,6 +1051,36 @@ abstract class EntityBase
     public function getHasConstructor()
     {
         return $this->hasConstructor;
+    }
+
+    /**
+     * Set arrayAccess
+     *
+     * @param boolean $arrayAccess
+     *
+     * @return Entity
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setArrayAccess($arrayAccess)
+    {
+        if (!is_bool($arrayAccess)) {
+            throw new \InvalidArgumentException('The attribute arrayAccess on the class Entity has to be boolean (' . gettype($arrayAccess) . ('object' === gettype($arrayAccess) ? ' ' . get_class($arrayAccess) : '') . ' given).');
+        }
+
+        $this->arrayAccess = $arrayAccess;
+
+        return $this;
+    }
+
+    /**
+     * Get arrayAccess
+     *
+     * @return boolean
+     */
+    public function getArrayAccess()
+    {
+        return $this->arrayAccess;
     }
 
     // </editor-fold>

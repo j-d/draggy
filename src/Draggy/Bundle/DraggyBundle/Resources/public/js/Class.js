@@ -30,6 +30,7 @@ function Class (name, container) {
     this.fixtures = false;
     this.crud = null;
     this.routes = false;
+    this.arrayAccess = false;
 }
 
 Class.prototype.isPureManyToMany = function () {
@@ -60,6 +61,7 @@ Class.prototype.toXML = function () {
         (this.getRoutes() ? ' routes="' + this.getRoutes() + '"' : '' ) +
         (this.isPureManyToMany() ? ' manyToMany="true"' : '' ) +
         (this.getConstructor() ? ' constructor="true"' : '' ) +
+        (this.getArrayAccess() ? ' arrayAccess="' + this.getArrayAccess() + '"' : '' ) +
     '';
 
     if (this.getNumberAttributes() == 0) {
@@ -135,4 +137,12 @@ Class.prototype.getRoutes = function () {
 
 Class.prototype.getCrud = function () {
     return this.crud;
+};
+
+Class.prototype.setArrayAccess = function (arrayAccess) {
+    this.arrayAccess = arrayAccess;
+};
+
+Class.prototype.getArrayAccess = function () {
+    return this.arrayAccess;
 };

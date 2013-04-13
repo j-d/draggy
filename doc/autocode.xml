@@ -181,6 +181,7 @@
 			<attribute id="attribute79" name="hasRoutes" type="boolean" default="false"/>
 			<attribute id="attribute57" name="project" type="object" subtype="Project"/>
 			<attribute id="attribute17" name="hasConstructor" type="boolean" default="false"/>
+			<attribute id="attribute80" name="arrayAccess" type="boolean"/>
 		</class>
 		<class name="PHPEntity" top="507" left="527" inheritingFrom="Entity">
 			<attribute id="attribute9" inherited="true"/>
@@ -202,6 +203,7 @@
 			<attribute id="attribute79" inherited="true"/>
 			<attribute id="attribute57" inherited="true"/>
 			<attribute id="attribute17" inherited="true"/>
+			<attribute id="attribute80" inherited="true"/>
 		</class>
 		<abstract name="Attribute" top="58" left="1153" constructor="true">
 			<attribute id="attribute26" name="entity" type="object" subtype="Entity"/>

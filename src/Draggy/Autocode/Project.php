@@ -197,6 +197,9 @@ class Project extends ProjectBase
                 case 'routes':
                     $entity->setHasRoutes($classAttributeValue == 'true');
                     break;
+                case 'arrayAccess':
+                    $entity->setArrayAccess($classAttributeValue == 'true');
+                    break;
                 case 'toString':
                     $entity->setToString($classAttributeValue);
                     break;

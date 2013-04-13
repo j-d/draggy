@@ -296,6 +296,66 @@ class PHPAttribute extends PHPAttributeBase
 
         return parent::describe() . $ret;
     }
+
+    public function getDefaultValueAttributeInit()
+    {
+        switch ($this->getPhpType()) {
+            case 'string':
+                if ($this->getDefaultValue() == 'null') {
+                    return 'null';
+                } elseif ($this->getDefaultValue() == '\'\'') {
+                    return '\'\'';
+                } else {
+                    return '\'' . str_replace('\'', '\\\'', $this->getDefaultValue()) . '\'';
+                }
+                break;
+            case 'integer':
+                return $this->getDefaultValue();
+                break;
+            case '\\DateTime':
+                if ($this->getDefaultValue() == 'null') {
+                    return 'null';
+                } else {
+                    return ''; // Can't initialise here
+                }
+                break;
+            case 'boolean':
+                if (in_array($this->getDefaultValue(), ['null', 'true', 'false'])) {
+                    return $this->getDefaultValue();
+                } else {
+                    return '';
+                }
+                break;
+            default:
+                switch ($this->getType()) {
+                    case 'array':
+                        return $this->getDefaultValue();
+                        break;
+                    case 'object':
+                        if ($this->getDefaultValue() == 'null') {
+                            return 'null';
+                        } else {
+                            return $this->getDefaultValue();
+                        }
+                        break;
+                    default:
+                        throw new \RuntimeException('Found a default value (\'' . $this->getDefaultValue() . '\') in a parameter of type \'' . $this->getType() . '\' / \'' . $this->getPhpType() . '\' that doesn\'t know how to process.');
+                }
+        }
+    }
+
+    public function getDefaultValueConstructorInit()
+    {
+        if ($this->getPhpType() === '\\DateTime') {
+            if ($this->getDefaultValue() !== 'null') {
+                return 'new \\DateTime(\'' . str_replace('\'', '\\\'', $this->getDefaultValue()) . '\')';
+            }
+        } elseif ($this->getForeign() === 'ManyToMany' && null === $this->getDefaultValue()) {
+            return 'new ArrayCollection()';
+        }
+
+        return '';
+    }
     // </user-additions>
     // </editor-fold>
 }

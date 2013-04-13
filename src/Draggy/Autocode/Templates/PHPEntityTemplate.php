@@ -54,12 +54,10 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         $file = '';
 
         foreach ($this->getEntity()->getAttributes() as $a) {
-            if ($a->getPhpType() === '\\DateTime') {
-                if ($a->getDefaultValue() !== 'null') {
-                    $file .= '        $this->' . $a->getLowerName() . ' = new \\DateTime(\'' . str_replace('\'', '\\\'', $a->getDefaultValue()) . '\');' . "\n";
-                }
-            } elseif ($a->getForeign() === 'ManyToMany' && null === $a->getDefaultValue()) {
-                $file .= '        $this->' . $a->getLowerName() . ' = new ArrayCollection();' . "\n";
+            $attributeDefaultValueConstructor = $a->getDefaultValueConstructorInit();
+
+            if ($attributeDefaultValueConstructor !== '') {
+                $file .= '        $this->' . $a->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';' . "\n";
             }
         }
 
