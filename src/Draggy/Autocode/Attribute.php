@@ -259,6 +259,10 @@ abstract class Attribute extends AttributeBase
             case 'smallint':
                 $type = 'Number';
                 break;
+            case 'date':
+            case 'datetime':
+                $type = 'Date';
+                break;
             default:
                 $type = 'Input';
         }
