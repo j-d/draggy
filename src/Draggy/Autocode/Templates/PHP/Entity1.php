@@ -73,7 +73,7 @@ class Entity1 extends Entity1Base
                 switch ($attribute->getForeign()) {
                     case 'ManyToOne':
                         if ($attribute->getOwnerSide()) {
-                            $ret .= '     * @ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist"})' . "\n";
+                            $ret .= '     * @ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist", "remove"})' . "\n";
                             $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
                         } else {
                             $ret .= '     * @ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";
@@ -81,7 +81,7 @@ class Entity1 extends Entity1Base
                         break;
                     case 'OneToOne':
                         if ($attribute->getOwnerSide()) {
-                            $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist"})' . "\n";
+                            $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist", "remove"})' . "\n";
                             $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
                         } else {
                             $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";

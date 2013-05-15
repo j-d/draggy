@@ -98,7 +98,7 @@ class Loader
         $this->checkMandatoryAttributes('Project', $projectOptions, ['language', 'description', 'orm', 'framework']);
 
         $r .= 'Draggy.prototype.setLanguage(\'' . $projectOptions['language'] . '\');' . PHP_EOL;
-        $r .= 'Draggy.prototype.setDescription(\'' . $projectOptions['description'] . '\');' . PHP_EOL;
+        $r .= 'Draggy.prototype.setDescription(\'' . str_replace('\'', '\\\'', $projectOptions['description']) . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setORM(\'' . $projectOptions['orm'] . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setFramework(\'' . $projectOptions['framework'] . '\');' . PHP_EOL;
 
@@ -233,7 +233,7 @@ class Loader
         $r = '';
 
         if (isset( $classLikeAttributes['description'] )) {
-            $r .= $varName . '.setDescription("' . $classLikeAttributes['description'] . '");' . PHP_EOL;
+            $r .= $varName . '.setDescription("' . str_replace('\'', '\\\'', $classLikeAttributes['description']) . '");' . PHP_EOL;
         }
 
         if (isset( $classLikeAttributes['constructor'] )) {
@@ -422,7 +422,7 @@ class Loader
         $r = '';
 
         if (isset( $interfaceAttributes['description'] )) {
-            $r .= $varName . '.setDescription("' . $interfaceAttributes['description'] . '");' . PHP_EOL;
+            $r .= $varName . '.setDescription("' . str_replace('\'', '\\\'', $interfaceAttributes['description']) . '");' . PHP_EOL;
         }
 
         return $r;
@@ -555,7 +555,7 @@ class Loader
                     ) . '\');' . PHP_EOL;
                 }
                 if (isset( $attributeProperties['description'] )) {
-                    $r .= 'a.setDescription(\'' . $attributeProperties['description'] . '\');' . PHP_EOL;
+                    $r .= 'a.setDescription(\'' . str_replace('\'', '\\\'', $attributeProperties['description']) . '\');' . PHP_EOL;
                 }
                 if (isset( $attributeProperties['getter'] )) {
                     $r .= 'a.setGetter(' . $attributeProperties['getter'] . ');' . PHP_EOL;

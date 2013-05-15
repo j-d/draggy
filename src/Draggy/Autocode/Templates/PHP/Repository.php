@@ -73,7 +73,7 @@ class Repository extends RepositoryBase
         $file .= '        /** @var ClassMetadata $metadata */' . "\n";
         $file .= '        $metadata = $em->getClassMetadata(\'' . $entity->getModule() . ':' . $entity->getName() . '\');' . "\n";
         $file .= "\n";
-        $file .= '        parent::__construct($em,$metadata);' . "\n";
+        $file .= '        parent::__construct($em, $metadata);' . "\n";
         $file .= '    }' . "\n";
         $file .= "\n";
         $file .= '    // <user-additions' . ' part="methods">' . "\n";
