@@ -52,6 +52,14 @@ class CrudReadTwig extends CrudReadTwigBase
         $file .= 'use Common\Html\Table;' . PHP_EOL;
         $file .= 'use Common\Html\Row;' . PHP_EOL;
         $file .= 'use Common\Html\Cell;' . PHP_EOL;
+
+        foreach ($entity->getAttributes() as $attribute) {
+            if ($attribute->getType() == 'datetime') {
+                $file .= 'use Common\Time;' . PHP_EOL;
+                break;
+            }
+        }
+
         $file .= PHP_EOL;
         $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
         $file .= PHP_EOL;
@@ -72,10 +80,11 @@ class CrudReadTwig extends CrudReadTwigBase
         $file .= '                $table,' . PHP_EOL;
 
         foreach ($entity->getAttributes() as $attr) {
-            if ($attr->getPhpType() !== 'boolean') {
+            if ($attr->getType() == 'datetime') {
+                $file .= '                \'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '().format(\\\'\' . Time::SHORT_DATETIME . \'\\\') }}\',' . PHP_EOL;
+            } elseif ($attr->getPhpType() !== 'boolean') {
                 $file .= '                \'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() }}\',' . PHP_EOL;
-            }
-            else {
+            } else {
                 $file .= '                new Cell(\'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() ? \\\'Y\\\' : \\\'\\\' }}\', \'center\'),' . PHP_EOL;
             }
         }
