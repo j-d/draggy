@@ -82,7 +82,13 @@ class Form extends FormBase
         $file .= '// <user-additions' . ' part="use">' . "\n";
         $file .= '// </user-additions' . '>' . "\n";
         $file .= "\n";
-        $file .= 'class ' . $entity->getName() . 'Type extends ' . $entity->getName() . 'TypeBase {' . "\n";
+        $file .= 'class ' . $entity->getName() . 'Type extends ' . $entity->getName() . 'TypeBase' . "\n";
+        $file .= '    // <user-additions' . ' part="implements">' . "\n";
+        $file .= '    // </user-additions' . '>' . "\n";
+        $file .= '{' . "\n";
+        $file .= '    // <user-additions' . ' part="traitsUse">' . "\n";
+        $file .= '    // </user-additions' . '>' . "\n";
+        $file .= "\n";
         $file .= '    // <user-additions' . ' part="constructorDeclaration">' . "\n";
         $file .= '    public function __construct()' . "\n";
         $file .= '    // </user-additions' . '>' . "\n";
