@@ -106,66 +106,64 @@ class Controller extends ControllerBase
         $file .= ' */' . "\n";
         $file .= 'class ' . $entity->getName() . 'Controller extends Controller' . "\n";
         $file .= '{' . "\n";
-        $file .= '    /*' . "\n";
-        $file .= '    public function xxxAction(Request $request)' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '        $em = $this->getManager();' . "\n";
-        $file .= '        $xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();' . "\n";
+        $file .= '    //public function xxxAction(Request $request)' . "\n";
+        $file .= '    //{' . "\n";
+        $file .= '    //    $em = $this->getManager();' . "\n";
+        $file .= '    //    $xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();' . "\n";
 
         if ($entity->getHasRepository())
-            $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . "\n";
+            $file .= '    //    $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . "\n";
 
         foreach ($entity->getAttributes() as $attr)
             if (!is_null($attr->getForeignEntity())) {
-                $file .= '        $xxx = $em->getRepository(\'' . $attr->getForeignEntity()->getModule() . ':' . $attr->getForeignEntity()->getName() . '\')->findXYZ();' . "\n";
+                $file .= '    //    $xxx = $em->getRepository(\'' . $attr->getForeignEntity()->getModule() . ':' . $attr->getForeignEntity()->getName() . '\')->findXYZ();' . "\n";
 
                 if ($attr->getForeignEntity()->getHasRepository())
-                    $file .= '        $' . $attr->getForeignEntity()->getLowerName() . 'Repository = new ' . $attr->getForeignEntity()->getName() . 'Repository($em);' . "\n";
+                    $file .= '    //    $' . $attr->getForeignEntity()->getLowerName() . 'Repository = new ' . $attr->getForeignEntity()->getName() . 'Repository($em);' . "\n";
             }
 
-        $file .= "\n";
-        $file .= '        $user = $this->get(\'security.context\')->getToken()->getUser();' . "\n";
-        $file .= '        if ($this->get(\'security.context\')->isGranted(\'ROLE_XXX\'))' . "\n";
-        $file .= "\n";
+        $file .= '    //' . "\n";
+        $file .= '    //    $user = $this->get(\'security.context\')->getToken()->getUser();' . "\n";
+        $file .= '    //    if ($this->get(\'security.context\')->isGranted(\'ROLE_XXX\'))' . "\n";
+        $file .= '    //' . "\n";
 
         if ($entity->getHasForm()) {
-            $file .= '        $' . $entity->getLowerName() . ' = new ' . $entity->getName() . '();' . "\n";
-            $file .= '        $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . "\n";
-            $file .= "\n";
-            $file .= '        $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . "\n";
-            $file .= "\n";
-            $file .= '        if ($request->isMethod(\'POST\')) {' . "\n";
-            $file .= '            $form->bind($request);' . "\n";
-            $file .= "\n";
-            $file .= '            if ($form->isValid()) {' . "\n";
-            $file .= '                $em = $this->getManager();' . "\n";
-            $file .= '                $em->persist($' . $entity->getLowerName() . ');' . "\n";
-            $file .= '                $em->flush();' . "\n";
-            $file .= "\n";
-            $file .= '                $this->get(\'session\')->setFlash(\'info\', \'The ' . $entity->getName() . ' has been xxx successfully.\');' . "\n";
-            $file .= "\n";
-            $file .= '                return $this->redirect($this->generateUrl(\'path_to_target\'));' . "\n";
-            $file .= '            }' . "\n";
-            $file .= '        }' . "\n";
-            $file .= "\n";
+            $file .= '    //    $' . $entity->getLowerName() . ' = new ' . $entity->getName() . '();' . "\n";
+            $file .= '    //    $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . "\n";
+            $file .= '    //' . "\n";
+            $file .= '    //    $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . "\n";
+            $file .= '    //' . "\n";
+            $file .= '    //    if ($request->isMethod(\'POST\')) {' . "\n";
+            $file .= '    //        $form->bind($request);' . "\n";
+            $file .= '    //' . "\n";
+            $file .= '    //        if ($form->isValid()) {' . "\n";
+            $file .= '    //            $em = $this->getManager();' . "\n";
+            $file .= '    //            $em->persist($' . $entity->getLowerName() . ');' . "\n";
+            $file .= '    //            $em->flush();' . "\n";
+            $file .= '    //' . "\n";
+            $file .= '    //            $this->get(\'session\')->setFlash(\'info\', \'The ' . $entity->getName() . ' has been xxx successfully.\');' . "\n";
+            $file .= '    //' . "\n";
+            $file .= '    //            return $this->redirect($this->generateUrl(\'path_to_target\'));' . "\n";
+            $file .= '    //        }' . "\n";
+            $file .= '    //    }' . "\n";
+            $file .= '    //' . "\n";
         }
 
-        $file .= '        return (new Response())' . "\n";
-        $file .= '            ->setStatusCode(403)' . "\n";
-        $file .= '            ->setContent(\'Message here\');' . "\n";
-        $file .= '        return new RedirectResponse($this->generateUrl(\'path_to_target\'));' . "\n";
-        $file .= '        return $this->render(\'' . $entity->getModule() . ':Default:' . $entity->getLowerName() . '.html.twig\');' . "\n";
-        $file .= '        return $this->render(' . "\n";
-        $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':' . strtolower($entity->getName()) . '.html.twig\',' . "\n";
-        $file .= '            [' . "\n";
-        $file .= '                \'\' => $,' . "\n";
-        $file .= '                \'form\' => $form->createView(),' . "\n";
-        $file .= '            ],' . "\n";
-        $file .= '            //$response / null,' . "\n";
-        $file .= '            //$renderParameters' . "\n";
-        $file .= '        );' . "\n";
-        $file .= '    }' . "\n";
-        $file .= '    */' . "\n";
+        $file .= '    //    return (new Response())' . "\n";
+        $file .= '    //        ->setStatusCode(403)' . "\n";
+        $file .= '    //       ->setContent(\'Message here\');' . "\n";
+        $file .= '    //    return new RedirectResponse($this->generateUrl(\'path_to_target\'));' . "\n";
+        $file .= '    //    return $this->render(\'' . $entity->getModule() . ':Default:' . $entity->getLowerName() . '.html.twig\');' . "\n";
+        $file .= '    //    return $this->render(' . "\n";
+        $file .= '    //        \'' . $entity->getModule() . ':' . $entity->getName() . ':' . strtolower($entity->getName()) . '.html.twig\',' . "\n";
+        $file .= '    //        [' . "\n";
+        $file .= '    //            \'\' => $,' . "\n";
+        $file .= '    //            \'form\' => $form->createView(),' . "\n";
+        $file .= '    //        ],' . "\n";
+        $file .= '    //        //$response / null,' . "\n";
+        $file .= '    //        //$renderParameters' . "\n";
+        $file .= '    //    );' . "\n";
+        $file .= '    //}' . "\n";
         $file .= "\n";
         $file .= '    // <user-additions' . ' part="actions">' . "\n";
         $file .= '    // </user-additions' . '>' . "\n";
