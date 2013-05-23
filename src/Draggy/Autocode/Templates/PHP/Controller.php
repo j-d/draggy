@@ -154,9 +154,9 @@ class Controller extends ControllerBase
         $file .= '            ->setStatusCode(403)' . "\n";
         $file .= '            ->setContent(\'Message here\');' . "\n";
         $file .= '        return new RedirectResponse($this->generateUrl(\'path_to_target\'));' . "\n";
-        $file .= '        return $this->render(\'' . $entity->getModule() . ':Default:' . $entity->getLowerName() . '.html.twig.php\');' . "\n";
+        $file .= '        return $this->render(\'' . $entity->getModule() . ':Default:' . $entity->getLowerName() . '.html.twig\');' . "\n";
         $file .= '        return $this->render(' . "\n";
-        $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':' . strtolower($entity->getName()) . '.html.twig.php\',' . "\n";
+        $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':' . strtolower($entity->getName()) . '.html.twig\',' . "\n";
         $file .= '            [' . "\n";
         $file .= '                \'\' => $,' . "\n";
         $file .= '                \'form\' => $form->createView(),' . "\n";
@@ -181,7 +181,7 @@ class Controller extends ControllerBase
             $file .= '        $' . $entity->getLowerName() . 's = $' . $entity->getLowerName() . 'Repository->findAll();' . "\n";
             $file .= "\n";
             $file .= '        return $this->render(' . "\n";
-            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':list' . $entity->getName() . '.html.twig.php\',' . "\n";
+            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':list' . $entity->getName() . '.html.twig\',' . "\n";
             $file .= '            [' . "\n";
             $file .= '                \'' . $entity->getLowerName() . 's\' => $' . $entity->getLowerName() . 's,' . "\n";
             $file .= '            ]' . "\n";
@@ -217,7 +217,7 @@ class Controller extends ControllerBase
                 $file .= "\n";
             }
             $file .= '        return $this->render(' . "\n";
-            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':add' . $entity->getName() . '.html.twig.php\',' . "\n";
+            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':add' . $entity->getName() . '.html.twig\',' . "\n";
             $file .= '            [' . "\n";
             $file .= '                \'form\' => $form->createView(),' . "\n";
             $file .= '            ],' . "\n";
@@ -257,7 +257,7 @@ class Controller extends ControllerBase
                 $file .= "\n";
             }
             $file .= '        return $this->render(' . "\n";
-            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':edit' . $entity->getName() . '.html.twig.php\',' . "\n";
+            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':edit' . $entity->getName() . '.html.twig\',' . "\n";
             $file .= '            [' . "\n";
             $file .= '                \'form\' => $form->createView(),' . "\n";
             $file .= '                \'id\' => $id,' . "\n";
