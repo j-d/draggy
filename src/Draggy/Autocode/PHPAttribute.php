@@ -351,8 +351,12 @@ class PHPAttribute extends PHPAttributeBase
     public function getDefaultValueConstructorInit()
     {
         if ($this->getPhpType() === '\\DateTime') {
-            if ($this->getDefaultValue() !== 'null') {
-                return 'new \\DateTime(\'' . str_replace('\'', '\\\'', $this->getDefaultValue()) . '\')';
+            if ($this->getDefaultValue() !== 'null' && null !== $this->getDefaultValue()) {
+                if ('\'\'' === $this->getDefaultValue()) {
+                    return 'new \\DateTime(\'\')';
+                } else {
+                    return 'new \\DateTime(\'' . str_replace('\'', '\\\'', $this->getDefaultValue()) . '\')';
+                }
             }
         } elseif ($this->getForeign() === 'ManyToMany' && null === $this->getDefaultValue()) {
             return 'new ArrayCollection()';
