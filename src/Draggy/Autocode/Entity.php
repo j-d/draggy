@@ -204,19 +204,19 @@ abstract class Entity extends EntityBase
         $ret = [];
 
         foreach ($this->attributes as $attr) {
-            if ( null === $this->parentEntity || !in_array($attr->getName(), array_keys($this->parentEntity->getAttributes())) ) {
-                if (!$attr->getAutoIncrement()) {
-                    if (null === $attr->getForeignEntity()) {
-                        $ret[] = $attr;
-                    } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'OneToOne' && $attr->getOwnerSide()) {
-                        $ret[] = $attr;
-                    } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'ManyToOne' && $attr->getOwnerSide() && $attr->getForeignKey()->getFormClassType() !== 'Entity') {
-                        $ret[] = $attr;
-                    } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'ManyToMany' && $attr->getOwnerSide() && $attr->getForeignKey()->getFormClassType() !== 'Entity') {
-                        $ret[] = $attr;
-                    } elseif ($attr->getFormClassType() === 'Collection' && !$attr->getOwnerSide() && $attr->getForeign() === 'ManyToOne' && $attr->getForeignEntity()->getHasForm()) {
-                        $ret[] = $attr;
-                    }
+            // Cannot ignore inherited attributes because class won't inherit from parent (and parent might not be marked as form)
+            
+            if (!$attr->getAutoIncrement()) {
+                if (null === $attr->getForeignEntity()) {
+                    $ret[] = $attr;
+                } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'OneToOne' && $attr->getOwnerSide()) {
+                    $ret[] = $attr;
+                } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'ManyToOne' && $attr->getOwnerSide() && $attr->getForeignKey()->getFormClassType() !== 'Entity') {
+                    $ret[] = $attr;
+                } elseif ($attr->getFormClassType() === 'Entity' && $attr->getForeign() === 'ManyToMany' && $attr->getOwnerSide() && $attr->getForeignKey()->getFormClassType() !== 'Entity') {
+                    $ret[] = $attr;
+                } elseif ($attr->getFormClassType() === 'Collection' && !$attr->getOwnerSide() && $attr->getForeign() === 'ManyToOne' && $attr->getForeignEntity()->getHasForm()) {
+                    $ret[] = $attr;
                 }
             }
         }
