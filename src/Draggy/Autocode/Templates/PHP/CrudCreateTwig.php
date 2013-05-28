@@ -64,7 +64,7 @@ class CrudCreateTwig extends CrudCreateTwigBase
         $file .= '$form = new Table();' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= '$form' . PHP_EOL;
-        $file .= '    ->setRenderModeParameter(\'form\')' . PHP_EOL;
+        $file .= '    ->setRenderEngineParameter(\'form\')' . PHP_EOL;
         $file .= '    ->addCss(\'noBorder\');' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= '$form' . PHP_EOL;

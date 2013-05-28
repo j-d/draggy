@@ -294,7 +294,7 @@ abstract class Attribute extends AttributeBase
         $properties = [];
 
         $properties[] = '            [\'id\' => \'' . $formName . '_' . $this->name . '\']';
-        $properties[] = '            [\'renderMode\' => \'twig\']';
+        $properties[] = '            [\'renderEngine\' => \'twig\']';
 
         if(!$this->autoIncrement) {
             if(!$this->null && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {

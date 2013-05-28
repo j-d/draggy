@@ -58,7 +58,7 @@ class CrudUpdateTwig extends CrudUpdateTwigBase
         $file .= '/** @var $type FormItemArray|FormItem[] */' . PHP_EOL;
         $file .= '$type = $GLOBALS[\'twigPhpParameters\'];' . PHP_EOL;
         $file .= PHP_EOL;
-        $file .= '$type->setRenderModeParameter(\'form\');' . PHP_EOL;
+        $file .= '$type->setRenderEngineParameter(\'form\');' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
         $file .= PHP_EOL;
@@ -67,7 +67,7 @@ class CrudUpdateTwig extends CrudUpdateTwigBase
         $file .= '$form = new Table();' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= '$form' . PHP_EOL;
-        $file .= '    ->setRenderModeParameter(\'form\')' . PHP_EOL;
+        $file .= '    ->setRenderEngineParameter(\'form\')' . PHP_EOL;
         $file .= '    ->addCss(\'noBorder\');' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= '$form' . PHP_EOL;
