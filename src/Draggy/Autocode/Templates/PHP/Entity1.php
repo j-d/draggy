@@ -774,7 +774,7 @@ class Entity1 extends Entity1Base
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
                 $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
-                $ret .= '                $this->' . $attr->getSetterName() . '($offset);' . "\n";
+                $ret .= '                $this->' . $attr->getSetterName() . '($value);' . "\n";
                 $ret .= '                break;' . "\n";
             }
         }
