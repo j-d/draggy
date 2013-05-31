@@ -30,18 +30,18 @@ class PHPAttribute extends PHPAttributeBase
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
     public static $PHP_VARS = [
-        'string' => 'string',
-        'boolean' => 'boolean',
-        'integer' => 'integer',
+        'string'   => 'string',
+        'boolean'  => 'boolean',
+        'integer'  => 'integer',
         'smallint' => 'integer',
-        'bigint' => 'integer',
-        'text' => 'string',
-        'date' => '\\DateTime',
-        'time' => '\\DateTime',
+        'bigint'   => 'integer',
+        'text'     => 'string',
+        'date'     => '\\DateTime',
+        'time'     => '\\DateTime',
         'datetime' => '\\DateTime',
-        'array' => 'array',
-        'decimal' => 'float',
-        'object' => 'ERROR'
+        'array'    => 'array',
+        'decimal'  => 'float',
+        'object'   => 'ERROR'
     ];
     // </user-additions>
     // </editor-fold>
