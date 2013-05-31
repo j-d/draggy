@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\Controller.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Base\Repository.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,16 +14,16 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\Controller;
+use Draggy\Autocode\Templates\PHP\Symfony2\Repository;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\Controller
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\Repository
  */
-abstract class ControllerBase extends PHPEntityTemplate
+abstract class RepositoryBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class ControllerBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Controller to string (Default)
+     * Repository to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'Controller';
+        return 'Repository';
     }
     // </editor-fold>
 }

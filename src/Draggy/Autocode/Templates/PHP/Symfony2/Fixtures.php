@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Fixtures.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Fixtures.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,14 +14,14 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP;
+namespace Draggy\Autocode\Templates\PHP\Symfony2;
 
-use Draggy\Autocode\Templates\PHP\Base\FixturesBase;
+use Draggy\Autocode\Templates\PHP\Symfony2\Base\FixturesBase;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Fixtures
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Fixtures
  */
 class Fixtures extends FixturesBase
     // <user-additions part="implements">

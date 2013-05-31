@@ -764,7 +764,7 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getRepositoryTemplate())) {
-            $this->setRepositoryTemplate(new PHPTemplates\Repository());
+            $this->setRepositoryTemplate(new PHPTemplates\Symfony2\Repository());
         }
 
         if (is_null($this->getFormTemplate())) {
@@ -776,19 +776,19 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getControllerTemplate())) {
-            $this->setControllerTemplate(new PHPTemplates\Controller());
+            $this->setControllerTemplate(new PHPTemplates\Symfony2\Controller());
         }
 
         if (is_null($this->getFixturesTemplate())) {
-            $this->setFixturesTemplate(new PHPTemplates\Fixtures());
+            $this->setFixturesTemplate(new PHPTemplates\Symfony2\Fixtures());
         }
 
         if (is_null($this->getRoutesTemplate())) {
-            $this->setRoutesTemplate(new PHPTemplates\Routes());
+            $this->setRoutesTemplate(new PHPTemplates\Symfony2\Routes());
         }
 
         if (is_null($this->getRoutesRoutingTemplate())) {
-            $this->setRoutesRoutingTemplate(new PHPTemplates\RoutesRouting());
+            $this->setRoutesRoutingTemplate(new PHPTemplates\Symfony2\RoutesRouting());
         }
 
         if (is_null($this->getCrudCreateTwigTemplate())) {

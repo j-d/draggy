@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Routes.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Routes.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,14 +14,14 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP;
+namespace Draggy\Autocode\Templates\PHP\Symfony2;
 
-use Draggy\Autocode\Templates\PHP\Base\RoutesBase;
+use Draggy\Autocode\Templates\PHP\Symfony2\Base\RoutesBase;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Routes
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Routes
  */
 class Routes extends RoutesBase
     // <user-additions part="implements">

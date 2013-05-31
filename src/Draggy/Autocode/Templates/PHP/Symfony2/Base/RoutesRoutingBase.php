@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\Routes.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Base\RoutesRouting.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,16 +14,16 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\Routes;
+use Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\Routes
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\RoutesRouting
  */
-abstract class RoutesBase extends PHPEntityTemplate
+abstract class RoutesRoutingBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class RoutesBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Routes to string (Default)
+     * RoutesRouting to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'Routes';
+        return 'RoutesRouting';
     }
     // </editor-fold>
 }

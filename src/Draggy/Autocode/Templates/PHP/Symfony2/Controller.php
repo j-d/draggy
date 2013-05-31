@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Controller.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Controller.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,14 +14,14 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP;
+namespace Draggy\Autocode\Templates\PHP\Symfony2;
 
-use Draggy\Autocode\Templates\PHP\Base\ControllerBase;
+use Draggy\Autocode\Templates\PHP\Symfony2\Base\ControllerBase;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Controller
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Controller
  */
 class Controller extends ControllerBase
     // <user-additions part="implements">

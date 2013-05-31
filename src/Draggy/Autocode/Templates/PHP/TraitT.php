@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Entity1.php
+// Draggy\Autocode\Templates\PHP\TraitT.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -23,7 +23,7 @@ use Draggy\Autocode\PHPAttribute;
 // </user-additions>
 
 /**
- * Autocode\Templates\PHP\Entity\Entity1
+ * Draggy\Autocode\Templates\PHP\Entity\TraitT
  */
 class TraitT extends TraitTBase
     // <user-additions part="implements">

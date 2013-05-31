@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\Fixtures.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Base\Controller.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,16 +14,16 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\Fixtures;
+use Draggy\Autocode\Templates\PHP\Symfony2\Controller;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\Fixtures
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\Controller
  */
-abstract class FixturesBase extends PHPEntityTemplate
+abstract class ControllerBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class FixturesBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Fixtures to string (Default)
+     * Controller to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'Fixtures';
+        return 'Controller';
     }
     // </editor-fold>
 }

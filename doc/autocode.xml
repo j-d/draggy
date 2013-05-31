@@ -18,14 +18,11 @@
 			<attribute id="attribute70" name="entity" type="object" subtype="Entity"/>
 		</abstract>
 	</module>
-	<module name="Templates\PHP" left="77" top="1328" width="531" height="384">
-		<class name="Repository" top="56" left="31" inheritingFrom="Templates\PHPEntityTemplate">
+	<module name="Templates\PHP" left="49" top="1334" width="598" height="366">
+		<class name="Entity1" top="41" left="26" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="Entity1" top="51" left="209" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true"/>
-		</class>
-		<class name="EntityBase1" top="49" left="352" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="EntityBase1" top="38" left="170" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Form" top="146" left="25" inheritingFrom="Templates\PHPEntityTemplate">
@@ -34,29 +31,23 @@
 		<class name="FormBase1" top="145" left="169" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="Controller" top="240" left="23" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudRead" top="240" left="169" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="Routes" top="239" left="180" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudCreate" top="239" left="24" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="RoutesRouting" top="236" left="335" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudUpdate" top="242" left="312" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="CrudRead" top="327" left="186" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="InterfaceT" top="38" left="319" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="CrudCreate" top="326" left="39" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true"/>
-		</class>
-		<class name="CrudUpdate" top="322" left="367" inheritingFrom="Templates\PHPEntityTemplate">
-			<attribute id="attribute70" inherited="true"/>
-		</class>
-		<class name="Fixtures" top="142" left="341" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="TraitT" top="38" left="463" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
-	<module name="Templates\JS" left="653" top="1328" width="347" height="139">
+	<module name="Templates\JS" left="892" top="1295" width="347" height="139">
 		<class name="Entity2" top="40" left="21" inheritingFrom="Templates\EntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
@@ -64,8 +55,24 @@
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
-	<module name="Templates\PHP\Symfony2" left="657" top="1518" width="489" height="258"/>
-	<module name="Templates\PHP\Symfony2\Doctrine2" left="662" top="1809" width="577" height="387"/>
+	<module name="Templates\PHP\Symfony2" left="57" top="1740" width="611" height="358">
+		<class name="Repository" top="38" left="27" inheritingFrom="Templates\PHPEntityTemplate">
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+		<class name="Controller" top="108" left="25" inheritingFrom="Templates\PHPEntityTemplate">
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+		<class name="Routes" top="103" left="173" inheritingFrom="Templates\PHPEntityTemplate">
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+		<class name="RoutesRouting" top="104" left="324" inheritingFrom="Templates\PHPEntityTemplate">
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+		<class name="Fixtures" top="37" left="169" inheritingFrom="Templates\PHPEntityTemplate">
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+	</module>
+	<module name="Templates\PHP\Symfony2\Doctrine2" left="61" top="2134" width="577" height="387"/>
 	<loose>
 		<class name="Project" top="58" left="46" constructor="true">
 			<attribute id="attribute" name="namespace" type="string" minSize="1"/>
@@ -247,21 +254,23 @@
 		<relation from="Templates\EntityTemplate" to="Templates\Template" type="Inheritance"/>
 		<relation from="Templates\PHPEntityTemplate" to="Templates\EntityTemplate" type="Inheritance"/>
 		<relation from="Templates\AttributeTemplate" to="Templates\Template" type="Inheritance"/>
-		<relation from="Templates\PHP\Repository" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Repository" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\EntityBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\Form" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\FormBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Controller" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Routes" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\RoutesRouting" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Controller" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Routes" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\RoutesRouting" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\CrudRead" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\CrudCreate" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\CrudUpdate" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\Entity1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Fixtures" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Fixtures" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\JS\Entity2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\JS\EntityBase2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="PHPEntity" to="Entity" type="Inheritance"/>
+		<relation from="Templates\PHP\InterfaceT" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\TraitT" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 	</relationships>
 	<autocode>
 		<base>true</base>
