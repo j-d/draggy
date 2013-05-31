@@ -43,13 +43,13 @@
 		<class name="RoutesRouting" top="236" left="335" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="CrudReadTwig" top="327" left="50" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudRead" top="327" left="186" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="CrudCreateTwig" top="325" left="202" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudCreate" top="326" left="39" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="CrudUpdateTwig" top="322" left="367" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudUpdate" top="322" left="367" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="Fixtures" top="142" left="341" inheritingFrom="Templates\PHPEntityTemplate">
@@ -64,6 +64,8 @@
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
+	<module name="Templates\PHP\Symfony2" left="657" top="1518" width="489" height="258"/>
+	<module name="Templates\PHP\Symfony2\Doctrine2" left="662" top="1809" width="577" height="387"/>
 	<loose>
 		<class name="Project" top="58" left="46" constructor="true">
 			<attribute id="attribute" name="namespace" type="string" minSize="1"/>
@@ -252,9 +254,9 @@
 		<relation from="Templates\PHP\Controller" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\Routes" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\RoutesRouting" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\CrudReadTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\CrudCreateTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\CrudUpdateTwig" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudRead" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudCreate" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudUpdate" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\Entity1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\Fixtures" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\JS\Entity2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>

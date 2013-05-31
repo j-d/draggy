@@ -792,15 +792,15 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getCrudCreateTwigTemplate())) {
-            $this->setCrudCreateTwigTemplate(new PHPTemplates\CrudCreateTwig());
+            $this->setCrudCreateTwigTemplate(new PHPTemplates\CrudCreate());
         }
 
         if (is_null($this->getCrudReadTwigTemplate())) {
-            $this->setCrudReadTwigTemplate(new PHPTemplates\CrudReadTwig());
+            $this->setCrudReadTwigTemplate(new PHPTemplates\CrudRead());
         }
 
         if (is_null($this->getCrudUpdateTwigTemplate())) {
-            $this->setCrudUpdateTwigTemplate(new PHPTemplates\CrudUpdateTwig());
+            $this->setCrudUpdateTwigTemplate(new PHPTemplates\CrudUpdate());
         }
     }
 

@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\CrudReadTwig.php
+// Draggy\Autocode\Templates\PHP\Base\CrudRead.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,14 +16,14 @@
 
 namespace Draggy\Autocode\Templates\PHP\Base;
 
-use Draggy\Autocode\Templates\PHP\CrudReadTwig;
+use Draggy\Autocode\Templates\PHP\CrudRead;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\CrudReadTwig
+ * Draggy\Autocode\Templates\PHP\Entity\Base\CrudRead
  */
-abstract class CrudReadTwigBase extends PHPEntityTemplate
+abstract class CrudReadBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class CrudReadTwigBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * CrudReadTwig to string (Default)
+     * CrudRead to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'CrudReadTwig';
+        return 'CrudRead';
     }
     // </editor-fold>
 }

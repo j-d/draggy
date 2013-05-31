@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\CrudUpdateTwig.php
+// Draggy\Autocode\Templates\PHP\CrudCreate.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -16,14 +16,14 @@
 
 namespace Draggy\Autocode\Templates\PHP;
 
-use Draggy\Autocode\Templates\PHP\Base\CrudUpdateTwigBase;
+use Draggy\Autocode\Templates\PHP\Base\CrudCreateBase;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\CrudUpdateTwig
+ * Draggy\Autocode\Templates\PHP\Entity\CrudCreate
  */
-class CrudUpdateTwig extends CrudUpdateTwigBase
+class CrudCreate extends CrudCreateBase
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -53,16 +53,13 @@ class CrudUpdateTwig extends CrudUpdateTwigBase
         $file .= 'use Common\Html\Table;' . PHP_EOL;
         $file .= 'use Common\Html\Cell;' . PHP_EOL;
         $file .= 'use Common\Html\Submit;' . PHP_EOL;
-        $file .= 'use Common\Html\FormItemArray;' . PHP_EOL;
         $file .= PHP_EOL;
-        $file .= '/** @var $type FormItemArray|FormItem[] */' . PHP_EOL;
+        $file .= '/** @var $type FormItem[] */' . PHP_EOL;
         $file .= '$type = $GLOBALS[\'twigPhpParameters\'];' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$type->setRenderEngineParameter(\'form\');' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
         $file .= PHP_EOL;
-        $file .= 'echo    \'{% block title %}\', \'Edit ' . $entity->getName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
+        $file .= 'echo    \'{% block title %}\', \'Add ' . $entity->getName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= '$form = new Table();' . PHP_EOL;
         $file .= PHP_EOL;
@@ -80,12 +77,12 @@ class CrudUpdateTwig extends CrudUpdateTwigBase
             $file .= '        ],' . PHP_EOL;
         }
 
-        $file .= '        new Cell(new Submit(\'#submit\',\'Save\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')' . PHP_EOL;
+        $file .= '        new Cell(new Submit(\'#submit\',\'Add\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')' . PHP_EOL;
         $file .= '    );' . PHP_EOL;
         $file .= PHP_EOL;
         $file .= 'echo    \'{% block body %}\', PHP_EOL,' . PHP_EOL;
         $file .= '            \'{{ parent() }}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            T::form([\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_edit\',[\'id\'=>\'{{ id }}\']],\'form\'),' . PHP_EOL;
+        $file .= '            T::form(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\',\'form\'),' . PHP_EOL;
         $file .= '                T::formErrors(\'form\'),' . PHP_EOL;
         $file .= '                    $form->toHtml(),' . PHP_EOL;
         $file .= '                T::formRest(\'form\'),' . PHP_EOL;
