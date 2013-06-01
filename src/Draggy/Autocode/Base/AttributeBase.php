@@ -1070,7 +1070,6 @@ abstract class AttributeBase
     {
         return $this->inverse;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">

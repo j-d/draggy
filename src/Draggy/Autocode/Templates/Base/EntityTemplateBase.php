@@ -57,7 +57,6 @@ abstract class EntityTemplateBase extends Template
     {
         return $this->entity;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">

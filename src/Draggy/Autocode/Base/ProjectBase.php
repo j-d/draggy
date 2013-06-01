@@ -1368,7 +1368,6 @@ abstract class ProjectBase
     {
         return $this->crudUpdateTwigTemplate;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">

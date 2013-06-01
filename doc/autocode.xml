@@ -6,13 +6,13 @@
 		<orm/>
 		<framework/>
 	</project>
-	<module name="Templates" left="81" top="940" width="668" height="376">
+	<module name="Templates" left="81" top="940" width="668" height="402">
 		<abstract name="Template" top="5" left="245" constructor="true">
 			<attribute id="attribute82" name="indentation" type="string" size="255" default="    "/>
 			<attribute id="attribute81" name="indentationCount" type="integer" default="0"/>
 			<attribute id="attribute83" name="eol" type="string" size="255"/>
 		</abstract>
-		<abstract name="PHPEntityTemplate" top="241" left="72" inheritingFrom="Templates\EntityTemplate">
+		<abstract name="PHPEntityTemplate" top="275" left="95" inheritingFrom="Templates\EntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
 			<attribute id="attribute70" inherited="true"/>
@@ -31,7 +31,7 @@
 			<attribute id="attribute70" name="entity" type="object" subtype="Entity"/>
 		</abstract>
 	</module>
-	<module name="Templates\PHP" left="63" top="1360" width="933" height="389">
+	<module name="Templates\PHP" left="73" top="1374" width="933" height="411">
 		<class name="Entity1" top="41" left="26" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
@@ -62,7 +62,7 @@
 			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
 		</class>
-		<class name="CrudCreate" top="278" left="31" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="CrudCreate" top="294" left="23" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
 			<attribute id="attribute70" inherited="true"/>
@@ -101,7 +101,7 @@
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
-	<module name="Templates\PHP\Symfony2" left="68" top="1788" width="807" height="469">
+	<module name="Templates\PHP\Symfony2" left="69" top="1814" width="807" height="298">
 		<class name="Repository" top="38" left="27" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
@@ -133,7 +133,7 @@
 			<attribute id="attribute83" inherited="true"/>
 		</class>
 	</module>
-	<module name="Templates\PHP\Symfony2\Doctrine2" left="70" top="2286" width="577" height="387"/>
+	<module name="Templates\PHP\Symfony2\Doctrine2" left="67" top="2144" width="577" height="387"/>
 	<loose>
 		<class name="Project" top="58" left="46" constructor="true">
 			<attribute id="attribute" name="namespace" type="string" minSize="1"/>

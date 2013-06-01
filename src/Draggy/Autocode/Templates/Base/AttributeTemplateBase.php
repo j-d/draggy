@@ -57,7 +57,6 @@ abstract class AttributeTemplateBase extends Template
     {
         return $this->attribute;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">

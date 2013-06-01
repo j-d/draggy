@@ -68,10 +68,8 @@ abstract class Template extends TemplateBase
     {
         $indentation = '';
 
-        for ($i = 0; $i < $this->getIndentationCount(); $i++) {
-            for ($j = 0; $j < $times; $j++) {
-                $indentation .= $this->getIndentation();
-            }
+        for ($i = 0; $i < $times; $i++) {
+            $indentation .= $this->getIndentation();
         }
 
         return $indentation;
@@ -125,8 +123,6 @@ abstract class Template extends TemplateBase
                     unset($lines[$lineNumber]);
                 } elseif ('' === trim($line)) {
                     $lines[$lineNumber] = '';
-                } else {
-                    $lines[$lineNumber] = $this->getIndentationPrefix() . $line;
                 }
             }
         }

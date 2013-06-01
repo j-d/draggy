@@ -1082,7 +1082,6 @@ abstract class EntityBase
     {
         return $this->arrayAccess;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">

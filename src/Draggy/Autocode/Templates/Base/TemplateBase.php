@@ -131,7 +131,6 @@ abstract class TemplateBase
     {
         return $this->eol;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">
