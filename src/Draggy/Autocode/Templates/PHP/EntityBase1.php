@@ -39,6 +39,28 @@ class EntityBase1 extends EntityBase1Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * TODO: Check deprecated
+     *
+     * @return string
+     *
+     * @deprecated
+     */
+    public function getConstructorDefaultValuesPart()
+    {
+        $file = '';
+
+        foreach ($this->getEntity()->getAttributes() as $a) {
+            $attributeDefaultValueConstructor = $a->getDefaultValueConstructorInit();
+
+            if ($attributeDefaultValueConstructor !== '') {
+                $file .= '        $this->' . $a->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';' . "\n";
+            }
+        }
+
+        return $file;
+    }
+
     public function render()
     {
         $entity = $this->getEntity();

@@ -63,9 +63,15 @@ abstract class Template extends TemplateBase
      * @param int $times
      *
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
     public function getIndentationPrefix($times = 1)
     {
+        if (!is_integer($times)) {
+            throw new \InvalidArgumentException('The times parameter has to be an integer');
+        }
+
         $indentation = '';
 
         for ($i = 0; $i < $times; $i++) {

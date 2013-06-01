@@ -68,28 +68,6 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         return $line;
     }
 
-    /**
-     * TODO: Check deprecated
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    public function getConstructorDefaultValuesPart()
-    {
-        $file = '';
-
-        foreach ($this->getEntity()->getAttributes() as $a) {
-            $attributeDefaultValueConstructor = $a->getDefaultValueConstructorInit();
-
-            if ($attributeDefaultValueConstructor !== '') {
-                $file .= '        $this->' . $a->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';' . "\n";
-            }
-        }
-
-        return $file;
-    }
-
     public function getFilenameLine()
     {
         return null;
@@ -135,6 +113,7 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         }
 
         $lines = array_merge($lines, $this->getUseLines());
+        $lines[] = '';
 
         $lines = array_merge($lines, $this->getEntityDocumentationLines());
         $lines = array_merge($lines, $this->getEntityLines());

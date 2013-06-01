@@ -101,6 +101,7 @@ class Entity1 extends Entity1Base
         return $lines;
     }
 
+    // <editor-fold desc="Attributes">
     public function getAttributeDocumentationLines(PHPAttribute $attribute)
     {
         $lines = [];
@@ -279,6 +280,7 @@ class Entity1 extends Entity1Base
 
         return $lines;
     }
+    // </editor-fold>
 
     // <editor-fold desc="Setters">
     public function getSetterInnerValidationCodeLines(PHPAttribute $attribute)
@@ -777,25 +779,30 @@ class Entity1 extends Entity1Base
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
         $lines[] = '{';
 
+        $innerLines = [];
+
         if ('array' === $attribute->getType() && null !== $attribute->getSubtype()) {
-            $lines[] = '    foreach (' . $attribute->getThisName() . ' as $key => $' . $attribute->getSingleName() . 'Element) {';
-            $lines[] = '        if ($' . $attribute->getSingleName() . 'Element === $' . $attribute->getSingleName() . ') {';
-            $lines[] = '            unset(' . $attribute->getThisName() . '[$key]);';
-            $lines[] = '            break;';
-            $lines[] = '        }';
-            $lines[] = '    }';
+            $innerLines[] = 'foreach (' . $attribute->getThisName() . ' as $key => $' . $attribute->getSingleName() . 'Element) {';
+            $innerLines[] = $this->getIndentationPrefix() . 'if ($' . $attribute->getSingleName() . 'Element === $' . $attribute->getSingleName() . ') {';
+            $innerLines[] = $this->getIndentationPrefix(2) . 'unset(' . $attribute->getThisName() . '[$key]);';
+            $innerLines[] = $this->getIndentationPrefix(2) . 'break;';
+            $innerLines[] = $this->getIndentationPrefix() . '}';
+            $innerLines[] = '}';
         } else {
             if (!$attribute->getSettingFromInverse()) {
-                $lines[] = '    ' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');';
+                $innerLines[] = $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');';
             } else {
-                $lines[] = '    $' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+                $innerLines[] = '$' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
             }
         }
 
         if (!$attribute->getStatic()) {
-            $lines[] = '';
-            $lines[] = '    return $this;';
+            $innerLines[] = '';
+            $innerLines[] = 'return $this;';
         }
+
+        $lines = array_merge($lines, $this->indentLines($innerLines));
+
         $lines[] = '}';
 
         return $lines;
@@ -830,32 +837,37 @@ class Entity1 extends Entity1Base
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
         $lines[] = '{';
 
+        $innerLines = [];
+
         if ('array' === $attribute->getType() && null !== $attribute->getSubtype()) {
-            $lines[] = '    foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+            $innerLines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
 
             if (!$attribute->getStatic()) {
-                $lines[] = '        $this->remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');';
+                $innerLines[] = $this->getIndentationPrefix() . '$this->remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');';
             } else {
-                $lines[] = '        self::remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');';
+                $innerLines[] = $this->getIndentationPrefix() . 'self::remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');';
             }
 
-            $lines[] = '    }';
+            $innerLines[] = '}';
         } else {
             if (!$attribute->getSettingFromInverse()) {
-                $lines[] = '    foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
-                $lines[] = '        ' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');';
-                $lines[] = '    }';
+                $innerLines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $innerLines[] = $this->getIndentationPrefix() . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');';
+                $innerLines[] = '}';
             } else {
-                $lines[] = '    foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
-                $lines[] = '        $' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
-                $lines[] = '    }';
+                $innerLines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $innerLines[] = $this->getIndentationPrefix() . '$' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+                $innerLines[] = '}';
             }
         }
 
         if (!$attribute->getStatic()) {
-            $lines[] = '';
-            $lines[] = '    return $this;';
+            $innerLines[] = '';
+            $innerLines[] = 'return $this;';
         }
+
+        $lines = array_merge($lines, $this->indentLines($innerLines));
+
         $lines[] = '}';
 
         return $lines;
@@ -911,40 +923,61 @@ class Entity1 extends Entity1Base
         return $lines;
     }
 
-    protected function entityToStringLines()
+    // <editor-fold desc="toString">
+    public function getEntityToStringDocumentationLines()
     {
-        $entity = $this->getEntity();
-
-        $lines = '';
+        $lines = [];
 
         $lines[] = '/**';
-        $lines[] = ' * ' . $entity->getName() . ' to string ' . (is_null($entity->getToString()) ? '(Default)' : '(' . $entity->getToString() . ')');
+
+        $line = ' * ' . $this->getEntity()->getName() . ' to string ';
+
+        if (null === $this->getEntity()->getToString()) {
+            $line .= '(Default)';
+        } else {
+            $line .= '(' . $this->getEntity()->getToString() . ')';
+        }
+        $lines[] = $line;
+
         $lines[] = ' *';
         $lines[] = ' * @return string';
         $lines[] = ' */';
 
+        return $lines;
+    }
+
+    public function getEntityToStringLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->getEntityToStringDocumentationLines());
+
         $lines[] = 'public function __toString()';
         $lines[] = '{';
 
-        if (null === $entity->getToString()) {
-            if ('' !== $entity->getProject()->getORM()) {
-                $lines[] = '    return \'' . $entity->getName() . '(\' . $this->' . $entity->getPrimaryAttribute()->getName() . ' . \')\';';
+        $innerLines = [];
+
+        if (null === $this->getEntity()->getToString()) {
+            if ('' !== $this->getEntity()->getProject()->getORM()) {
+                $innerLines[] = 'return \'' . $this->getEntity()->getName() . '(\' . $this->' . $this->getEntity()->getPrimaryAttribute()->getName() . ' . \')\';';
             } else {
-                $lines[] = '    return \'' . $entity->getName() . '\';';
+                $innerLines[] = 'return \'' . $this->getEntity()->getName() . '\';';
             }
         } else {
-            $lines[] = '    return strval($this->' . $entity->getAttributeByName($entity->getToString())->getName() . ');';
+            $innerLines[] = 'return strval($this->' . $this->getEntity()->getAttributeByName($this->getEntity()->getToString())->getName() . ');';
         }
+
+        $lines = array_merge($lines, $this->indentLines($innerLines));
 
         $lines[] = '}';
 
         return $lines;
     }
+    // </editor-fold>
 
-    public function getArrayAccessOffsetSetCodeLines()
+    // <editor-fold desc="Array access">
+    public function getArrayAccessOffsetSetCodeDocumentationLines()
     {
-        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
-
         $lines = [];
 
         $lines[] = '/**';
@@ -955,33 +988,56 @@ class Entity1 extends Entity1Base
         $lines[] = ' *';
         $lines[] = ' * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set';
         $lines[] = ' */';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetSetCodeLines()
+    {
+        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+        $noSetterMessage = 'Tried to set the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.';
+
+        $lines = [];
+
+        $lines = array_merge($lines, $this->getArrayAccessOffsetSetCodeDocumentationLines());
+
         $lines[] = 'public function offsetSet($offset, $value)';
         $lines[] = '{';
-        $lines[] = '    if (!$this->offsetExists($offset)) {' ;
-        $lines[] = '        throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
-        $lines[] = '    }';
-        $lines[] = '    ';
 
-        $lines[] = '    switch ($offset) {';
+        $innerLines = [];
+
+        $innerLines[] = 'if (!$this->offsetExists($offset)) {' ;
+        $innerLines[] = $this->getIndentationPrefix() . 'throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
+        $innerLines[] = '}';
+        $innerLines[] = '';
+
+        $innerLines[] = 'switch ($offset) {';
+
+        $switchLines = [];
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $lines[] = '        case \'' . $attr->getName() . '\':';
-                $lines[] = '            $this->' . $attr->getSetterName() . '($value);';
-                $lines[] = '            break;';
+                $switchLines[] = 'case \'' . $attr->getName() . '\':';
+                $switchLines[] = $this->getIndentationPrefix() . '$this->' . $attr->getSetterName() . '($value);';
+                $switchLines[] = $this->getIndentationPrefix() . 'break;';
             }
         }
 
-        $lines[] = '        default:';
-        $lines[] = '            throw new \\InvalidArgumentException(\'Tried to set the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.\');';
+        $switchLines[] = 'default:';
+        $switchLines[] = $this->getIndentationPrefix() . 'throw new \\InvalidArgumentException(\'' . $noSetterMessage . '\');';
 
-        $lines[] = '    }';
+        $innerLines = array_merge($innerLines, $this->indentLines($switchLines));
+
+        $innerLines[] = '}';
+
+        $lines = array_merge($lines, $this->indentLines($innerLines));
+
         $lines[] = '}';
 
         return $lines;
     }
 
-    public function getArrayAccessOffsetExitsCodeLines()
+    public function getArrayAccessOffsetExitsCodeDocumentationLines()
     {
         $lines = [];
 
@@ -992,6 +1048,16 @@ class Entity1 extends Entity1Base
         $lines[] = ' *';
         $lines[] = ' * @return bool';
         $lines[] = ' */';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetExitsCodeLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->getArrayAccessOffsetExitsCodeDocumentationLines());
+
         $lines[] = 'public function offsetExists($offset)';
         $lines[] = '{';
 
@@ -1000,18 +1066,16 @@ class Entity1 extends Entity1Base
             $attributes[] = '\'' . $attr->getName() . '\'';
         }
 
-        $lines[] = '    return in_array($offset, [' . implode(', ', $attributes) . ']);';
+        $lines[] = $this->getIndentationPrefix() . 'return in_array($offset, [' . implode(', ', $attributes) . ']);';
 
         $lines[] = '}';
 
         return $lines;
     }
 
-    public function getArrayAccessOffsetUnsetCodeLines()
+    public function getArrayAccessOffsetUnsetCodeDocumentationLines()
     {
-        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
-
-        $lines = '';
+        $lines = [];
 
         $lines[] = '/**';
         $lines[] = ' * OffsetUnset implementation of the \\ArrayAccess interface';
@@ -1020,44 +1084,65 @@ class Entity1 extends Entity1Base
         $lines[] = ' *';
         $lines[] = ' * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set';
         $lines[] = ' */';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetUnsetCodeLines()
+    {
+        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+        $noSetterMessage = 'Tried to unset the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.';
+
+        $lines = [];
+
+        $lines = array_merge($lines, $this->getArrayAccessOffsetUnsetCodeDocumentationLines());
+
         $lines[] = 'public function offsetUnset($offset)';
         $lines[] = '{';
-        $lines[] = '    if (!$this->offsetExists($offset)) {' ;
-        $lines[] = '        throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
-        $lines[] = '    }';
-        $lines[] = '    ';
 
-        $lines[] = '    switch ($offset) {';
+        $innerLines = [];
+
+        $innerLines[] = 'if (!$this->offsetExists($offset)) {' ;
+        $innerLines[] = $this->getIndentationPrefix() . 'throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
+        $innerLines[] = '}';
+        $innerLines[] = '';
+
+        $innerLines[] = 'switch ($offset) {';
+
+        $switchLines = [];
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $lines[] = '        case \'' . $attr->getName() . '\':';
+                $switchLines[] = 'case \'' . $attr->getName() . '\':';
 
                 if ($attr->getDefaultValueAttributeInit() != '') {
-                    $lines[] = '            $this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueAttributeInit() . ');';
+                    $switchLines[] = $this->getIndentationPrefix() . '$this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueAttributeInit() . ');';
                 } elseif ($attr->getDefaultValueConstructorInit() != '') {
-                    $lines[] = '            $this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueConstructorInit() . ');';
+                    $switchLines[] = $this->getIndentationPrefix() . '$this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueConstructorInit() . ');';
                 } else {
-                    $lines[] = '            $this->' . $attr->getName() . ' = null;';
+                    $switchLines[] = $this->getIndentationPrefix() . '$this->' . $attr->getName() . ' = null;';
                 }
 
-                $lines[] = '            break;';
+                $switchLines[] = $this->getIndentationPrefix() . 'break;';
             }
         }
 
-        $lines[] = '        default:';
-        $lines[] = '            throw new \\InvalidArgumentException(\'Tried to unset the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.\');';
+        $switchLines[] = 'default:';
+        $switchLines[] = $this->getIndentationPrefix() . 'throw new \\InvalidArgumentException(\'' . $noSetterMessage . '\');';
 
-        $lines[] = '    }';
+        $innerLines = array_merge($innerLines, $this->indentLines($switchLines));
+
+        $innerLines[] = '}';
+
+        $lines = array_merge($lines, $this->indentLines($innerLines));
+
         $lines[] = '}';
 
         return $lines;
     }
 
-    public function getArrayAccessOffsetGetCodeLines()
+    public function getArrayAccessOffsetGetCodeDocumentationLines()
     {
-        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
-
         $lines = [];
 
         $lines[] = '/**';
@@ -1069,26 +1154,50 @@ class Entity1 extends Entity1Base
         $lines[] = ' *';
         $lines[] = ' * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be retrieved';
         $lines[] = ' */';
+
+        return $lines;
+    }
+
+
+    public function getArrayAccessOffsetGetCodeLines()
+    {
+        $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+        $noGetterMessage = 'Tried to get the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow getter access.';
+
+        $lines = [];
+
+        $lines = array_merge($lines, $this->getArrayAccessOffsetGetCodeDocumentationLines());
+
         $lines[] = 'public function offsetGet($offset)';
         $lines[] = '{';
-        $lines[] = '    if (!$this->offsetExists($offset)) {' ;
-        $lines[] = '        throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
-        $lines[] = '    }';
-        $lines[] = '    ';
 
-        $lines[] = '    switch ($offset) {';
+        $innerLines = [];
+
+        $innerLines[] = 'if (!$this->offsetExists($offset)) {' ;
+        $innerLines[] = $this->getIndentationPrefix() . 'throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
+        $innerLines[] = '}';
+        $innerLines[] = '';
+
+        $innerLines[] = 'switch ($offset) {';
+
+        $switchLines = [];
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $lines[] = '        case \'' . $attr->getName() . '\':';
-                $lines[] = '            return $this->' . $attr->getGetterName() . '();';
+                $switchLines[] = 'case \'' . $attr->getName() . '\':';
+                $switchLines[] = $this->getIndentationPrefix() . 'return $this->' . $attr->getGetterName() . '();';
             }
         }
 
-        $lines[] = '        default:';
-        $lines[] = '            throw new \\InvalidArgumentException(\'Tried to get the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow getter access.\');';
+        $switchLines[] = 'default:';
+        $switchLines[] = $this->getIndentationPrefix() . 'throw new \\InvalidArgumentException(\'' . $noGetterMessage . '\');';
 
-        $lines[] = '    }';
+        $innerLines = array_merge($innerLines, $this->indentLines($switchLines));
+
+        $innerLines[] = '}';
+
+        $lines = array_merge($lines, $this->indentLines($innerLines));
+
         $lines[] = '}';
 
         return $lines;
@@ -1096,7 +1205,7 @@ class Entity1 extends Entity1Base
 
     public function getArrayAccessCodeLines()
     {
-        $lines = '';
+        $lines = [];
 
         $lines[] = '// <editor-fold desc="ArrayAccess">';
 
@@ -1118,6 +1227,7 @@ class Entity1 extends Entity1Base
 
         return $lines;
     }
+    // </editor-fold>
 
     public function getFilenameLine()
     {
@@ -1240,8 +1350,6 @@ class Entity1 extends Entity1Base
         $entityUseLines = array_unique($entityUses, SORT_STRING);
 
         $lines = array_merge($lines, $entityUseLines);
-
-        $lines[] = '';
 
         return $lines;
     }
@@ -1413,7 +1521,7 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '// <editor-fold desc="Other methods">';
 
-        $lines = array_merge($lines, $this->entityToStringLines());
+        $lines = array_merge($lines, $this->getEntityToStringLines());
 
         $lines[] = '// </editor-fold>';
 
