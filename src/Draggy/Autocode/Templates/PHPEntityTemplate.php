@@ -20,6 +20,7 @@ use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
 use Draggy\Autocode\Entity;
 use Draggy\Autocode\PHPEntity;
+use Draggy\Utils\PHPJustifier;
 // </user-additions>
 
 /**
@@ -93,6 +94,25 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         return [];
     }
 
+    public function surroundDocumentationBlock(array $lines)
+    {
+        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+
+        $lines = $phpJustifier->justifyFromLines($lines);
+
+        foreach ($lines as $key => $line) {
+            if ('' !== $line) {
+                $lines[$key] = ' * ' . $line;
+            } else {
+                $lines[$key] = ' *' . $line;
+            }
+        }
+
+        $lines = array_merge(['/**'], $lines, [' */']);
+
+        return $lines;
+    }
+
     public function render()
     {
         $lines = [];
@@ -117,6 +137,10 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
 
         $lines = array_merge($lines, $this->getEntityDocumentationLines());
         $lines = array_merge($lines, $this->getEntityLines());
+
+        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+
+        $lines = $phpJustifier->justifyFromLines($lines);
 
         return $this->convertLinesToCode($lines);
     }
