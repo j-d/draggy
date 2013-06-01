@@ -32,6 +32,16 @@ class AttributeTemplate extends AttributeTemplateBase
     // </user-additions>
     // </editor-fold>
 
+    // <editor-fold desc="Constructor">
+    // <user-additions part="constructorDeclaration">
+    public function __construct()
+    // </user-additions>
+    {
+        // <user-additions part="constructor">
+        // </user-additions>
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
     // </user-additions>

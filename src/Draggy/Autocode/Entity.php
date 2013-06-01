@@ -299,6 +299,20 @@ abstract class Entity extends EntityBase
 
         return false;
     }
+
+    public function getUniqueAttributes()
+    {
+        /** @var Attribute[] $uniqueAttributes */
+        $uniqueAttributes = [];
+        foreach ($this->getAttributes() as $attr) {
+            if ($attr->getUnique()) {
+                $uniqueAttributes[] = $attr;
+            }
+        }
+
+        return $uniqueAttributes;
+    }
+
     // </user-additions>
     // </editor-fold>
 }

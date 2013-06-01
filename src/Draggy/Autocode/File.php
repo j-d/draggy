@@ -136,11 +136,11 @@ class File extends AbstractFile
         preg_match_all('/(<user-additions' . ' part=")(.+)(">)/', $userFile, $userParts);
         $userParts = $userParts[2];
 
-        foreach ($userParts as $part) {
-            if (!in_array($part, $masterParts)) {
-                throw new \RuntimeException(sprintf('Found a user-additions part (%s) on the file \'%s\' in the folder \'%s\' but there is no section for it on the master file', $part, $name, $path));
-            }
-        }
+//        foreach ($userParts as $part) {
+//            if (!in_array($part, $masterParts)) {
+//                throw new \RuntimeException(sprintf('Found a user-additions part (%s) on the file \'%s\' in the folder \'%s\' but there is no section for it on the master file', $part, $name, $path));
+//            }
+//        }
 
         foreach ($masterParts as $part) {
             if (preg_match('%<user-additions' . ' part="' . $part . '">.+?</user-additions' . '>%s', $userFile, $regs)) {
