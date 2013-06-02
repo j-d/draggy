@@ -18,6 +18,7 @@ namespace Draggy\Autocode\Templates\PHP\Symfony2;
 
 use Draggy\Autocode\Templates\PHP\Symfony2\Base\Entity3Base;
 // <user-additions part="use">
+use Draggy\Autocode\PHPAttribute;
 // </user-additions>
 
 /**
@@ -39,6 +40,73 @@ class Entity3 extends Entity3Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    public function getAttributeDocumentationLinesAssertPart(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        if (!$attribute->getInverse() && $attribute->getEntity()->getProject()->getValidation() && !$attribute->getAutoIncrement()) {
+            if ('array' !== $attribute->getType()) {
+                $lines[] = '@Assert\\Type(type="' . $attribute->getSymfonyType() . '", message="' . $attribute->getTypeMessage() . '")';
+            }
+
+            if(!$attribute->getNull() && 'boolean' !== $attribute->getType()) {
+                $lines[] = '@Assert\\NotBlank(message="' . $attribute->getRequiredMessage() . '")';
+            }
+
+            if ('string' === $attribute->getType()) {
+                $lines[] = '@Assert\\Length(';
+
+                $assertsArray = [];
+
+                if (null !== $attribute->getMinSize()) {
+                    $assertsArray[] =     'min = "' . $attribute->getMinSize() . '"';
+                }
+
+                $assertsArray[] =     'max = "' . $attribute->getSize() . '"';
+
+                if (null !== $attribute->getMinSize()) {
+                    if ($attribute->getSize() !== $attribute->getMinSize()) {
+                        $assertsArray[] =     'minMessage = "' . $attribute->getMinMessage() . '"';
+                    } else {
+                        $assertsArray[] =     'exactMessage = "' . $attribute->getExactMessage() . '"';
+                    }
+                }
+
+                if ( null === $attribute->getMinSize() || $attribute->getSize() !== $attribute->getMinSize()) {
+                    $assertsArray[] =     'maxMessage = "' . $attribute->getMaxMessage() . '"';
+                }
+
+                for ($i = 0; $i < count($assertsArray) - 1; $i++) {
+                    $assertsArray[$i] .= ',';
+                }
+
+                $lines = array_merge($lines, $assertsArray);
+
+                $lines[] = ')';
+            }
+
+            if ($attribute->getEmail()) {
+                $lines[] = '@Assert\\Email()';
+            }
+        }
+
+        return $lines;
+    }
+
+    public function getAttributeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = $this->getAttributeDocumentationLinesBasePart($attribute);
+
+        $assertLines = $this->getAttributeDocumentationLinesAssertPart($attribute);
+
+        if (count($assertLines) > 0) {
+            $lines[] = '';
+            $lines = array_merge($lines, $assertLines);
+        }
+
+        return $lines;
+    }
+
     public function getFilenameLine()
     {
         $line = '// ' . $this->getEntity()->getNamespace() . '\\Entity\\';

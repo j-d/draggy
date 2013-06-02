@@ -102,7 +102,7 @@ class Entity1 extends Entity1Base
     }
 
     // <editor-fold desc="Attributes">
-    public function getAttributeDocumentationLines(PHPAttribute $attribute)
+    public function getAttributeDocumentationLinesBasePart(PHPAttribute $attribute)
     {
         $lines = [];
 
@@ -113,119 +113,12 @@ class Entity1 extends Entity1Base
 
         $lines[] = '@var ' . $attribute->getPhpType() . ' $' . $attribute->getLowerName();
 
-        // ORM
-        // <editor-fold desc="ORM">
-        if ('Doctrine2' === $attribute->getEntity()->getProject()->getORM()) {
-            $lines[] = '';
-
-            if ($attribute->getPrimary()) {
-                $lines[] = '@ORM\\Id';
-            }
-
-            // ORM
-            if (null === $attribute->getForeign()) {
-                $lines[] = '@ORM\\Column(name="' . $attribute->getName() . '", type="' . $attribute->getType() . '"' . ('string' === $attribute->getType() ? ', length=' . $attribute->getSize() : '') . ($attribute->getUnique() ? ', unique=true' : '') . ($attribute->getNull() ? ', nullable=true' : ($attribute->getPrimary() ? '' : ', nullable=false')) . ')';
-            } else {
-                switch ($attribute->getForeign()) {
-                    case 'ManyToOne':
-                        if ($attribute->getOwnerSide()) {
-                            $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist", "remove"})';
-                            $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
-                        } else {
-                            $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
-                        }
-                        break;
-                    case 'OneToOne':
-                        if ($attribute->getOwnerSide()) {
-                            $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist", "remove"})';
-                            $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
-                        } else {
-                            $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
-                        }
-                        break;
-                    case 'ManyToMany':
-                        if ($attribute->getOwnerSide()) {
-                            $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getName() . '")';
-                            $lines[] = '@ORM\JoinTable(';
-                            $lines[] =     'name="' . $attribute->getManyToManyEntityName() . '",';
-                            $lines[] =     'joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
-                            $lines[] =     'inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
-                            $lines[] = ')';
-                        } else {
-                            $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getName() . '")';
-                        }
-                        break;
-                    default:
-                        throw new \Exception('foreignMethod not implemented (' . $attribute->getForeign() . ')');
-                }
-            }
-
-            if ($attribute->getAutoIncrement() && !$attribute->getForeignTick()) {
-                $lines[] = '@ORM\GeneratedValue(strategy="AUTO")';
-            }
-        }
-        // </editor-fold>
-
-        // Asserts
-        // <editor-fold desc="Asserts">
-        if (!$attribute->getInverse() && $attribute->getEntity()->getProject()->getValidation()) {
-            $assertLines = [];
-
-            if(!$attribute->getAutoIncrement()) {
-                if ('array' !== $attribute->getType()) {
-                    $assertLines[] = '@Assert\\Type(type="' . $attribute->getSymfonyType() . '", message="' . $attribute->getTypeMessage() . '")';
-                }
-
-                if(!$attribute->getNull() && 'boolean' !== $attribute->getType()) {
-                    $assertLines[] = '@Assert\\NotBlank(message="' . $attribute->getRequiredMessage() . '")';
-                }
-
-                if ('string' === $attribute->getType()) {
-                    $assertLines[] = '@Assert\\Length(';
-
-                    $assertsArray = [];
-
-                    if (null !== $attribute->getMinSize()) {
-                        $assertsArray[] =     'min = "' . $attribute->getMinSize() . '"';
-                    }
-
-                    $assertsArray[] =     'max = "' . $attribute->getSize() . '"';
-
-                    if (null !== $attribute->getMinSize()) {
-                        if ($attribute->getSize() !== $attribute->getMinSize()) {
-                            $assertsArray[] =     'minMessage = "' . $attribute->getMinMessage() . '"';
-                        } else {
-                            $assertsArray[] =     'exactMessage = "' . $attribute->getExactMessage() . '"';
-                        }
-                    }
-
-                    if ( null === $attribute->getMinSize() || $attribute->getSize() !== $attribute->getMinSize()) {
-                        $assertsArray[] =     'maxMessage = "' . $attribute->getMaxMessage() . '"';
-                    }
-
-                    for ($i = 0; $i < count($assertsArray) - 1; $i++) {
-                        $assertsArray[$i] .= ',';
-                    }
-
-                    $assertLines = array_merge($assertLines, $assertsArray);
-
-                    $assertLines[] = ')';
-                }
-
-                if ($attribute->getEmail()) {
-                    $assertLines[] = '@Assert\\Email()';
-                }
-            }
-
-            if (0 !== count($assertLines)) {
-                $lines[] = '';
-
-                $lines = array_merge($lines, $assertLines);
-            }
-        }
-        // </editor-fold>
-
         return $lines;
+    }
+
+    public function getAttributeDocumentationLines(PHPAttribute $attribute)
+    {
+        return $this->getAttributeDocumentationLinesBasePart($attribute);
     }
 
     public function getAttributeLines(PHPAttribute $attribute)

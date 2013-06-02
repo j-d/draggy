@@ -18,6 +18,7 @@ namespace Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2;
 
 use Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Base\Entity4Base;
 // <user-additions part="use">
+use Draggy\Autocode\PHPAttribute;
 // </user-additions>
 
 /**
@@ -39,6 +40,82 @@ class Entity4 extends Entity4Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    public function getAttributeDocumentationLinesORMPart(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        if ($attribute->getPrimary()) {
+            $lines[] = '@ORM\\Id';
+        }
+
+        // ORM
+        if (null === $attribute->getForeign()) {
+            $lines[] = '@ORM\\Column(name="' . $attribute->getName() . '", type="' . $attribute->getType() . '"' . ('string' === $attribute->getType() ? ', length=' . $attribute->getSize() : '') . ($attribute->getUnique() ? ', unique=true' : '') . ($attribute->getNull() ? ', nullable=true' : ($attribute->getPrimary() ? '' : ', nullable=false')) . ')';
+        } else {
+            switch ($attribute->getForeign()) {
+                case 'ManyToOne':
+                    if ($attribute->getOwnerSide()) {
+                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist", "remove"})';
+                        $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
+                    } else {
+                        $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
+                    }
+                    break;
+                case 'OneToOne':
+                    if ($attribute->getOwnerSide()) {
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist", "remove"})';
+                        $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
+                    } else {
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
+                    }
+                    break;
+                case 'ManyToMany':
+                    if ($attribute->getOwnerSide()) {
+                        $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getName() . '")';
+                        $lines[] = '@ORM\JoinTable(';
+                        $lines[] =     'name="' . $attribute->getManyToManyEntityName() . '",';
+                        $lines[] =     'joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
+                        $lines[] =     'inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
+                        $lines[] = ')';
+                    } else {
+                        $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getName() . '")';
+                    }
+                    break;
+                default:
+                    throw new \Exception('foreignMethod not implemented (' . $attribute->getForeign() . ')');
+            }
+        }
+
+        if ($attribute->getAutoIncrement() && !$attribute->getForeignTick()) {
+            $lines[] = '@ORM\GeneratedValue(strategy="AUTO")';
+        }
+
+        return $lines;
+    }
+
+    public function getAttributeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = $this->getAttributeDocumentationLinesBasePart($attribute);
+
+        $ormLines = $this->getAttributeDocumentationLinesORMPart($attribute);
+
+        if (count($ormLines) > 0) {
+            $lines[] = '';
+
+            $lines = array_merge($lines, $ormLines);
+        }
+
+        $assertLines = $this->getAttributeDocumentationLinesAssertPart($attribute);
+
+        if (count($assertLines) > 0) {
+            $lines[] = '';
+
+            $lines = array_merge($lines, $assertLines);
+        }
+
+        return $lines;
+    }
+
     public function getUseLines()
     {
         $lines = [];
