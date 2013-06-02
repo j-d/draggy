@@ -24,7 +24,7 @@ use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 /**
  * Draggy\Autocode\Entity\Entity
  */
-abstract class Entity extends EntityBase
+class Entity extends EntityBase
     // <user-additions part="implements">
     // </user-additions>
 {

@@ -135,7 +135,7 @@ class EntityBase1 extends EntityBase1Base
 
         $file .= ' */' . "\n";
 
-        if (count($entity->getChildrenEntities()) == 0 /*|| count($this->getAttributes()) != $this->getMaxNumberAttributesChildren()*/ ) {
+        if ('class' === $entity->getType()) {
             $file .= 'class ' . $entity->getName() . ' extends ' . $entity->getNameBase() . "\n";
         } else {
             $file .= 'abstract class ' . $entity->getName() . ' extends ' . $entity->getNameBase() . "\n";

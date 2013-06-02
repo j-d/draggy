@@ -405,22 +405,44 @@ class Project extends ProjectBase
             $this->log->appendExtended('Found module: ' . $moduleName);
 
             // Classes
-            $classes = $module->xpath('*[self::class or self::abstract]');
+            $classes = $module->xpath('*[self::class]');
 
             foreach ($classes as $class) {
                 $class->addAttribute('fullyQualifiedName', $moduleName . '\\' . $class->attributes()->name);
                 $entity = $this->xmlEntityToEntity($class, $moduleName);
+                $entity->setType('class');
+                $this->addEntity($entity);
+            }
+
+            // Abstracts
+            $abstracts = $module->xpath('*[self::abstract]');
+
+            foreach ($abstracts as $abstract) {
+                $abstract->addAttribute('fullyQualifiedName', $moduleName . '\\' . $abstract->attributes()->name);
+                $entity = $this->xmlEntityToEntity($abstract, $moduleName);
+                $entity->setType('abstract');
                 $this->addEntity($entity);
             }
         }
 
         // Add loose entities
         $loose = $xmlDesign->xpath('loose')[0];
-        $classes = $loose->xpath('*[self::class or self::abstract]');
+
+        $classes = $loose->xpath('*[self::class]');
 
         foreach ($classes as $class) {
-            $class->addAttribute('fullyQualifiedName',$class->attributes()->name); // Add fully qualified name
+            $class->addAttribute('fullyQualifiedName', $class->attributes()->name); // Add fully qualified name
             $entity = $this->xmlEntityToEntity($class);
+            $entity->setType('class');
+            $this->addEntity($entity);
+        }
+
+        $abstracts = $loose->xpath('*[self::abstract]');
+
+        foreach ($abstracts as $abstract) {
+            $abstract->addAttribute('fullyQualifiedName', $abstract->attributes()->name); // Add fully qualified name
+            $entity = $this->xmlEntityToEntity($abstract);
+            $entity->setType('abstract');
             $this->addEntity($entity);
         }
 

@@ -47,32 +47,32 @@
 		<class name="Form" top="167" left="26" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="FormBase1" top="162" left="245" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="CrudRead" top="283" left="248" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="CrudCreate" top="294" left="23" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="CrudUpdate" top="279" left="485" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 		<class name="InterfaceT" top="39" left="483" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
@@ -101,39 +101,52 @@
 			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
-	<module name="Templates\PHP\Symfony2" left="69" top="1814" width="807" height="298">
-		<class name="Repository" top="38" left="27" inheritingFrom="Templates\PHPEntityTemplate">
+	<module name="Templates\PHP\Symfony2" left="69" top="1814" width="933" height="506">
+		<class name="Repository" top="191" left="29" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="Controller" top="171" left="33" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="Controller" top="323" left="27" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="Routes" top="172" left="271" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="Routes" top="323" left="266" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="RoutesRouting" top="172" left="501" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="RoutesRouting" top="319" left="507" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
-		<class name="Fixtures" top="38" left="272" inheritingFrom="Templates\PHPEntityTemplate">
+		<class name="Fixtures" top="187" left="270" inheritingFrom="Templates\PHPEntityTemplate">
 			<attribute id="attribute82" inherited="true"/>
 			<attribute id="attribute81" inherited="true"/>
-			<attribute id="attribute70" inherited="true"/>
 			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+		<class name="Entity3" top="44" left="26" inheritingFrom="Templates\PHP\Entity1">
+			<attribute id="attribute82" inherited="true"/>
+			<attribute id="attribute81" inherited="true"/>
+			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
 		</class>
 	</module>
-	<module name="Templates\PHP\Symfony2\Doctrine2" left="67" top="2144" width="577" height="387"/>
+	<module name="Templates\PHP\Symfony2\Doctrine2" left="71" top="2355" width="577" height="387">
+		<class name="Entity4" top="53" left="19" inheritingFrom="Templates\PHP\Symfony2\Entity3">
+			<attribute id="attribute82" inherited="true"/>
+			<attribute id="attribute81" inherited="true"/>
+			<attribute id="attribute83" inherited="true"/>
+			<attribute id="attribute70" inherited="true"/>
+		</class>
+	</module>
 	<loose>
 		<class name="Project" top="58" left="46" constructor="true">
 			<attribute id="attribute" name="namespace" type="string" minSize="1"/>
@@ -235,6 +248,7 @@
 			<attribute id="attribute9" name="namespace" type="string" minSize="1"/>
 			<attribute id="attribute10" name="module" type="string"/>
 			<attribute id="attribute11" name="name" type="string"/>
+			<attribute id="attribute84" name="type" type="string" description="Entity type: class, abstract, interface ..."/>
 			<attribute id="attribute12" name="description" type="string" default="null"/>
 			<attribute id="attribute13" name="attributes" type="array" subtype="Attribute" default="[]"/>
 			<attribute id="attribute14" name="attributeNames" type="array" subtype="string" default="[]"/>
@@ -274,6 +288,7 @@
 			<attribute id="attribute57" inherited="true"/>
 			<attribute id="attribute17" inherited="true"/>
 			<attribute id="attribute80" inherited="true"/>
+			<attribute id="attribute84" inherited="true"/>
 		</class>
 		<abstract name="Attribute" top="58" left="1153" constructor="true">
 			<attribute id="attribute26" name="entity" type="object" subtype="Entity"/>
@@ -332,6 +347,8 @@
 		<relation from="PHPEntity" to="Entity" type="Inheritance"/>
 		<relation from="Templates\PHP\InterfaceT" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
 		<relation from="Templates\PHP\TraitT" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Entity3" to="Templates\PHP\Entity1" type="Inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Doctrine2\Entity4" to="Templates\PHP\Symfony2\Entity3" type="Inheritance" broken="true"/>
 	</relationships>
 	<autocode>
 		<base>true</base>

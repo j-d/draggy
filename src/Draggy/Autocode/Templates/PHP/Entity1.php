@@ -1126,10 +1126,6 @@ class Entity1 extends Entity1Base
     {
         $line = '// ' . $this->getEntity()->getNamespace() . '\\';
 
-        if ('Symfony2' === $this->getEntity()->getProject()->getFramework()) {
-            $line .= 'Entity\\';
-        }
-
         if ($this->getEntity()->getProject()->getBase()) {
             $line .= 'Base\\';
         }
@@ -1142,10 +1138,6 @@ class Entity1 extends Entity1Base
     public function getNamespaceLine()
     {
         $line = 'namespace ' . $this->getEntity()->getNamespace();
-
-        if ('Symfony2' === $this->getEntity()->getProject()->getFramework()) {
-            $line .= '\\Entity';
-        }
 
         if ($this->getEntity()->getProject()->getBase()) {
             $line .= '\\Base';
@@ -1174,77 +1166,37 @@ class Entity1 extends Entity1Base
         return $requiredEntities;
     }
 
-    public function getDoctrineUseLines()
-    {
-        $lines = [];
-
-        if ('Doctrine2' === $this->getEntity()->getProject()->getORM()) {
-            $lines[] = 'use Doctrine\\ORM\\Mapping as ORM;';
-
-            $useArrayCollection = false;
-            foreach ($this->getEntity()->getAttributes() as $attr) {
-                if (null !== $attr->getForeign()) {
-                    $useArrayCollection = true;
-                    break;
-                }
-            }
-
-            if ($useArrayCollection) {
-                $lines[] = 'use Doctrine\\Common\\Collections\\Collection;';
-                $lines[] = 'use Doctrine\\Common\\Collections\\ArrayCollection;'; // Is needed when doing new ArrayCollection();
-            }
-        }
-
-        return $lines;
-    }
-
     public function getUseLines()
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getDoctrineUseLines());
-
-        if ($this->getEntity()->getProject()->getValidation()) {
-            $lines[] = 'use Symfony\\Component\\Validator\\Constraints as Assert;';
-        }
-
-        if (count($this->getEntity()->getUniqueAttributes()) > 0) {
-            $lines[] = 'use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;';
-        }
-
-        $entityUses = [];
-
         if ( $this->getEntity()->getProject()->getBase() && $this->getEntity()->hasSetters() ) {
-            $entityUses[] = $this->getEntityUseLine($this->getEntity());
+            $lines[] = $this->getEntityUseLine($this->getEntity());
         }
 
         if (null !== $this->getEntity()->getParentEntity()) {
-            $entityUses[] = 'use ' . $this->getEntity()->getParentEntity()->getFullyQualifiedName() . ';';
+            $lines[] = 'use ' . $this->getEntity()->getParentEntity()->getFullyQualifiedName() . ';';
         }
 
         foreach ($this->getRequiredEntities() as $requiredEntity) {
             if (substr($requiredEntity, 0, strlen($this->getEntity()->getNamespace())) !== $this->getEntity()->getNamespace()) {
-                $entityUses[] = 'use ' . $requiredEntity . ';';
+                $lines[] = 'use ' . $requiredEntity . ';';
             }
         }
 
         if ($this->getEntity()->getProject()->getBase()) {
             foreach ($this->getEntity()->getAttributes() as $attr) {
                 if (null !== $attr->getForeignEntity()) {
-                    $entityUses[] = 'use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
+                    $lines[] = 'use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
                 }
 
                 if ($attr->isEntitySubtype()) {
-                    $entityUses[] = $this->getEntityUseLine($this->getEntity()->getProject()->getEntityByFullyQualifiedName($attr->getSubtype()));
+                    $lines[] = $this->getEntityUseLine($this->getEntity()->getProject()->getEntityByFullyQualifiedName($attr->getSubtype()));
                 }
             }
         }
 
-        $entityUseLines = array_unique($entityUses, SORT_STRING);
-
-        $lines = array_merge($lines, $entityUseLines);
-
-        return $lines;
+        return array_unique($lines, SORT_STRING);
     }
 
     public function getEntityDocumentationLines()
