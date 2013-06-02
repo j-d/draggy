@@ -41,65 +41,31 @@ class EntityBase1 extends EntityBase1Base
     // <user-additions part="otherMethods">
     public function getFilenameLine()
     {
-        $line = '// ' . $this->getEntity()->getNamespace() . '\\';
-        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
-            $line .= 'Entity\\';
-        }
-        $line .= $this->getEntity()->getName() . '.php';
-
-        return $line;
+        return '// ' . $this->getEntity()->getNamespace() . '\\' . $this->getEntity()->getName() . '.php';
     }
 
     public function getNamespaceLine()
     {
-        $line = 'namespace ' . $this->getEntity()->getNamespace();
+        return 'namespace ' . $this->getEntity()->getNamespace() .';';
+    }
 
-        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
-            $line.= '\\Entity';
-        }
+    public function getUseLinesUserAdditionsPart()
+    {
+        $lines = [];
 
-        $line .= ';';
+        $lines[] = '// <user-additions' . ' part="use">';
+        $lines[] = '// </user-additions' . '>';
 
-        return $line;
+        return $lines;
     }
 
     public function getUseLines()
     {
         $lines = [];
 
-        if ($this->getEntity()->getProject()->getORM() === 'Doctrine2') {
-            $lines[] = 'use Doctrine\ORM\Mapping as ORM;';
-        }
+        $lines[] = 'use ' . $this->getEntity()->getNamespace() . '\\Base\\' . $this->getEntity()->getNameBase() . ';';
 
-        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
-            $lines[] = 'use Symfony\Component\Validator\Constraints as Assert;';
-        }
-
-        $line = 'use ' . $this->getEntity()->getNamespace() . '\\';
-        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
-            $line .= 'Entity\\';
-        }
-        $line.= 'Base\\' . $this->getEntity()->getNameBase() . ';';
-
-        $lines[] = $line;
-
-        if ($this->getEntity()->getProject()->getORM() === 'Doctrine2') {
-            $useArrayCollection = false;
-
-            foreach ($this->getEntity()->getAttributes() as $attr) {
-                if (null !== $attr->getForeign() && 'array' === $attr->getType()) {
-                    $useArrayCollection = true;
-                    break;
-                }
-            }
-
-            if ($useArrayCollection) {
-                $lines[] = 'use Doctrine\\Common\\Collections\\ArrayCollection;';
-            }
-        }
-
-        $lines[] = '// <user-additions' . ' part="use">';
-        $lines[] = '// </user-additions' . '>';
+        $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
 
         return $lines;
     }
@@ -109,20 +75,6 @@ class EntityBase1 extends EntityBase1Base
         $lines = [];
 
         $lines[] = $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName();
-
-        if ($this->getEntity()->getProject()->getORM() === 'Doctrine2') {
-            $lines[] = '';
-
-            if (count($this->getEntity()->getChildrenEntities()) == 0 /*|| count($this->getAttributes()) != $this->getMaxNumberAttributesChildren()*/ ) {
-                if (!$this->getEntity()->getHasRepository()) {
-                    $lines[] = '@ORM\\Entity';
-                } else {
-                    $lines[] = '@ORM\\Entity(repositoryClass="' . $this->getEntity()->getFullyQualifiedName() . 'Repository")';
-                }
-            } else {
-                $lines[] = '@ORM\MappedSuperclass';
-            }
-        }
 
         return $lines;
     }
