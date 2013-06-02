@@ -62,6 +62,31 @@ class Entity4 extends Entity4Base
 
         return $lines;
     }
+
+    public function getEntityDocumentationLines()
+    {
+        $lines = parent::getEntityDocumentationLines();
+
+        $lines[] = '';
+
+        $lines[] = $this->getEntity()->getProject()->getBase() || null !== $this->getEntity()->getParentEntity()
+            ? '@ORM\\MappedSuperclass'
+            : '@ORM\\Entity';
+
+        if ($this->getEntity()->getProject()->getValidation()) {
+            $uniqueAttributes = $this->getEntity()->getUniqueAttributes();
+
+            if (count($uniqueAttributes) > 0) {
+                $lines[] = '';
+
+                foreach ($uniqueAttributes as $attr) {
+                    $lines[] = '@DoctrineAssert\\UniqueEntity(fields="' . $attr->getName() . '", message="' . $attr->getUniqueMessage() . '")';
+                }
+            }
+        }
+
+        return $lines;
+    }
     // </user-additions>
     // </editor-fold>
 }

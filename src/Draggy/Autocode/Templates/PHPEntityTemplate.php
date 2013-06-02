@@ -135,7 +135,6 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         $lines = array_merge($lines, $this->getUseLines());
         $lines[] = '';
 
-        $lines = array_merge($lines, $this->getEntityDocumentationLines());
         $lines = array_merge($lines, $this->getEntityLines());
 
         $phpJustifier = new PHPJustifier($this->getIndentation(), 1);

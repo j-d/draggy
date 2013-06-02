@@ -225,7 +225,7 @@ class Entity1 extends Entity1Base
         }
         // </editor-fold>
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getAttributeLines(PHPAttribute $attribute)
@@ -238,7 +238,7 @@ class Entity1 extends Entity1Base
 
         $lines = [];
 
-        $lines = array_merge($lines, $this->getAttributeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getAttributeDocumentationLines($attribute)));
 
         if ($attribute->getEntity()->getProject()->getBase()) {
             if (!$attribute->getStatic()) {
@@ -363,7 +363,7 @@ class Entity1 extends Entity1Base
             $lines[] = '@throws \InvalidArgumentException';
         }
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getSetterCodeLines(PHPAttribute $attribute)
@@ -374,7 +374,7 @@ class Entity1 extends Entity1Base
 
         $lines = [];
 
-        $lines = array_merge($lines, $this->getSetterCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSetterCodeDocumentationLines($attribute)));
 
         if ($attribute->getStatic()) {
             $line = 'public static function ' . $attribute->getSetterName() . '(';
@@ -485,14 +485,14 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@return ' . $attribute->getPhpAnnotationTypeBase();
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getGetterCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getGetterCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getGetterCodeDocumentationLines($attribute)));
 
         $lines[] = $attribute->getStatic()
             ? 'public static function ' . $attribute->getGetterName() . '()'
@@ -524,14 +524,14 @@ class Entity1 extends Entity1Base
             $lines[] = '@return ' . $attribute->getEntity()->getName();
         }
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getSingleAdderCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getSingleAdderCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleAdderCodeDocumentationLines($attribute)));
 
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
         $lines[] = '{';
@@ -582,14 +582,14 @@ class Entity1 extends Entity1Base
             $lines[] = '@return ' . $attribute->getEntity()->getName();
         }
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getMultipleAdderCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getMultipleAdderCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleAdderCodeDocumentationLines($attribute)));
 
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
         $lines[] = '{';
@@ -642,14 +642,14 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@return bool';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getSingleContainsCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getSingleContainsCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleContainsCodeDocumentationLines($attribute)));
 
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
         $lines[] = '{';
@@ -673,14 +673,14 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@return bool';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getMultipleContainsCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getMultipleContainsCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleContainsCodeDocumentationLines($attribute)));
 
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
         $lines[] = '{';
@@ -722,14 +722,14 @@ class Entity1 extends Entity1Base
             $lines[] = '@return ' . $attribute->getEntity()->getName();
         }
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getSingleRemoverCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getSingleRemoverCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleRemoverCodeDocumentationLines($attribute)));
 
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
         $lines[] = '{';
@@ -770,14 +770,14 @@ class Entity1 extends Entity1Base
             $lines[] = '@return ' . $attribute->getEntity()->getName();
         }
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getMultipleRemoverCodeLines(PHPAttribute $attribute)
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getMultipleRemoverCodeDocumentationLines($attribute));
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleRemoverCodeDocumentationLines($attribute)));
 
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
         $lines[] = '{';
@@ -879,14 +879,14 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@return string';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getEntityToStringLines()
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getEntityToStringDocumentationLines());
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getEntityToStringDocumentationLines()));
 
         $lines[] = 'public function __toString()';
         $lines[] = '{';
@@ -917,7 +917,7 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getArrayAccessOffsetSetCodeLines()
@@ -927,7 +927,7 @@ class Entity1 extends Entity1Base
 
         $lines = [];
 
-        $lines = array_merge($lines, $this->getArrayAccessOffsetSetCodeDocumentationLines());
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetSetCodeDocumentationLines()));
 
         $lines[] = 'public function offsetSet($offset, $value)';
         $lines[] = '{';
@@ -964,14 +964,14 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@return bool';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getArrayAccessOffsetExitsCodeLines()
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->getArrayAccessOffsetExitsCodeDocumentationLines());
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetExitsCodeDocumentationLines()));
 
         $lines[] = 'public function offsetExists($offset)';
         $lines[] = '{';
@@ -998,7 +998,7 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getArrayAccessOffsetUnsetCodeLines()
@@ -1008,7 +1008,7 @@ class Entity1 extends Entity1Base
 
         $lines = [];
 
-        $lines = array_merge($lines, $this->getArrayAccessOffsetUnsetCodeDocumentationLines());
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetUnsetCodeDocumentationLines()));
 
         $lines[] = 'public function offsetUnset($offset)';
         $lines[] = '{';
@@ -1057,7 +1057,7 @@ class Entity1 extends Entity1Base
         $lines[] = '';
         $lines[] = '@throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be retrieved';
 
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
 
@@ -1068,7 +1068,7 @@ class Entity1 extends Entity1Base
 
         $lines = [];
 
-        $lines = array_merge($lines, $this->getArrayAccessOffsetGetCodeDocumentationLines());
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetGetCodeDocumentationLines()));
 
         $lines[] = 'public function offsetGet($offset)';
         $lines[] = '{';
@@ -1203,35 +1203,11 @@ class Entity1 extends Entity1Base
     {
         $lines = [];
 
-        if (!$this->getEntity()->getProject()->getBase()) {
-            $lines[] = $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName();
-        } else {
-            $lines[] = $this->getEntity()->getNamespace() . '\\Entity\\Base\\' . $this->getEntity()->getName();
-        }
+        $lines[] = !$this->getEntity()->getProject()->getBase()
+            ? $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName()
+            : $this->getEntity()->getNamespace() . '\\Entity\\Base\\' . $this->getEntity()->getName();
 
-        if ('Doctrine2' === $this->getEntity()->getProject()->getORM()) {
-            $lines[] = '';
-
-            if ( $this->getEntity()->getProject()->getBase() || !is_null($this->getEntity()->getParentEntity()) ) {
-                $lines[] = '@ORM\\MappedSuperclass';
-            } else {
-                $lines[] = '@ORM\\Entity';
-            }
-        }
-
-        if ($this->getEntity()->getProject()->getValidation()) {
-            $uniqueAttributes = $this->getEntity()->getUniqueAttributes();
-
-            if (count($uniqueAttributes) > 0) {
-                $lines[] = '';
-
-                foreach ($uniqueAttributes as $attr) {
-                    $lines[] = '@DoctrineAssert\\UniqueEntity(fields="' . $attr->getName() . '", message="' . $attr->getUniqueMessage() . '")';
-                }
-            }
-        }
-
-        return $this->surroundDocumentationBlock($lines);
+        return $lines;
     }
 
     public function getEntityDeclarationLine()
@@ -1385,6 +1361,8 @@ class Entity1 extends Entity1Base
     public function getEntityLines()
     {
         $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getEntityDocumentationLines()));
 
         $lines[] = $this->getEntityDeclarationLine();
 
