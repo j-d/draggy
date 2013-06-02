@@ -84,14 +84,27 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         return [];
     }
 
-    public function getEntityDocumentationLines()
+    public function getFileLines()
     {
         return [];
     }
 
-    public function getEntityLines()
+    public function commentLines($lines)
     {
-        return [];
+        foreach ($lines as $number => $line) {
+            $lines[$number] = '//' . $line;
+        }
+
+        return $lines;
+    }
+
+    public function commentAndJustifyLines($lines)
+    {
+        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+
+        $lines = $phpJustifier->justifyFromLines($lines);
+
+        return $this->commentLines($lines);
     }
 
     public function surroundDocumentationBlock(array $lines)
@@ -135,7 +148,7 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         $lines = array_merge($lines, $this->getUseLines());
         $lines[] = '';
 
-        $lines = array_merge($lines, $this->getEntityLines());
+        $lines = array_merge($lines, $this->getFileLines());
 
         $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
 

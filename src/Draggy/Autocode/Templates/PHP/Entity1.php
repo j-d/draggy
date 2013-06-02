@@ -285,7 +285,7 @@ class Entity1 extends Entity1Base
 
         $lines[] = '{';
 
-        $lines = array_merge($lines, $this->indentLines($validationLines));
+        $lines = array_merge($lines, $validationLines);
 
         if (0 !== count($validationLines)) {
             $lines[] = '';
@@ -1186,7 +1186,7 @@ class Entity1 extends Entity1Base
                 $attributeDefaultValueConstructor = $attr->getDefaultValueConstructorInit();
 
                 if ('' !== $attributeDefaultValueConstructor) {
-                    $lines[] = $this->indent('$this->' . $attr->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';');
+                    $lines[] = '$this->' . $attr->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';';
                 }
             }
 
@@ -1250,7 +1250,7 @@ class Entity1 extends Entity1Base
         return $lines;
     }
 
-    public function getEntityLines()
+    public function getFileLines()
     {
         $lines = [];
 
@@ -1262,11 +1262,11 @@ class Entity1 extends Entity1Base
 
         $lines[] = '{';
 
-        $lines = array_merge($lines, $this->indentLines($this->getAllAttributeLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getConstructorLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getAllSetterGetterLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getOtherMethodLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getArrayAccessLines()));
+        $lines = array_merge($lines, $this->getAllAttributeLines());
+        $lines = array_merge($lines, $this->getConstructorLines());
+        $lines = array_merge($lines, $this->getAllSetterGetterLines());
+        $lines = array_merge($lines, $this->getOtherMethodLines());
+        $lines = array_merge($lines, $this->getArrayAccessLines());
 
         $lines[] = '}';
 

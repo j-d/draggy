@@ -80,7 +80,7 @@ class PHPJustifier extends AbstractJustifier
 
     protected function isStartBracesBlock($line)
     {
-        if ('{' === substr($line, -1)) {
+        if ('{' === substr($line, -1) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
         }
 
@@ -89,7 +89,7 @@ class PHPJustifier extends AbstractJustifier
 
     protected function isEndBracesBlock($line)
     {
-        if ('}' === substr($line, 0, 1)) {
+        if (('}' === substr($line, 0, 1) || '}' === substr($line, -1)) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
         }
 
@@ -121,7 +121,7 @@ class PHPJustifier extends AbstractJustifier
 
     protected function isStartBracketsBlock($line)
     {
-        if ('(' === substr($line, -1) && '*' !== substr($line, 0, 1)) {
+        if ('(' === substr($line, -1) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
         }
 
@@ -131,6 +131,14 @@ class PHPJustifier extends AbstractJustifier
     protected function isEndBracketsBlock($line)
     {
         if (')' === substr($line, 0, 1) && '*' !== substr($line, 0, 1)) {
+            return true;
+        }
+
+        if (');' === $line) {
+            return true;
+        }
+
+        if (');' === substr($line, 0, 2) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
         }
 
@@ -158,6 +166,55 @@ class PHPJustifier extends AbstractJustifier
         }
 
         throw new \RuntimeException('Cannot find the end of the brackets block starting in line ' . $lineNumber);
+    }
+
+    protected function isStartSquaredBracketsBlock($line)
+    {
+        if ('[' === substr($line, -1) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isEndSquaredBracketsBlock($line)
+    {
+        if (']' === substr($line, 0, 1) && '*' !== substr($line, 0, 1)) {
+            return true;
+        }
+
+        if ('];' === $line) {
+            return true;
+        }
+
+        if ('];' === substr($line, 0, 2) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function findEndSquaredBracketsBlock($lineNumber, $maxLine, $targetStepsInto = 0)
+    {
+        $stepsInto = 0;
+
+        for ($i = $lineNumber; $i <= $maxLine; $i++) {
+            $line = $this->lines[$i];
+
+            if ($this->isEndSquaredBracketsBlock($line) && $i > $lineNumber) {
+                $stepsInto--;
+
+                if ($stepsInto === $targetStepsInto) {
+                    return $i;
+                }
+            }
+
+            if ($this->isStartSquaredBracketsBlock($line)) {
+                $stepsInto++;
+            }
+        }
+
+        throw new \RuntimeException('Cannot find the end of the squared brackets block starting in line ' . $lineNumber);
     }
 
     protected function isStartCaseBlock($line)
@@ -198,6 +255,122 @@ class PHPJustifier extends AbstractJustifier
         return $maxLine;
     }
 
+    protected function isArrowsRow($lineNumber)
+    {
+        if ('->' === substr($this->lines[$lineNumber], 0, 2)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function findEndArrowsBlock($lineNumber, $maxLine)
+    {
+        for ($i = $lineNumber + 1; $i <= $maxLine; $i++) {
+            if (!$this->isArrowsRow($i)) {
+                return $i - 1;
+            }
+        }
+
+        throw new \RuntimeException('Cannot find the end of the arrows block starting in line ' . $lineNumber);
+    }
+
+    protected function isAssignmentLine($lineNumber)
+    {
+        $line = $this->lines[$lineNumber];
+
+        if ('$' === substr($line, 0, 1) && ';' === substr($line, -1) && 1 === substr_count($line, ' = ')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function findEndAssignmentsBlock($lineNumber, $maxLine)
+    {
+        for ($i = $lineNumber + 1; $i <= $maxLine; $i++) {
+            if (!$this->isAssignmentLine($i)) {
+                return $i - 1;
+            }
+        }
+
+        return $lineNumber;
+    }
+
+    protected function alignAssignmentsLines($startLine, $endLine)
+    {
+        if ($endLine - $startLine < 1) {
+            return;
+        }
+
+        $maxPositionAssignment = 0;
+
+        $beforeAssignment    = [];
+        $afterAssignment     = [];
+
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            $line = $this->outputLines[$i];
+
+            $positionAssignment   = strpos($line, ' = ');
+            $beforeAssignment[$i] = substr($line, 0, $positionAssignment);
+            $afterAssignment[$i]  = substr($line, $positionAssignment);
+
+            $maxPositionAssignment = max($positionAssignment, $maxPositionAssignment);
+        }
+
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            $this->outputLines[$i] = $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i];
+        }
+    }
+
+    protected function isDoubleArrowLine($lineNumber)
+    {
+        $line = $this->lines[$lineNumber];
+
+        if (1 === substr_count($line, ' => ')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function findEndDoubleArrowBlock($lineNumber, $maxLine)
+    {
+        for ($i = $lineNumber + 1; $i <= $maxLine; $i++) {
+            if (!$this->isDoubleArrowLine($i)) {
+                return $i - 1;
+            }
+        }
+
+        return $lineNumber;
+    }
+
+    protected function alignDoubleArrowLines($startLine, $endLine)
+    {
+        if ($endLine - $startLine < 1) {
+            return;
+        }
+
+        $maxPositionAssignment = 0;
+
+        $beforeAssignment    = [];
+        $afterAssignment     = [];
+
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            $line = $this->outputLines[$i];
+
+            $positionAssignment   = strpos($line, ' => ');
+            $beforeAssignment[$i] = substr($line, 0, $positionAssignment);
+            $afterAssignment[$i]  = substr($line, $positionAssignment);
+
+            $maxPositionAssignment = max($positionAssignment, $maxPositionAssignment);
+        }
+
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            $this->outputLines[$i] = $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i];
+        }
+    }
+
     public function blockIndent($startLine, $endLine)
     {
         if ($endLine < $startLine) {
@@ -215,12 +388,28 @@ class PHPJustifier extends AbstractJustifier
                 $this->indentLines($i + 1, $this->findEndBracketsBlock($i, $endLine) - 1);
             }
 
+            if ($this->isStartSquaredBracketsBlock($line)) {
+                $this->indentLines($i + 1, $this->findEndSquaredBracketsBlock($i, $endLine) - 1);
+            }
+
             if ($this->isSpecialIndentationBlock($i)) {
                 $this->indentLines($i, $i);
             }
 
             if ($this->isStartCaseBlock($line)) {
                 $this->indentLines($i + 1, $this->findEndCaseBlock($i, $endLine));
+            }
+
+            if ($this->isArrowsRow($i) && $i > $startLine && !$this->isArrowsRow($i - 1)) {
+                $this->indentLines($i, $this->findEndArrowsBlock($i, $endLine));
+            }
+
+            if ($this->isAssignmentLine($i) && $i > $startLine && !$this->isAssignmentLine($i - 1)) {
+                $this->alignAssignmentsLines($i, $this->findEndAssignmentsBlock($i, $endLine));
+            }
+
+            if ($this->isDoubleArrowLine($i) && $i > $startLine && !$this->isDoubleArrowLine($i - 1)) {
+                $this->alignDoubleArrowLines($i, $this->findEndDoubleArrowBlock($i, $endLine));
             }
         }
     }

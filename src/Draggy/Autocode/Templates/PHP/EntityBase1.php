@@ -166,7 +166,7 @@ class EntityBase1 extends EntityBase1Base
         return $lines;
     }
 
-    public function getEntityLines()
+    public function getFileLines()
     {
         $lines = [];
 
@@ -178,10 +178,10 @@ class EntityBase1 extends EntityBase1Base
 
         $lines[] = '{';
 
-        $lines = array_merge($lines, $this->indentLines($this->getAttributeLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getConstructorLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getSetterGetterLines()));
-        $lines = array_merge($lines, $this->indentLines($this->getOtherMethodLines()));
+        $lines = array_merge($lines, $this->getAttributeLines());
+        $lines = array_merge($lines, $this->getConstructorLines());
+        $lines = array_merge($lines, $this->getSetterGetterLines());
+        $lines = array_merge($lines, $this->getOtherMethodLines());
 
         $lines[] = '}';
 
