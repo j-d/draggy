@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -40,6 +40,13 @@ abstract class EntityBase
      * @var string $name
      */
     protected $name;
+
+    /**
+     * Entity type: class, abstract, interface ...
+     *
+     * @var string $type
+     */
+    protected $type;
 
     /**
      * @var string $description
@@ -221,6 +228,36 @@ abstract class EntityBase
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Entity
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setType($type)
+    {
+        if (!is_string($type)) {
+            throw new \InvalidArgumentException('The attribute type on the class Entity has to be string (' . gettype($type) . ('object' === gettype($type) ? ' ' . get_class($type) : '') . ' given).');
+        }
+
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -1082,7 +1119,6 @@ abstract class EntityBase
     {
         return $this->arrayAccess;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Other methods">

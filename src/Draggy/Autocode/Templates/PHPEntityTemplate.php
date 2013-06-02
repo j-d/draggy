@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -18,7 +18,9 @@ namespace Draggy\Autocode\Templates;
 
 use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
+use Draggy\Autocode\Entity;
 use Draggy\Autocode\PHPEntity;
+use Draggy\Utils\PHPJustifier;
 // </user-additions>
 
 /**
@@ -49,19 +51,110 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    public function getConstructorDefaultValuesPart()
+    /**
+     * @param Entity $entity
+     *
+     * @return string
+     */
+    public static function getEntityUseLine(Entity $entity)
     {
-        $file = '';
+        $line = 'use ' . $entity->getNamespace();
 
-        foreach ($this->getEntity()->getAttributes() as $a) {
-            $attributeDefaultValueConstructor = $a->getDefaultValueConstructorInit();
+        if ($entity->getProject()->getFramework() === 'Symfony2') {
+            $line .= '\\Entity';
+        }
 
-            if ($attributeDefaultValueConstructor !== '') {
-                $file .= '        $this->' . $a->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';' . "\n";
+        $line .= '\\' . $entity->getName() . ';';
+
+        return $line;
+    }
+
+    public function getFilenameLine()
+    {
+        return null;
+    }
+
+    public function getNamespaceLine()
+    {
+        return null;
+    }
+
+    public function getUseLines()
+    {
+        return [];
+    }
+
+    public function getFileLines()
+    {
+        return [];
+    }
+
+    public function commentLines($lines)
+    {
+        foreach ($lines as $number => $line) {
+            $lines[$number] = '//' . $line;
+        }
+
+        return $lines;
+    }
+
+    public function commentAndJustifyLines($lines)
+    {
+        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+
+        $lines = $phpJustifier->justifyFromLines($lines);
+
+        return $this->commentLines($lines);
+    }
+
+    public function surroundDocumentationBlock(array $lines)
+    {
+        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+
+        $lines = $phpJustifier->justifyFromLines($lines);
+
+        foreach ($lines as $key => $line) {
+            if ('' !== $line) {
+                $lines[$key] = ' * ' . $line;
+            } else {
+                $lines[$key] = ' *' . $line;
             }
         }
 
-        return $file;
+        $lines = array_merge(['/**'], $lines, [' */']);
+
+        return $lines;
+    }
+
+    public function render()
+    {
+        $lines = [];
+
+        $lines[] = '<?php';
+
+        $lines[] = $this->getFilenameLine();
+
+        $lines = array_merge($lines, $this->getDescriptionCodeLines());
+
+        $lines = array_merge($lines, $this->getBlurbLines());
+
+        $namespaceLine = $this->getNamespaceLine();
+
+        if (null !== $namespaceLine) {
+            $lines[] = $namespaceLine;
+            $lines[] = '';
+        }
+
+        $lines = array_merge($lines, $this->getUseLines());
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getFileLines());
+
+        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+
+        $lines = $phpJustifier->justifyFromLines($lines);
+
+        return $this->convertLinesToCode($lines);
     }
     // </user-additions>
     // </editor-fold>

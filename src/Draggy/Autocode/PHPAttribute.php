@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -18,6 +18,7 @@ namespace Draggy\Autocode;
 
 use Draggy\Autocode\Base\PHPAttributeBase;
 // <user-additions part="use">
+use Draggy\Autocode\Templates\PHPEntityTemplate;
 // </user-additions>
 
 /**
@@ -30,18 +31,18 @@ class PHPAttribute extends PHPAttributeBase
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
     public static $PHP_VARS = [
-        'string' => 'string',
-        'boolean' => 'boolean',
-        'integer' => 'integer',
+        'string'   => 'string',
+        'boolean'  => 'boolean',
+        'integer'  => 'integer',
         'smallint' => 'integer',
-        'bigint' => 'integer',
-        'text' => 'string',
-        'date' => '\\DateTime',
-        'time' => '\\DateTime',
+        'bigint'   => 'integer',
+        'text'     => 'string',
+        'date'     => '\\DateTime',
+        'time'     => '\\DateTime',
         'datetime' => '\\DateTime',
-        'array' => 'array',
-        'decimal' => 'float',
-        'object' => 'ERROR'
+        'array'    => 'array',
+        'decimal'  => 'float',
+        'object'   => 'ERROR'
     ];
     // </user-additions>
     // </editor-fold>

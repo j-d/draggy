@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -405,22 +405,44 @@ class Project extends ProjectBase
             $this->log->appendExtended('Found module: ' . $moduleName);
 
             // Classes
-            $classes = $module->xpath('*[self::class or self::abstract]');
+            $classes = $module->xpath('*[self::class]');
 
             foreach ($classes as $class) {
                 $class->addAttribute('fullyQualifiedName', $moduleName . '\\' . $class->attributes()->name);
                 $entity = $this->xmlEntityToEntity($class, $moduleName);
+                $entity->setType('class');
+                $this->addEntity($entity);
+            }
+
+            // Abstracts
+            $abstracts = $module->xpath('*[self::abstract]');
+
+            foreach ($abstracts as $abstract) {
+                $abstract->addAttribute('fullyQualifiedName', $moduleName . '\\' . $abstract->attributes()->name);
+                $entity = $this->xmlEntityToEntity($abstract, $moduleName);
+                $entity->setType('abstract');
                 $this->addEntity($entity);
             }
         }
 
         // Add loose entities
         $loose = $xmlDesign->xpath('loose')[0];
-        $classes = $loose->xpath('*[self::class or self::abstract]');
+
+        $classes = $loose->xpath('*[self::class]');
 
         foreach ($classes as $class) {
-            $class->addAttribute('fullyQualifiedName',$class->attributes()->name); // Add fully qualified name
+            $class->addAttribute('fullyQualifiedName', $class->attributes()->name); // Add fully qualified name
             $entity = $this->xmlEntityToEntity($class);
+            $entity->setType('class');
+            $this->addEntity($entity);
+        }
+
+        $abstracts = $loose->xpath('*[self::abstract]');
+
+        foreach ($abstracts as $abstract) {
+            $abstract->addAttribute('fullyQualifiedName', $abstract->attributes()->name); // Add fully qualified name
+            $entity = $this->xmlEntityToEntity($abstract);
+            $entity->setType('abstract');
             $this->addEntity($entity);
         }
 
@@ -764,7 +786,7 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getRepositoryTemplate())) {
-            $this->setRepositoryTemplate(new PHPTemplates\Repository());
+            $this->setRepositoryTemplate(new PHPTemplates\Symfony2\Repository());
         }
 
         if (is_null($this->getFormTemplate())) {
@@ -776,31 +798,31 @@ class Project extends ProjectBase
         }
 
         if (is_null($this->getControllerTemplate())) {
-            $this->setControllerTemplate(new PHPTemplates\Controller());
+            $this->setControllerTemplate(new PHPTemplates\Symfony2\Controller());
         }
 
         if (is_null($this->getFixturesTemplate())) {
-            $this->setFixturesTemplate(new PHPTemplates\Fixtures());
+            $this->setFixturesTemplate(new PHPTemplates\Symfony2\Fixtures());
         }
 
         if (is_null($this->getRoutesTemplate())) {
-            $this->setRoutesTemplate(new PHPTemplates\Routes());
+            $this->setRoutesTemplate(new PHPTemplates\Symfony2\Routes());
         }
 
         if (is_null($this->getRoutesRoutingTemplate())) {
-            $this->setRoutesRoutingTemplate(new PHPTemplates\RoutesRouting());
+            $this->setRoutesRoutingTemplate(new PHPTemplates\Symfony2\RoutesRouting());
         }
 
         if (is_null($this->getCrudCreateTwigTemplate())) {
-            $this->setCrudCreateTwigTemplate(new PHPTemplates\CrudCreateTwig());
+            $this->setCrudCreateTwigTemplate(new PHPTemplates\CrudCreate());
         }
 
         if (is_null($this->getCrudReadTwigTemplate())) {
-            $this->setCrudReadTwigTemplate(new PHPTemplates\CrudReadTwig());
+            $this->setCrudReadTwigTemplate(new PHPTemplates\CrudRead());
         }
 
         if (is_null($this->getCrudUpdateTwigTemplate())) {
-            $this->setCrudUpdateTwigTemplate(new PHPTemplates\CrudUpdateTwig());
+            $this->setCrudUpdateTwigTemplate(new PHPTemplates\CrudUpdate());
         }
     }
 
@@ -1194,7 +1216,10 @@ class Project extends ProjectBase
         return new File($traitPath, $traitName, $this->getTraitTemplate()->setEntity($entity)->render());
     }
 
-
+    public function supportsReverseAttributes()
+    {
+        return 'Doctrine2' === $this->getOrm();
+    }
     // </user-additions>
     // </editor-fold>
 }

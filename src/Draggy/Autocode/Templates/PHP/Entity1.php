@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -41,180 +41,28 @@ class Entity1 extends Entity1Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    public function getAttribute(PHPAttribute $attribute)
-    {
-        if ($attribute->getEntity()->getProject()->getORM() !== '') {
-            if ($attribute->getType() == 'string' && is_null($attribute->getSize())) {
-                throw new \RuntimeException('The attribute ' . $attribute->getName() . ' on the entity ' . $attribute->getEntity()->getName() . ' is a string but doesn\'t have size.');
-            }
-        }
-
-        $ret = '';
-
-        $ret .= '    /**' . "\n";
-
-        if (!is_null($attribute->getDescription())) {
-            $ret .= '     * ' . $attribute->getDescription() . "\n";
-            $ret .= '     *' . "\n";
-        }
-
-        $ret .= '     * @var ' . $attribute->getPhpType() . ' $' . $attribute->getLowerName() . "\n";
-
-        // ORM
-        // <editor-fold desc="ORM">
-        if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') {
-            $ret .= '     *' . "\n";
-            $ret .= ($attribute->getPrimary() ? '     * @ORM\\Id' . "\n" : '');
-
-            // ORM
-            if (is_null($attribute->getForeign())) {
-                $ret .= '     * @ORM\\Column(name="' . $attribute->getName() . '", type="' . $attribute->getType() . '"' . ($attribute->getType() == 'string' ? ', length=' . $attribute->getSize() : '') . ($attribute->getUnique() ? ', unique=true' : '') . ($attribute->getNull() ? ', nullable=true' : ($attribute->getPrimary() ? '' : ', nullable=false')) . ')' . "\n";
-            } else {
-                switch ($attribute->getForeign()) {
-                    case 'ManyToOne':
-                        if ($attribute->getOwnerSide()) {
-                            $ret .= '     * @ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist", "remove"})' . "\n";
-                            $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
-                        } else {
-                            $ret .= '     * @ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";
-                        }
-                        break;
-                    case 'OneToOne':
-                        if ($attribute->getOwnerSide()) {
-                            $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist", "remove"})' . "\n";
-                            $ret .= '     * @ORM\\JoinColumn(name="' . $attribute->getName() . '",referencedColumnName="' . $attribute->getForeignKey()->getName() . '")' . "\n";
-                        } else {
-                            $ret .= '     * @ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")' . "\n";
-                        }
-                        break;
-                    case 'ManyToMany':
-                        if ($attribute->getOwnerSide()) {
-                            $ret .= '     * @ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getName() . '")' . "\n"; //, cascade={"all"}
-                            $ret .= '     * @ORM\JoinTable(' . "\n";
-                            $ret .= '     *      name="' . $attribute->getManyToManyEntityName() . '",' . "\n";
-                            $ret .= '     *      joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},' . "\n";
-                            $ret .= '     *      inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}' . "\n";
-                            $ret .= '     *      )' . "\n";
-                        } else {
-                            $ret .= '     * @ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getName() . '")' . "\n"; //, cascade={"all"}
-                        }
-                        break;
-                    default:
-                        throw new \Exception('foreignMethod not implemented (' . $attribute->getForeign() . ')');
-                }
-            }
-            $ret .= ($attribute->getAutoIncrement() && !$attribute->getForeignTick() ? '     * @ORM\GeneratedValue(strategy="AUTO")' . "\n" : '');
-        }
-        // </editor-fold>
-
-        // Asserts
-        // <editor-fold desc="Asserts">
-        if (!$attribute->getInverse()) {
-            if ($attribute->getEntity()->getProject()->getValidation()) {
-                $asserts = '';
-                if(!$attribute->getAutoIncrement()) {
-                    if ($attribute->getType() !== 'array') {
-                        $asserts .= '     * @Assert\\Type(type="' . $attribute->getSymfonyType() . '", message="' . $attribute->getTypeMessage() . '")' . "\n";
-                    }
-
-                    if(!$attribute->getNull() && $attribute->getType() !== 'boolean') {
-                        $asserts .= '     * @Assert\\NotBlank(message="' . $attribute->getRequiredMessage() . '")' . "\n";
-                    }
-
-                    if ($attribute->getType() == 'string') {
-                        $asserts .= '     * @Assert\\Length(' . "\n";
-
-                        $assertsArray = [];
-                        if (!is_null($attribute->getMinSize())) {
-                            $assertsArray[] = '     *     min = "' . $attribute->getMinSize() . '"';
-                        }
-
-                        $assertsArray[] = '     *     max = "' . $attribute->getSize() . '"';
-
-                        if (!is_null($attribute->getMinSize())) {
-                            if ($attribute->getSize() !== $attribute->getMinSize()) {
-                                $assertsArray[] = '     *     minMessage = "' . $attribute->getMinMessage() . '"';
-                            }
-                            else {
-                                $assertsArray[] = '     *     exactMessage = "' . $attribute->getExactMessage() . '"';
-                            }
-                        }
-
-                        if ( is_null($attribute->getMinSize()) || $attribute->getSize() !== $attribute->getMinSize()) {
-                            $assertsArray[] = '     *     maxMessage = "' . $attribute->getMaxMessage() . '"';
-                        }
-
-                        $asserts .= implode(',' . "\n", $assertsArray) . "\n";
-                        $asserts .= '     * )' . "\n";
-                    }
-
-                    if ($attribute->getEmail()) {
-                        $asserts .= '     * @Assert\\Email()' . "\n";
-                    }
-                }
-
-                if ($asserts != '')
-                    $ret .= "     *\n" . $asserts;
-            }
-        }
-        // </editor-fold>
-
-        $ret .= '     */' . "\n";
-
-        if ($attribute->getEntity()->getProject()->getBase()) {
-            if (!$attribute->getStatic()) {
-                $ret .= '    protected $' . $attribute->getLowerName();
-            } else {
-                $ret .= '    protected static $' . $attribute->getName();
-            }
-
-            if (null === $attribute->getDefaultValue()) {
-                $ret .= ';' . "\n";
-            } else {
-                $defaultAttributeInit = $attribute->getDefaultValueAttributeInit();
-
-                if ($defaultAttributeInit !== '') {
-                    $ret .= ' = ' . $attribute->getDefaultValueAttributeInit() . ';' . "\n";
-                } else {
-                    $ret .= ';' . "\n";
-                }
-            }
-        } else {
-            if (is_null($attribute->getDefaultValue()))
-                $ret .= '    private $' . $attribute->getLowerName() . ';' . "\n";
-            else {
-                switch($attribute->getPhpType()) {
-                    case 'string':
-                        $ret .= '    private $' . $attribute->getLowerName() . ' = \'' . str_replace('\'','\\\'',$attribute->getDefaultValue()) . '\';' . "\n";
-                        break;
-                    default:
-                        $ret .= '    private $' . $attribute->getLowerName() . ' = ' . $attribute->getDefaultValue() . ';' . "\n";
-                }
-            }
-        }
-
-        return $ret;
-    }
-
     /**
      * Returns a condition to check for the $attribute type. It allows for one or more types, including objects.
      *
      * @param PHPAttribute $attribute
      * @param string[]     $allowedTypes     An array with the basic types, or a sub array in case of objects. E.g. ['integer', ['object'=>'MyClass']]
-     * @param int          $padding          Amount of padding characters
-     * @param int          $paddingIncrement Increment on the padding characters
-     * @param string       $paddingCharacter Specified padding character
      *
      * @return string
      *
      * @throws \RuntimeException if the allowedTypes array is not well formed
      */
-    private function getTypeCheck(PHPAttribute $attribute, array $allowedTypes, $padding = 8, $paddingIncrement = 4, $paddingCharacter = ' ')
+    protected function getTypeCheckLines(PHPAttribute $attribute, array $allowedTypes)
     {
         $phpTypes     = ['boolean', 'integer', 'float', 'string', 'array', 'object', 'null', 'NULL'];
-        $phpFunctions = ['boolean' => 'is_bool', 'integer' => 'is_int', 'float' => 'is_float', 'string' => 'is_string', 'array' => 'is_array'];
+        $phpFunctions = [
+            'boolean' => 'is_bool',
+            'integer' => 'is_int',
+            'float'   => 'is_float',
+            'string'  => 'is_string',
+            'array'   => 'is_array'
+        ];
 
-        $names = [];
+        $names     = [];
         $condition = [];
 
         foreach ($allowedTypes as $type) {
@@ -230,7 +78,7 @@ class Entity1 extends Entity1Base
                 /** @var string $type */
                 $names[] = $type;
 
-                if ($type === 'null' || $type === 'NULL') {
+                if ('null' === $type || 'NULL' === $type) {
                     $condition[] = 'null !== $' . $attribute->getLowerName();
                 } else {
                     $condition[] = '!' . $phpFunctions[$type] . '($' . $attribute->getLowerName() . ')';
@@ -239,718 +87,964 @@ class Entity1 extends Entity1Base
         }
 
         if (count($names) > 2) {
-            $types = implode(' or ', [implode(', ', array_slice($names,0,-1)), end($names)]);
+            $types = implode(' or ', [implode(', ', array_slice($names, 0, -1)), end($names)]);
         } else {
             $types = implode(' or ', $names);
         }
 
-        return  str_repeat($paddingCharacter, $padding) . 'if (' . implode(' && ', $condition) . ') {' . "\n" .
-                str_repeat($paddingCharacter, $padding + $paddingIncrement) . 'throw new \InvalidArgumentException(\'The attribute ' . $attribute->getLowerName() . ' on the class ' . $attribute->getEntity()->getName() . ' has to be ' . $types . ' (\' . gettype($' . $attribute->getLowerName() . ') . (\'object\' === gettype($' . $attribute->getLowerName() . ') ? \' \' . get_class($' . $attribute->getLowerName() . ') : \'\') . \' given).\');' . "\n" .
-                str_repeat($paddingCharacter, $padding) . '}' . "\n";
+        $lines = [];
+
+        $lines[] = 'if (' . implode(' && ', $condition) . ') {';
+        $lines[] =     'throw new \InvalidArgumentException(\'The attribute ' . $attribute->getLowerName() . ' on the class ' . $attribute->getEntity()->getName() . ' has to be ' . $types . ' (\' . gettype($' . $attribute->getLowerName() . ') . (\'object\' === gettype($' . $attribute->getLowerName() . ') ? \' \' . get_class($' . $attribute->getLowerName() . ') : \'\') . \' given).\');';
+        $lines[] = '}';
+
+        return $lines;
     }
 
-    public function getSetterInnerValidationCode(PHPAttribute $attribute)
+    // <editor-fold desc="Attributes">
+    public function getAttributeDocumentationLinesBasePart(PHPAttribute $attribute)
     {
-        $val = '';
+        $lines = [];
 
-        if ($attribute->getPhpType() === 'boolean') {
-            if (!$attribute->getNull()) {
-                $val .= $this->getTypeCheck($attribute, ['boolean']);
-            } else {
-                $val .= $this->getTypeCheck($attribute, ['boolean', 'null']);
+        if (null !== $attribute->getDescription()) {
+            $lines[] = $attribute->getDescription();
+            $lines[] = '';
+        }
+
+        $lines[] = '@var ' . $attribute->getPhpType() . ' $' . $attribute->getLowerName();
+
+        return $lines;
+    }
+
+    public function getAttributeDocumentationLines(PHPAttribute $attribute)
+    {
+        return $this->getAttributeDocumentationLinesBasePart($attribute);
+    }
+
+    public function getAttributeLines(PHPAttribute $attribute)
+    {
+        if ('' !== $attribute->getEntity()->getProject()->getORM()) {
+            if ('string' === $attribute->getType() && null === $attribute->getSize()) {
+                throw new \RuntimeException('The attribute ' . $attribute->getName() . ' on the entity ' . $attribute->getEntity()->getName() . ' is a string but doesn\'t have size.');
             }
-            $val .= "\n";
-        } elseif ($attribute->getPhpType() === 'integer') {
-            if (!$attribute->getNull()) {
-                $val .= $this->getTypeCheck($attribute, ['integer']);
+        }
+
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getAttributeDocumentationLines($attribute)));
+
+        if ($attribute->getEntity()->getProject()->getBase()) {
+            if (!$attribute->getStatic()) {
+                $line = 'protected $' . $attribute->getLowerName();
             } else {
-                $val .= $this->getTypeCheck($attribute, ['integer', 'null']);
+                $line = 'protected static $' . $attribute->getName();
             }
-            $val .= "\n";
-        } elseif ($attribute->getPhpType() === 'float') {
-            if (!$attribute->getNull()) {
-                $val .= $this->getTypeCheck($attribute, ['float']);
+
+            if (null === $attribute->getDefaultValue()) {
+                $line .= ';';
             } else {
-                $val .= $this->getTypeCheck($attribute, ['float', 'null']);
+                $defaultAttributeInit = $attribute->getDefaultValueAttributeInit();
+
+                if ('' !== $defaultAttributeInit) {
+                    $line .= ' = ' . $attribute->getDefaultValueAttributeInit() . ';';
+                } else {
+                    $line .= ';';
+                }
             }
-            $val .= "\n";
-        } elseif ($attribute->getPhpType() === 'string') {
-            if ($attribute->getType() == 'string') {
+
+            $lines[] = $line;
+        } else {
+            if (null === $attribute->getDefaultValue()) {
+                $lines[] = 'private $' . $attribute->getLowerName() . ';';
+            } else {
+                switch($attribute->getPhpType()) {
+                    case 'string':
+                        $lines[] = 'private $' . $attribute->getLowerName() . ' = \'' . str_replace('\'','\\\'',$attribute->getDefaultValue()) . '\';';
+                        break;
+                    default:
+                        $lines[] = 'private $' . $attribute->getLowerName() . ' = ' . $attribute->getDefaultValue() . ';';
+                }
+            }
+        }
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Setters">
+    public function getSetterInnerValidationCodeLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        if ('boolean' === $attribute->getPhpType()) {
+            if (!$attribute->getNull()) {
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['boolean']));
+            } else {
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['boolean', 'null']));
+            }
+        } elseif ('integer' === $attribute->getPhpType()) {
+            if (!$attribute->getNull()) {
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['integer']));
+            } else {
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['integer', 'null']));
+            }
+        } elseif ('float' === $attribute->getPhpType()) {
+            if (!$attribute->getNull()) {
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['float']));
+            } else {
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['float', 'null']));
+            }
+        } elseif ('string' === $attribute->getPhpType()) {
+            if ('string' === $attribute->getType()) {
                 if (!$attribute->getNull()) {
-                    $val .= $this->getTypeCheck($attribute, ['string']);
-                    $val .= "\n";
-                    //$val .= '        if (strlen($' . $attribute->getLowerName() . ') > ' . $this->size . ') {' . "\n";
-                    //$val .= '            trigger_error(\'The length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is longer than the maximum allowed (' . $this->size . '). Some information will not be saved.\', E_USER_NOTICE);' . "\n";
-                    //$val .= '        }' . "\n";
-                    if (!is_null($attribute->getMinSize())) {
-                        $val .= '        if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {' . "\n";
-                        $val .= '            throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');' . "\n";
-                        $val .= '        }' . "\n";
-                        $val .= "\n";
+                    $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['string']));
+
+                    if (null !== $attribute->getMinSize()) {
+                        $lines[] = '';
+
+                        $lines[] = 'if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {';
+                        $lines[] =     'throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');';
+                        $lines[] = '}';
                     }
                 } else {
-                    $val .= $this->getTypeCheck($attribute, ['string', 'null']);
-                    $val .= "\n";
-                    //$val .= '        if (strlen($' . $attribute->getLowerName() . ') > ' . $this->size . ' ) {' . "\n";
-                    //$val .= '            trigger_error(\'The length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is longer than the maximum allowed (' . $this->size . '). Some information will not be saved.\', E_USER_NOTICE);' . "\n";
-                    //$val .= '        }' . "\n";
-                    if (!is_null($attribute->getMinSize())) {
-                        $val .= '        if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {' . "\n";
-                        $val .= '            throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');' . "\n";
-                        $val .= '        }' . "\n";
-                        $val .= "\n";
+                    $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['string', 'null']));
+
+                    if (null !== $attribute->getMinSize()) {
+                        $lines[] = '';
+
+                        $lines[] = 'if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {';
+                        $lines[] =     'throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');';
+                        $lines[] = '}';
                     }
                 }
-            } elseif ($attribute->getType() === 'text') {
+            } elseif ('text' === $attribute->getType()) {
                 if (!$attribute->getNull()) {
-                    $val .= $this->getTypeCheck($attribute, ['string']);
+                    $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['string']));
                 } else {
-                    $val .= $this->getTypeCheck($attribute, ['string', 'null']);
+                    $lines = array_merge($lines, $this->getTypeCheckLines($attribute, ['string', 'null']));
                 }
-                $val .= "\n";
             }
-        } elseif ($attribute->getType() === 'object') {
+        } elseif ('object' === $attribute->getType()) {
             if (null === $attribute->getSubtype()) {
                 throw new \InvalidArgumentException('Attribute ' . $attribute->getName() . ' on the entity ' . $attribute->getEntity()->getName() . ' is marked as an object but doesn\'t have a subtype');
             }
 
             // The not null case doesn't make sense because it will go on the parameter line
             if ($attribute->getNull()) {
-                $val .= $this->getTypeCheck($attribute, [['object'=>$attribute->getEntitySubtype()->getName()], 'null']);
-                $val .= "\n";
+                $lines = array_merge($lines, $this->getTypeCheckLines($attribute, [['object'=>$attribute->getEntitySubtype()->getName()], 'null']));
             }
         }
 
-        return $val;
+        return $lines;
     }
 
-    public function getSetterCode(PHPAttribute $attribute)
+    public function getSetterCodeDocumentationLines(PHPAttribute $attribute)
     {
-        $validation = $this->getSetterInnerValidationCode($attribute);
+        $lines = [];
+
+        $lines[] = 'Set ' . $attribute->getLowerName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+
+        if (!$attribute->getStatic()) {
+            $lines[] = '';
+            $lines[] = '@return ' . $attribute->getEntity()->getName();
+        }
+
+        if (0 !== count($this->getSetterInnerValidationCodeLines($attribute))) {
+            $lines[] = '';
+            $lines[] = '@throws \InvalidArgumentException';
+        }
+
+        return $lines;
+    }
+
+    public function getSetterCodeLines(PHPAttribute $attribute)
+    {
+        $validationLines = $this->getSetterInnerValidationCodeLines($attribute);
 
         $settingFromInverse = $attribute->getSettingFromInverse();
 
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Set ' . $attribute->getLowerName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
-
-        if (!$attribute->getStatic()) {
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
-        }
-
-        if ($validation != '') {
-            $ret .= '     *' . "\n";
-            $ret .= '     * @throws \InvalidArgumentException' . "\n";
-        }
-
-        $ret .= '     */' . "\n";
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSetterCodeDocumentationLines($attribute)));
 
         if ($attribute->getStatic()) {
-            $ret .= '    public static function ' . $attribute->getSetterName() . '(';
+            $line = 'public static function ' . $attribute->getSetterName() . '(';
         } else {
-            $ret .= '    public function ' . $attribute->getSetterName() . '(';
+            $line = 'public function ' . $attribute->getSetterName() . '(';
         }
 
         if (null === $attribute->getPhpParameterType()) {
-            $ret .= '$' . $attribute->getLowerName() . ')' . "\n";
+            $line .= '$' . $attribute->getLowerName() . ')';
         } else {
-            $ret .= $attribute->getPhpParameterType() . ' $' . $attribute->getLowerName() . ')' . "\n";
+            $line .= $attribute->getPhpParameterType() . ' $' . $attribute->getLowerName() . ')';
         }
 
-        $ret .= '    {' . "\n";
+        $lines[] = $line;
 
-        $ret .= $validation;
+        $lines[] = '{';
+
+        $lines = array_merge($lines, $validationLines);
+
+        if (0 !== count($validationLines)) {
+            $lines[] = '';
+        }
 
         if (!$settingFromInverse) {
-            if ($attribute->getForeign() === 'OneToOne') {
+            if ('OneToOne' === $attribute->getForeign()) {
                 if (!$attribute->getNull()) {
-                    $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
-                    $ret .= '        if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {' . "\n";
-                    $ret .= '            $' . $attribute->getName() . '->set' . $this->getEntity()->getName() . '($this);' . "\n";
-                    $ret .= '        }' . "\n";
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = 'if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {';
+                    $lines[] =     '$' . $attribute->getName() . '->set' . $this->getEntity()->getName() . '($this);';
+                    $lines[] = '}';
                 } else {
-                    $ret .= '        if (null !== $' . $attribute->getLowerName() . ') {' . "\n";
-                    $ret .= '            ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
-                    $ret .= '            if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {' . "\n";
-                    $ret .= '                $' . $attribute->getName() . '->set' . $this->getEntity()->getName() . '($this);' . "\n";
-                    $ret .= '            }' . "\n";
-                    $ret .= '        } elseif (null !== ' . $attribute->getThisName() . ') {' . "\n";
+                    $lines[] = 'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =     $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =     'if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {';
+                    $lines[] =         '$' . $attribute->getName() . '->set' . $this->getEntity()->getName() . '($this);';
+                    $lines[] =     '}';
+                    $lines[] = '} elseif (null !== ' . $attribute->getThisName() . ') {';
+
                     if ($attribute->getForeignKey()->getSetter()) {
-                        $ret .= '            ' . $attribute->getThisName() . '->set' . $attribute->getForeignKey()->getUpperName() . '(null);' . "\n";
+                        $lines[] =     $attribute->getThisName() . '->set' . $attribute->getForeignKey()->getUpperName() . '(null);';
                     }
-                    $ret .= '            ' . $attribute->getThisName() . ' = null;' . "\n";
-                    $ret .= '        }' . "\n";
+
+                    $lines[] =     $attribute->getThisName() . ' = null;';
+                    $lines[] = '}';
                 }
-            } elseif ($attribute->getForeign() === 'ManyToOne') {
-                // TODO: Does it need to do the inverse???
-                //$ret .= '        $' . $attribute->getName() . '->add' . $attribute->getEntity()->getName() . '($this);' . "\n";
-                $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
+            } elseif ('ManyToOne' === $attribute->getForeign()) {
+                $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
             } else {
-                $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
+                $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
             }
         } else {
-            if ($attribute->getForeign() === 'ManyToMany') {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            /** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */' . "\n";
-                $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '(new ArrayCollection([$this]));' . "\n";
-                $ret .= '        }' . "\n";
-            } elseif ($attribute->getForeign() === 'OneToOne') {
+            if ('ManyToMany' === $attribute->getForeign()) {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     '/** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */';
+                $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '(new ArrayCollection([$this]));';
+                $lines[] = '}';
+            } elseif ('OneToOne' === $attribute->getForeign()) {
                 if (!$attribute->getNull()) {
-                    $ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
-                    $ret .= '        if ($this !== $' . $attribute->getName() . '->get' . $attribute->getForeignKey()->getUpperName() . '()) {' . "\n";
-                    $ret .= '            $' . $attribute->getName() . '->set' . $attribute->getForeignKey()->getUpperName() . '($this);' . "\n";
-                    $ret .= '        }' . "\n";
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = 'if ($this !== $' . $attribute->getName() . '->get' . $attribute->getForeignKey()->getUpperName() . '()) {';
+                    $lines[] =     '$' . $attribute->getName() . '->set' . $attribute->getForeignKey()->getUpperName() . '($this);';
+                    $lines[] = '}';
                 } else {
-                    $ret .= '        if (null !== $' . $attribute->getLowerName() . ') {' . "\n";
-                    $ret .= '            ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
-                    $ret .= '            if ($this !== $' . $attribute->getName() . '->get' . $attribute->getForeignKey()->getUpperName() . '()) {' . "\n";
-                    $ret .= '                $' . $attribute->getName() . '->set' . $attribute->getForeignKey()->getUpperName() . '($this);' . "\n";
-                    $ret .= '            }' . "\n";
-                    $ret .= '        } elseif (null !== ' . $attribute->getThisName() . ') {' . "\n";
+                    $lines[] = 'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =     $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =     'if ($this !== $' . $attribute->getName() . '->get' . $attribute->getForeignKey()->getUpperName() . '()) {';
+                    $lines[] =         '$' . $attribute->getName() . '->set' . $attribute->getForeignKey()->getUpperName() . '($this);';
+                    $lines[] =     '}';
+                    $lines[] = '} elseif (null !== ' . $attribute->getThisName() . ') {';
+
                     if ($attribute->getForeignKey()->getSetter()) {
-                        $ret .= '            ' . $attribute->getThisName() . '->set' . $attribute->getForeignKey()->getUpperName() . '(null);' . "\n";
+                        $lines[] =     $attribute->getThisName() . '->set' . $attribute->getForeignKey()->getUpperName() . '(null);';
                     }
-                    $ret .= '            ' . $attribute->getThisName() . ' = null;' . "\n";
-                    $ret .= '        }' . "\n";
+
+                    $lines[] =     $attribute->getThisName() . ' = null;';
+                    $lines[] = '}';
                 }
             } else { // ManyToOne
                 if ($attribute->getInverse()) {
-                    $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                    $ret .= '            /** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */' . "\n";
-                    $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
-                    $ret .= '        }' . "\n";
+                    $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                    $lines[] =     '/** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */';
+                    $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
+                    $lines[] = '}';
                 } else {
                     // Default normal setter
                     throw new \RuntimeException('Unknown scenario');
-                    //$ret .= '        ' . $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';' . "\n";
                 }
             }
         }
 
         if (!$attribute->getStatic()) {
-            $ret .= "\n";
-            $ret .= '        return $this;' . "\n";
+            $lines[] = '';
+            $lines[] = 'return $this;';
         }
-        $ret .= '    }' . "\n";
 
-        return $ret;
+        $lines[] = '}';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Getters">
+    public function getGetterCodeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'Get ' . $attribute->getLowerName();
+        $lines[] = '';
+        $lines[] = '@return ' . $attribute->getPhpAnnotationTypeBase();
+
+        return $lines;
     }
 
-    public function getGetterCode(PHPAttribute $attribute)
+    public function getGetterCodeLines(PHPAttribute $attribute)
     {
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Get ' . $attribute->getLowerName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @return ' . $attribute->getPhpAnnotationTypeBase() . "\n";
-        $ret .= '     */' . "\n";
-        if ($attribute->getStatic()) {
-            $ret .= '    public static function ' . $attribute->getGetterName() . '()' . "\n";
-        } else {
-            $ret .= '    public function ' . $attribute->getGetterName() . '()' . "\n";
-        }
-        $ret .= '    {' . "\n";
-        $ret .= '        return ' . $attribute->getThisName() . ';' . "\n";
-        $ret .= '    }' . "\n";
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getGetterCodeDocumentationLines($attribute)));
 
-        return $ret;
+        $lines[] = $attribute->getStatic()
+            ? 'public static function ' . $attribute->getGetterName() . '()'
+            : 'public function ' . $attribute->getGetterName() . '()';
+
+        $lines[] = '{';
+        $lines[] = 'return ' . $attribute->getThisName() . ';';
+        $lines[] = '}';
+
+        return $lines;
     }
+    // </editor-fold>
 
-    public function getAddersCode(PHPAttribute $attribute)
+    // <editor-fold desc="Adders">
+    public function getSingleAdderCodeDocumentationLines(PHPAttribute $attribute)
     {
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Add ' . $attribute->getSingleName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName() . "\n";
-        if ($attribute->getForeign() === 'ManyToMany') {
-            $ret .= '     * @param bool $allowRepeatedValues' . "\n";
+        $lines[] = 'Add ' . $attribute->getSingleName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpSingleTypeBase() . ' $' . $attribute->getSingleName();
+
+        if ('ManyToMany' === $attribute->getForeign()) {
+            $lines[] = '@param bool $allowRepeatedValues';
         }
 
         if (!$attribute->getStatic()) {
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
+            $lines[] = '';
+            $lines[] = '@return ' . $attribute->getEntity()->getName();
         }
 
-        $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ($attribute->getForeign() === 'ManyToMany' ? ', $allowRepeatedValues = true' : '') . ')' . "\n";
-        $ret .= '    {' . "\n";
+        return $lines;
+    }
 
-        if ($attribute->getForeign() === 'ManyToMany') {
+    public function getSingleAdderCodeLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleAdderCodeDocumentationLines($attribute)));
+
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
+        $lines[] = '{';
+
+        if ('ManyToMany' === $attribute->getForeign()) {
             if (!$attribute->getSettingFromInverse()) {
-                $ret .= '        if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
-                $ret .= '            ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
-                $ret .= '        }' . "\n";
+                $lines[] = 'if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {';
+                $lines[] =     $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';';
+                $lines[] = '}';
             } else {
-                $ret .= '        if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
-                $ret .= '            $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-                $ret .= '        }' . "\n";
+                $lines[] = 'if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {';
+                $lines[] =     '$' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+                $lines[] = '}';
             }
         } else { // ManyToOne
-            if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') { // TODO: Double check this
-                $ret .= '        $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
-                $ret .= '        ' . "\n";
+            if ($attribute->getEntity()->getProject()->supportsReverseAttributes()) {
+                $lines[] = '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
+                $lines[] = '';
             }
 
-            $ret .= '        ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
+            $lines[] = $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';';
         }
 
         if (!$attribute->getStatic()) {
-            $ret .= "\n";
-            $ret .= '        return $this;' . "\n";
+            $lines[] = '';
+            $lines[] = 'return $this;';
         }
-        $ret .= '    }' . "\n";
 
-        $ret .= "\n";
+        $lines[] = '}';
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Add ' . $attribute->getLowerName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
-        if ($attribute->getForeign() === 'ManyToMany') {
-            $ret .= '     * @param bool $allowRepeatedValues' . "\n";
+        return $lines;
+    }
+
+    public function getMultipleAdderCodeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'Add ' . $attribute->getLowerName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+
+        if ('ManyToMany' === $attribute->getForeign()) {
+            $lines[] = '@param bool $allowRepeatedValues';
         }
 
         if (!$attribute->getStatic()) {
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
+            $lines[] = '';
+            $lines[] = '@return ' . $attribute->getEntity()->getName();
         }
 
-        $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ($attribute->getForeign() === 'ManyToMany' ? ', $allowRepeatedValues = true' : '') . ')' . "\n";
-        $ret .= '    {' . "\n";
+        return $lines;
+    }
 
-        if ($attribute->getForeign() === 'ManyToMany') {
+    public function getMultipleAdderCodeLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleAdderCodeDocumentationLines($attribute)));
+
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
+        $lines[] = '{';
+
+        if ('ManyToMany' === $attribute->getForeign()) {
             if (!$attribute->getSettingFromInverse()) {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
-                $ret .= '                ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
-                $ret .= '            }' . "\n";
-                $ret .= '        }' . "\n";
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     'if ($allowRepeatedValues || !' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {';
+                $lines[] =         $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';';
+                $lines[] =      '}';
+                $lines[] = '}';
             } else {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
-                $ret .= '                $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-                $ret .= '            }' . "\n";
-                $ret .= '        }' . "\n";
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     'if ($allowRepeatedValues || !$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {';
+                $lines[] =         '$' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+                $lines[] =     '}';
+                $lines[] = '}';
             }
         } else { // ManyToOne
-            if ($attribute->getEntity()->getProject()->getORM() === 'Doctrine2') { // TODO: Double check this
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            $' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);' . "\n";
-                $ret .= '        }' . "\n";
+            if ($attribute->getEntity()->getProject()->supportsReverseAttributes()) {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
+                $lines[] = '}';
             } else {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            ' . $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
-                $ret .= '        }' . "\n";
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     $attribute->getThisName() . '[] = $' . $attribute->getSingleName() . ';';
+                $lines[] = '}';
             }
         }
 
         if (!$attribute->getStatic()) {
-            $ret .= "\n";
-            $ret .= '        return $this;' . "\n";
-        }
-        $ret .= '    }' . "\n";
-
-        $ret .= "\n";
-
-        if ($attribute->getForeign() !== 'ManyToOne') {
-            $ret .= '    /**' . "\n";
-            $ret .= '     * Contains ' . $attribute->getSingleName() . "\n";
-            $ret .= '     *' . "\n";
-            $ret .= '     * @param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName() . "\n";
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return bool' . "\n";
-            $ret .= '     */' . "\n";
-            $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
-            $ret .= '    {' . "\n";
-
-            if (!$attribute->getSettingFromInverse()) {
-                $ret .= '        return ' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ');' . "\n";
-            } else {
-                $ret .= '        return $' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-            }
-            $ret .= '    }' . "\n";
-
-            $ret .= "\n";
-
-            $ret .= '    /**' . "\n";
-            $ret .= '     * Contains ' . $attribute->getLowerName() . "\n";
-            $ret .= '     *' . "\n";
-            $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return bool' . "\n";
-            $ret .= '     */' . "\n";
-            $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
-            $ret .= '    {' . "\n";
-
-            if (!$attribute->getSettingFromInverse()) {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            if (!' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {' . "\n";
-                $ret .= '                return false;' . "\n";
-                $ret .= '            }' . "\n";
-                $ret .= '        }' . "\n";
-            } else {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            if (!$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {' . "\n";
-                $ret .= '                return false;' . "\n";
-                $ret .= '            }' . "\n";
-                $ret .= '        }' . "\n";
-            }
-
-            $ret .= "\n";
-            $ret .= '        return true;' . "\n";
-            $ret .= '    }' . "\n";
+            $lines[] = '';
+            $lines[] = 'return $this;';
         }
 
-        return $ret;
+        $lines[] = '}';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Contains">
+    public function getSingleContainsCodeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'Contains ' . $attribute->getSingleName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName();
+        $lines[] = '';
+        $lines[] = '@return bool';
+
+        return $lines;
     }
 
-    public function getRemoversCode(PHPAttribute $attribute)
+    public function getSingleContainsCodeLines(PHPAttribute $attribute)
     {
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Remove ' . $attribute->getSingleName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName() . "\n";
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleContainsCodeDocumentationLines($attribute)));
 
-        if (!$attribute->getStatic()) {
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
-        }
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
+        $lines[] = '{';
 
-        $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getSingleUpperName() . '(' . ( $attribute->getPhpSingleParameterType() !== '' ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
-        $ret .= '    {' . "\n";
+        $lines[] = !$attribute->getSettingFromInverse()
+            ? 'return ' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ');'
+            : 'return $' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
 
-        if ($attribute->getType() === 'array' && !is_null($attribute->getSubtype())) {
-            $ret .= '        foreach (' . $attribute->getThisName() . ' as $key => $' . $attribute->getSingleName() . 'Element) {' . "\n";
-            $ret .= '            if ($' . $attribute->getSingleName() . 'Element === $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '                unset(' . $attribute->getThisName() . '[$key]);' . "\n";
-            $ret .= '                break;' . "\n";
-            $ret .= '            }' . "\n";
-            $ret .= '        }' . "\n";
-        } else {
-            if (!$attribute->getSettingFromInverse()) {
-                $ret .= '        ' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');' . "\n";
-            } else {
-                $ret .= '        $' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-            }
-        }
+        $lines[] = '}';
 
-        if (!$attribute->getStatic()) {
-            $ret .= "\n";
-            $ret .= '        return $this;' . "\n";
-        }
-        $ret .= '    }' . "\n";
-
-        $ret .= "\n";
-
-        $ret .= '    /**' . "\n";
-        $ret .= '     * Remove ' . $attribute->getLowerName() . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName() . "\n";
-
-        if (!$attribute->getStatic()) {
-            $ret .= '     *' . "\n";
-            $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
-        }
-
-        $ret .= '     */' . "\n";
-        $ret .= '    public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
-        $ret .= '    {' . "\n";
-
-        if ($attribute->getType() === 'array' && !is_null($attribute->getSubtype())) {
-            $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-
-            if (!$attribute->getStatic()) {
-                $ret .= '            $this->remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');' . "\n";
-            } else {
-                $ret .= '            self::remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');' . "\n";
-            }
-
-            $ret .= '        }' . "\n";
-        } else {
-            if (!$attribute->getSettingFromInverse()) {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            ' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');' . "\n";
-                $ret .= '        }' . "\n";
-            } else {
-                $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            $' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
-                $ret .= '        }' . "\n";
-            }
-        }
-
-        if (!$attribute->getStatic()) {
-            $ret .= "\n";
-            $ret .= '        return $this;' . "\n";
-        }
-        $ret .= '    }' . "\n";
-
-        return $ret;
+        return $lines;
     }
 
-    public function getSetterGetter(PHPAttribute $attribute)
+    public function getMultipleContainsCodeDocumentationLines(PHPAttribute $attribute)
     {
-        $retArray = [];
+        $lines = [];
+
+        $lines[] = 'Contains ' . $attribute->getLowerName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+        $lines[] = '';
+        $lines[] = '@return bool';
+
+        return $lines;
+    }
+
+    public function getMultipleContainsCodeLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleContainsCodeDocumentationLines($attribute)));
+
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
+        $lines[] = '{';
+
+        if (!$attribute->getSettingFromInverse()) {
+            $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+            $lines[] =     'if (!' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {';
+            $lines[] =         'return false;';
+            $lines[] =     '}';
+            $lines[] = '}';
+        } else {
+            $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+            $lines[] =     'if (!$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {';
+            $lines[] =         'return false;';
+            $lines[] =     '}';
+            $lines[] = '}';
+        }
+
+        $lines[] = '';
+        $lines[] = 'return true;';
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Removers">
+    public function getSingleRemoverCodeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'Remove ' . $attribute->getSingleName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpSingleTypeBase() /*. ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '')*/ . ' $' . $attribute->getSingleName();
+
+        if (!$attribute->getStatic()) {
+            $lines[] = '';
+            $lines[] = '@return ' . $attribute->getEntity()->getName();
+        }
+
+        return $lines;
+    }
+
+    public function getSingleRemoverCodeLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleRemoverCodeDocumentationLines($attribute)));
+
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
+        $lines[] = '{';
+
+        if ('array' === $attribute->getType() && null !== $attribute->getSubtype()) {
+            $lines[] = 'foreach (' . $attribute->getThisName() . ' as $key => $' . $attribute->getSingleName() . 'Element) {';
+            $lines[] =     'if ($' . $attribute->getSingleName() . 'Element === $' . $attribute->getSingleName() . ') {';
+            $lines[] =         'unset(' . $attribute->getThisName() . '[$key]);';
+            $lines[] =         'break;';
+            $lines[] =     '}';
+            $lines[] = '}';
+        } else {
+            $lines[] = !$attribute->getSettingFromInverse()
+                ? $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');'
+                : '$' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+        }
+
+        if (!$attribute->getStatic()) {
+            $lines[] = '';
+            $lines[] = 'return $this;';
+        }
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getMultipleRemoverCodeDocumentationLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'Remove ' . $attribute->getLowerName();
+        $lines[] = '';
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+
+        if (!$attribute->getStatic()) {
+            $lines[] = '';
+            $lines[] = '@return ' . $attribute->getEntity()->getName();
+        }
+
+        return $lines;
+    }
+
+    public function getMultipleRemoverCodeLines(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleRemoverCodeDocumentationLines($attribute)));
+
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
+        $lines[] = '{';
+
+        if ('array' === $attribute->getType() && null !== $attribute->getSubtype()) {
+            $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+
+            $lines[] = !$attribute->getStatic()
+                ? '$this->remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');'
+                : 'self::remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');';
+
+            $lines[] = '}';
+        } else {
+            if (!$attribute->getSettingFromInverse()) {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ');';
+                $lines[] = '}';
+            } else {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     '$' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+                $lines[] = '}';
+            }
+        }
+
+        if (!$attribute->getStatic()) {
+            $lines[] = '';
+            $lines[] = 'return $this;';
+        }
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    public function getSetterGetterLines(PHPAttribute $attribute)
+    {
+        $lines = [];
 
         if ($attribute->getSetter()) {
-            $retArray[] = $this->getSetterCode($attribute);
+            $lines = array_merge($lines, $this->getSetterCodeLines($attribute));
         }
 
-        if ($attribute->getPhpParameterType() === 'Collection' || $attribute->getType() === 'array') {
-            $retArray[] = $this->getAddersCode($attribute);
-            $retArray[] = $this->getRemoversCode($attribute);
+        if ('Collection' === $attribute->getPhpParameterType() || 'array' === $attribute->getType()) {
+            if (0 !== count($lines)) {
+                $lines[] = '';
+            }
+
+            $lines = array_merge($lines, $this->getSingleAdderCodeLines($attribute));
+
+            $lines[] = '';
+
+            $lines = array_merge($lines, $this->getMultipleAdderCodeLines($attribute));
+
+            if ('ManyToOne' !== $attribute->getForeign()) {
+                $lines[] = '';
+
+                $lines = array_merge($lines, $this->getSingleContainsCodeLines($attribute));
+
+                $lines[] = '';
+
+                $lines = array_merge($lines, $this->getMultipleContainsCodeLines($attribute));
+            }
+
+            $lines[] = '';
+
+            $lines = array_merge($lines, $this->getSingleRemoverCodeLines($attribute));
+
+            $lines[] = '';
+
+            $lines = array_merge($lines, $this->getMultipleRemoverCodeLines($attribute));
         }
 
         if ($attribute->getGetter()) {
-            $retArray[] = $this->getGetterCode($attribute);
-        }
-
-        return implode("\n",$retArray);
-    }
-
-    protected function entityToString()
-    {
-        $entity = $this->getEntity();
-
-        $ret = '';
-
-        $ret .= '    /**' . "\n";
-        $ret .= '     * ' . $entity->getName() . ' to string ' . (is_null($entity->getToString()) ? '(Default)' : '(' . $entity->getToString() . ')') . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @return string' . "\n";
-        $ret .= '     */' . "\n";
-
-        $ret .= '    public function __toString()' . "\n";
-        $ret .= '    {' . "\n";
-
-        if (is_null($entity->getToString())) {
-            if ($entity->getProject()->getORM() !== '') {
-                $ret .= '        return \'' . $entity->getName() . '(\' . $this->' . $entity->getPrimaryAttribute()->getName() . ' . \')\';' . "\n";
-            } else {
-                $ret .= '        return \'' . $entity->getName() . '\';' . "\n";
+            if (0 !== count($lines)) {
+                $lines[] = '';
             }
-        } else {
-            $ret .= '        return strval($this->' . $entity->getAttributeByName($entity->getToString())->getName() . ');' . "\n";
+
+            $lines = array_merge($lines, $this->getGetterCodeLines($attribute));
         }
 
-        $ret .= '    }' . "\n";
-
-        return $ret;
+        return $lines;
     }
 
-    public function getArrayAccessOffsetSetCode()
+    // <editor-fold desc="toString">
+    public function getEntityToStringDocumentationLines()
+    {
+        $lines = [];
+
+
+        $line = $this->getEntity()->getName() . ' to string ';
+
+        $line .= null === $this->getEntity()->getToString()
+            ? '(Default)'
+            : '(' . $this->getEntity()->getToString() . ')';
+
+        $lines[] = $line;
+
+        $lines[] = '';
+        $lines[] = '@return string';
+
+        return $lines;
+    }
+
+    public function getEntityToStringLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getEntityToStringDocumentationLines()));
+
+        $lines[] = 'public function __toString()';
+        $lines[] = '{';
+
+        if (null === $this->getEntity()->getToString()) {
+            $lines[] = '' !== $this->getEntity()->getProject()->getORM()
+                ? 'return \'' . $this->getEntity()->getName() . '(\' . $this->' . $this->getEntity()->getPrimaryAttribute()->getName() . ' . \')\';'
+                : 'return \'' . $this->getEntity()->getName() . '\';';
+        } else {
+            $lines[] = 'return strval($this->' . $this->getEntity()->getAttributeByName($this->getEntity()->getToString())->getName() . ');';
+        }
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Array access">
+    public function getArrayAccessOffsetSetCodeDocumentationLines()
+    {
+        $lines = [];
+
+        $lines[] = 'OffsetSet implementation of the \\ArrayAccess interface';
+        $lines[] = '';
+        $lines[] = '@param string $offset';
+        $lines[] = '@param mixed  $value';
+        $lines[] = '';
+        $lines[] = '@throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetSetCodeLines()
     {
         $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+        $noSetterMessage = 'Tried to set the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.';
 
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * OffsetSet implementation of the \\ArrayAccess interface' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param string $offset' . "\n";
-        $ret .= '     * @param mixed  $value' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set' . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public function offsetSet($offset, $value)' . "\n";
-        $ret .= '    {' . "\n";
-        $ret .= '        if (!$this->offsetExists($offset)) {'  . "\n";
-        $ret .= '            throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');' . "\n";
-        $ret .= '        }' . "\n";
-        $ret .= '        ' . "\n";
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetSetCodeDocumentationLines()));
 
-        $ret .= '        switch ($offset) {' . "\n";
+        $lines[] = 'public function offsetSet($offset, $value)';
+        $lines[] = '{';
+        $lines[] = 'if (!$this->offsetExists($offset)) {' ;
+        $lines[] =     'throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
+        $lines[] = '}';
+        $lines[] = '';
+        $lines[] = 'switch ($offset) {';
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
-                $ret .= '                $this->' . $attr->getSetterName() . '($value);' . "\n";
-                $ret .= '                break;' . "\n";
+                $lines[] = 'case \'' . $attr->getName() . '\':';
+                $lines[] =     '$this->' . $attr->getSetterName() . '($value);';
+                $lines[] =     'break;';
             }
         }
 
-        $ret .= '            default:' . "\n";
-        $ret .= '                throw new \\InvalidArgumentException(\'Tried to set the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.\');' . "\n";
+        $lines[] = 'default:';
+        $lines[] =     'throw new \\InvalidArgumentException(\'' . $noSetterMessage . '\');';
+        $lines[] = '}';
 
-        $ret .= '        }' . "\n";
-        $ret .= '    }' . "\n";
+        $lines[] = '}';
 
-        return $ret;
+        return $lines;
     }
 
-    public function getArrayAccessOffsetExitsCode()
+    public function getArrayAccessOffsetExitsCodeDocumentationLines()
     {
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * OffsetExists implementation of the \\ArrayAccess interface' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param string $offset' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @return bool' . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public function offsetExists($offset)' . "\n";
-        $ret .= '    {' . "\n";
+        $lines[] = 'OffsetExists implementation of the \\ArrayAccess interface';
+        $lines[] = '';
+        $lines[] = '@param string $offset';
+        $lines[] = '';
+        $lines[] = '@return bool';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetExitsCodeLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetExitsCodeDocumentationLines()));
+
+        $lines[] = 'public function offsetExists($offset)';
+        $lines[] = '{';
 
         $attributes = [];
         foreach ($this->getEntity()->getAttributes() as $attr) {
             $attributes[] = '\'' . $attr->getName() . '\'';
         }
 
-        $ret .= '        return in_array($offset, [' . implode(', ', $attributes) . ']);' . "\n";
+        $lines[] =     'return in_array($offset, [' . implode(', ', $attributes) . ']);';
 
-        $ret .= '    }' . "\n";
+        $lines[] = '}';
 
-        return $ret;
+        return $lines;
     }
 
-    public function getArrayAccessOffsetUnsetCode()
+    public function getArrayAccessOffsetUnsetCodeDocumentationLines()
+    {
+        $lines = [];
+
+        $lines[] = 'OffsetUnset implementation of the \\ArrayAccess interface';
+        $lines[] = '';
+        $lines[] = '@param string $offset';
+        $lines[] = '';
+        $lines[] = '@throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetUnsetCodeLines()
     {
         $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+        $noSetterMessage = 'Tried to unset the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.';
 
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * OffsetUnset implementation of the \\ArrayAccess interface' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param string $offset' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be set' . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public function offsetUnset($offset)' . "\n";
-        $ret .= '    {' . "\n";
-        $ret .= '        if (!$this->offsetExists($offset)) {'  . "\n";
-        $ret .= '            throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');' . "\n";
-        $ret .= '        }' . "\n";
-        $ret .= '        ' . "\n";
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetUnsetCodeDocumentationLines()));
 
-        $ret .= '        switch ($offset) {' . "\n";
+        $lines[] = 'public function offsetUnset($offset)';
+        $lines[] = '{';
+
+        $lines[] = 'if (!$this->offsetExists($offset)) {' ;
+        $lines[] =     'throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
+        $lines[] = '}';
+        $lines[] = '';
+
+        $lines[] = 'switch ($offset) {';
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
+                $lines[] = 'case \'' . $attr->getName() . '\':';
 
-                if ($attr->getDefaultValueAttributeInit() != '') {
-                    $ret .= '                $this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueAttributeInit() . ');' . "\n";
-                } elseif ($attr->getDefaultValueConstructorInit() != '') {
-                    $ret .= '                $this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueConstructorInit() . ');' . "\n";
+                if ('' != $attr->getDefaultValueAttributeInit()) {
+                    $lines[] = '$this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueAttributeInit() . ');';
+                } elseif ('' != $attr->getDefaultValueConstructorInit()) {
+                    $lines[] = '$this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueConstructorInit() . ');';
                 } else {
-                    $ret .= '                $this->' . $attr->getName() . ' = null;' . "\n";
+                    $lines[] = '$this->' . $attr->getName() . ' = null;';
                 }
 
-                $ret .= '                break;' . "\n";
+                $lines[] = 'break;';
             }
         }
 
-        $ret .= '            default:' . "\n";
-        $ret .= '                throw new \\InvalidArgumentException(\'Tried to unset the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow setter access.\');' . "\n";
+        $lines[] = 'default:';
+        $lines[] =     'throw new \\InvalidArgumentException(\'' . $noSetterMessage . '\');';
+        $lines[] = '}';
 
-        $ret .= '        }' . "\n";
-        $ret .= '    }' . "\n";
+        $lines[] = '}';
 
-        return $ret;
+        return $lines;
     }
 
-    public function getArrayAccessOffsetGetCode()
+    public function getArrayAccessOffsetGetCodeDocumentationLines()
+    {
+        $lines = [];
+
+        $lines[] = 'OffsetGet implementation of the \\ArrayAccess interface';
+        $lines[] = '';
+        $lines[] = '@param string $offset';
+        $lines[] = '';
+        $lines[] = '@return mixed'; // TODO: Improve this
+        $lines[] = '';
+        $lines[] = '@throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be retrieved';
+
+        return $lines;
+    }
+
+    public function getArrayAccessOffsetGetCodeLines()
     {
         $noOffsetMessage = 'Tried to access the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but that offset doesn\\\'t exist.';
+        $noGetterMessage = 'Tried to get the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow getter access.';
 
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    /**' . "\n";
-        $ret .= '     * OffsetGet implementation of the \\ArrayAccess interface' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @param string $offset' . "\n";
-        $ret .= '     *' . "\n";
-        $ret .= '     * @return mixed' . "\n"; // TODO: Improve this
-        $ret .= '     *' . "\n";
-        $ret .= '     * @throws \\InvalidArgumentException if the offset doesn\'t exist on this entity or doesn\'t allow to be retrieved' . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public function offsetGet($offset)' . "\n";
-        $ret .= '    {' . "\n";
-        $ret .= '        if (!$this->offsetExists($offset)) {'  . "\n";
-        $ret .= '            throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');' . "\n";
-        $ret .= '        }' . "\n";
-        $ret .= '        ' . "\n";
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getArrayAccessOffsetGetCodeDocumentationLines()));
 
-        $ret .= '        switch ($offset) {' . "\n";
+        $lines[] = 'public function offsetGet($offset)';
+        $lines[] = '{';
+
+        $lines[] = 'if (!$this->offsetExists($offset)) {' ;
+        $lines[] =     'throw new \\InvalidArgumentException(\'' . $noOffsetMessage . '\');';
+        $lines[] = '}';
+        $lines[] = '';
+
+        $lines[] = 'switch ($offset) {';
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $ret .= '            case \'' . $attr->getName() . '\':' . "\n";
-                $ret .= '                return $this->' . $attr->getGetterName() . '();' . "\n";
+                $lines[] = 'case \'' . $attr->getName() . '\':';
+                $lines[] =     'return $this->' . $attr->getGetterName() . '();';
             }
         }
 
-        $ret .= '            default:' . "\n";
-        $ret .= '                throw new \\InvalidArgumentException(\'Tried to get the offset \' . $offset . \' of the entity \\\'' . $this->getEntity()->getName() . '\\\' as using the \\\\ArrayAccess interface but is set to not allow getter access.\');' . "\n";
+        $lines[] = 'default:';
+        $lines[] =     'throw new \\InvalidArgumentException(\'' . $noGetterMessage . '\');';
+        $lines[] = '}';
 
-        $ret .= '        }' . "\n";
-        $ret .= '    }' . "\n";
+        $lines[] = '}';
 
-        return $ret;
+        return $lines;
     }
 
-    public function getArrayAccessCode()
+    public function getArrayAccessCodeLines()
     {
-        $ret = '';
+        $lines = [];
 
-        $ret .= '    // <editor-fold desc="ArrayAccess">' . "\n";
+        $lines[] = '// <editor-fold desc="ArrayAccess">';
 
-        $ret .= $this->getArrayAccessOffsetSetCode();
+        $lines = array_merge($lines, $this->getArrayAccessOffsetSetCodeLines());
 
-        $ret .= "\n";
+        $lines[] = '';
 
-        $ret .= $this->getArrayAccessOffsetExitsCode();
+        $lines = array_merge($lines, $this->getArrayAccessOffsetExitsCodeLines());
 
-        $ret .= "\n";
+        $lines[] = '';
 
-        $ret .= $this->getArrayAccessOffsetUnsetCode();
+        $lines = array_merge($lines, $this->getArrayAccessOffsetUnsetCodeLines());
 
-        $ret .= "\n";
+        $lines[] = '';
 
-        $ret .= $this->getArrayAccessOffsetGetCode();
+        $lines = array_merge($lines, $this->getArrayAccessOffsetGetCodeLines());
 
-        $ret .= '    // </editor-fold>' . "\n";
+        $lines[] = '// </editor-fold>';
 
-        return $ret;
+        return $lines;
     }
+    // </editor-fold>
 
-    public function render()
+    public function getFilenameLine()
     {
-        $entity = $this->getEntity();
+        $line = '// ' . $this->getEntity()->getNamespace() . '\\';
 
-        // Check that it has a primary key
-        if (count($entity->getPrimaryAttributes()) == 0) {
-            if ($entity->getProject()->getORM() !== '') {
-                throw new \RuntimeException( 'The entity ' . $entity->getName() . ' doesn\'t have a primary key.' );
-            }
+        if ($this->getEntity()->getProject()->getBase()) {
+            $line .= 'Base\\';
         }
 
-        $attributes       = [];
-        $settersGetters   = [];
+        $line .= $this->getEntity()->getName() . '.php';
+
+        return $line;
+    }
+
+    public function getNamespaceLine()
+    {
+        $line = 'namespace ' . $this->getEntity()->getNamespace();
+
+        if ($this->getEntity()->getProject()->getBase()) {
+            $line .= '\\Base';
+        }
+
+        $line .= ';';
+
+        return $line;
+    }
+
+    public function getRequiredEntities()
+    {
         $requiredEntities = [];
 
-        $file = '';
-        $file .= '<?php' . "\n";
-
-        foreach ($entity->getAttributes() as $attr) {
-            //$file .= '// ' . $attr->getName() . "\n";
-            if ( is_null($entity->getParentEntity()) || !in_array($attr->getName(),array_keys($entity->getParentEntity()->getAttributes())) ) {
-                $attributes[]     = $this->getAttribute($attr);
-                $settersGetters[] = $this->getSetterGetter($attr);
-            }
-
+        foreach ($this->getEntity()->getAttributes() as $attr) {
             if (!is_null($attr->getForeignEntity())) {
                 $foreignEntity = $attr->getForeignEntity()->getFullyQualifiedName();
 
@@ -961,202 +1055,233 @@ class Entity1 extends Entity1Base
             }
         }
 
-        $file .= '// ' . $entity->getNamespace() . '\\';
+        return $requiredEntities;
+    }
 
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $file .= 'Entity\\';
+    public function getUseLines()
+    {
+        $lines = [];
+
+        if ( $this->getEntity()->getProject()->getBase() && $this->getEntity()->hasSetters() ) {
+            $lines[] = $this->getEntityUseLine($this->getEntity());
         }
 
-        if ($entity->getProject()->getBase()) {
-            $file .= 'Base\\';
+        if (null !== $this->getEntity()->getParentEntity()) {
+            $lines[] = 'use ' . $this->getEntity()->getParentEntity()->getFullyQualifiedName() . ';';
         }
 
-        $file .= $entity->getName() . '.php' . "\n";
-
-        $file .= $this->getDescriptionCode();
-
-        $file .= $this->getBlurb();
-
-        $file .= 'namespace ' . $entity->getNamespace();
-
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $file .= '\\Entity';
-        }
-
-        if ($entity->getProject()->getBase()) {
-            $file .= '\\Base';
-        }
-
-        $file .= ';' . "\n";
-
-        $file .= "\n";
-
-        if ($entity->getProject()->getORM() === 'Doctrine2') {
-            $file .= 'use Doctrine\\ORM\\Mapping as ORM;' . "\n";
-
-            $useArrayCollection = false;
-            foreach ($entity->getAttributes() as $attr) {
-                if (!is_null($attr->getForeign())) {
-                    $useArrayCollection = true;
-                    break;
-                }
-            }
-
-            if ($useArrayCollection) {
-                $file .= 'use Doctrine\\Common\\Collections\\Collection;' . "\n";
-                $file .= 'use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n"; // Is needed when doing new ArrayCollection();
+        foreach ($this->getRequiredEntities() as $requiredEntity) {
+            if (substr($requiredEntity, 0, strlen($this->getEntity()->getNamespace())) !== $this->getEntity()->getNamespace()) {
+                $lines[] = 'use ' . $requiredEntity . ';';
             }
         }
 
-        if ($entity->getProject()->getValidation()) {
-            $file .= 'use Symfony\\Component\\Validator\\Constraints as Assert;' . "\n";
-        }
-
-        /** @var Attribute[] $uniqueAttributes */
-        $uniqueAttributes = [];
-        foreach ($entity->getAttributes() as $attr) {
-            if ($attr->getUnique()) {
-                $uniqueAttributes[] = $attr;
-            }
-        }
-
-        if ($entity->getProject()->getValidation() && count($uniqueAttributes) > 0) {
-            $file .= 'use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;' . "\n";
-        }
-
-        $uses = [];
-
-        if ( $entity->getProject()->getBase() && $entity->hasSetters() ) {
-            $uses[] = $this->getUseLine($entity);
-        }
-
-        if (!is_null($entity->getParentEntity())) {
-            $uses[] = 'use ' . $entity->getParentEntity()->getFullyQualifiedName() . ';' . "\n";
-        }
-
-        if (count($requiredEntities) > 0) {
-            foreach ($requiredEntities as $requiredEntity) {
-                if (substr($requiredEntity, 0, strlen($entity->getNamespace())) !== $entity->getNamespace()) {
-                    $uses[] = 'use ' . $requiredEntity . ';' . "\n";
-                }
-            }
-        }
-
-        if ($entity->getProject()->getBase()) {
-            foreach ($entity->getAttributes() as $attr) {
-                if (!is_null($attr->getForeignEntity())) {
-                    $uses[] = 'use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';' . "\n";
+        if ($this->getEntity()->getProject()->getBase()) {
+            foreach ($this->getEntity()->getAttributes() as $attr) {
+                if (null !== $attr->getForeignEntity()) {
+                    $lines[] = 'use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
                 }
 
                 if ($attr->isEntitySubtype()) {
-                    $uses[] = $this->getUseLine($entity->getProject()->getEntityByFullyQualifiedName($attr->getSubtype()));
+                    $lines[] = $this->getEntityUseLine($this->getEntity()->getProject()->getEntityByFullyQualifiedName($attr->getSubtype()));
                 }
             }
         }
 
-        $file .= implode('',array_unique($uses,SORT_STRING));
+        return array_unique($lines, SORT_STRING);
+    }
 
-        $file .= "\n";
-        $file .= '/**' . "\n";
+    public function getEntityDocumentationLines()
+    {
+        $lines = [];
 
-        if (!$entity->getProject()->getBase()) {
-            $file .= ' * ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . "\n";
+        $lines[] = !$this->getEntity()->getProject()->getBase()
+            ? $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName()
+            : $this->getEntity()->getNamespace() . '\\Entity\\Base\\' . $this->getEntity()->getName();
+
+        return $lines;
+    }
+
+    public function getEntityDeclarationLine()
+    {
+        $line = '';
+
+        if (!$this->getEntity()->getProject()->getBase()) {
+            $line .= 'class ' . $this->getEntity()->getName();
         } else {
-            $file .= ' * ' . $entity->getNamespace() . '\\Entity\\Base\\' . $entity->getName() . "\n";
+            $line .= 'abstract class ' . $this->getEntity()->getNameBase();
         }
 
-        if ($entity->getProject()->getORM() === 'Doctrine2') {
-            $file .= ' *' . "\n";
-
-            if ( $entity->getProject()->getBase() || !is_null($entity->getParentEntity()) ) {
-                $file .= ' * @ORM\\MappedSuperclass' . "\n";
-            } else {
-                $file .= ' * @ORM\\Entity' . "\n";
-            }
+        if (null !== $this->getEntity()->getParentEntity()) {
+            $line .= ' extends ' . $this->getEntity()->getParentEntity()->getName();
         }
 
-        if ($entity->getProject()->getValidation()) {
-            if (count($uniqueAttributes) > 0) {
-                $file .= ' *' . "\n";
+        return $line;
+    }
 
-                foreach ($uniqueAttributes as $attr) {
-                    $file .= ' * @DoctrineAssert\\UniqueEntity(fields="' . $attr->getName() . '", message="' . $attr->getUniqueMessage() . '")' . "\n";
-                }
-            }
-        }
-
-        $file .= ' */' . "\n";
-
-        if (!$entity->getProject()->getBase()) {
-            $file .= 'class ' . $entity->getName() . (!is_null($entity->getParentEntity()) ? ' extends ' . $entity->getParentEntity()->getName() : '') . "\n";
-        } else {
-            $file .= 'abstract class ' . $entity->getNameBase() . (!is_null($entity->getParentEntity()) ? ' extends ' . $entity->getParentEntity()->getName() : '') . "\n";
-        }
+    public function getImplementLines()
+    {
+        $lines = [];
 
         $implements = [];
 
-        if ($entity->getArrayAccess()) {
+        if ($this->getEntity()->getArrayAccess()) {
             $implements[] = '\\ArrayAccess';
         }
 
         if (count($implements) > 0) {
-            $file .= '    implements ' . implode(',', $implements) . "\n";
+            $lines[] = 'implements ' . implode(', ', $implements);
         }
 
-        $file .= '{' . "\n";
+        return $lines;
+    }
 
-        $file .= '    // <editor-fold desc="Attributes">' . "\n";
+    /**
+     * @return PHPAttribute[]
+     */
+    public function getRenderAttributes()
+    {
+        $renderAttributes = [];
 
-        if (count($attributes) != 0) {
-            $file .= implode("\n", $attributes) . "\n";
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if ( null === $this->getEntity()->getParentEntity() || !in_array($attr->getName(), array_keys($this->getEntity()->getParentEntity()->getAttributes())) ) {
+                $renderAttributes[] = $attr;
+            }
         }
 
-        $file .= '    // </editor-fold>' . "\n";
+        return $renderAttributes;
+    }
 
-        if (!$entity->getHasConstructor() && $entity->shouldHaveConstructor()) {
-            $file .= "\n";
-            $file .= '    // <editor-fold desc="Constructor">' . "\n";
-            $file .= '    public function __construct()' . "\n";
-            $file .= '    {' . "\n";
+    public function getAllAttributeLines()
+    {
+        $lines = [];
 
-            $file .= $this->getConstructorDefaultValuesPart();
+        $renderAttributes = $this->getRenderAttributes();
 
-            $file .= '    }' . "\n";
-            $file .= '    // </editor-fold>' . "\n";
+        $lines[] = '// <editor-fold desc="Attributes">';
+
+        if (0 !== count($renderAttributes)) {
+            foreach ($renderAttributes as $attr) {
+                $lines = array_merge($lines, $this->getAttributeLines($attr));
+                $lines[] = '';
+            }
         }
 
-        $file .= "\n";
-        $file .= '    // <editor-fold desc="Setters and getters">' . "\n";
-        $file .= implode("\n", $settersGetters);
+        $lines[] = '// </editor-fold>';
 
-        if (count($settersGetters) > 0) {
-            $file .= "\n";
+        return $lines;
+    }
+
+    public function getConstructorLines()
+    {
+        $lines = [];
+
+        if (!$this->getEntity()->getHasConstructor() && $this->getEntity()->shouldHaveConstructor()) {
+            $lines[] = '';
+            $lines[] = '// <editor-fold desc="Constructor">';
+            $lines[] = 'public function __construct()';
+            $lines[] = '{';
+
+            foreach ($this->getEntity()->getAttributes() as $attr) {
+                $attributeDefaultValueConstructor = $attr->getDefaultValueConstructorInit();
+
+                if ('' !== $attributeDefaultValueConstructor) {
+                    $lines[] = '$this->' . $attr->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';';
+                }
+            }
+
+            $lines[] = '}';
+            $lines[] = '// </editor-fold>';
         }
 
-        $file .= '    // </editor-fold>' . "\n";
-        $file .= "\n";
-        $file .= '    // <editor-fold desc="Other methods">' . "\n";
-        $file .= $this->entityToString();
+        return $lines;
+    }
 
-// isNotDefault
-//        $file .= "\n";
-//        $file .= '//    public function isNotDefault() {' . "\n";
-//        $file .= '//    return ' . "\n";
-//        foreach ($entity->getAttributes() as $attr) {
-//            $file .= '//    ' . "\n";
-//            $file .= '//    ' . "\n";
-//        }
-//        $file .= '//    }' . "\n";
+    public function getAllSetterGetterLines()
+    {
+        $lines = [];
 
-        $file .= '    // </editor-fold>' . "\n";
+        $lines[] = '';
+        $lines[] = '// <editor-fold desc="Setters and getters">';
 
-        if ($entity->getArrayAccess()) {
-            $file .= "\n";
-            $file .= $this->getArrayAccessCode();
+        $setterGetterLines = [];
+
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if ( null === $this->getEntity()->getParentEntity() || !in_array($attr->getName(), array_keys($this->getEntity()->getParentEntity()->getAttributes())) ) {
+                if (0 !== count($setterGetterLines)) {
+                    $setterGetterLines[] = '';
+                }
+
+                $setterGetterLines = array_merge($setterGetterLines, $this->getSetterGetterLines($attr));
+            }
         }
-        $file .= '}';
 
-        return $file;
+        $lines = array_merge($lines, $setterGetterLines);
+
+        $lines[] = '// </editor-fold>';
+
+        return $lines;
+    }
+
+    public function getOtherMethodLines()
+    {
+        $lines = [];
+
+        $lines[] = '';
+        $lines[] = '// <editor-fold desc="Other methods">';
+
+        $lines = array_merge($lines, $this->getEntityToStringLines());
+
+        $lines[] = '// </editor-fold>';
+
+        return $lines;
+    }
+
+    public function getArrayAccessLines()
+    {
+        $lines = [];
+
+        if ($this->getEntity()->getArrayAccess()) {
+            $lines[] = '';
+
+            $lines = array_merge($lines, $this->getArrayAccessCodeLines());
+        }
+
+        return $lines;
+    }
+
+    public function getFileLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getEntityDocumentationLines()));
+
+        $lines[] = $this->getEntityDeclarationLine();
+
+        $lines = array_merge($lines, $this->getImplementLines());
+
+        $lines[] = '{';
+
+        $lines = array_merge($lines, $this->getAllAttributeLines());
+        $lines = array_merge($lines, $this->getConstructorLines());
+        $lines = array_merge($lines, $this->getAllSetterGetterLines());
+        $lines = array_merge($lines, $this->getOtherMethodLines());
+        $lines = array_merge($lines, $this->getArrayAccessLines());
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function render()
+    {
+        if (0 === count($this->getEntity()->getPrimaryAttributes())) {
+            if ('' !== $this->getEntity()->getProject()->getORM()) {
+                throw new \RuntimeException( 'The entity ' . $this->getEntity()->getName() . ' doesn\'t have a primary key.' );
+            }
+        }
+
+        return parent::render();
     }
     // </user-additions>
     // </editor-fold>

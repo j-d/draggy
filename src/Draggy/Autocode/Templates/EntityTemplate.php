@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -18,7 +18,6 @@ namespace Draggy\Autocode\Templates;
 
 use Draggy\Autocode\Templates\Base\EntityTemplateBase;
 // <user-additions part="use">
-use Draggy\Autocode\Entity;
 // </user-additions>
 
 /**
@@ -40,31 +39,25 @@ abstract class EntityTemplate extends EntityTemplateBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    public static function getUseLine(Entity $entity)
+    protected function getDescriptionCodeLines()
     {
-        $ret = 'use ' . $entity->getNamespace();
+        $entity = $this->getEntity();
 
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $ret .= '\\Entity';
+        $lines = [];
+
+        if ( '' !== trim($entity->getDescription()) ) {
+            $lines[] = '/*';
+            $lines[] = ' * ' . trim($entity->getDescription());
+            $lines[] = ' */';
+            $lines[] = '';
         }
 
-        $ret .= '\\' . $entity->getName() . ';' . "\n";
-
-        return $ret;
+        return $lines;
     }
 
     protected function getDescriptionCode()
     {
-        $entity = $this->getEntity();
-
-        if ( trim($entity->getDescription()) !== '' ) {
-            return  '/*' . "\n" .
-                ' * ' . trim($entity->getDescription()) . "\n" .
-                ' */' . "\n" .
-                "\n";
-        } else {
-            return '';
-        }
+        return $this->convertLinesToCode($this->getDescriptionCodeLines());
     }
     // </user-additions>
     // </editor-fold>

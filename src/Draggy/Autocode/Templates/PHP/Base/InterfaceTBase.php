@@ -1,5 +1,5 @@
 <?php
-// Autocode\Templates\PHP\Base\Form.php
+// Draggy\Autocode\Templates\PHP\Base\InterfaceT.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -21,7 +21,7 @@ use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Autocode\Templates\PHP\Entity\Base\Form
+ * Draggy\Autocode\Templates\PHP\Entity\Base\InterfaceT
  */
 abstract class InterfaceTBase extends PHPEntityTemplate
 {
@@ -33,7 +33,7 @@ abstract class InterfaceTBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Form to string (Default)
+     * InterfaceT to string (Default)
      *
      * @return string
      */

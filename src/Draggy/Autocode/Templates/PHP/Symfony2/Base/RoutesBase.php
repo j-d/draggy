@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\Fixtures.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Base\Routes.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -9,21 +9,21 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\Fixtures;
+use Draggy\Autocode\Templates\PHP\Symfony2\Routes;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\Fixtures
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\Routes
  */
-abstract class FixturesBase extends PHPEntityTemplate
+abstract class RoutesBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class FixturesBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Fixtures to string (Default)
+     * Routes to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'Fixtures';
+        return 'Routes';
     }
     // </editor-fold>
 }
