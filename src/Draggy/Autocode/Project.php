@@ -1216,7 +1216,10 @@ class Project extends ProjectBase
         return new File($traitPath, $traitName, $this->getTraitTemplate()->setEntity($entity)->render());
     }
 
-
+    public function supportsReverseAttributes()
+    {
+        return 'Doctrine2' === $this->getOrm();
+    }
     // </user-additions>
     // </editor-fold>
 }

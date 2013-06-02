@@ -440,7 +440,7 @@ class Entity1 extends Entity1Base
                 $lines[] = '}';
             }
         } else { // ManyToOne
-            if ('Doctrine2' === $attribute->getEntity()->getProject()->getORM()) { // TODO: Double check this
+            if ($attribute->getEntity()->getProject()->supportsReverseAttributes()) {
                 $lines[] = '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
                 $lines[] = '';
             }
@@ -502,7 +502,7 @@ class Entity1 extends Entity1Base
                 $lines[] = '}';
             }
         } else { // ManyToOne
-            if ('Doctrine2' === $attribute->getEntity()->getProject()->getORM()) { // TODO: Double check this
+            if ($attribute->getEntity()->getProject()->supportsReverseAttributes()) {
                 $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
                 $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
                 $lines[] = '}';
@@ -952,7 +952,6 @@ class Entity1 extends Entity1Base
 
         return $lines;
     }
-
 
     public function getArrayAccessOffsetGetCodeLines()
     {
