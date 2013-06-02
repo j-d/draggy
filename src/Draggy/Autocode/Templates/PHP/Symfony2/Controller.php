@@ -45,250 +45,256 @@ class Controller extends ControllerBase
         
         $file = '';
 
-        $file .= '<?php' . "\n";
-        $file .= '// ' . $entity->getNamespace() . '\\Controller\\' . $entity->getName() . 'Controller.php' . "\n";
+        $file .= '<?php' . PHP_EOL;
+        $file .= '// ' . $entity->getNamespace() . '\\Controller\\' . $entity->getName() . 'Controller.php' . PHP_EOL;
         $file .= $this->getBlurb();
 
-        $file .= 'namespace ' . $entity->getNamespace() . '\\Controller;' . "\n";
-        $file .= "\n";
-        $file .= 'use Common\Symfony\Controller;' . "\n";
-        $file .= '// use Symfony\\Component\\HttpFoundation\\Request;' . "\n";
-        $file .= '// use Symfony\\Component\\HttpFoundation\\Response;' . "\n";
-        $file .= '// use Symfony\\Component\\HttpFoundation\\RedirectResponse;' . "\n";
-        $file .= '// use Symfony\\Component\\Security\\Core\\SecurityContext;' . "\n";
-        $file .= "\n";
-        $file .= '// use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n";
-        $file .= "\n";
+        $file .= 'namespace ' . $entity->getNamespace() . '\\Controller;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= 'use Common\Symfony\Controller;' . PHP_EOL;
+        $file .= '// use Symfony\\Component\\HttpFoundation\\Request;' . PHP_EOL;
+        $file .= '// use Symfony\\Component\\HttpFoundation\\Response;' . PHP_EOL;
+        $file .= '// use Symfony\\Component\\HttpFoundation\\RedirectResponse;' . PHP_EOL;
+        $file .= '// use Symfony\\Component\\Security\\Core\\SecurityContext;' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '// use Doctrine\\Common\\Collections\\ArrayCollection;' . PHP_EOL;
+        $file .= PHP_EOL;
 
         if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
-            $file .= '// use use Common\\Html\\FormItemArray;' . "\n";
-            $file .= "\n";
+            $file .= '// use use Common\\Html\\FormItemArray;' . PHP_EOL;
+            $file .= PHP_EOL;
         }
 
-        $file .= '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . "\n";
+        $file .= '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . PHP_EOL;
 
         if ($entity->getHasRepository())
-            $file .= '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;' . "\n";
+            $file .= '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;' . PHP_EOL;
 
         if ($entity->getHasForm())
-            $file .= '// use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;' . "\n";
+            $file .= '// use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;' . PHP_EOL;
 
         foreach ($entity->getAttributes() as $attr)
             if (!is_null($attr->getForeignEntity())) {
-                $file .= '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';' . "\n";
+                $file .= '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';' . PHP_EOL;
 
                 if ($attr->getForeignEntity()->getHasRepository()) {
-                    $file .= '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . 'Repository;' . "\n";
+                    $file .= '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . 'Repository;' . PHP_EOL;
                 }
             }
 
 
-        $file .= "\n";
-        $file .= '// <user-additions' . ' part="use">' . "\n";
+        $file .= PHP_EOL;
+        $file .= '// <user-additions' . ' part="use">' . PHP_EOL;
 
         if ($entity->getCrudCreate()) {
-            $file .= 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . "\n";
+            $file .= 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . PHP_EOL;
         }
 
         if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
-            $file .= 'use Symfony\\Component\\HttpFoundation\\Request;' . "\n";
-            $file .= 'use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;' . "\n";
+            $file .= 'use Common\\Html\\FormItemArray;' . PHP_EOL;
+            $file .= 'use Symfony\\Component\\HttpFoundation\\Request;' . PHP_EOL;
+            $file .= 'use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;' . PHP_EOL;
         }
 
         if ($entity->getCrudRead()) {
-            $file .= 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;' . "\n";
+            $file .= 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;' . PHP_EOL;
         }
 
-        $file .= '// </user-additions' . '>' . "\n";
-        $file .= "\n";
-        $file .= '/**' . "\n";
-        $file .= ' * ' . $entity->getNamespace() . '\\Controller\\' . $entity->getName() . 'Controller' . "\n";
-        $file .= ' */' . "\n";
-        $file .= 'class ' . $entity->getName() . 'Controller extends Controller' . "\n";
-        $file .= '{' . "\n";
-        $file .= '    //public function xxxAction(Request $request)' . "\n";
-        $file .= '    //{' . "\n";
-        $file .= '    //    $em = $this->getManager();' . "\n";
-        $file .= '    //    $xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();' . "\n";
+        $file .= '// </user-additions' . '>' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '/**' . PHP_EOL;
+        $file .= ' * ' . $entity->getNamespace() . '\\Controller\\' . $entity->getName() . 'Controller' . PHP_EOL;
+        $file .= ' */' . PHP_EOL;
+        $file .= 'class ' . $entity->getName() . 'Controller extends Controller' . PHP_EOL;
+        $file .= '{' . PHP_EOL;
+        $file .= '    //public function xxxAction(Request $request)' . PHP_EOL;
+        $file .= '    //{' . PHP_EOL;
+        $file .= '    //    $em = $this->getManager();' . PHP_EOL;
+        $file .= '    //    $xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();' . PHP_EOL;
 
         if ($entity->getHasRepository())
-            $file .= '    //    $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . "\n";
+            $file .= '    //    $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . PHP_EOL;
 
         foreach ($entity->getAttributes() as $attr)
             if (!is_null($attr->getForeignEntity())) {
-                $file .= '    //    $xxx = $em->getRepository(\'' . $attr->getForeignEntity()->getModule() . ':' . $attr->getForeignEntity()->getName() . '\')->findXYZ();' . "\n";
+                $file .= '    //    $xxx = $em->getRepository(\'' . $attr->getForeignEntity()->getModule() . ':' . $attr->getForeignEntity()->getName() . '\')->findXYZ();' . PHP_EOL;
 
                 if ($attr->getForeignEntity()->getHasRepository())
-                    $file .= '    //    $' . $attr->getForeignEntity()->getLowerName() . 'Repository = new ' . $attr->getForeignEntity()->getName() . 'Repository($em);' . "\n";
+                    $file .= '    //    $' . $attr->getForeignEntity()->getLowerName() . 'Repository = new ' . $attr->getForeignEntity()->getName() . 'Repository($em);' . PHP_EOL;
             }
 
-        $file .= '    //' . "\n";
-        $file .= '    //    $user = $this->get(\'security.context\')->getToken()->getUser();' . "\n";
-        $file .= '    //    if ($this->get(\'security.context\')->isGranted(\'ROLE_XXX\'))' . "\n";
-        $file .= '    //' . "\n";
+        $file .= '    //' . PHP_EOL;
+        $file .= '    //    $user = $this->get(\'security.context\')->getToken()->getUser();' . PHP_EOL;
+        $file .= '    //    if ($this->get(\'security.context\')->isGranted(\'ROLE_XXX\'))' . PHP_EOL;
+        $file .= '    //' . PHP_EOL;
 
         if ($entity->getHasForm()) {
-            $file .= '    //    $' . $entity->getLowerName() . ' = new ' . $entity->getName() . '();' . "\n";
-            $file .= '    //    $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . "\n";
-            $file .= '    //' . "\n";
-            $file .= '    //    $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . "\n";
-            $file .= '    //' . "\n";
-            $file .= '    //    if ($request->isMethod(\'POST\')) {' . "\n";
-            $file .= '    //        $form->bind($request);' . "\n";
-            $file .= '    //' . "\n";
-            $file .= '    //        if ($form->isValid()) {' . "\n";
-            $file .= '    //            $em = $this->getManager();' . "\n";
-            $file .= '    //            $em->persist($' . $entity->getLowerName() . ');' . "\n";
-            $file .= '    //            $em->flush();' . "\n";
-            $file .= '    //' . "\n";
-            $file .= '    //            $this->get(\'session\')->setFlash(\'info\', \'The ' . $entity->getName() . ' has been xxx successfully.\');' . "\n";
-            $file .= '    //' . "\n";
-            $file .= '    //            return $this->redirect($this->generateUrl(\'path_to_target\'));' . "\n";
-            $file .= '    //        }' . "\n";
-            $file .= '    //    }' . "\n";
-            $file .= '    //' . "\n";
+            $file .= '    //    $' . $entity->getLowerName() . ' = new ' . $entity->getName() . '();' . PHP_EOL;
+            $file .= '    //    $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . PHP_EOL;
+            $file .= '    //' . PHP_EOL;
+            $file .= '    //    $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . PHP_EOL;
+            $file .= '    //' . PHP_EOL;
+            $file .= '    //    if ($request->isMethod(\'POST\')) {' . PHP_EOL;
+            $file .= '    //        $form->bind($request);' . PHP_EOL;
+            $file .= '    //' . PHP_EOL;
+            $file .= '    //        if ($form->isValid()) {' . PHP_EOL;
+            $file .= '    //            $em = $this->getManager();' . PHP_EOL;
+            $file .= '    //            $em->persist($' . $entity->getLowerName() . ');' . PHP_EOL;
+            $file .= '    //            $em->flush();' . PHP_EOL;
+            $file .= '    //' . PHP_EOL;
+            $file .= '    //            $this->get(\'session\')->getFlashBag()->add(\'info\', \'The ' . $entity->getName() . ' has been xxx successfully.\');' . PHP_EOL;
+            $file .= '    //' . PHP_EOL;
+            $file .= '    //            return $this->redirect($this->generateUrl(\'path_to_target\'));' . PHP_EOL;
+            $file .= '    //        }' . PHP_EOL;
+            $file .= '    //    }' . PHP_EOL;
+            $file .= '    //' . PHP_EOL;
         }
 
-        $file .= '    //    return (new Response())' . "\n";
-        $file .= '    //        ->setStatusCode(403)' . "\n";
-        $file .= '    //       ->setContent(\'Message here\');' . "\n";
-        $file .= '    //    return new RedirectResponse($this->generateUrl(\'path_to_target\'));' . "\n";
-        $file .= '    //    return $this->render(\'' . $entity->getModule() . ':Default:' . $entity->getLowerName() . '.html.twig\');' . "\n";
-        $file .= '    //    return $this->render(' . "\n";
-        $file .= '    //        \'' . $entity->getModule() . ':' . $entity->getName() . ':' . strtolower($entity->getName()) . '.html.twig\',' . "\n";
-        $file .= '    //        [' . "\n";
-        $file .= '    //            \'\' => $,' . "\n";
-        $file .= '    //            \'form\' => $form->createView(),' . "\n";
-        $file .= '    //        ],' . "\n";
-        $file .= '    //        //$response / null,' . "\n";
-        $file .= '    //        //$renderParameters' . "\n";
-        $file .= '    //    );' . "\n";
-        $file .= '    //}' . "\n";
-        $file .= "\n";
-        $file .= '    // <user-additions' . ' part="actions">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
+        $file .= '    //    return (new Response())' . PHP_EOL;
+        $file .= '    //        ->setStatusCode(403)' . PHP_EOL;
+        $file .= '    //       ->setContent(\'Message here\');' . PHP_EOL;
+        $file .= '    //    return new RedirectResponse($this->generateUrl(\'path_to_target\'));' . PHP_EOL;
+        $file .= '    //    return $this->render(\'' . $entity->getModule() . ':Default:' . $entity->getLowerName() . '.html.twig\');' . PHP_EOL;
+        $file .= '    //    return $this->render(' . PHP_EOL;
+        $file .= '    //        \'' . $entity->getModule() . ':' . $entity->getName() . ':' . strtolower($entity->getName()) . '.html.twig\',' . PHP_EOL;
+        $file .= '    //        [' . PHP_EOL;
+        $file .= '    //            \'\' => $,' . PHP_EOL;
+        $file .= '    //            \'form\' => $form->createView(),' . PHP_EOL;
+        $file .= '    //        ],' . PHP_EOL;
+        $file .= '    //        //$response / null,' . PHP_EOL;
+        $file .= '    //        //$renderParameters' . PHP_EOL;
+        $file .= '    //    );' . PHP_EOL;
+        $file .= '    //}' . PHP_EOL;
+        $file .= PHP_EOL;
+        $file .= '    // <user-additions' . ' part="actions">' . PHP_EOL;
+        $file .= '    // </user-additions' . '>' . PHP_EOL;
 
         if ($entity->getCrudRead()) {
-            $file .= "\n";
-            $file .= '    // <user-additions' . ' part="listAction">' . "\n";
-            $file .= '    public function listAction()' . "\n";
-            $file .= '    {' . "\n";
-            $file .= '        $em = $this->getManager();' . "\n";
-            $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . "\n";
-            $file .= "\n";
-            $file .= '        $' . $entity->getLowerName() . 's = $' . $entity->getLowerName() . 'Repository->findAll();' . "\n";
-            $file .= "\n";
-            $file .= '        return $this->render(' . "\n";
-            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':list' . $entity->getName() . '.html.twig\',' . "\n";
-            $file .= '            [' . "\n";
-            $file .= '                \'' . $entity->getLowerName() . 's\' => $' . $entity->getLowerName() . 's,' . "\n";
-            $file .= '            ]' . "\n";
-            $file .= '        );' . "\n";
-            $file .= '    }' . "\n";
-            $file .= '    // </user-additions' . '>' . "\n";
+            $file .= PHP_EOL;
+            $file .= '    // <user-additions' . ' part="listAction">' . PHP_EOL;
+            $file .= '    public function listAction()' . PHP_EOL;
+            $file .= '    {' . PHP_EOL;
+            $file .= '        $em = $this->getManager();' . PHP_EOL;
+            $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        $' . $entity->getPluralLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findBy([], [\'' . $entity->getPrimaryAttribute()->getName() . '\' => \'ASC\']);' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        return $this->render(' . PHP_EOL;
+            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':list' . $entity->getName() . '.html.twig\',' . PHP_EOL;
+            $file .= '            [' . PHP_EOL;
+            $file .= '                \'' . $entity->getPluralLowerName() . '\' => $' . $entity->getPluralLowerName() . ',' . PHP_EOL;
+            $file .= '            ]' . PHP_EOL;
+            $file .= '        );' . PHP_EOL;
+            $file .= '    }' . PHP_EOL;
+            $file .= '    // </user-additions' . '>' . PHP_EOL;
         }
 
         if ($entity->getCrudCreate()) {
-            $file .= "\n";
-            $file .= '    // <user-additions' . ' part="addAction">' . "\n";
-            $file .= '    public function addAction(Request $request)' . "\n";
-            $file .= '    {' . "\n";
+            $file .= PHP_EOL;
+            $file .= '    // <user-additions' . ' part="addAction">' . PHP_EOL;
+            $file .= '    public function addAction(Request $request)' . PHP_EOL;
+            $file .= '    {' . PHP_EOL;
             if ($entity->getHasForm()) {
-                $file .= '        $' . $entity->getLowerName() . ' = new ' . $entity->getName() . '();' . "\n";
-                $file .= '        $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . "\n";
-                $file .= "\n";
-                $file .= '        $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . "\n";
-                $file .= "\n";
-                $file .= '        if ($request->isMethod(\'POST\')) {' . "\n";
-                $file .= '            $form->bind($request);' . "\n";
-                $file .= "\n";
-                $file .= '            if ($form->isValid()) {' . "\n";
-                $file .= '                $em = $this->getManager();' . "\n";
-                $file .= '                $em->persist($' . $entity->getLowerName() . ');' . "\n";
-                $file .= '                $em->flush();' . "\n";
-                $file .= "\n";
-                $file .= '                $this->get(\'session\')->setFlash(\'info\',\'The ' . $entity->getName() . ' has been created successfully.\');' . "\n";
-                $file .= "\n";
-                $file .= '                return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));' . "\n";
-                $file .= '            }' . "\n";
-                $file .= '        }' . "\n";
-                $file .= "\n";
+                $file .= '        $' . $entity->getLowerName() . ' = new ' . $entity->getName() . '();' . PHP_EOL;
+                $file .= '        $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        if ($request->isMethod(\'POST\')) {' . PHP_EOL;
+                $file .= '            $form->bind($request);' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '            if ($form->isValid()) {' . PHP_EOL;
+                $file .= '                $em = $this->getManager();' . PHP_EOL;
+                $file .= '                $em->persist($' . $entity->getLowerName() . ');' . PHP_EOL;
+                $file .= '                $em->flush();' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '                $this->get(\'session\')->getFlashBag()->add(\'info\', \'The ' . $entity->getName() . ' has been created successfully.\');' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '                return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));' . PHP_EOL;
+                $file .= '            }' . PHP_EOL;
+                $file .= '        }' . PHP_EOL;
+                $file .= PHP_EOL;
             }
-            $file .= '        return $this->render(' . "\n";
-            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':add' . $entity->getName() . '.html.twig\',' . "\n";
-            $file .= '            [' . "\n";
-            $file .= '                \'form\' => $form->createView(),' . "\n";
-            $file .= '            ],' . "\n";
-            $file .= '            null,' . "\n";
-            $file .= '            new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())' . "\n";
-            $file .= '        );' . "\n";
-            $file .= '    }' . "\n";
-            $file .= '    // </user-additions' . '>' . "\n";
+            $file .= '        return $this->render(' . PHP_EOL;
+            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':add' . $entity->getName() . '.html.twig\',' . PHP_EOL;
+            $file .= '            [' . PHP_EOL;
+            $file .= '                \'form\' => $form->createView(),' . PHP_EOL;
+            $file .= '            ],' . PHP_EOL;
+            $file .= '            null,' . PHP_EOL;
+            $file .= '            new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())' . PHP_EOL;
+            $file .= '        );' . PHP_EOL;
+            $file .= '    }' . PHP_EOL;
+            $file .= '    // </user-additions' . '>' . PHP_EOL;
         }
 
         if ($entity->getCrudUpdate()) {
-            $file .= "\n";
-            $file .= '    // <user-additions' . ' part="editAction">' . "\n";
-            $file .= '    public function editAction(Request $request, $id)' . "\n";
-            $file .= '    {' . "\n";
+            $file .= PHP_EOL;
+            $file .= '    // <user-additions' . ' part="editAction">' . PHP_EOL;
+            $file .= '    public function editAction(Request $request, $id)' . PHP_EOL;
+            $file .= '    {' . PHP_EOL;
             if ($entity->getHasForm()) {
-                $file .= '        $em = $this->getManager();' . "\n";
-                $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . "\n";
-                $file .= "\n";
-                $file .= '        $' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\'=>$id]);' . "\n";
-                $file .= '        $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . "\n";
-                $file .= "\n";
-                $file .= '        $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . "\n";
-                $file .= "\n";
-                $file .= '        if ($request->isMethod(\'POST\')) {' . "\n";
-                $file .= '            $form->bind($request);' . "\n";
-                $file .= "\n";
-                $file .= '            if ($form->isValid()) {' . "\n";
-                $file .= '                $em->persist($' . $entity->getLowerName() . ');' . "\n";
-                $file .= '                $em->flush();' . "\n";
-                $file .= "\n";
-                $file .= '                $this->get(\'session\')->setFlash(\'info\',\'The ' . $entity->getName() . ' has been edited successfully.\');' . "\n";
-                $file .= "\n";
-                $file .= '                return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));' . "\n";
-                $file .= '            }' . "\n";
-                $file .= '        }' . "\n";
-                $file .= "\n";
+                $file .= '        $em = $this->getManager();' . PHP_EOL;
+                $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        $' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        if(!$' . $entity->getLowerName() . ') {' . PHP_EOL;
+                $file .= '            throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);' . PHP_EOL;
+                $file .= '        }' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        $' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        $form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '        if ($request->isMethod(\'POST\')) {' . PHP_EOL;
+                $file .= '            $form->bind($request);' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '            if ($form->isValid()) {' . PHP_EOL;
+                $file .= '                $em->persist($' . $entity->getLowerName() . ');' . PHP_EOL;
+                $file .= '                $em->flush();' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '                $this->get(\'session\')->getFlashBag()->add(\'info\', \'The ' . $entity->getName() . ' has been edited successfully.\');' . PHP_EOL;
+                $file .= PHP_EOL;
+                $file .= '                return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));' . PHP_EOL;
+                $file .= '            }' . PHP_EOL;
+                $file .= '        }' . PHP_EOL;
+                $file .= PHP_EOL;
             }
-            $file .= '        return $this->render(' . "\n";
-            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':edit' . $entity->getName() . '.html.twig\',' . "\n";
-            $file .= '            [' . "\n";
-            $file .= '                \'form\' => $form->createView(),' . "\n";
-            $file .= '                \'id\' => $id,' . "\n";
-            $file .= '            ],' . "\n";
-            $file .= '            null,' . "\n";
-            $file .= '            new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())' . "\n";
-            $file .= '        );' . "\n";
-            $file .= '    }' . "\n";
-            $file .= '    // </user-additions' . '>' . "\n";
+            $file .= '        return $this->render(' . PHP_EOL;
+            $file .= '            \'' . $entity->getModule() . ':' . $entity->getName() . ':edit' . $entity->getName() . '.html.twig\',' . PHP_EOL;
+            $file .= '            [' . PHP_EOL;
+            $file .= '                \'form\' => $form->createView(),' . PHP_EOL;
+            $file .= '                \'id\' => $id,' . PHP_EOL;
+            $file .= '            ],' . PHP_EOL;
+            $file .= '            null,' . PHP_EOL;
+            $file .= '            new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())' . PHP_EOL;
+            $file .= '        );' . PHP_EOL;
+            $file .= '    }' . PHP_EOL;
+            $file .= '    // </user-additions' . '>' . PHP_EOL;
         }
 
         if ($entity->getCrudDelete()) {
-            $file .= "\n";
-            $file .= '    // <user-additions' . ' part="deleteAction">' . "\n";
-            $file .= '    public function deleteAction(Request $request, $id)' . "\n";
-            $file .= '    {' . "\n";
-            $file .= '        $em = $this->getManager();' . "\n";
-            $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . "\n";
-            $file .= "\n";
-            $file .= '        $' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\'=>$id]);' . "\n";
-            $file .= "\n";
-            $file .= '        if (!$' . $entity->getLowerName() . ') {' . "\n";
-            $file .= '            throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);' . "\n";
-            $file .= '        }' . "\n";
-            $file .= "\n";
-            $file .= '        $em->remove($' . $entity->getLowerName() . ');' . "\n";
-            $file .= '        $em->flush();' . "\n";
-            $file .= "\n";
-            $file .= '        $this->get(\'session\')->setFlash(\'info\',\'The ' . $entity->getName() . ' has been deleted successfully.\');' . "\n";
-            $file .= "\n";
-            $file .= '        return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));' . "\n";
-            $file .= '    }' . "\n";
-            $file .= '    // </user-additions' . '>' . "\n";
+            $file .= PHP_EOL;
+            $file .= '    // <user-additions' . ' part="deleteAction">' . PHP_EOL;
+            $file .= '    public function deleteAction(Request $request, $id)' . PHP_EOL;
+            $file .= '    {' . PHP_EOL;
+            $file .= '        $em = $this->getManager();' . PHP_EOL;
+            $file .= '        $' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        $' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        if (!$' . $entity->getLowerName() . ') {' . PHP_EOL;
+            $file .= '            throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);' . PHP_EOL;
+            $file .= '        }' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        $em->remove($' . $entity->getLowerName() . ');' . PHP_EOL;
+            $file .= '        $em->flush();' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        $this->get(\'session\')->getFlashBag()->add(\'info\', \'The ' . $entity->getName() . ' has been deleted successfully.\');' . PHP_EOL;
+            $file .= PHP_EOL;
+            $file .= '        return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));' . PHP_EOL;
+            $file .= '    }' . PHP_EOL;
+            $file .= '    // </user-additions' . '>' . PHP_EOL;
         }
 
         $file .= '}';
