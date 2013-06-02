@@ -59,9 +59,19 @@ class PHPJustifier extends AbstractJustifier
         }
     }
 
-    protected function isSpecialIndentationBlock($line)
+    protected function isSpecialIndentationBlock($lineNumber)
     {
+        $line = $this->lines[$lineNumber];
+
         if ('implements' === substr($line, 0, 10)) {
+            return true;
+        }
+
+        if ('// <user-additions part="implements">' === $line) {
+            return true;
+        }
+
+        if ('// </user-additions>' === $line && $lineNumber > 0 && '// <user-additions part="implements">' === $this->lines[$lineNumber - 1]) {
             return true;
         }
 
@@ -205,7 +215,7 @@ class PHPJustifier extends AbstractJustifier
                 $this->indentLines($i + 1, $this->findEndBracketsBlock($i, $endLine) - 1);
             }
 
-            if ($this->isSpecialIndentationBlock($line)) {
+            if ($this->isSpecialIndentationBlock($i)) {
                 $this->indentLines($i, $i);
             }
 

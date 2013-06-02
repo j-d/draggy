@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */

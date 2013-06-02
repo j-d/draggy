@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -39,145 +39,201 @@ class EntityBase1 extends EntityBase1Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    /**
-     * TODO: Check deprecated
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    public function getConstructorDefaultValuesPart()
+    public function getFilenameLine()
     {
-        $file = '';
-
-        foreach ($this->getEntity()->getAttributes() as $a) {
-            $attributeDefaultValueConstructor = $a->getDefaultValueConstructorInit();
-
-            if ($attributeDefaultValueConstructor !== '') {
-                $file .= '        $this->' . $a->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';' . "\n";
-            }
+        $line = '// ' . $this->getEntity()->getNamespace() . '\\';
+        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
+            $line .= 'Entity\\';
         }
+        $line .= $this->getEntity()->getName() . '.php';
 
-        return $file;
+        return $line;
     }
 
-    public function render()
+    public function getNamespaceLine()
     {
-        $entity = $this->getEntity();
+        $line = 'namespace ' . $this->getEntity()->getNamespace();
 
-        $file = '';
-
-        $file .= '<?php' . "\n";
-
-        $file .= '// ' . $entity->getNamespace() . '\\';
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $file .= 'Entity\\';
-        }
-        $file .= $entity->getName() . '.php' . "\n";
-
-        $file .= $this->getBlurb();
-
-        $file .= 'namespace ' . $entity->getNamespace();
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $file .= '\\Entity';
-        }
-        $file .= ';' . "\n";
-
-        $file .= "\n";
-
-        if ($entity->getProject()->getORM() === 'Doctrine2') {
-            $file .= 'use Doctrine\ORM\Mapping as ORM;' . "\n";
+        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
+            $line.= '\\Entity';
         }
 
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $file .= 'use Symfony\Component\Validator\Constraints as Assert;' . "\n";
+        $line .= ';';
+
+        return $line;
+    }
+
+    public function getUseLines()
+    {
+        $lines = [];
+
+        if ($this->getEntity()->getProject()->getORM() === 'Doctrine2') {
+            $lines[] = 'use Doctrine\ORM\Mapping as ORM;';
         }
 
-        $file .= 'use ' . $entity->getNamespace() . '\\';
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
-            $file .= 'Entity\\';
+        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
+            $lines[] = 'use Symfony\Component\Validator\Constraints as Assert;';
         }
-        $file .= 'Base\\' . $entity->getNameBase() . ';' . "\n";
 
-        if ($entity->getProject()->getORM() === 'Doctrine2') {
+        $line = 'use ' . $this->getEntity()->getNamespace() . '\\';
+        if ($this->getEntity()->getProject()->getFramework() === 'Symfony2') {
+            $line .= 'Entity\\';
+        }
+        $line.= 'Base\\' . $this->getEntity()->getNameBase() . ';';
+
+        $lines[] = $line;
+
+        if ($this->getEntity()->getProject()->getORM() === 'Doctrine2') {
             $useArrayCollection = false;
-            foreach ($entity->getAttributes() as $attr) {
-                if (!is_null($attr->getForeign()) && $attr->getType() == 'array') {
+
+            foreach ($this->getEntity()->getAttributes() as $attr) {
+                if (null !== $attr->getForeign() && 'array' === $attr->getType()) {
                     $useArrayCollection = true;
                     break;
                 }
             }
 
-            if ($useArrayCollection)
-                $file .= 'use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n";
-        }
-
-        $file .= '// <user-additions' . ' part="use">' . "\n";
-        $file .= '// </user-additions' . '>' . "\n";
-        $file .= "\n";
-
-        $file .= '/**' . "\n";
-        $file .= ' * ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . "\n";
-
-        if ($entity->getProject()->getORM() === 'Doctrine2') {
-            $file .= ' *' . "\n";
-
-            if (count($entity->getChildrenEntities()) == 0 /*|| count($this->getAttributes()) != $this->getMaxNumberAttributesChildren()*/ ) {
-                if (!$entity->getHasRepository()) {
-                    $file .= ' * @ORM\\Entity' . "\n";
-                } else {
-                    $file .= ' * @ORM\\Entity(repositoryClass="' . $entity->getFullyQualifiedName() . 'Repository")' . "\n";
-                }
-            } else {
-                $file .= ' * @ORM\MappedSuperclass' . "\n";
+            if ($useArrayCollection) {
+                $lines[] = 'use Doctrine\\Common\\Collections\\ArrayCollection;';
             }
         }
 
-        $file .= ' */' . "\n";
+        $lines[] = '// <user-additions' . ' part="use">';
+        $lines[] = '// </user-additions' . '>';
 
-        if ('class' === $entity->getType()) {
-            $file .= 'class ' . $entity->getName() . ' extends ' . $entity->getNameBase() . "\n";
-        } else {
-            $file .= 'abstract class ' . $entity->getName() . ' extends ' . $entity->getNameBase() . "\n";
-        }
-        $file .= '    // <user-additions' . ' part="implements">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
+        return $lines;
+    }
 
-        $file .= '{' . "\n";
-        $file .= '    // <editor-fold desc="Attributes">' . "\n";
-        $file .= '    // <user-additions' . ' part="attributes">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= '    // </editor-fold>' . "\n";
-        $file .= "\n";
+    public function getEntityDocumentationLines()
+    {
+        $lines = [];
 
-        if ($entity->getHasConstructor()) {
-            $file .= '    // <editor-fold desc="Constructor">' . "\n";
-            $file .= '    // <user-additions' . ' part="constructorDeclaration">' . "\n";
-            $file .= '    public function __construct()' . "\n";
-            $file .= '    // </user-additions' . '>' . "\n";
-            $file .= '    {' . "\n";
+        $lines[] = $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName();
 
-            $file .= $this->getConstructorDefaultValuesPart();
+        if ($this->getEntity()->getProject()->getORM() === 'Doctrine2') {
+            $lines[] = '';
 
-            $file .= '        // <user-additions' . ' part="constructor">' . "\n";
-            $file .= '        // </user-additions' . '>' . "\n";
-            $file .= '    }' . "\n";
-            $file .= '    // </editor-fold>' . "\n";
-            $file .= "\n";
+            if (count($this->getEntity()->getChildrenEntities()) == 0 /*|| count($this->getAttributes()) != $this->getMaxNumberAttributesChildren()*/ ) {
+                if (!$this->getEntity()->getHasRepository()) {
+                    $lines[] = '@ORM\\Entity';
+                } else {
+                    $lines[] = '@ORM\\Entity(repositoryClass="' . $this->getEntity()->getFullyQualifiedName() . 'Repository")';
+                }
+            } else {
+                $lines[] = '@ORM\MappedSuperclass';
+            }
         }
 
-        $file .= '    // <editor-fold desc="Setters and Getters">' . "\n";
-        $file .= '    // <user-additions' . ' part="settersAndGetters">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= '    // </editor-fold>' . "\n";
-        $file .= "\n";
-        $file .= '    // <editor-fold desc="Other methods">' . "\n";
-        $file .= '    // <user-additions' . ' part="otherMethods">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= '    // </editor-fold>' . "\n";
-        $file .= '}';
+        return $lines;
+    }
 
-        return $file;
+    public function getEntityDeclarationLine()
+    {
+        return 'class' === $this->getEntity()->getType()
+            ? 'class ' . $this->getEntity()->getName() . ' extends ' . $this->getEntity()->getNameBase()
+            : 'abstract class ' . $this->getEntity()->getName() . ' extends ' . $this->getEntity()->getNameBase();
+    }
+
+    public function getImplementLines()
+    {
+        $lines = [];
+
+        $lines[] = '// <user-additions' . ' part="implements">';
+        $lines[] = '// </user-additions' . '>';
+
+        return $lines;
+    }
+
+    public function getAttributeLines()
+    {
+        $lines = [];
+
+        $lines[] = '// <editor-fold desc="Attributes">';
+        $lines[] = '// <user-additions' . ' part="attributes">';
+        $lines[] = '// </user-additions' . '>';
+        $lines[] = '// </editor-fold>';
+
+        return $lines;
+    }
+
+    public function getConstructorLines()
+    {
+        $lines = [];
+
+        if ($this->getEntity()->getHasConstructor()) {
+            $lines[] = '';
+
+            $lines[] = '// <editor-fold desc="Constructor">';
+            $lines[] = '// <user-additions' . ' part="constructorDeclaration">';
+            $lines[] = 'public function __construct()';
+            $lines[] = '// </user-additions' . '>';
+            $lines[] = '{';
+
+            foreach ($this->getEntity()->getAttributes() as $attr) {
+                $attributeDefaultValueConstructor = $attr->getDefaultValueConstructorInit();
+
+                if ('' !== $attributeDefaultValueConstructor) {
+                    $lines[] = '$this->' . $attr->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';';
+                }
+            }
+
+            $lines[] =     '// <user-additions' . ' part="constructor">';
+            $lines[] =     '// </user-additions' . '>';
+            $lines[] = '}';
+            $lines[] = '// </editor-fold>';
+        }
+
+        return $lines;
+    }
+
+    public function getSetterGetterLines()
+    {
+        $lines = [];
+
+        $lines[] = '';
+
+        $lines[] = '// <editor-fold desc="Setters and Getters">';
+        $lines[] = '// <user-additions' . ' part="settersAndGetters">';
+        $lines[] = '// </user-additions' . '>';
+        $lines[] = '// </editor-fold>';
+
+        return $lines;
+    }
+
+    public function getOtherMethodLines()
+    {
+        $lines = [];
+
+        $lines[] = '';
+
+        $lines[] = '// <editor-fold desc="Other methods">';
+        $lines[] = '// <user-additions' . ' part="otherMethods">';
+        $lines[] = '// </user-additions' . '>';
+        $lines[] = '// </editor-fold>';
+
+        return $lines;
+    }
+
+    public function getEntityLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getEntityDocumentationLines()));
+
+        $lines[] = $this->getEntityDeclarationLine();
+
+        $lines = array_merge($lines, $this->getImplementLines());
+
+        $lines[] = '{';
+
+        $lines = array_merge($lines, $this->indentLines($this->getAttributeLines()));
+        $lines = array_merge($lines, $this->indentLines($this->getConstructorLines()));
+        $lines = array_merge($lines, $this->indentLines($this->getSetterGetterLines()));
+        $lines = array_merge($lines, $this->indentLines($this->getOtherMethodLines()));
+
+        $lines[] = '}';
+
+        return $lines;
     }
     // </user-additions>
     // </editor-fold>
