@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\CrudReadTwig.php
+// Draggy\Autocode\Templates\PHP\CrudRead.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -9,21 +9,21 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
 
 namespace Draggy\Autocode\Templates\PHP;
 
-use Draggy\Autocode\Templates\PHP\Base\CrudReadTwigBase;
+use Draggy\Autocode\Templates\PHP\Base\CrudReadBase;
 // <user-additions part="use">
 // </user-additions>
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\CrudReadTwig
+ * Draggy\Autocode\Templates\PHP\Entity\CrudRead
  */
-class CrudReadTwig extends CrudReadTwigBase
+class CrudRead extends CrudReadBase
     // <user-additions part="implements">
     // </user-additions>
 {

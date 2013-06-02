@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Base\PHPEntity.php
+// Draggy\Autocode\Templates\PHP\Base\CrudUpdate.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -14,17 +14,16 @@
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Base;
+namespace Draggy\Autocode\Templates\PHP\Base;
 
-use Draggy\Autocode\PHPEntity;
+use Draggy\Autocode\Templates\PHP\CrudUpdate;
+use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
-use Draggy\Autocode\Attribute;
-use Draggy\Autocode\Project;
 
 /**
- * Draggy\Autocode\Entity\Base\PHPEntity
+ * Draggy\Autocode\Templates\PHP\Entity\Base\CrudUpdate
  */
-abstract class PHPEntityBase extends Entity
+abstract class CrudUpdateBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -34,13 +33,13 @@ abstract class PHPEntityBase extends Entity
 
     // <editor-fold desc="Other methods">
     /**
-     * PHPEntity to string (Default)
+     * CrudUpdate to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'PHPEntity';
+        return 'CrudUpdate';
     }
     // </editor-fold>
 }

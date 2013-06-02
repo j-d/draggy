@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\Repository.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Base\Entity3.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -9,21 +9,21 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\Repository;
-use Draggy\Autocode\Templates\PHPEntityTemplate;
+use Draggy\Autocode\Templates\PHP\Symfony2\Entity3;
+use Draggy\Autocode\Templates\PHP\Entity1;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\Repository
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\Entity3
  */
-abstract class RepositoryBase extends PHPEntityTemplate
+abstract class Entity3Base extends Entity1
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class RepositoryBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * Repository to string (Default)
+     * Entity3 to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'Repository';
+        return 'Entity3';
     }
     // </editor-fold>
 }

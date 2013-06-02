@@ -9,7 +9,7 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
@@ -24,7 +24,7 @@ use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 /**
  * Draggy\Autocode\Entity\Entity
  */
-abstract class Entity extends EntityBase
+class Entity extends EntityBase
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -299,6 +299,20 @@ abstract class Entity extends EntityBase
 
         return false;
     }
+
+    public function getUniqueAttributes()
+    {
+        /** @var Attribute[] $uniqueAttributes */
+        $uniqueAttributes = [];
+        foreach ($this->getAttributes() as $attr) {
+            if ($attr->getUnique()) {
+                $uniqueAttributes[] = $attr;
+            }
+        }
+
+        return $uniqueAttributes;
+    }
+
     // </user-additions>
     // </editor-fold>
 }

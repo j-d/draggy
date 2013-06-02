@@ -1,5 +1,5 @@
 <?php
-// Draggy\Autocode\Templates\PHP\Base\CrudCreateTwig.php
+// Draggy\Autocode\Templates\PHP\Symfony2\Base\Controller.php
 
 /************************************************************************************************
  **  THIS IS AN AUTOMATICALLY GENERATED BASE FILE AND SHOULD NOT BE MANUALLY EDITED            **
@@ -9,21 +9,21 @@
 /*
  * This file was automatically generated with 'Autocode'
  * by Jose Diaz-Angulo <jose@diazangulo.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the package's source code.
  */
 
-namespace Draggy\Autocode\Templates\PHP\Base;
+namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\CrudCreateTwig;
+use Draggy\Autocode\Templates\PHP\Symfony2\Controller;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
 
 /**
- * Draggy\Autocode\Templates\PHP\Entity\Base\CrudCreateTwig
+ * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\Controller
  */
-abstract class CrudCreateTwigBase extends PHPEntityTemplate
+abstract class ControllerBase extends PHPEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
@@ -33,13 +33,13 @@ abstract class CrudCreateTwigBase extends PHPEntityTemplate
 
     // <editor-fold desc="Other methods">
     /**
-     * CrudCreateTwig to string (Default)
+     * Controller to string (Default)
      *
      * @return string
      */
     public function __toString()
     {
-        return 'CrudCreateTwig';
+        return 'Controller';
     }
     // </editor-fold>
 }
