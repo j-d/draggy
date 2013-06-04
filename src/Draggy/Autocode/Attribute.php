@@ -260,8 +260,16 @@ abstract class Attribute extends AttributeBase
                 $type = 'Number';
                 break;
             case 'date':
-            case 'datetime':
                 $type = 'Date';
+                break;
+            case 'datetime':
+                $type = 'DateTime';
+                break;
+            case 'time':
+                $type = 'Time';
+                break;
+            case 'text':
+                $type = 'Textarea';
                 break;
             default:
                 $type = 'Input';
