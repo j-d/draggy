@@ -74,8 +74,15 @@ class Entity4 extends Entity4Base
                         $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getName() . '")';
                         $lines[] = '@ORM\JoinTable(';
                         $lines[] =     'name="' . $attribute->getManyToManyEntityName() . '",';
-                        $lines[] =     'joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
-                        $lines[] =     'inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
+
+                        //if ($attribute->getForeignEntity()->getName() === $attribute->getEntity()->getName()) { // Is reflexive? (Testing with the names for everything)
+                            $lines[] = 'joinColumns={@ORM\JoinColumn(name="' . $attribute->getReverseAttribute()->getName() . '", referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
+                            $lines[] = 'inverseJoinColumns={@ORM\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
+                        //} else {
+                        //    $lines[] = 'joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
+                        //    $lines[] = 'inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
+                        //}
+
                         $lines[] = ')';
                     } else {
                         $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getName() . '")';
