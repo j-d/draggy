@@ -38,7 +38,9 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.fromAttribute = null;
     this.toAttribute = null;
     this.forceRender = false;
-    this.broken = false;
+    this.broken  = false;
+    this.remove  = true;
+    this.persist = true;
 
     if (type !== 'Inheritance') {
         if (!Draggy.prototype.options.linkClasses) {
@@ -129,6 +131,11 @@ Link.prototype.toXML = function () {
         ret += 'to="' + Item.prototype.items[this.getTo()].getFullyQualifiedName() + '" ';
         ret += 'toAttribute="' + Attribute.prototype.attributes[this.toAttribute].getName() + '" ';
         ret += 'type="' + this.getType() + '" ';
+
+        if ('Inheritance' !== this.getType()) {
+            ret += 'persist="' + this.getPersist() + '" ';
+            ret += 'remove="' + this.getRemove() + '" ';
+        }
 
         if (this.getBroken()) {
             ret += 'broken="' + this.getBroken() + '" ';
@@ -307,6 +314,22 @@ Link.prototype.setBroken = function (broken) {
 
 Link.prototype.getBroken = function () {
     return this.broken;
+};
+
+Link.prototype.setPersist = function (persist) {
+    this.persist = persist;
+};
+
+Link.prototype.getPersist = function () {
+    return this.persist;
+};
+
+Link.prototype.setRemove = function (remove) {
+    this.remove = remove;
+};
+
+Link.prototype.getRemove = function () {
+    return this.remove;
 };
 
 Link.prototype.remove = function () {

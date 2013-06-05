@@ -779,6 +779,18 @@ class Loader
             if (isset( $relationAttributes['broken'] )) {
                 $r .= 'l.setBroken(' . $relationAttributes['broken'] . ');' . PHP_EOL;
             }
+
+            if (isset( $relationAttributes['persist'] )) {
+                $r .= 'l.setPersist(' . $relationAttributes['persist'] . ');' . PHP_EOL;
+            } else { // Backwards compatibility
+                $r .= 'l.setPersist(true);' . PHP_EOL;
+            }
+
+            if (isset( $relationAttributes['remove'] )) {
+                $r .= 'l.setRemove(' . $relationAttributes['remove'] . ');' . PHP_EOL;
+            } else { // Backwards compatibility
+                $r .= 'l.setRemove(true);' . PHP_EOL;
+            }
         }
 
         return $r;

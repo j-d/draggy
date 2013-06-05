@@ -182,6 +182,12 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
                 '<td class="center">' +
                     '<input id="broken' + rowId + '" type="checkbox"'+ ( link.getBroken() ? ' checked="checked"' : '' ) + '">' +
                 '</td>' +
+                '<td class="center">' +
+                    (inheritance ? '' : '<input id="persist' + rowId + '" type="checkbox"'+ ( link.getPersist() ? ' checked="checked"' : '' ) + '">') +
+                '</td>' +
+                '<td class="center">' +
+                    (inheritance ? '' : '<input id="remove' + rowId + '" type="checkbox"'+ ( link.getRemove() ? ' checked="checked"' : '' ) + '">') +
+                '</td>' +
                 '<td><input id="deleteLink' + rowId + '" type="button" value="D"></td>' +
             '</tr>';
 };
@@ -425,6 +431,8 @@ EditItemDialog.prototype.commitChanges = function () {
         l  = c.getLink(j);
 
         l.setBroken( $('#broken' + j).is(':checked'));
+        l.setPersist( $('#persist' + j).is(':checked'));
+        l.setRemove( $('#remove' + j).is(':checked'));
 
         l.forceRender = true;
     }
