@@ -351,6 +351,8 @@ class Entity1 extends Entity1Base
                     $lines[] =     '/** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */';
                     $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
                     $lines[] = '}';
+                    $lines[] = '';
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
                 } else {
                     // Default normal setter
                     throw new \RuntimeException('Unknown scenario');
