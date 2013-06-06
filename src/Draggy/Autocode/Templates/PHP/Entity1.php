@@ -291,73 +291,92 @@ class Entity1 extends Entity1Base
             $lines[] = '';
         }
 
-        if (!$settingFromInverse) {
-            if ('OneToOne' === $attribute->getForeign()) {
-                if (!$attribute->getNull()) {
-                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+        if ('OneToOne' === $attribute->getForeign()) {
+            if (!$attribute->getNull()) {
+                $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                $lines[] = '';
+
+                if (!$settingFromInverse) {
                     $lines[] = 'if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {';
                     $lines[] =     '$' . $attribute->getName() . '->set' . $this->getEntity()->getName() . '($this);';
                     $lines[] = '}';
                 } else {
-                    $lines[] = 'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] = 'if ($this !== $' . $attribute->getName() . '->' . $attribute->getForeignKey()->getGetterName() . '()) {';
+                    $lines[] =     '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
+                    $lines[] = '}';
+                }
+            } else {
+                if (!$settingFromInverse) {
+                    $lines[] = 'if (null !== $' . $attribute->getLowerName() . ') {'; // New value is not null
                     $lines[] =     $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                    $lines[] =     'if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {';
+                    $lines[] = '';
+                    $lines[] =     'if ($this !== $' . $attribute->getName() . '->get' . $this->getEntity()->getName() . '()) {'; // Set the reverse, with a stop clause as it will come back
                     $lines[] =         '$' . $attribute->getName() . '->set' . $this->getEntity()->getName() . '($this);';
                     $lines[] =     '}';
-                    $lines[] = '} elseif (null !== ' . $attribute->getThisName() . ') {';
+                    $lines[] = '} elseif (null !== ' . $attribute->getThisName() . ') {'; // It is null but wasn't null
 
                     if ($attribute->getForeignKey()->getSetter()) {
-                        $lines[] =     $attribute->getThisName() . '->set' . $attribute->getForeignKey()->getUpperName() . '(null);';
+                        $lines[] = $attribute->getThisName() . '->' . $attribute->getForeignKey()->getSetterName() . '(null);'; // Delete reverse
+                        $lines[] = '';
                     }
 
                     $lines[] =     $attribute->getThisName() . ' = null;';
-                    $lines[] = '}';
-                }
-            } elseif ('ManyToOne' === $attribute->getForeign()) {
-                $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-            } else {
-                $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-            }
-        } else {
-            if ('ManyToMany' === $attribute->getForeign()) {
-                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
-                $lines[] =     '/** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */';
-                $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '(new ArrayCollection([$this]));';
-                $lines[] = '}';
-            } elseif ('OneToOne' === $attribute->getForeign()) {
-                if (!$attribute->getNull()) {
-                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                    $lines[] = 'if ($this !== $' . $attribute->getName() . '->get' . $attribute->getForeignKey()->getUpperName() . '()) {';
-                    $lines[] =     '$' . $attribute->getName() . '->set' . $attribute->getForeignKey()->getUpperName() . '($this);';
                     $lines[] = '}';
                 } else {
                     $lines[] = 'if (null !== $' . $attribute->getLowerName() . ') {';
                     $lines[] =     $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                    $lines[] =     'if ($this !== $' . $attribute->getName() . '->get' . $attribute->getForeignKey()->getUpperName() . '()) {';
-                    $lines[] =         '$' . $attribute->getName() . '->set' . $attribute->getForeignKey()->getUpperName() . '($this);';
+                    $lines[] = '';
+                    $lines[] =     'if ($this !== $' . $attribute->getName() . '->' . $attribute->getForeignKey()->getGetterName() . '()) {';
+                    $lines[] =         '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
                     $lines[] =     '}';
                     $lines[] = '} elseif (null !== ' . $attribute->getThisName() . ') {';
 
                     if ($attribute->getForeignKey()->getSetter()) {
-                        $lines[] =     $attribute->getThisName() . '->set' . $attribute->getForeignKey()->getUpperName() . '(null);';
+                        $lines[] = $attribute->getThisName() . '->' . $attribute->getForeignKey()->getSetterName() . '(null);';
+                        $lines[] = '';
                     }
 
                     $lines[] =     $attribute->getThisName() . ' = null;';
                     $lines[] = '}';
                 }
-            } else { // ManyToOne
-                if ($attribute->getInverse()) {
-                    $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
-                    $lines[] =     '/** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */';
-                    $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this);';
-                    $lines[] = '}';
-                    $lines[] = '';
-                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                } else {
-                    // Default normal setter
-                    throw new \RuntimeException('Unknown scenario');
-                }
             }
+        } elseif ('ManyToOne' === $attribute->getForeign()) {
+            if (!$settingFromInverse) {
+                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+                $lines[] =     'if (null !== ' . $attribute->getThisName() . ') {';
+                $lines[] =         $attribute->getThisName() . '->remove' . $this->getEntity()->getName() . '($this);';
+                $lines[] =     '}';
+                $lines[] = '';
+                $lines[] =     $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                $lines[] = '';
+                $lines[] =     'if (null !== $' . $attribute->getLowerName() . ' && !' . $attribute->getThisName() . '->contains' . $this->getEntity()->getName() . '($this)) {';
+                $lines[] =         $attribute->getThisName() . '->add' . $this->getEntity()->getName() . '($this);';
+                $lines[] =     '}';
+                $lines[] = '}';
+            } else {
+                $lines[] = 'foreach (' . $attribute->getThisName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     'if (!in_array($' . $attribute->getSingleName() . ', $' . $attribute->getLowerName() . ')) {';
+                $lines[] =         '$this->' . $attribute->getSingleRemoverName() . '($' . $attribute->getSingleName() . ');';
+                $lines[] =     '} else {';
+                $lines[] =         '$' . $attribute->getLowerName() . '->remove($' . $attribute->getSingleName() . ');';
+                $lines[] =     '}';
+                $lines[] = '}';
+                $lines[] = '';
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     '$this' . '->' . $attribute->getSingleAdderName() . '($' . $attribute->getSingleName() . ');';
+                $lines[] = '}';
+            }
+        } elseif ('ManyToMany' === $attribute->getForeign()) {
+            if (!$settingFromInverse) {
+                $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+            } else {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {'; //TODO: IMPROVE
+                $lines[] =     '/** @var ' . $attribute->getReverseAttribute()->getEntity()->getName() . ' $' . $attribute->getSingleName() . ' */';
+                $lines[] =     '$' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSetterName() . '(new ArrayCollection([$this]));';
+                $lines[] = '}';
+            }
+        } else { // Normal setter
+            $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
         }
 
         if (!$attribute->getStatic()) {
@@ -428,7 +447,7 @@ class Entity1 extends Entity1Base
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleAdderCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function ' . $attribute->getSingleAdderName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
         $lines[] = '{';
 
         if ('ManyToMany' === $attribute->getForeign()) {
@@ -486,7 +505,7 @@ class Entity1 extends Entity1Base
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleAdderCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function add' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function ' . $attribute->getMultipleAdderName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ('ManyToMany' === $attribute->getForeign() ? ', $allowRepeatedValues = true' : '') . ')';
         $lines[] = '{';
 
         if ('ManyToMany' === $attribute->getForeign()) {
@@ -549,9 +568,15 @@ class Entity1 extends Entity1Base
         $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
         $lines[] = '{';
 
-        $lines[] = !$attribute->getSettingFromInverse()
-            ? 'return ' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ');'
-            : 'return $' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+        if ('ManyToMany' === $attribute->getForeign()) {
+            $lines[] = !$attribute->getSettingFromInverse()
+                ? 'return ' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ');'
+                : 'return $' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);';
+        } elseif ('ManyToOne' === $attribute->getForeign()) {
+            $lines[] = 'return ' . $attribute->getThisName() .  '->contains($' . $attribute->getSingleName() . ');';
+        } else {
+            throw new \RuntimeException('Unknown getForeign() value.');
+        }
 
         $lines[] = '}';
 
@@ -577,21 +602,31 @@ class Entity1 extends Entity1Base
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleContainsCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . (null !== $attribute->getPhpParameterTypeBase() ? $attribute->getPhpParameterTypeBase() . ' ' : '') . '$' . $attribute->getLowerName() . ')';
         $lines[] = '{';
 
-        if (!$attribute->getSettingFromInverse()) {
+        if ('ManyToMany' === $attribute->getForeign()) {
+            if (!$attribute->getSettingFromInverse()) {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     'if (!' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {';
+                $lines[] =         'return false;';
+                $lines[] =     '}';
+                $lines[] = '}';
+            } else {
+                $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+                $lines[] =     'if (!$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {';
+                $lines[] =         'return false;';
+                $lines[] =     '}';
+                $lines[] = '}';
+            }
+        } elseif ('ManyToOne' === $attribute->getForeign()) {
             $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
-            $lines[] =     'if (!' . $attribute->getThisName() . '->contains($' . $attribute->getSingleName() . ')) {';
+            $lines[] =     'if (' . $attribute->getThisName() .  '->contains($' . $attribute->getSingleName() . ')) {';
             $lines[] =         'return false;';
             $lines[] =     '}';
             $lines[] = '}';
         } else {
-            $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
-            $lines[] =     'if (!$' . $attribute->getSingleName() . '->contains' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this)) {';
-            $lines[] =         'return false;';
-            $lines[] =     '}';
-            $lines[] = '}';
+            throw new \RuntimeException('Unknown getForeign() value.');
         }
 
         $lines[] = '';
@@ -626,7 +661,7 @@ class Entity1 extends Entity1Base
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleRemoverCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function ' . $attribute->getSingleRemoverName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
         $lines[] = '{';
 
         if ('array' === $attribute->getType() && null !== $attribute->getSubtype()) {
@@ -674,7 +709,7 @@ class Entity1 extends Entity1Base
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleRemoverCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function remove' . $attribute->getUpperName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function ' . $attribute->getMultipleRemoverName() . '(' . $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName() . ')';
         $lines[] = '{';
 
         if ('array' === $attribute->getType() && null !== $attribute->getSubtype()) {
@@ -727,15 +762,13 @@ class Entity1 extends Entity1Base
 
             $lines = array_merge($lines, $this->getMultipleAdderCodeLines($attribute));
 
-            if ('ManyToOne' !== $attribute->getForeign()) {
-                $lines[] = '';
+            $lines[] = '';
 
-                $lines = array_merge($lines, $this->getSingleContainsCodeLines($attribute));
+            $lines = array_merge($lines, $this->getSingleContainsCodeLines($attribute));
 
-                $lines[] = '';
+            $lines[] = '';
 
-                $lines = array_merge($lines, $this->getMultipleContainsCodeLines($attribute));
-            }
+            $lines = array_merge($lines, $this->getMultipleContainsCodeLines($attribute));
 
             $lines[] = '';
 

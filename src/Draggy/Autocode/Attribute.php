@@ -380,6 +380,26 @@ abstract class Attribute extends AttributeBase
     {
         return 'get' . $this->getUpperName();
     }
+
+    public function getSingleAdderName()
+    {
+        return 'add' . $this->getSingleUpperName();
+    }
+
+    public function getMultipleAdderName()
+    {
+        return 'add' . $this->getUpperName();
+    }
+
+    public function getSingleRemoverName()
+    {
+        return 'remove' . $this->getSingleUpperName();
+    }
+
+    public function getMultipleRemoverName()
+    {
+        return 'remove' . $this->getUpperName();
+    }
     // </user-additions>
     // </editor-fold>
 }
