@@ -665,6 +665,9 @@ class Project extends ProjectBase
         $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
 
         foreach ($foreignKeys as $foreignKey) {
+            $relationAttributes = (array)$foreignKey->attributes();
+            $relationAttributes = $relationAttributes['@attributes'];
+
             $sourceEntityName    = (string)$foreignKey->attributes()->from;
             $sourceAttributeName = (string)$foreignKey->attributes()->fromAttribute;
 
@@ -677,11 +680,12 @@ class Project extends ProjectBase
             $targetEntity    = &$this->getEntityByFullyQualifiedName($targetEntityName);
             $targetAttribute = &$targetEntity->getAttributeByName($targetAttributeName);
 
-            $type = (string)$foreignKey->attributes()->type;
+            $type = $relationAttributes['type'];
+
             if ($targetEntity->getRenderizable()) {
                 if ($type === 'OneToOne') {
                     /** @var Attribute $inverseAttribute */
-                    $inverseAttribute = new $attributeClass($sourceEntity,$targetEntity->getLowerName(),'object');
+                    $inverseAttribute = new $attributeClass($sourceEntity, $targetEntity->getLowerName(), 'object');
                     $inverseAttribute
                         ->setInverse(true)
                         ->setSubtype($targetEntity->getRelativePathName())
@@ -699,7 +703,7 @@ class Project extends ProjectBase
                     }
                 } else { // ManyToOne
                     /** @var Attribute $inverseAttribute */
-                    $inverseAttribute = new $attributeClass($sourceEntity,$targetEntity->getPluralLowerName(),'array');
+                    $inverseAttribute = new $attributeClass($sourceEntity, $targetEntity->getPluralLowerName(), 'array');
                     $inverseAttribute
                         ->setInverse(true)
                         ->setSubtype($targetEntity->getRelativePathName())
@@ -717,6 +721,46 @@ class Project extends ProjectBase
                         //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
 
                         $this->log->prepend('*** The ManyToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.');
+                    }
+                }
+
+                if (isset($relationAttributes['persist'])) {
+                    $targetAttribute->setCascadePersist('true' === $relationAttributes['persist']);
+                } else {
+
+                }
+
+                if (isset($relationAttributes['remove'])) {
+                    $targetAttribute->setCascadeRemove('true' === $relationAttributes['remove']);
+                } else {
+
+                }
+
+                $targetAttribute->setCascadePersist(true); // Backwards compatibility
+                $targetAttribute->setCascadeRemove(true); // Backwards compatibility
+
+                foreach ($relationAttributes as $attributeName => $attributeValue) {
+                    switch ($attributeName) {
+                        case 'broken':
+                            break; // Already dealt with
+                        case 'from':
+                            break; // Already dealt with
+                        case 'fromAttribute':
+                            break; // Already dealt with
+                        case 'persist':
+                            $targetAttribute->setCascadePersist($attributeValue === 'true');
+                            break;
+                        case 'remove':
+                            $targetAttribute->setCascadeRemove($attributeValue === 'true');
+                            break;
+                        case 'to':
+                            break; // Already dealt with
+                        case 'toAttribute':
+                            break; // Already dealt with
+                        case 'type':
+                            break; // Already dealt with
+                        default:
+                            throw new \Exception( 'The relation from the entity ' . $sourceEntity->getName() . ' to the entity ' . $targetEntity->getName() . ' has an unknown attribute (' . $attributeName . ')' );
                     }
                 }
             }

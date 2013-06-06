@@ -31,17 +31,17 @@ abstract class Attribute extends AttributeBase
     // <user-additions part="attributes">
     public static $SYMFONY_VARS = [
         'string'   => 'string',
-        'boolean' => 'boolean',
-        'integer' => 'integer',
+        'boolean'  => 'boolean',
+        'integer'  => 'integer',
         'smallint' => 'integer',
-        'bigint' => 'integer',
-        'text' => 'string',
-        'date' => 'object',
-        'time' => 'object',
+        'bigint'   => 'integer',
+        'text'     => 'string',
+        'date'     => 'object',
+        'time'     => 'object',
         'datetime' => 'object',
-        'array' => 'array',
-        'decimal' => 'float',
-        'object' => 'ERROR'
+        'array'    => 'array',
+        'decimal'  => 'float',
+        'object'   => 'ERROR'
     ];
 
     public static $BASIC_TYPES = [

@@ -40,6 +40,25 @@ class Entity4 extends Entity4Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    public function getCascadePart(PHPAttribute $attribute)
+    {
+        $cascadeAttributes = [];
+
+        if ($attribute->getCascadePersist()) {
+            $cascadeAttributes[] = '"persist"';
+        }
+
+        if ($attribute->getCascadeRemove()) {
+            $cascadeAttributes[] = '"remove"';
+        }
+
+        if (count($cascadeAttributes) > 0) {
+            return ', cascade={' . implode(', ', $cascadeAttributes) . '}';
+        } else {
+            return '';
+        }
+    }
+
     public function getAttributeDocumentationLinesORMPart(PHPAttribute $attribute)
     {
         $lines = [];
@@ -55,7 +74,7 @@ class Entity4 extends Entity4Base
             switch ($attribute->getForeign()) {
                 case 'ManyToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '", cascade={"persist", "remove"})';
+                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '"' . $this->getCascadePart($attribute) .')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
                     } else {
                         $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
@@ -63,7 +82,7 @@ class Entity4 extends Entity4Base
                     break;
                 case 'OneToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '", cascade={"persist", "remove"})';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadePart($attribute) . ')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
                     } else {
                         $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';

@@ -180,6 +180,16 @@ abstract class AttributeBase
      */
     protected $inverse = false;
 
+    /**
+     * @var boolean $cascadePersist
+     */
+    protected $cascadePersist = null;
+
+    /**
+     * @var boolean $cascadeRemove
+     */
+    protected $cascadeRemove = null;
+
     // </editor-fold>
 
     // <editor-fold desc="Setters and getters">
@@ -1069,6 +1079,66 @@ abstract class AttributeBase
     public function getInverse()
     {
         return $this->inverse;
+    }
+
+    /**
+     * Set cascadePersist
+     *
+     * @param boolean $cascadePersist
+     *
+     * @return Attribute
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setCascadePersist($cascadePersist)
+    {
+        if (!is_bool($cascadePersist)) {
+            throw new \InvalidArgumentException('The attribute cascadePersist on the class Attribute has to be boolean (' . gettype($cascadePersist) . ('object' === gettype($cascadePersist) ? ' ' . get_class($cascadePersist) : '') . ' given).');
+        }
+
+        $this->cascadePersist = $cascadePersist;
+
+        return $this;
+    }
+
+    /**
+     * Get cascadePersist
+     *
+     * @return boolean
+     */
+    public function getCascadePersist()
+    {
+        return $this->cascadePersist;
+    }
+
+    /**
+     * Set cascadeRemove
+     *
+     * @param boolean $cascadeRemove
+     *
+     * @return Attribute
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setCascadeRemove($cascadeRemove)
+    {
+        if (!is_bool($cascadeRemove)) {
+            throw new \InvalidArgumentException('The attribute cascadeRemove on the class Attribute has to be boolean (' . gettype($cascadeRemove) . ('object' === gettype($cascadeRemove) ? ' ' . get_class($cascadeRemove) : '') . ' given).');
+        }
+
+        $this->cascadeRemove = $cascadeRemove;
+
+        return $this;
+    }
+
+    /**
+     * Get cascadeRemove
+     *
+     * @return boolean
+     */
+    public function getCascadeRemove()
+    {
+        return $this->cascadeRemove;
     }
     // </editor-fold>
 

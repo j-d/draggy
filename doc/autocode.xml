@@ -222,6 +222,8 @@
 			<attribute id="attribute51" inherited="true"/>
 			<attribute id="attribute62" inherited="true"/>
 			<attribute id="attribute71" inherited="true"/>
+			<attribute id="attribute85" inherited="true"/>
+			<attribute id="attribute86" inherited="true"/>
 		</class>
 		<class name="JSAttribute" top="662" left="1401" inheritingFrom="Attribute">
 			<attribute id="attribute26" inherited="true"/>
@@ -255,6 +257,8 @@
 			<attribute id="attribute51" inherited="true"/>
 			<attribute id="attribute62" inherited="true"/>
 			<attribute id="attribute71" inherited="true"/>
+			<attribute id="attribute85" inherited="true"/>
+			<attribute id="attribute86" inherited="true"/>
 		</class>
 		<class name="Entity" top="67" left="627" constructor="true">
 			<attribute id="attribute9" name="namespace" type="string" minSize="1"/>
@@ -334,6 +338,8 @@
 			<attribute id="attribute51" name="reverseAttribute" type="object" subtype="Attribute" null="true" default="null" setter="false"/>
 			<attribute id="attribute62" name="static" type="boolean" default="false"/>
 			<attribute id="attribute71" name="inverse" type="boolean" default="false"/>
+			<attribute id="attribute85" name="cascadePersist" type="boolean" default="null"/>
+			<attribute id="attribute86" name="cascadeRemove" type="boolean" default="null"/>
 		</abstract>
 	</loose>
 	<relationships>
