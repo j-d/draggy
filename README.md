@@ -77,9 +77,9 @@ if (in_array($this->getEnvironment(), array('dev', 'test'))) {
     ...
 ```
 
-Modify the `routing.yml` file to add Draggy routes
+Modify the `routing_dev.yml` file to add Draggy routes
 
-    sudo nano app/config/routing.yml
+    sudo nano app/config/routing_dev.yml
 
 ```yml
 ... 
