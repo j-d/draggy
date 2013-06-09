@@ -371,6 +371,54 @@ class PHPJustifier extends AbstractJustifier
         }
     }
 
+    protected function isAtParamLine($lineNumber)
+    {
+        $line = $this->lines[$lineNumber];
+
+        if ('@param' === substr($line, 0, 6)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function findEndAtParamBlock($lineNumber, $maxLine)
+    {
+        for ($i = $lineNumber + 1; $i <= $maxLine; $i++) {
+            if (!$this->isAtParamLine($i)) {
+                return $i - 1;
+            }
+        }
+
+        return $lineNumber;
+    }
+
+    protected function alignAtParamLines($startLine, $endLine)
+    {
+        if ($endLine - $startLine < 1) {
+            return;
+        }
+
+        $maxPositionDescription = 0;
+
+        $beforeDescription    = [];
+        $afterDescription     = [];
+
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            $line = $this->outputLines[$i];
+
+            $positionDescription   = strpos($line, ' ', 7);
+            $beforeDescription[$i] = substr($line, 0, $positionDescription);
+            $afterDescription[$i]  = ' ' . ltrim(substr($line, $positionDescription));
+
+            $maxPositionDescription = max($positionDescription, $maxPositionDescription);
+        }
+
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            $this->outputLines[$i] = $beforeDescription[$i] . str_repeat(' ', $maxPositionDescription - strlen($beforeDescription[$i])) . $afterDescription[$i];
+        }
+    }
+
     public function blockIndent($startLine, $endLine)
     {
         if ($endLine < $startLine) {
@@ -400,16 +448,22 @@ class PHPJustifier extends AbstractJustifier
                 $this->indentLines($i + 1, $this->findEndCaseBlock($i, $endLine));
             }
 
-            if ($this->isArrowsRow($i) && $i > $startLine && !$this->isArrowsRow($i - 1)) {
-                $this->indentLines($i, $this->findEndArrowsBlock($i, $endLine));
-            }
+            if ($i > $startLine) {
+                if ($this->isArrowsRow($i) && !$this->isArrowsRow($i - 1)) {
+                    $this->indentLines($i, $this->findEndArrowsBlock($i, $endLine));
+                }
 
-            if ($this->isAssignmentLine($i) && $i > $startLine && !$this->isAssignmentLine($i - 1)) {
-                $this->alignAssignmentsLines($i, $this->findEndAssignmentsBlock($i, $endLine));
-            }
+                if ($this->isAssignmentLine($i) && !$this->isAssignmentLine($i - 1)) {
+                    $this->alignAssignmentsLines($i, $this->findEndAssignmentsBlock($i, $endLine));
+                }
 
-            if ($this->isDoubleArrowLine($i) && $i > $startLine && !$this->isDoubleArrowLine($i - 1)) {
-                $this->alignDoubleArrowLines($i, $this->findEndDoubleArrowBlock($i, $endLine));
+                if ($this->isDoubleArrowLine($i) && !$this->isDoubleArrowLine($i - 1)) {
+                    $this->alignDoubleArrowLines($i, $this->findEndDoubleArrowBlock($i, $endLine));
+                }
+
+                if ($this->isAtParamLine($i) && !$this->isAtParamLine($i - 1)) {
+                    $this->alignAtParamLines($i, $this->findEndAtParamBlock($i, $endLine));
+                }
             }
         }
     }
