@@ -87,7 +87,7 @@ class PHPAttribute extends PHPAttributeBase
             return null;
         }
 
-        if (is_null($this->getForeign())) {
+        if (null === $this->getForeign()) {
             if ($this->type === 'object') {
                 if (is_null($this->getSubtype())) {
                     throw new \InvalidArgumentException('Attribute ' . $this->getName() . ' on the entity ' . $this->getEntity()->getName() . ' is marked as an object but doesn\'t have a subtype');
@@ -105,8 +105,14 @@ class PHPAttribute extends PHPAttributeBase
                 return null;
             }
         } else {
-            if ($this->getForeign() === 'OneToOne' || $this->getForeign() === 'ManyToOne' && !$this->getInverse()) {
+            if ('OneToOne' === $this->getForeign()) {
                 return $this->getForeignEntity()->getName();
+            } elseif ('ManyToOne' === $this->getForeign()) {
+                if ($this->getOwnerSide()) {
+                    return null;
+                } else {
+                    return 'Collection';
+                }
             } else {
                 return 'Collection';
             }
@@ -277,11 +283,46 @@ class PHPAttribute extends PHPAttributeBase
 
     public function getThisName()
     {
-        if (!$this->getStatic()) {
-            return '$this->' . $this->getLowerName();
-        } else {
-            return 'self::$' . $this->getName();
-        }
+        return $this->getStatic()
+            ? 'self::$' . $this->getName()
+            : '$this->' . $this->getLowerName();
+    }
+
+    private function getThisFunctionAssistant($name)
+    {
+        return $this->getStatic()
+            ? 'self::' . $name
+            : '$this->' . $name;
+    }
+
+    public function getThisSingleAdderName()
+    {
+        return $this->getThisFunctionAssistant($this->getSingleAdderName());
+    }
+
+    public function getThisMultipleAdderName()
+    {
+        return $this->getThisFunctionAssistant($this->getMultipleAdderName());
+    }
+
+    public function getThisSingleRemoverName()
+    {
+        return $this->getThisFunctionAssistant($this->getSingleRemoverName());
+    }
+
+    public function getThisMultipleRemoverName()
+    {
+        return $this->getThisFunctionAssistant($this->getMultipleRemoverName());
+    }
+
+    public function getThisSingleContainsName()
+    {
+        return $this->getThisFunctionAssistant($this->getSingleContainsName());
+    }
+
+    public function getThisMultipleContainsName()
+    {
+        return $this->getThisFunctionAssistant($this->getMultipleContainsName());
     }
     // </user-additions>
     // </editor-fold>

@@ -376,6 +376,11 @@ abstract class Attribute extends AttributeBase
         return 'set' . $this->getUpperName();
     }
 
+    public function getClearName()
+    {
+        return 'clear' . $this->getUpperName();
+    }
+
     public function getGetterName()
     {
         return 'get' . $this->getUpperName();
@@ -399,6 +404,16 @@ abstract class Attribute extends AttributeBase
     public function getMultipleRemoverName()
     {
         return 'remove' . $this->getUpperName();
+    }
+
+    public function getSingleContainsName()
+    {
+        return 'contains' . $this->getSingleUpperName();
+    }
+
+    public function getMultipleContainsName()
+    {
+        return 'contains' . $this->getUpperName();
     }
     // </user-additions>
     // </editor-fold>
