@@ -196,8 +196,8 @@ EditItemDialog.prototype.getCascadeDropdown = function (name, value) {
     return  '<select id="' + name + '">' +
                 '<option value="both"' + (true == value || 'both' == value ? ' selected="selected"' : '') +'>Both</option>' +
                 '<option value="owner"' + ('owner' == value ? ' selected="selected"' : '') +'>Owner</option>' +
-                '<option value="inverse"' + ('owner' == value ? ' selected="selected"' : '') +'>Inverse</option>' +
-                '<option value="none"' + ('owner' == value ? ' selected="selected"' : '') +'>None</option>' +
+                '<option value="inverse"' + ('inverse' == value ? ' selected="selected"' : '') +'>Inverse</option>' +
+                '<option value="none"' + ('none' == value ? ' selected="selected"' : '') +'>None</option>' +
             '</select>';
 };
 
