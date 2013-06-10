@@ -392,7 +392,7 @@ class PHPAttribute extends PHPAttributeBase
 
     public function getDefaultValueConstructorInit()
     {
-        if ($this->getPhpType() === '\\DateTime') {
+        if ('\\DateTime' === $this->getPhpType()) {
             if ($this->getDefaultValue() !== 'null' && null !== $this->getDefaultValue()) {
                 if ('\'\'' === $this->getDefaultValue()) {
                     return 'new \\DateTime(\'\')';
@@ -400,8 +400,10 @@ class PHPAttribute extends PHPAttributeBase
                     return 'new \\DateTime(\'' . str_replace('\'', '\\\'', $this->getDefaultValue()) . '\')';
                 }
             }
-        } elseif ($this->getForeign() === 'ManyToMany' && null === $this->getDefaultValue()) {
-            return 'new ArrayCollection()';
+        } elseif (null === $this->getDefaultValue()) {
+            if ('ManyToMany' === $this->getForeign() || ('ManyToOne' === $this->getForeign() && $this->getInverse())) {
+                return 'new ArrayCollection()';
+            }
         }
 
         return '';
