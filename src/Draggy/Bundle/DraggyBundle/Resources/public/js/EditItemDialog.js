@@ -183,13 +183,22 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
                     '<input id="broken' + rowId + '" type="checkbox"'+ ( link.getBroken() ? ' checked="checked"' : '' ) + '">' +
                 '</td>' +
                 '<td class="center">' +
-                    (inheritance ? '' : '<input id="persist' + rowId + '" type="checkbox"'+ ( link.getPersist() ? ' checked="checked"' : '' ) + '">') +
+                    (inheritance ? '' : EditItemDialog.prototype.getCascadeDropdown("persist" + rowId, link.getPersist())) +
                 '</td>' +
                 '<td class="center">' +
-                    (inheritance ? '' : '<input id="remove' + rowId + '" type="checkbox"'+ ( link.getRemove() ? ' checked="checked"' : '' ) + '">') +
+                    (inheritance ? '' : EditItemDialog.prototype.getCascadeDropdown("remove" + rowId, link.getRemove())) +
                 '</td>' +
                 '<td><input id="deleteLink' + rowId + '" type="button" value="D"></td>' +
             '</tr>';
+};
+
+EditItemDialog.prototype.getCascadeDropdown = function (name, value) {
+    return  '<select id="' + name + '">' +
+                '<option value="both"' + (true == value || 'both' == value ? ' selected="selected"' : '') +'>Both</option>' +
+                '<option value="owner"' + ('owner' == value ? ' selected="selected"' : '') +'>Owner</option>' +
+                '<option value="inverse"' + ('owner' == value ? ' selected="selected"' : '') +'>Inverse</option>' +
+                '<option value="none"' + ('owner' == value ? ' selected="selected"' : '') +'>None</option>' +
+            '</select>';
 };
 
 EditItemDialog.prototype.hideSizeBox = function (event) {
@@ -431,8 +440,8 @@ EditItemDialog.prototype.commitChanges = function () {
         l  = c.getLink(j);
 
         l.setBroken( $('#broken' + j).is(':checked'));
-        l.setPersist( $('#persist' + j).is(':checked'));
-        l.setRemove( $('#remove' + j).is(':checked'));
+        l.setPersist( $('#persist' + j).val());
+        l.setRemove( $('#remove' + j).val());
 
         l.forceRender = true;
     }

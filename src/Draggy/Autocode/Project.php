@@ -724,20 +724,8 @@ class Project extends ProjectBase
                     }
                 }
 
-                if (isset($relationAttributes['persist'])) {
-                    $targetAttribute->setCascadePersist('true' === $relationAttributes['persist']);
-                } else {
-
-                }
-
-                if (isset($relationAttributes['remove'])) {
-                    $targetAttribute->setCascadeRemove('true' === $relationAttributes['remove']);
-                } else {
-
-                }
-
-                $targetAttribute->setCascadePersist(true); // Backwards compatibility
-                $targetAttribute->setCascadeRemove(true); // Backwards compatibility
+                $targetAttribute->setCascadePersist('both'); // Backwards compatibility
+                $targetAttribute->setCascadeRemove('both'); // Backwards compatibility
 
                 foreach ($relationAttributes as $attributeName => $attributeValue) {
                     switch ($attributeName) {
@@ -748,10 +736,10 @@ class Project extends ProjectBase
                         case 'fromAttribute':
                             break; // Already dealt with
                         case 'persist':
-                            $targetAttribute->setCascadePersist($attributeValue === 'true');
+                            $targetAttribute->setCascadePersist($attributeValue);
                             break;
                         case 'remove':
-                            $targetAttribute->setCascadeRemove($attributeValue === 'true');
+                            $targetAttribute->setCascadeRemove($attributeValue);
                             break;
                         case 'to':
                             break; // Already dealt with

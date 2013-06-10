@@ -781,13 +781,20 @@ class Loader
             }
 
             if (isset( $relationAttributes['persist'] )) {
-                $r .= 'l.setPersist(' . $relationAttributes['persist'] . ');' . PHP_EOL;
+                if ('true' === $relationAttributes['persist']) { // Backwards compatibility
+                    $relationAttributes['persist'] = 'both';
+                }
+
+                $r .= 'l.setPersist("' . $relationAttributes['persist'] . '");' . PHP_EOL;
             } else { // Backwards compatibility
                 $r .= 'l.setPersist(true);' . PHP_EOL;
             }
 
             if (isset( $relationAttributes['remove'] )) {
-                $r .= 'l.setRemove(' . $relationAttributes['remove'] . ');' . PHP_EOL;
+                if ('true' === $relationAttributes['remove']) { // Backwards compatibility
+                    $relationAttributes['remove'] = 'both';
+                }
+                $r .= 'l.setRemove("' . $relationAttributes['remove'] . '");' . PHP_EOL;
             } else { // Backwards compatibility
                 $r .= 'l.setRemove(true);' . PHP_EOL;
             }

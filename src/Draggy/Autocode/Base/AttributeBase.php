@@ -181,12 +181,12 @@ abstract class AttributeBase
     protected $inverse = false;
 
     /**
-     * @var boolean $cascadePersist
+     * @var string $cascadePersist
      */
     protected $cascadePersist = null;
 
     /**
-     * @var boolean $cascadeRemove
+     * @var string $cascadeRemove
      */
     protected $cascadeRemove = null;
 
@@ -1084,7 +1084,7 @@ abstract class AttributeBase
     /**
      * Set cascadePersist
      *
-     * @param boolean $cascadePersist
+     * @param string $cascadePersist
      *
      * @return Attribute
      *
@@ -1092,9 +1092,7 @@ abstract class AttributeBase
      */
     public function setCascadePersist($cascadePersist)
     {
-        if (!is_bool($cascadePersist)) {
-            throw new \InvalidArgumentException('The attribute cascadePersist on the class Attribute has to be boolean (' . gettype($cascadePersist) . ('object' === gettype($cascadePersist) ? ' ' . get_class($cascadePersist) : '') . ' given).');
-        }
+
 
         $this->cascadePersist = $cascadePersist;
 
@@ -1104,7 +1102,7 @@ abstract class AttributeBase
     /**
      * Get cascadePersist
      *
-     * @return boolean
+     * @return string
      */
     public function getCascadePersist()
     {
@@ -1114,7 +1112,7 @@ abstract class AttributeBase
     /**
      * Set cascadeRemove
      *
-     * @param boolean $cascadeRemove
+     * @param string $cascadeRemove
      *
      * @return Attribute
      *
@@ -1122,9 +1120,7 @@ abstract class AttributeBase
      */
     public function setCascadeRemove($cascadeRemove)
     {
-        if (!is_bool($cascadeRemove)) {
-            throw new \InvalidArgumentException('The attribute cascadeRemove on the class Attribute has to be boolean (' . gettype($cascadeRemove) . ('object' === gettype($cascadeRemove) ? ' ' . get_class($cascadeRemove) : '') . ' given).');
-        }
+
 
         $this->cascadeRemove = $cascadeRemove;
 
@@ -1134,7 +1130,7 @@ abstract class AttributeBase
     /**
      * Get cascadeRemove
      *
-     * @return boolean
+     * @return string
      */
     public function getCascadeRemove()
     {

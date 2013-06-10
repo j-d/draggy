@@ -545,8 +545,6 @@ class Entity1 extends Entity1Base
             $lines[] =         '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this, false);';
             $lines[] =     '}';
             $lines[] = '}';
-        } else {
-            throw new \RuntimeException('Unknown attribute getForeign() class ' . $attribute->getForeign());
         }
 
         if (!$attribute->getStatic()) {
@@ -594,8 +592,6 @@ class Entity1 extends Entity1Base
             $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
             $lines[] =     $attribute->getThisSingleAdderName() . '($' . $attribute->getSingleName() . ', $_allowRepeatedValues, $_reverseCall);';
             $lines[] = '}';
-        } else {
-            throw new \RuntimeException('Unknown foreign type on getForeign() ' . $attribute->getForeign());
         }
 
         if (!$attribute->getStatic()) {
@@ -636,8 +632,6 @@ class Entity1 extends Entity1Base
             $lines[] = 'return ' . $attribute->getThisName() .  '->contains($' . $attribute->getSingleName() . ');';
         } elseif ('ManyToOne' === $attribute->getForeign() && !$attribute->getOwnerSide()) {
             $lines[] = 'return ' . $attribute->getThisName() .  '->contains($' . $attribute->getSingleName() . ');';
-        } else {
-            throw new \RuntimeException('Unknown getForeign() value.');
         }
 
         $lines[] = '}';
@@ -679,8 +673,6 @@ class Entity1 extends Entity1Base
             $lines[] =         'return false;';
             $lines[] =     '}';
             $lines[] = '}';
-        } else {
-            throw new \RuntimeException('Unknown getForeign() value.');
         }
 
         $lines[] = '';
@@ -727,8 +719,6 @@ class Entity1 extends Entity1Base
             $lines[] = 'if (' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ') && $_reverseCall) {';
             $lines[] =     '$' . $attribute->getSingleName() . '->set' . $attribute->getEntity()->getName() . '(null, false);';
             $lines[] = '}';
-        } else {
-            throw new \RuntimeException('Unknown attribute getForeign() class ' . $attribute->getForeign());
         }
 
         if (!$attribute->getStatic()) {
@@ -775,8 +765,6 @@ class Entity1 extends Entity1Base
             $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
             $lines[] =     $attribute->getThisSingleRemoverName() . '($' . $attribute->getSingleName() . ', $_reverseCall);';
             $lines[] = '}';
-        } else {
-            throw new \RuntimeException('Unknown attribute getForeign() class ' . $attribute->getForeign());
         }
 
         if (!$attribute->getStatic()) {

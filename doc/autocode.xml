@@ -306,7 +306,7 @@
 			<attribute id="attribute80" inherited="true"/>
 			<attribute id="attribute84" inherited="true"/>
 		</class>
-		<abstract name="Attribute" top="58" left="1153" constructor="true">
+		<abstract name="Attribute" top="58" left="1153">
 			<attribute id="attribute26" name="entity" type="object" subtype="Entity"/>
 			<attribute id="attribute27" name="name" type="string" minSize="1"/>
 			<attribute id="attribute28" name="type" type="string"/>
@@ -338,8 +338,8 @@
 			<attribute id="attribute51" name="reverseAttribute" type="object" subtype="Attribute" null="true" default="null" setter="false"/>
 			<attribute id="attribute62" name="static" type="boolean" default="false"/>
 			<attribute id="attribute71" name="inverse" type="boolean" default="false"/>
-			<attribute id="attribute85" name="cascadePersist" type="boolean" default="null"/>
-			<attribute id="attribute86" name="cascadeRemove" type="boolean" default="null"/>
+			<attribute id="attribute85" name="cascadePersist" type="string" size="10" default="null"/>
+			<attribute id="attribute86" name="cascadeRemove" type="string" size="10" default="null"/>
 		</abstract>
 	</loose>
 	<relationships>

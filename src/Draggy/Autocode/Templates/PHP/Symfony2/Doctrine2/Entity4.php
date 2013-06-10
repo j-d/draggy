@@ -40,15 +40,34 @@ class Entity4 extends Entity4Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    public function getCascadePart(PHPAttribute $attribute)
+    public function getCascadeOwnerPart(PHPAttribute $attribute)
     {
         $cascadeAttributes = [];
 
-        if ($attribute->getCascadePersist()) {
+        if (in_array($attribute->getCascadePersist(), ['both', 'owner'])) {
             $cascadeAttributes[] = '"persist"';
         }
 
-        if ($attribute->getCascadeRemove()) {
+        if (in_array($attribute->getCascadeRemove(), ['both', 'owner'])) {
+            $cascadeAttributes[] = '"remove"';
+        }
+
+        if (count($cascadeAttributes) > 0) {
+            return ', cascade={' . implode(', ', $cascadeAttributes) . '}';
+        } else {
+            return '';
+        }
+    }
+
+    public function getCascadeInversePart(PHPAttribute $attribute)
+    {
+        $cascadeAttributes = [];
+
+        if (in_array($attribute->getCascadePersist(), ['both', 'inverse'])) {
+            $cascadeAttributes[] = '"persist"';
+        }
+
+        if (in_array($attribute->getCascadeRemove(), ['both', 'inverse'])) {
             $cascadeAttributes[] = '"remove"';
         }
 
@@ -74,19 +93,21 @@ class Entity4 extends Entity4Base
             switch ($attribute->getForeign()) {
                 case 'ManyToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '"' . $this->getCascadePart($attribute) .')';
+                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '"' . $this->getCascadeOwnerPart($attribute) .')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
                     } else {
-                        $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
+                        $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) .')';
                     }
+
                     break;
                 case 'OneToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadePart($attribute) . ')';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
                     } else {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '")';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) . ')';
                     }
+
                     break;
                 case 'ManyToMany':
                     if ($attribute->getOwnerSide()) {
@@ -106,6 +127,7 @@ class Entity4 extends Entity4Base
                     } else {
                         $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getName() . '")';
                     }
+
                     break;
                 default:
                     throw new \Exception('foreignMethod not implemented (' . $attribute->getForeign() . ')');
