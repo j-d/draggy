@@ -355,43 +355,59 @@ class Entity1 extends Entity1Base
 
             if (!$settingFromInverse) {
                 $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
-                $lines[] =     'if (!$_reverseCall) {';
-                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                $lines[] =     '} else {';
-                $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
-                $lines[] = $attribute->getNull()
-                    ? $attribute->getThisName() . '->set' . $attribute->getEntity()->getName() . '(null, false);'
-                    : $attribute->getThisName() . '->clear' . $attribute->getEntity()->getName() . '();';
+                if ($attribute->getSetter()) {
+                    $lines[] =     'if (!$_reverseCall) {';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =     '} else {';
+                    $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
-                $lines[] =         '}';
-                $lines[] = '';
-                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                $lines[] = '';
-                $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
-                $lines[] =             '$' . $attribute->getName() . '->set' . $attribute->getEntity()->getName() . '($this);';
-                $lines[] =         '}';
-                $lines[] =     '}';
+                    $lines[] = $attribute->getNull()
+                        ? $attribute->getThisName() . '->set' . $attribute->getEntity()->getName() . '(null, false);'
+                        : $attribute->getThisName() . '->clear' . $attribute->getEntity()->getName() . '();';
+
+                    $lines[] =         '}';
+                    $lines[] = '';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =             '$' . $attribute->getName() . '->set' . $attribute->getEntity()->getName() . '($this);';
+                    $lines[] =         '}';
+                    $lines[] =     '}';
+                } else {
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] = '// Reverse entity doesn\'t have a setter so the reverse call cannot be made';
+                }
+
                 $lines[] = '}';
             } else {
                 $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
-                $lines[] =     'if (!$_reverseCall) {';
-                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                $lines[] =     '} else {';
-                $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
-                $lines[] = $attribute->getNull()
-                    ? $attribute->getThisName() . '->' . $attribute->getForeignKey()->getSetterName() . '(null, false);'
-                    : $attribute->getThisName() . '->' . $attribute->getForeignKey()->getClearName() . '();';
+                if ($attribute->getForeignKey()->getSetter()) {
+                    $lines[] =     'if (!$_reverseCall) {';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =     '} else {';
+                    $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
-                $lines[] =         '}';
-                $lines[] = '';
-                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
-                $lines[] = '';
-                $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
-                $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
-                $lines[] =         '}';
-                $lines[] =     '}';
+                    $lines[] = $attribute->getNull()
+                        ? $attribute->getThisName() . '->' . $attribute->getForeignKey()->getSetterName() . '(null, false);'
+                        : $attribute->getThisName() . '->' . $attribute->getForeignKey()->getClearName() . '();';
+
+                    $lines[] =         '}';
+                    $lines[] = '';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
+                    $lines[] =         '}';
+                    $lines[] =     '}';
+                } else {
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] = '// Reverse entity doesn\'t have a setter so the reverse call cannot be made';
+                }
+
                 $lines[] = '}';
             }
         } else { // Normal setter
