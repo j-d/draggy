@@ -317,19 +317,19 @@ Link.prototype.getBroken = function () {
 };
 
 Link.prototype.setPersist = function (persist) {
-    this.persist = persist;
+    this.cascadePersist = persist;
 };
 
 Link.prototype.getPersist = function () {
-    return this.persist;
+    return this.cascadePersist;
 };
 
 Link.prototype.setRemove = function (remove) {
-    this.remove = remove;
+    this.cascadeRemove = remove;
 };
 
 Link.prototype.getRemove = function () {
-    return this.remove;
+    return this.cascadeRemove;
 };
 
 Link.prototype.remove = function () {
