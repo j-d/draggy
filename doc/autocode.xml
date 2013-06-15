@@ -306,7 +306,7 @@
 			<attribute id="attribute80" inherited="true"/>
 			<attribute id="attribute84" inherited="true"/>
 		</class>
-		<abstract name="Attribute" top="58" left="1153">
+		<abstract name="Attribute" top="58" left="1153" constructor="true">
 			<attribute id="attribute26" name="entity" type="object" subtype="Entity"/>
 			<attribute id="attribute27" name="name" type="string" minSize="1"/>
 			<attribute id="attribute28" name="type" type="string"/>

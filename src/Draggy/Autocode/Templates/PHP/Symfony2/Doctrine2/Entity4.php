@@ -212,6 +212,304 @@ class Entity4 extends Entity4Base
 
         return $lines;
     }
+
+    // <editor-fold desc="Setters">
+    public function getSetterCodeDocumentationParameterLines(PHPAttribute $attribute)
+    {
+        $lines = parent::getSetterCodeDocumentationParameterLines($attribute);
+
+        if (null !== $attribute->getForeign()) {
+            $lines[] = '@param bool $_reverseCall';
+        }
+
+        return $lines;
+    }
+
+    public function getSetterParameters(PHPAttribute $attribute)
+    {
+        $parameters = parent::getSetterParameters($attribute);
+
+        if (null !== $attribute->getForeign()) {
+            $parameters[] = '$_reverseCall = true';
+        }
+
+        return $parameters;
+    }
+
+    public function getSetterCodeLinesBodyPart(PHPAttribute $attribute)
+    {
+        if (null === $attribute->getForeign()) {
+            // Normal setter
+            return parent::getSetterCodeLinesBodyPart($attribute);
+        }
+
+        $lines = [];
+
+        $settingFromInverse = $attribute->getSettingFromInverse();
+
+        $linesManySide = [
+            'foreach (' . $attribute->getThisName() . ' as $' . $attribute->getSingleName() . ') {',
+                'if (!$' . $attribute->getLowerName() . '->contains($' . $attribute->getSingleName() . ')) {',
+                    $attribute->getThisSingleRemoverName() . '($' . $attribute->getSingleName() . ', $_reverseCall);',
+                '} else {',
+                    '$' . $attribute->getLowerName() . '->removeElement($' . $attribute->getSingleName() . ');',
+                '}',
+            '}',
+            '',
+            $attribute->getThisMultipleAdderName() . '($' . $attribute->getLowerName() . ', false, $_reverseCall);',
+        ];
+
+        if ('ManyToMany' === $attribute->getForeign()) {
+            if (!$settingFromInverse) {
+                $lines = array_merge($lines, $linesManySide);
+            } else {
+                $lines = array_merge($lines, $linesManySide);
+            }
+        } elseif ('ManyToOne' === $attribute->getForeign()) {
+            if (!$settingFromInverse) {
+                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+                $lines[] =     'if ($_reverseCall) {';
+                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                $lines[] =     '} else {';
+                $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
+                $lines[] =             $attribute->getThisName() . '->remove' . $this->getEntity()->getName() . '($this);';
+                $lines[] =         '}';
+                $lines[] = '';
+                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                $lines[] = '';
+                $lines[] =         'if (null !== ' . $attribute->getThisName() . ' && !' . $attribute->getThisName() . '->contains' . $this->getEntity()->getName() . '($this)) {';
+                $lines[] =             $attribute->getThisName() . '->add' . $this->getEntity()->getName() . '($this);';
+                $lines[] =         '}';
+                $lines[] =     '}';
+                $lines[] = '}';
+            } else {
+                $lines = array_merge($lines, $linesManySide);
+            }
+        } elseif ('OneToOne' === $attribute->getForeign()) {
+            // If there is actually a change
+            //   If I don't have to bother calling anyone back, just do it
+            //   otherwise
+            //     If it wasn't null, tell the previous one now is null
+            //     Set it
+            //     Tell the new one that needs to link to this. Can't say not to call back because perhaps it was linked to another one
+
+            if (!$settingFromInverse) {
+                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+
+                if ($attribute->getSetter()) {
+                    $lines[] =     'if (!$_reverseCall) {';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =     '} else {';
+                    $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
+
+                    $lines[] = $attribute->getNull()
+                        ? $attribute->getThisName() . '->set' . $attribute->getEntity()->getName() . '(null, false);'
+                        : $attribute->getThisName() . '->clear' . $attribute->getEntity()->getName() . '();';
+
+                    $lines[] =         '}';
+                    $lines[] = '';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =             '$' . $attribute->getName() . '->set' . $attribute->getEntity()->getName() . '($this);';
+                    $lines[] =         '}';
+                    $lines[] =     '}';
+                } else {
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] = '// Reverse entity doesn\'t have a setter so the reverse call cannot be made';
+                }
+
+                $lines[] = '}';
+            } else {
+                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+
+                if ($attribute->getForeignKey()->getSetter()) {
+                    $lines[] =     'if (!$_reverseCall) {';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =     '} else {';
+                    $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
+
+                    $lines[] = $attribute->getNull()
+                        ? $attribute->getThisName() . '->' . $attribute->getForeignKey()->getSetterName() . '(null, false);'
+                        : $attribute->getThisName() . '->' . $attribute->getForeignKey()->getClearName() . '();';
+
+                    $lines[] =         '}';
+                    $lines[] = '';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
+                    $lines[] =         '}';
+                    $lines[] =     '}';
+                } else {
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = '';
+                    $lines[] = '// Reverse entity doesn\'t have a setter so the reverse call cannot be made';
+                }
+
+                $lines[] = '}';
+            }
+        }
+
+        return $lines;
+    }
+
+    public function getSetterCodeLines(PHPAttribute $attribute)
+    {
+        $lines = parent::getSetterCodeLines($attribute);
+
+        // Needs to add a method to be able to set the value to null even if in theory is not allowed
+        if ('OneToOne' === $attribute->getForeign() && !$attribute->getNull()) {
+            $lines[] = '';
+
+            $lines = array_merge($lines, $this->getClearCodeLines($attribute));
+        }
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Adders">
+    public function getSingleAdderCodeDocumentationParameterLines(PHPAttribute $attribute)
+    {
+        $lines = parent::getSingleAdderCodeDocumentationParameterLines($attribute);
+
+        $lines[] = '@param bool $_reverseCall';
+
+        return $lines;
+    }
+
+    public function getSingleAdderParameters(PHPAttribute $attribute)
+    {
+        $parameters = parent::getSingleAdderParameters($attribute);
+
+        $parameters[] = '$_reverseCall = true';
+
+        return $parameters;
+    }
+
+    public function getSingleAdderCodeLinesPostAssignmentPart(PHPAttribute $attribute)
+    {
+        $lines = parent::getSingleAdderCodeLinesPostAssignmentPart($attribute);
+
+        $lines[] = '';
+        $lines[] = 'if ($_reverseCall) {';
+
+        if ('ManyToMany' === $attribute->getForeign()) {
+            $lines[] = '$' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this, $_allowRepeatedValues, false);';
+        } elseif ('ManyToOne' === $attribute->getForeign() && !$attribute->getOwnerSide()) {
+            $lines[] = '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this, false);';
+        }
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getMultipleAdderCodeDocumentationParameterLines(PHPAttribute $attribute)
+    {
+        $lines = parent::getMultipleAdderCodeDocumentationParameterLines($attribute);
+
+        $lines[] = '@param bool $_reverseCall';
+
+        return $lines;
+    }
+
+    public function getMultipleAdderParameters(PHPAttribute $attribute)
+    {
+        $parameters = parent::getMultipleAdderParameters($attribute);
+
+        $parameters[] = '$_reverseCall = true';
+
+        return $parameters;
+    }
+
+    public function getMultipleAdderCodeLinesAssignmentPart(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = $attribute->getThisSingleAdderName() . '($' . $attribute->getSingleName() . ', $_allowRepeatedValues, $_reverseCall);';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Contains">
+    public function getSingleContainsCodeLinesBodyPart(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'return ' . $attribute->getThisName() .  '->contains($' . $attribute->getSingleName() . ');';
+
+        return $lines;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Removers">
+    public function getSingleRemoverCodeDocumentationParameterLines(PHPAttribute $attribute)
+    {
+        $lines = parent::getSingleRemoverCodeDocumentationParameterLines($attribute);
+
+        $lines[] = '@param bool $_reverseCall';
+
+        return $lines;
+    }
+
+    public function getSingleRemoverParameters(PHPAttribute $attribute)
+    {
+        $parameters = parent::getSingleRemoverParameters($attribute);
+
+        $parameters[] = '$_reverseCall = true';
+
+        return $parameters;
+    }
+
+    public function getSingleRemoverCodeLinesBodyPart(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = 'if (' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ') && $_reverseCall) {';
+
+        if ('ManyToMany' === $attribute->getForeign()) {
+            $lines[] = '$' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this, false);';
+        } elseif ('ManyToOne' === $attribute->getForeign() && !$attribute->getOwnerSide()) {
+            $lines[] = '$' . $attribute->getSingleName() . '->set' . $attribute->getEntity()->getName() . '(null, false);';
+        }
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getMultipleRemoverCodeDocumentationParameterLines(PHPAttribute $attribute)
+    {
+        $lines = parent::getMultipleRemoverCodeDocumentationParameterLines($attribute);
+
+        $lines[] = '@param bool $_reverseCall';
+
+        return $lines;
+    }
+
+    public function getMultipleRemoverParameters(PHPAttribute $attribute)
+    {
+        $parameters = parent::getMultipleRemoverParameters($attribute);
+
+        $parameters[] = '$_reverseCall = true';
+
+        return $parameters;
+    }
+
+    public function getMultipleRemoverCodeLinesBodyCallPart(PHPAttribute $attribute)
+    {
+        $lines = [];
+
+        $lines[] = $attribute->getThisSingleRemoverName() . '($' . $attribute->getSingleName() . ', $_reverseCall);';
+
+        return $lines;
+    }
+    // </editor-fold>
+
     // </user-additions>
     // </editor-fold>
 }
