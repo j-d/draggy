@@ -292,6 +292,23 @@ abstract class Attribute extends AttributeBase
     {
         $ret = '';
 
+        if ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType()) {
+            $ret .= '    /**' . "\n";
+            $ret .= '     * @return ' . ($this->getForeignEntity()->getHasForm() ? $this->getForeignEntity()->getName() . 'Type' : 'null') . "\n";
+            $ret .= '     */' . "\n";
+            $ret .= '    protected function get' . $this->getUpperName() . 'FieldParentFormConstructor()' . "\n";
+            $ret .= '    {' . "\n";
+
+                if ('Entity' === $this->getFormClassType()) {
+                    $ret .= '        return ' . ($this->getForeignEntity()->getHasForm() ? 'new ' . $this->getForeignEntity()->getName() . 'Type()' : 'null') . ';' . "\n";
+                } elseif ('Collection' === $this->getFormClassType()) {
+                    $ret .= '        return new ' . $this->getForeignEntity()->getName() . 'Type();' . "\n";
+                }
+            $ret .= '    }' . "\n";
+
+            $ret .= "\n";
+        }
+
         $ret .= '    /**' . "\n";
         $ret .= '     * @return ' . $this->getFormClassType() . "\n";
         $ret .= '     */' . "\n";
@@ -337,11 +354,11 @@ abstract class Attribute extends AttributeBase
             //    $properties[] = '                [\'symfonyByReference\' => false]';
             //}
 
-            if (!is_null($this->min)) {
+            if (null !== $this->min) {
                 $properties[] = '        [\'min\' => ' . $this->min . ']';
             }
 
-            if (!is_null($this->max)) {
+            if (null !== $this->max) {
                 $properties[] = '        [\'max\' => ' . $this->max . ']';
             }
         }
@@ -349,10 +366,10 @@ abstract class Attribute extends AttributeBase
         if (count($properties) > 0) {
             switch ($this->getFormClassType()) {
                 case 'Entity':
-                    $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\', ' . ($this->getForeignEntity()->getHasForm() ? 'new ' . $this->getForeignEntity()->getName() . 'Type()' : 'null') . ',' . "\n";
+                    $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor(),' . "\n";
                     break;
                 case 'Collection':
-                    $ret .= ', new ' . $this->getForeignEntity()->getName() . 'Type(),' . "\n";
+                    $ret .= ', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor(),' . "\n";
                     break;
                 default:
                     $ret .= ', null,' . "\n";

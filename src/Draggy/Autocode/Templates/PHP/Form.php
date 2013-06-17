@@ -104,7 +104,7 @@ class Form extends FormBase
                     $file .= '        //     ->setSymfonyProperty(\'xxx\'); // Possible choices: ';
 
                     foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
-                        if (is_null($foreignAttr->getForeign()) && $foreignAttr->getPhpType() !== 'boolean') {
+                        if (null === $foreignAttr->getForeign() && 'boolean' !== $foreignAttr->getPhpType()) {
                             $file .= ' ' . $foreignAttr->getName();
                         }
                     }
