@@ -310,9 +310,15 @@ abstract class Attribute extends AttributeBase
         }
 
         $ret .= '    /**' . "\n";
+
+        if ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType()) {
+            $ret .= '     * @param array $arguments Arguments to pass down to the ParentFormConstructor method' . "\n";
+            $ret .= '     * ' . "\n";
+        }
+
         $ret .= '     * @return ' . $this->getFormClassType() . "\n";
         $ret .= '     */' . "\n";
-        $ret .= '    public function get' . $this->getUpperName() . 'Field()' . "\n";
+        $ret .= '    public function get' . $this->getUpperName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')' . "\n";
         $ret .= '    {' . "\n";
         $ret .= '        return new ' . $this->getFormClassType() . '(\'' . $this->name . '\'';
 
@@ -366,10 +372,10 @@ abstract class Attribute extends AttributeBase
         if (count($properties) > 0) {
             switch ($this->getFormClassType()) {
                 case 'Entity':
-                    $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor(),' . "\n";
+                    $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),' . "\n";
                     break;
                 case 'Collection':
-                    $ret .= ', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor(),' . "\n";
+                    $ret .= ', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),' . "\n";
                     break;
                 default:
                     $ret .= ', null,' . "\n";
