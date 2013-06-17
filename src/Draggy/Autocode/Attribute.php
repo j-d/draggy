@@ -294,9 +294,11 @@ abstract class Attribute extends AttributeBase
 
         if ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType()) {
             $ret .= '    /**' . "\n";
+            $ret .= '     * @param array $arguments Arguments to pass down to the ParentFormConstructor method' . "\n";
+            $ret .= '     * ' . "\n";
             $ret .= '     * @return ' . ($this->getForeignEntity()->getHasForm() ? $this->getForeignEntity()->getName() . 'Type' : 'null') . "\n";
             $ret .= '     */' . "\n";
-            $ret .= '    protected function get' . $this->getUpperName() . 'FieldParentFormConstructor()' . "\n";
+            $ret .= '    protected function get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments)' . "\n";
             $ret .= '    {' . "\n";
 
                 if ('Entity' === $this->getFormClassType()) {

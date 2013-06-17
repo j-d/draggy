@@ -149,7 +149,10 @@ class Form extends FormBase
 
         $file .= '        // </user-additions' . '>' . "\n";
         $file .= '    }' . "\n";
-        $file .= '    ' . "\n";
+        $file .= "\n";
+        $file .= '    // <user-additions' . ' part="methods">' . "\n";
+        $file .= '    // </user-additions' . '>' . "\n";
+        $file .= "\n";
         $file .= '    public function buildForm(FormBuilderInterface $builder, array $options)' . "\n";
         $file .= '    {' . "\n";
         $file .= '        // parent::buildForm($builder, $options);' . "\n";
