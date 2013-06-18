@@ -39,7 +39,7 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.toAttribute = null;
     this.forceRender = false;
     this.broken  = false;
-    this.remove  = true;
+    this.cascadeRemove  = true;
     this.persist = true;
 
     if (type !== 'Inheritance') {
