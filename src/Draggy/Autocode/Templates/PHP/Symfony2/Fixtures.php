@@ -61,17 +61,21 @@ class Fixtures extends FixturesBase
         $file .= "\n";
         $file .= 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . "\n";
 
-        foreach ($entity->getAttributes() as $attr)
-            if (!is_null($attr->getForeignEntity()))
+        foreach ($entity->getAttributes() as $attr) {
+            if (null !== $attr->getForeignEntity()) {
                 $file .= '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';' . "\n";
+            }
+        }
 
         $file .= "\n";
         $file .= '// <user-additions' . ' part="use">' . "\n";
         $file .= '// </user-additions' . '>' . "\n";
         $file .= "\n";
+
         $file .= '/**' . "\n";
         $file .= ' * ' . $entity->getNamespace() . '\\DataFixtures\\ORM\\' . $entity->getName() . 'Fixtures' . "\n";
         $file .= ' */' . "\n";
+
         $file .= 'class ' . $entity->getName() . 'Fixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface' . "\n";
         $file .= '{' . "\n";
         $file .= '    private $container;' . "\n";
@@ -79,7 +83,7 @@ class Fixtures extends FixturesBase
         $file .= '    public function getOrder()' . "\n";
         $file .= '    {' . "\n";
         $file .= '        // <user-additions' . ' part="order">' . "\n";
-        $file .= '        return .;' . "\n";
+        $file .= '        return 10;' . "\n";
         $file .= '        // </user-additions' . '>' . "\n";
         $file .= '    }' . "\n";
         $file .= "\n";
@@ -90,25 +94,44 @@ class Fixtures extends FixturesBase
         $file .= "\n";
         $file .= '    public function load(ObjectManager $manager)' . "\n";
         $file .= '    {' . "\n";
-        $file .= '        /*' . "\n";
-        $file .= '        foreach (. as $' . $entity->getLowerName() . ') {' . "\n";
-        $file .= '            $' . $entity->getLowerName() . 'Entity = (new ' . $entity->getName() . '())' . "\n";
 
-        foreach ($entity->getAttributes() as $attr)
-            if ($attr->getSetter())
-                $file .= '                ' . ($attr->getNull() ? '//' : '') . '->set' . $attr->getUpperName() . '($' . $entity->getLowerName() . '[.])' . "\n";
+        $help = [];
 
-        $file .= "\n";
-        $file .= '            $manager->persist($' . $entity->getLowerName() . 'Entity);' . "\n";
-        $file .= '        }' . "\n";
-        $file .= "\n";
-        $file .= '        $manager->flush();' . "\n";
-        $file .= '        */' . "\n";
+        $help[] = '$' . $entity->getPluralLowerName() . ' = [];';
+        $help[] = '';
+        $help[] = 'foreach ($' . $entity->getPluralLowerName() . ' as $' . $entity->getLowerName() . ') {';
+        $help[] = '    $' . $entity->getLowerName() . 'Entity = (new ' . $entity->getName() . '())';
+
+        $helpSetters = [];
+
+        foreach ($entity->getAttributes() as $attr) {
+            if ($attr->getSetter()) {
+                $helpSetters[] = '        ' . ($attr->getNull() ? '//' : '') . '->set' . $attr->getUpperName() . '($' . $entity->getLowerName() . '[\'' . $attr->getLowerName() . '\'])';
+            }
+        }
+
+        if (count($helpSetters) > 1) {
+            $helpSetters[count($helpSetters) - 1] .= ';';
+        }
+
+        $help = array_merge($help, $helpSetters);
+
+        $help[] = '';
+        $help[] = '    $manager->persist($' . $entity->getLowerName() . 'Entity);';
+        $help[] = '}';
+        $help[] = '';
+        $help[] = '$manager->flush();';
+
+        $file .= '        //' . implode("\n" . '        //', $help) . "\n";
+
         $file .= "\n";
         $file .= '        // <user-additions' . ' part="load">' . "\n";
+
+        $file .= '        ' . implode("\n" . '        ', $help) . "\n";
+
         $file .= '        // </user-additions' . '>' . "\n";
         $file .= '    }' . "\n";
-        $file .= '}';
+        $file .= '}' . "\n";
 
         return $file;
     }
