@@ -68,14 +68,34 @@ class Entity extends EntityBase
         return substr($this->module,0,substr($this->module,-6) == 'Bundle' ? -6 : null);
     }
 
+    /**
+     * Get the plural name from a singular
+     * Source: http://en.wikipedia.org/wiki/English_plurals
+     *
+     * @return string
+     */
     public function getPluralName()
     {
-        if (substr($this->getName(),-1) == 'y')
-            return substr($this->getName(),0,-1) . 'ies';
-        elseif (substr($this->getName(),-1) == 'f')
-            return substr($this->getName(),0,-1) . 'ves';
-        else
-            return $this->getName() . 's';
+        $rules = [
+            'ss' => 'sses', // kiss to kissess
+            'sh' => 'shes', // dish to dishes
+            'ch' => 'ches', // witch to witches
+            'oy' => 'oys',  // boy to boys
+            'ay' => 'ays',  // day to days
+            'ey' => 'eys',  // monkey to monkeys
+
+            'o'  => 'oes', // hero to heroes
+            'y'  => 'ies', // cherry to cherries
+            'f'  => 'ves', // leaf to leaves
+        ];
+
+        foreach ($rules as $ending => $replacement) {
+            if ($ending === substr($this->getName(), -strlen($ending))) {
+                return substr($this->getName(), 0, -strlen($ending)) . $replacement;
+            }
+        }
+
+        return $this->getName() . 's';
     }
 
     public function getPluralLowerName()
