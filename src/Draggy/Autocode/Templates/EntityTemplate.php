@@ -41,13 +41,11 @@ abstract class EntityTemplate extends EntityTemplateBase
     // <user-additions part="otherMethods">
     protected function getDescriptionCodeLines()
     {
-        $entity = $this->getEntity();
-
         $lines = [];
 
-        if ( '' !== trim($entity->getDescription()) ) {
+        if ( '' !== trim($this->getEntity()->getDescription()) ) {
             $lines[] = '/*';
-            $lines[] = ' * ' . trim($entity->getDescription());
+            $lines[] = ' * ' . trim($this->getEntity()->getDescription());
             $lines[] = ' */';
             $lines[] = '';
         }

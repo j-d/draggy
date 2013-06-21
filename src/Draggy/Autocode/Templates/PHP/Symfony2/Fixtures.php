@@ -44,6 +44,11 @@ class Fixtures extends FixturesBase
         return '// ' . $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM\\' . $this->getEntity()->getName() . 'Fixtures.php';
     }
 
+    public function getDescriptionCodeLines()
+    {
+        return [];
+    }
+
     public function getNamespaceLine()
     {
         return 'namespace ' . $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM;';

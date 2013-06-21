@@ -39,48 +39,70 @@ class Repository extends RepositoryBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    /**
-     * @inheritDoc
-     */
-    public function render()
+    public function getFilenameLine()
     {
-        $entity = $this->getEntity();
+        return '// ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . 'Repository.php';
+    }
 
-        $file = '';
+    public function getDescriptionCodeLines()
+    {
+        return [];
+    }
+    
+    public function getNamespaceLine()
+    {
+        return 'namespace ' . $this->getEntity()->getNamespace() . '\\Entity;';
+    }
+    
+    public function getUseLines()
+    {
+        $lines = [];
 
-        $file .= '<?php' . "\n";
-        $file .= '// ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository.php' . "\n";
-        $file .= $this->getBlurb();
-        $file .= 'namespace ' . $entity->getNamespace() . '\\Entity;' . "\n";
-        $file .= "\n";
-        $file .= 'use Doctrine\\ORM\\EntityRepository;' . "\n";
-        $file .= 'use Doctrine\\Common\\Persistence\\ObjectManager;' . "\n";
-        $file .= 'use Doctrine\\ORM\\EntityManager;' . "\n";
-        $file .= 'use Doctrine\\ORM\\Mapping\\ClassMetadata;' . "\n";
-        $file .= '// <user-additions' . ' part="use">' . "\n";
-        $file .= '// </user-additions' . '>' . "\n";
-        $file .= "\n";
-        $file .= '/**' . "\n";
-        $file .= ' * ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository' . "\n";
-        $file .= ' */' . "\n";
-        $file .= 'class ' . $entity->getName() . 'Repository extends EntityRepository' . "\n";
-        $file .= '{' . "\n";
-        $file .= '    /**' . "\n";
-        $file .= '     * @param EntityManager|ObjectManager $em The EntityManager to use.' . "\n"; //ObjectManager|
-        $file .= '     */' . "\n";
-        $file .= '    function __construct($em)' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '        /** @var ClassMetadata $metadata */' . "\n";
-        $file .= '        $metadata = $em->getClassMetadata(\'' . $entity->getModule() . ':' . $entity->getName() . '\');' . "\n";
-        $file .= "\n";
-        $file .= '        parent::__construct($em, $metadata);' . "\n";
-        $file .= '    }' . "\n";
-        $file .= "\n";
-        $file .= '    // <user-additions' . ' part="methods">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= '}';
+        $lines[] = 'use Doctrine\\ORM\\EntityRepository;';
+        $lines[] = 'use Doctrine\\Common\\Persistence\\ObjectManager;';
+        $lines[] = 'use Doctrine\\ORM\\EntityManager;';
+        $lines[] = 'use Doctrine\\ORM\\Mapping\\ClassMetadata;';
 
-        return $file;
+        $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
+
+        return $lines;
+    }
+
+    public function getRepositoryDocumentationLines()
+    {
+        $lines = [];
+
+        $lines[] = $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . 'Repository';
+
+        return $lines;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getFileLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getRepositoryDocumentationLines()));
+        $lines[] = 'class ' . $this->getEntity()->getName() . 'Repository extends EntityRepository';
+        $lines[] = '{';
+        $lines[] =     '/**';
+        $lines[] =     ' * @param EntityManager|ObjectManager $em The EntityManager to use.'; //ObjectManager|
+        $lines[] =     ' */';
+        $lines[] =     'function __construct($em)';
+        $lines[] =     '{';
+        $lines[] =         '/** @var ClassMetadata $metadata */';
+        $lines[] =         '$metadata = $em->getClassMetadata(\'' . $this->getEntity()->getModule() . ':' . $this->getEntity()->getName() . '\');';
+        $lines[] = '';
+        $lines[] =         'parent::__construct($em, $metadata);';
+        $lines[] =     '}';
+        $lines[] = '';
+        $lines[] =     $this->getUserAdditions('methods');
+        $lines[] =     $this->getEndUserAdditions();
+        $lines[] = '}';
+
+        return $lines;
     }
     // </user-additions>
     // </editor-fold>

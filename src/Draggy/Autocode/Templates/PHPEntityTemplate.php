@@ -60,7 +60,7 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     {
         $line = 'use ' . $entity->getNamespace();
 
-        if ($entity->getProject()->getFramework() === 'Symfony2') {
+        if ('Symfony2' === $entity->getProject()->getFramework()) {
             $line .= '\\Entity';
         }
 
@@ -124,11 +124,9 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         $lines = $phpJustifier->justifyFromLines($lines);
 
         foreach ($lines as $key => $line) {
-            if ('' !== $line) {
-                $lines[$key] = ' * ' . $line;
-            } else {
-                $lines[$key] = ' *' . $line;
-            }
+            $lines[$key] = '' !== $line
+                ? ' * ' . $line
+                : ' *' . $line;
         }
 
         $lines = array_merge(['/**'], $lines, [' */']);
