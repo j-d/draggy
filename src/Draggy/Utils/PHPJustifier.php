@@ -293,6 +293,10 @@ class PHPJustifier extends AbstractJustifier
             return true;
         }
 
+        if ('//->' === substr($this->lines[$lineNumber], 0, 4)) {
+            return true;
+        }
+
         return false;
     }
 

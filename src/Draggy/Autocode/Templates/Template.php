@@ -189,6 +189,10 @@ abstract class Template extends TemplateBase
     {
         return $this->convertLinesToCode($this->getHashBlurbLines());
     }
+
+    abstract public function getUserAdditions($part);
+
+    abstract public function getEndUserAdditions();
     // </user-additions>
     // </editor-fold>
 }

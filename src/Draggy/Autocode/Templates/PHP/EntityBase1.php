@@ -49,16 +49,6 @@ class EntityBase1 extends EntityBase1Base
         return 'namespace ' . $this->getEntity()->getNamespace() .';';
     }
 
-    public function getUseLinesUserAdditionsPart()
-    {
-        $lines = [];
-
-        $lines[] = '// <user-additions' . ' part="use">';
-        $lines[] = '// </user-additions' . '>';
-
-        return $lines;
-    }
-
     public function getUseLines()
     {
         $lines = [];

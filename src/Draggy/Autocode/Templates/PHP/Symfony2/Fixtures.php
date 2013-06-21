@@ -39,101 +39,153 @@ class Fixtures extends FixturesBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    public function render()
+    public function getFilenameLine()
     {
-        $entity = $this->getEntity();
+        return '// ' . $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM\\' . $this->getEntity()->getName() . 'Fixtures.php';
+    }
 
-        $file = '';
+    public function getNamespaceLine()
+    {
+        return 'namespace ' . $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM;';
+    }
 
-        $file .= '<?php' . "\n";
-        $file .= '// ' . $entity->getNamespace() . '\\DataFixtures\\ORM\\' . $entity->getName() . 'Fixtures.php' . "\n";
-        $file .= $this->getBlurb();
+    public function getUseLines()
+    {
+        $lines = [];
 
-        $file .= 'namespace ' . $entity->getNamespace() . '\\DataFixtures\\ORM;' . "\n";
-        $file .= "\n";
-        $file .= 'use Doctrine\\Common\\DataFixtures\\AbstractFixture;' . "\n";
-        $file .= 'use Doctrine\\Common\\Persistence\\ObjectManager;' . "\n";
-        $file .= 'use Doctrine\\Common\\DataFixtures\\OrderedFixtureInterface;' . "\n";
-        $file .= '//use Doctrine\\Common\\Collections\\ArrayCollection;' . "\n";
-        $file .= "\n";
-        $file .= 'use Symfony\\Component\\DependencyInjection\\ContainerAwareInterface;' . "\n";
-        $file .= 'use Symfony\\Component\\DependencyInjection\\ContainerInterface;' . "\n";
-        $file .= "\n";
-        $file .= 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';' . "\n";
+        $lines[] = 'use Doctrine\\Common\\DataFixtures\\AbstractFixture;';
+        $lines[] = 'use Doctrine\\Common\\Persistence\\ObjectManager;';
+        $lines[] = 'use Doctrine\\Common\\DataFixtures\\OrderedFixtureInterface;';
+        $lines[] = '//use Doctrine\\Common\\Collections\\ArrayCollection;';
+        $lines[] = '';
+        $lines[] = 'use Symfony\\Component\\DependencyInjection\\ContainerAwareInterface;';
+        $lines[] = 'use Symfony\\Component\\DependencyInjection\\ContainerInterface;';
+        $lines[] = '';
+        $lines[] = 'use ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . ';';
 
-        foreach ($entity->getAttributes() as $attr) {
+        foreach ($this->getEntity()->getAttributes() as $attr) {
             if (null !== $attr->getForeignEntity()) {
-                $file .= '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';' . "\n";
+                $lines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';';
             }
         }
 
-        $file .= "\n";
-        $file .= '// <user-additions' . ' part="use">' . "\n";
-        $file .= '// </user-additions' . '>' . "\n";
-        $file .= "\n";
+        $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
 
-        $file .= '/**' . "\n";
-        $file .= ' * ' . $entity->getNamespace() . '\\DataFixtures\\ORM\\' . $entity->getName() . 'Fixtures' . "\n";
-        $file .= ' */' . "\n";
+        return $lines;
+    }
 
-        $file .= 'class ' . $entity->getName() . 'Fixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface' . "\n";
-        $file .= '{' . "\n";
-        $file .= '    private $container;' . "\n";
-        $file .= "\n";
-        $file .= '    public function getOrder()' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '        // <user-additions' . ' part="order">' . "\n";
-        $file .= '        return 10;' . "\n";
-        $file .= '        // </user-additions' . '>' . "\n";
-        $file .= '    }' . "\n";
-        $file .= "\n";
-        $file .= '    public function setContainer(ContainerInterface $container = null)' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '        $this->container = $container;' . "\n";
-        $file .= '    }' . "\n";
-        $file .= "\n";
-        $file .= '    public function load(ObjectManager $manager)' . "\n";
-        $file .= '    {' . "\n";
+    public function getFixturesDocumentationLines()
+    {
+        $lines = [];
 
-        $help = [];
+        $lines[] = $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM\\' . $this->getEntity()->getName() . 'Fixtures';
 
-        $help[] = '$' . $entity->getPluralLowerName() . ' = [];';
-        $help[] = '';
-        $help[] = 'foreach ($' . $entity->getPluralLowerName() . ' as $' . $entity->getLowerName() . ') {';
-        $help[] = '    $' . $entity->getLowerName() . 'Entity = (new ' . $entity->getName() . '())';
+        return $lines;
+    }
 
-        $helpSetters = [];
+    public function getFixturesDeclarationLines()
+    {
+        $lines = [];
 
-        foreach ($entity->getAttributes() as $attr) {
+        $lines[] =  'class ' . $this->getEntity()->getName() . 'Fixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface';
+
+        return $lines;
+    }
+
+    public function getLoadMethodHelpLines()
+    {
+        $lines = [];
+
+        $lines[] = '$' . $this->getEntity()->getPluralLowerName() . ' = [];';
+        $lines[] = '';
+        $lines[] = 'foreach ($' . $this->getEntity()->getPluralLowerName() . ' as $' . $this->getEntity()->getLowerName() . ') {';
+        $lines[] =     '$' . $this->getEntity()->getLowerName() . 'Entity = (new ' . $this->getEntity()->getName() . '())';
+
+        $linesSetters = [];
+
+        foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $helpSetters[] = '        ' . ($attr->getNull() ? '//' : '') . '->set' . $attr->getUpperName() . '($' . $entity->getLowerName() . '[\'' . $attr->getLowerName() . '\'])';
+                $linesSetters[] = ($attr->getNull() ? '//' : '') . '->' . $attr->getSetterName() . '($' . $this->getEntity()->getLowerName() . '[\'' . $attr->getLowerName() . '\'])';
             }
         }
 
-        if (count($helpSetters) > 1) {
-            $helpSetters[count($helpSetters) - 1] .= ';';
+        // Find the last non-commented line and add a semicolon at the end
+        $semicolonAdded = false;
+
+        for ($i = count($linesSetters) - 1; $i >= 0; $i--) {
+            if ('//' !== substr($linesSetters[$i], 0, 2)) {
+                $linesSetters[$i] .= ';';
+                $semicolonAdded = true;
+                break;
+            }
         }
 
-        $help = array_merge($help, $helpSetters);
+        // If not found, then add it to the previous line which didn't have it
+        if (!$semicolonAdded) {
+            $lines[count($lines) - 1] .= ';';
+        }
 
-        $help[] = '';
-        $help[] = '    $manager->persist($' . $entity->getLowerName() . 'Entity);';
-        $help[] = '}';
-        $help[] = '';
-        $help[] = '$manager->flush();';
+        $lines = array_merge($lines, $linesSetters);
 
-        $file .= '        //' . implode("\n" . '        //', $help) . "\n";
+        $lines[] = '';
+        $lines[] =     '$manager->persist($' . $this->getEntity()->getLowerName() . 'Entity);';
+        $lines[] = '}';
+        $lines[] = '';
+        $lines[] = '$manager->flush();';
 
-        $file .= "\n";
-        $file .= '        // <user-additions' . ' part="load">' . "\n";
+        return $lines;
+    }
 
-        $file .= '        ' . implode("\n" . '        ', $help) . "\n";
+    public function getFixturesCodeLines()
+    {
+        $lines = [];
 
-        $file .= '        // </user-additions' . '>' . "\n";
-        $file .= '    }' . "\n";
-        $file .= '}' . "\n";
+        $lines[] = 'private $container;';
+        $lines[] = '';
+        $lines[] = 'public function getOrder()';
+        $lines[] = '{';
+        $lines[] =     $this->getUserAdditions('order');
+        $lines[] =     'return 10;';
+        $lines[] =     $this->getEndUserAdditions();
+        $lines[] = '}';
+        $lines[] = '';
+        $lines[] = 'public function setContainer(ContainerInterface $container = null)';
+        $lines[] = '{';
+        $lines[] =     '$this->container = $container;';
+        $lines[] = '}';
+        $lines[] = '';
+        $lines[] = 'public function load(ObjectManager $manager)';
+        $lines[] = '{';
 
-        return $file;
+        $helpLines = $this->getLoadMethodHelpLines();
+
+        $lines = array_merge($lines, $this->commentAndJustifyLines($helpLines));
+
+        $lines[] = '';
+        $lines[] =     $this->getUserAdditions('load');
+
+        $lines = array_merge($lines, $helpLines);
+
+        $lines[] =     $this->getEndUserAdditions();
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getFileLines()
+    {
+        $lines = [];
+
+        $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getFixturesDocumentationLines()));
+        $lines = array_merge($lines, $this->getFixturesDeclarationLines());
+
+        $lines[] = '{';
+
+        $lines = array_merge($lines, $this->getFixturesCodeLines());
+
+        $lines[] = '}';
+
+        return $lines;
     }
     // </user-additions>
     // </editor-fold>

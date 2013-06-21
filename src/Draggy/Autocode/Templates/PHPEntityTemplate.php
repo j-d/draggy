@@ -79,6 +79,16 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         return null;
     }
 
+    public function getUseLinesUserAdditionsPart()
+    {
+        $lines = [];
+
+        $lines[] = '// <user-additions' . ' part="use">';
+        $lines[] = '// </user-additions' . '>';
+
+        return $lines;
+    }
+
     public function getUseLines()
     {
         return [];
@@ -155,6 +165,16 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
         $lines = $phpJustifier->justifyFromLines($lines);
 
         return $this->convertLinesToCode($lines);
+    }
+
+    public function getUserAdditions($part)
+    {
+        return '// <user-additions' . ' part="' . $part . '">';
+    }
+
+    public function getEndUserAdditions()
+    {
+        return '// </user-additions' . '>';
     }
     // </user-additions>
     // </editor-fold>
