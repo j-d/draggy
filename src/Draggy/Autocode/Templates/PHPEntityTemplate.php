@@ -83,8 +83,8 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     {
         $lines = [];
 
-        $lines[] = '// <user-additions' . ' part="use">';
-        $lines[] = '// </user-additions' . '>';
+        $lines[] = $this->getUserAdditions('use');
+        $lines[] = $this->getEndUserAdditions();
 
         return $lines;
     }

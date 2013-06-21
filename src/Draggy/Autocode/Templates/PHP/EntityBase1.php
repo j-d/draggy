@@ -80,8 +80,8 @@ class EntityBase1 extends EntityBase1Base
     {
         $lines = [];
 
-        $lines[] = '// <user-additions' . ' part="implements">';
-        $lines[] = '// </user-additions' . '>';
+        $lines[] = $this->getUserAdditions('implements');
+        $lines[] = $this->getEndUserAdditions();
 
         return $lines;
     }
@@ -91,8 +91,8 @@ class EntityBase1 extends EntityBase1Base
         $lines = [];
 
         $lines[] = '// <editor-fold desc="Attributes">';
-        $lines[] = '// <user-additions' . ' part="attributes">';
-        $lines[] = '// </user-additions' . '>';
+        $lines[] = $this->getUserAdditions('attributes');
+        $lines[] = $this->getEndUserAdditions();
         $lines[] = '// </editor-fold>';
 
         return $lines;
@@ -106,9 +106,9 @@ class EntityBase1 extends EntityBase1Base
             $lines[] = '';
 
             $lines[] = '// <editor-fold desc="Constructor">';
-            $lines[] = '// <user-additions' . ' part="constructorDeclaration">';
+            $lines[] = $this->getUserAdditions('constructorDeclaration');
             $lines[] = 'public function __construct()';
-            $lines[] = '// </user-additions' . '>';
+            $lines[] = $this->getEndUserAdditions();
             $lines[] = '{';
 
             foreach ($this->getEntity()->getAttributes() as $attr) {
@@ -119,8 +119,8 @@ class EntityBase1 extends EntityBase1Base
                 }
             }
 
-            $lines[] =     '// <user-additions' . ' part="constructor">';
-            $lines[] =     '// </user-additions' . '>';
+            $lines[] =     $this->getUserAdditions('constructor');
+            $lines[] =     $this->getEndUserAdditions();
             $lines[] = '}';
             $lines[] = '// </editor-fold>';
         }
@@ -135,8 +135,8 @@ class EntityBase1 extends EntityBase1Base
         $lines[] = '';
 
         $lines[] = '// <editor-fold desc="Setters and Getters">';
-        $lines[] = '// <user-additions' . ' part="settersAndGetters">';
-        $lines[] = '// </user-additions' . '>';
+        $lines[] = $this->getUserAdditions('settersAndGetters');
+        $lines[] = $this->getEndUserAdditions();
         $lines[] = '// </editor-fold>';
 
         return $lines;
@@ -149,8 +149,8 @@ class EntityBase1 extends EntityBase1Base
         $lines[] = '';
 
         $lines[] = '// <editor-fold desc="Other methods">';
-        $lines[] = '// <user-additions' . ' part="otherMethods">';
-        $lines[] = '// </user-additions' . '>';
+        $lines[] = $this->getUserAdditions('otherMethods');
+        $lines[] = $this->getEndUserAdditions();
         $lines[] = '// </editor-fold>';
 
         return $lines;
