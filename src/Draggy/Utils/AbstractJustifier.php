@@ -41,6 +41,18 @@ abstract class AbstractJustifier
     protected $processedLines;
 
     /**
+     * @var array
+     */
+    protected $lineTypes;
+
+    /**
+     * Validation passes
+     *
+     * @var array
+     */
+    protected $passes;
+
+    /**
      * @param string $indentationCharacter
      * @param int    $indentationCount
      * @param string $eol
@@ -67,6 +79,15 @@ abstract class AbstractJustifier
         $this->eol                  = $eol;
     }
 
+    protected function indentLines($startLine, $endLine)
+    {
+        for ($i = $startLine; $i <= $endLine; $i++) {
+            if (!$this->processedLines[$i]) {
+                $this->outputLines[$i] = $this->indentation . $this->outputLines[$i];
+            }
+        }
+    }
+
     protected abstract function initialise();
 
     protected function initialiseFromSourceFile($sourceFile)
@@ -83,7 +104,52 @@ abstract class AbstractJustifier
         $this->initialise();
     }
 
-    protected abstract function justify();
+    protected abstract function identifyLines();
+
+    protected function addJustificationRule($pass, $rule)
+    {
+        $this->passes[$pass][] = $rule;
+    }
+
+    protected function findEndStandardBlock($name, $lineNumber, $maxLine, $targetStepsInto = 0)
+    {
+        $stepsInto = 0;
+
+        for ($i = $lineNumber; $i <= $maxLine; $i++) {
+            if ($this->lineTypes['end' . $name][$i] && $i > $lineNumber) {
+                $stepsInto--;
+
+                if ($stepsInto === $targetStepsInto) {
+                    return $i;
+                }
+            }
+
+            if ($this->lineTypes['start' . $name][$i]) {
+                $stepsInto++;
+            }
+        }
+
+        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber);
+    }
+
+    abstract public function initJustificationRules();
+
+    public function justify()
+    {
+        $endLine = count($this->lines) - 1;
+
+        if ($endLine < 0) {
+            return;
+        }
+
+        foreach ($this->passes as $pass) {
+            for ($i = 0; $i <= $endLine; $i++) {
+                foreach ($pass as $rule) {
+                    $rule($i, $endLine);
+                }
+            }
+        }
+    }
 
     public function justifyFromLines($lines)
     {

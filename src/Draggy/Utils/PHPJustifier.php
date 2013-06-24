@@ -5,32 +5,11 @@ namespace Draggy\Utils;
 class PHPJustifier extends AbstractJustifier
 {
     /**
-     * @var array
-     */
-    protected $lineTypes;
-
-    /**
-     * Validation passes
-     *
-     * @var array
-     */
-    protected $passes;
-
-    /**
      * {@inheritdoc}
      */
     public function __construct($indentationCharacter = ' ', $indentationCount = 4, $eol = PHP_EOL)
     {
         parent::__construct($indentationCharacter, $indentationCount, $eol);
-    }
-
-    protected function indentLines($startLine, $endLine)
-    {
-        for ($i = $startLine; $i <= $endLine; $i++) {
-            if (!$this->processedLines[$i]) {
-                $this->outputLines[$i] = $this->indentation . $this->outputLines[$i];
-            }
-        }
     }
 
     protected function initialise()
@@ -75,27 +54,6 @@ class PHPJustifier extends AbstractJustifier
             $this->lineTypes['atParam'][$lineNumber]     = $this->isAtParamLine($lineNumber);
             $this->lineTypes['special'][$lineNumber]     = $this->isSpecialIndentationBlock($lineNumber);
         }
-    }
-
-    protected function findEndStandardBlock($name, $lineNumber, $maxLine, $targetStepsInto = 0)
-    {
-        $stepsInto = 0;
-
-        for ($i = $lineNumber; $i <= $maxLine; $i++) {
-            if ($this->lineTypes['end' . $name][$i] && $i > $lineNumber) {
-                $stepsInto--;
-
-                if ($stepsInto === $targetStepsInto) {
-                    return $i;
-                }
-            }
-
-            if ($this->lineTypes['start' . $name][$i]) {
-                $stepsInto++;
-            }
-        }
-
-        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber);
     }
 
     protected function isStartCommentBlock($lineNumber)
@@ -440,96 +398,74 @@ class PHPJustifier extends AbstractJustifier
         return false;
     }
 
-    public function addJustificationRule($pass, $rule)
-    {
-        $this->passes[$pass][] = $rule;
-    }
-
     public function initJustificationRules()
     {
-        $this->addJustificationRule(1, function ($i, $endLine) {
-            if ($this->isStartCommentBlock($i)) {
-                $this->indentCommentBlock($i, $this->findEndCommentBlock($i, $endLine));
+        $this->addJustificationRule(1, function ($lineNumber, $endLine) {
+            if ($this->isStartCommentBlock($lineNumber)) {
+                $this->indentCommentBlock($lineNumber, $this->findEndCommentBlock($lineNumber, $endLine));
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($this->lineTypes['startBraces'][$i]) {
-                $this->indentLines($i + 1, $this->findEndStandardBlock('Braces', $i, $endLine) - 1);
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($this->lineTypes['startBraces'][$lineNumber]) {
+                $this->indentLines($lineNumber + 1, $this->findEndStandardBlock('Braces', $lineNumber, $endLine) - 1);
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($this->lineTypes['startBrackets'][$i]) {
-                $this->indentLines($i + 1, $this->findEndStandardBlock('Brackets', $i, $endLine) - 1);
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($this->lineTypes['startBrackets'][$lineNumber]) {
+                $this->indentLines($lineNumber + 1, $this->findEndStandardBlock('Brackets', $lineNumber, $endLine) - 1);
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($this->lineTypes['startSquaredBrackets'][$i]) {
-                $this->indentLines($i + 1, $this->findEndStandardBlock('SquaredBrackets', $i, $endLine) - 1);
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($this->lineTypes['startSquaredBrackets'][$lineNumber]) {
+                $this->indentLines($lineNumber + 1, $this->findEndStandardBlock('SquaredBrackets', $lineNumber, $endLine) - 1);
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($this->lineTypes['startCase'][$i]) {
-                $this->indentLines($i + 1, $this->findEndCaseBlock($i, $endLine));
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($this->lineTypes['startCase'][$lineNumber]) {
+                $this->indentLines($lineNumber + 1, $this->findEndCaseBlock($lineNumber, $endLine));
             }
         });
 
-        $this->addJustificationRule(2, function ($i) {
-            if ($this->lineTypes['special'][$i]) {
-                $this->indentLines($i, $i);
+        $this->addJustificationRule(2, function ($lineNumber) {
+            if ($this->lineTypes['special'][$lineNumber]) {
+                $this->indentLines($lineNumber, $lineNumber);
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($i > 0) {
-                if ($this->lineTypes['arrow'][$i] && !$this->lineTypes['arrow'][$i - 1]) {
-                    $this->indentLines($i, $this->findEndArrowsBlock($i, $endLine));
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($lineNumber > 0) {
+                if ($this->lineTypes['arrow'][$lineNumber] && !$this->lineTypes['arrow'][$lineNumber - 1]) {
+                    $this->indentLines($lineNumber, $this->findEndArrowsBlock($lineNumber, $endLine));
                 }
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($i > 0) {
-                if ($this->lineTypes['doubleArrow'][$i] && !$this->lineTypes['doubleArrow'][$i - 1]) {
-                    $this->alignDoubleArrowLines($i, $this->findEndDoubleArrowBlock($i, $endLine));
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($lineNumber > 0) {
+                if ($this->lineTypes['doubleArrow'][$lineNumber] && !$this->lineTypes['doubleArrow'][$lineNumber - 1]) {
+                    $this->alignDoubleArrowLines($lineNumber, $this->findEndDoubleArrowBlock($lineNumber, $endLine));
                 }
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($i > 0) {
-                if ($this->lineTypes['assignment'][$i] && !$this->lineTypes['assignment'][$i - 1]) {
-                    $this->alignAssignmentsLines($i, $this->findEndAssignmentsBlock($i, $endLine));
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($lineNumber > 0) {
+                if ($this->lineTypes['assignment'][$lineNumber] && !$this->lineTypes['assignment'][$lineNumber - 1]) {
+                    $this->alignAssignmentsLines($lineNumber, $this->findEndAssignmentsBlock($lineNumber, $endLine));
                 }
             }
         });
 
-        $this->addJustificationRule(2, function ($i, $endLine) {
-            if ($i > 0) {
-                if ($this->lineTypes['atParam'][$i] && !$this->lineTypes['atParam'][$i - 1]) {
-                    $this->alignAtParamLines($i, $this->findEndAtParamBlock($i, $endLine));
+        $this->addJustificationRule(2, function ($lineNumber, $endLine) {
+            if ($lineNumber > 0) {
+                if ($this->lineTypes['atParam'][$lineNumber] && !$this->lineTypes['atParam'][$lineNumber - 1]) {
+                    $this->alignAtParamLines($lineNumber, $this->findEndAtParamBlock($lineNumber, $endLine));
                 }
             }
         });
-    }
-
-    public function justify()
-    {
-        $endLine = count($this->lines) - 1;
-
-        if ($endLine < 0) {
-            return;
-        }
-
-        foreach ($this->passes as $pass) {
-            for ($i = 0; $i <= $endLine; $i++) {
-                foreach ($pass as $rule) {
-                    $rule($i, $endLine);
-                }
-            }
-        }
     }
 }
