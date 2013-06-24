@@ -54,132 +54,167 @@ class Form extends FormBase
     {
         return $this->getEntity()->getName() . 'Type.php';
     }
-
-    public function render()
+    
+    public function getFilenameLine()
     {
-        $entity = $this->getEntity();
+        return '// ' . $this->getEntity()->getNamespace() . '\\Form\\' . $this->getEntity()->getName() . 'Type.php';
+    }
 
-        $file = '';
-
-        $file .= '<?php' . "\n";
-        $file .= '// ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type.php' . "\n";
-        $file .= $this->getBlurb();
-
-        $file .= 'namespace ' . $entity->getNamespace() . '\\Form;' . "\n";
-        $file .= "\n";
-        $file .= 'use Common\\Html\\FormItem;' . "\n";
-        $file .= 'use Symfony\\Component\\Form\\FormBuilderInterface;' . "\n";
-        $file .= 'use ' . $entity->getNamespace() . '\\Form\\Base\\' . $entity->getName() . 'TypeBase;' . "\n";
+    public function getDescriptionCodeLines()
+    {
+        return [];
+    }
+    
+    public function getNamespaceLine()
+    {
+        return 'namespace ' . $this->getEntity()->getNamespace() . '\\Form;'; 
+    }
+    
+    public function getUseLines()
+    {
+        $lines = [];
+        
+        $lines[] = 'use Common\\Html\\FormItem;';
+        $lines[] = 'use Symfony\\Component\\Form\\FormBuilderInterface;';
+        $lines[] = 'use ' . $this->getEntity()->getNamespace() . '\\Form\\Base\\' . $this->getEntity()->getName() . 'TypeBase;';
 
         $useEntity = false;
-        foreach ($entity->getFormAttributes() as $attr) {
-            if (!is_null($attr->getForeign())) {
+
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
+            if (null !== $attr->getForeign()) {
                 $useEntity = true;
                 break;
             }
         }
 
         if ($useEntity) {
-            $file .= '// use Common\\Html\\Entity;' . "\n";
+            $lines[] = '// use Common\\Html\\Entity;';
         }
 
         $useCollection = false;
-        foreach ($entity->getFormAttributes() as $attr) {
-            if ($attr->getFormClassType() === 'Collection') {
+
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
+            if ('Collection' === $attr->getFormClassType()) {
                 $useCollection = true;
                 break;
             }
         }
 
         if ($useCollection) {
-            $file .= '// use Common\\Html\\Collection;' . "\n";
+            $lines[] = '// use Common\\Html\\Collection;';
         }
 
-        $file .= '// <user-additions' . ' part="use">' . "\n";
-        $file .= '// </user-additions' . '>' . "\n";
-        $file .= "\n";
-        $file .= 'class ' . $entity->getName() . 'Type extends ' . $entity->getName() . 'TypeBase' . "\n";
-        $file .= '    // <user-additions' . ' part="implements">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= '{' . "\n";
-        $file .= '    // <user-additions' . ' part="traitsUse">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= "\n";
-        $file .= '    // <user-additions' . ' part="constructorDeclaration">' . "\n";
-        $file .= '    public function __construct()' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= '    {' . "\n";
-        foreach ($entity->getFormAttributes() as $attr) {
+        $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
+        
+        return $lines;
+    }
+
+    public function getConstructorHelpLines()
+    {
+        $lines = [];
+
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
             switch ($attr->getFormClassType()) {
                 case 'Entity':
-                    $file .= '        // $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();' . "\n";
-                    $file .= '        // $this->fields[\'' . $attr->getName() . '\']' . "\n";
-                    $file .= '        //     ->setParentForm($this);' . "\n";
-                    $file .= '        // $this->fields[\'' . $attr->getName() . '\']' . "\n";
-                    $file .= '        //     ->setSymfonyExpanded(true)' . "\n";
-                    $file .= '        //     ->setSymfonyProperty(\'xxx\'); // Possible choices: ';
+                    $lines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
+                    $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
+                    $lines[] =     '->setParentForm($this);';
+                    $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
+                    $lines[] =     '->setSymfonyExpanded(true)';
+
+
+                    $line = '->setSymfonyProperty(\'xxx\'); // Possible choices: ';
 
                     foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
                         if (null === $foreignAttr->getForeign() && 'boolean' !== $foreignAttr->getPhpType()) {
-                            $file .= ' ' . $foreignAttr->getName();
+                            $line .= ' ' . $foreignAttr->getName();
                         }
                     }
 
-                    $file .= "\n";
-                    $file .= '        //' . "\n";
+                    $lines[] = $line;
+                    $lines[] = '';
 
                     break;
                 case 'Collection':
-                    $file .= '        // $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();' . "\n";
-                    $file .= '        // $' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];' . "\n";
-                    $file .= '        // $this->fields[\'' . $attr->getName() . '\']' . "\n";
-                    $file .= '        //     ->setSymfonyAllowAdd(true)' . "\n";
-                    $file .= '        //     ->setSymfonyAllowDelete(true);' . "\n";
-                    $file .= '        //' . "\n";
+                    $lines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
+                    $lines[] = '$' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];';
+                    $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
+                    $lines[] =     '->setSymfonyAllowAdd(true)';
+                    $lines[] =     '->setSymfonyAllowDelete(true);';
+                    $lines[] = '';
 
                     break;
                 default:
-                    $file .= '        // $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();' . "\n";
+                    $lines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
                     break;
             }
         }
 
-        $file .= '        // <user-additions' . ' part="constructor">' . "\n";
+        return $this->commentAndJustifyLines($lines);
+    }
 
-        $someCollections = false;
-        $fileTemp = '';
+    public function getConstructorInsideLines()
+    {
+        $lines = [];
 
-        foreach ($entity->getFormAttributes() as $attr) {
+        $someCollections  = false;
+        $constructorLines = [];
+
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
             if ($attr->getFormClassType() !== 'Collection') {
-                $fileTemp .= '        $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();' . "\n";
+                $constructorLines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
             } else {
                 $someCollections = true;
-                $fileTemp .= '        // $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();' . "\n";
+                $constructorLines[] = '// $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
             }
         }
 
         if ($someCollections) {
-            $file .= '        // To prevent loops Collections are not automatically added' . "\n";
+            $lines[] = '// To prevent loops Collections are not automatically added';
         }
-        $file .= $fileTemp;
 
-        $file .= '        // </user-additions' . '>' . "\n";
-        $file .= '    }' . "\n";
-        $file .= "\n";
-        $file .= '    // <user-additions' . ' part="methods">' . "\n";
-        $file .= '    // </user-additions' . '>' . "\n";
-        $file .= "\n";
-        $file .= '    public function buildForm(FormBuilderInterface $builder, array $options)' . "\n";
-        $file .= '    {' . "\n";
-        $file .= '        // parent::buildForm($builder, $options);' . "\n";
-        $file .= '        ' . "\n";
-        $file .= '        // <user-additions' . ' part="buildForm">' . "\n";
-        $file .= '        parent::buildForm($builder, $options);' . "\n";
-        $file .= '        // </user-additions' . '>' . "\n";
-        $file .= '    }' . "\n";
-        $file .= '}' . "\n";
+        $lines = array_merge($lines, $constructorLines);
 
-        return $file;
+        return $lines;
+    }
+
+    public function getFileLines()
+    {
+        $lines[] = 'class ' . $this->getEntity()->getName() . 'Type extends ' . $this->getEntity()->getName() . 'TypeBase';
+        $lines[] =     '// <user-additions' . ' part="implements">';
+        $lines[] =     '// </user-additions' . '>';
+        $lines[] = '{';
+        $lines[] =     '// <user-additions' . ' part="traitsUse">';
+        $lines[] =     '// </user-additions' . '>';
+        $lines[] = '';
+        $lines[] =     '// <user-additions' . ' part="constructorDeclaration">';
+        $lines[] =     'public function __construct()';
+        $lines[] =     '// </user-additions' . '>';
+        $lines[] =     '{';
+
+        $lines = array_merge($lines, $this->getConstructorHelpLines());
+
+        $lines[] = '// <user-additions' . ' part="constructor">';
+
+        $lines = array_merge($lines, $this->getConstructorInsideLines());
+
+        $lines[] =     '    // </user-additions' . '>';
+        $lines[] =     '}';
+        $lines[] = '';
+        $lines[] =     '// <user-additions' . ' part="methods">';
+        $lines[] =     '// </user-additions' . '>';
+        $lines[] = '';
+        $lines[] =     'public function buildForm(FormBuilderInterface $builder, array $options)';
+        $lines[] =     '{';
+        $lines[] =     '    // parent::buildForm($builder, $options);';
+        $lines[] =     '    ';
+        $lines[] =     '    // <user-additions' . ' part="buildForm">';
+        $lines[] =     '    parent::buildForm($builder, $options);';
+        $lines[] =     '    // </user-additions' . '>';
+        $lines[] =     '}';
+        $lines[] = '}';
+
+        return $lines;
     }
     // </user-additions>
     // </editor-fold>

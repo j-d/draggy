@@ -288,112 +288,114 @@ abstract class Attribute extends AttributeBase
         return $type;
     }
 
-    public function getFormClass($formName)
+    public function getFormClassLines($formName)
     {
-        $ret = '';
+        $lines = [];
 
         if ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType()) {
-            $ret .= '    /**' . "\n";
-            $ret .= '     * @param array $arguments Arguments to pass down to the ParentFormConstructor method' . "\n";
-            $ret .= '     * ' . "\n";
-            $ret .= '     * @return ' . ($this->getForeignEntity()->getHasForm() ? $this->getForeignEntity()->getName() . 'Type' : 'null') . "\n";
-            $ret .= '     */' . "\n";
-            $ret .= '    protected function get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments)' . "\n";
-            $ret .= '    {' . "\n";
+            $lines[] = '/**';
+            $lines[] = ' * @param array $arguments Arguments to pass down to the ParentFormConstructor method';
+            $lines[] = ' * ';
+            $lines[] = ' * @return ' . ($this->getForeignEntity()->getHasForm() ? $this->getForeignEntity()->getName() . 'Type' : 'null');
+            $lines[] = ' */';
+            $lines[] = 'protected function get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments)';
+            $lines[] = '{';
 
-                if ('Entity' === $this->getFormClassType()) {
-                    $ret .= '        return ' . ($this->getForeignEntity()->getHasForm() ? 'new ' . $this->getForeignEntity()->getName() . 'Type()' : 'null') . ';' . "\n";
-                } elseif ('Collection' === $this->getFormClassType()) {
-                    $ret .= '        return new ' . $this->getForeignEntity()->getName() . 'Type();' . "\n";
-                }
-            $ret .= '    }' . "\n";
+            if ('Entity' === $this->getFormClassType()) {
+                $lines[] = 'return ' . ($this->getForeignEntity()->getHasForm() ? 'new ' . $this->getForeignEntity()->getName() . 'Type()' : 'null') . ';';
+            } elseif ('Collection' === $this->getFormClassType()) {
+                $lines[] = 'return new ' . $this->getForeignEntity()->getName() . 'Type();';
+            }
 
-            $ret .= "\n";
+            $lines[] = '}';
+            $lines[] = '';
         }
 
-        $ret .= '    /**' . "\n";
+        $lines[] = '    /**';
 
         if ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType()) {
-            $ret .= '     * @param array $arguments Arguments to pass down to the ParentFormConstructor method' . "\n";
-            $ret .= '     * ' . "\n";
+            $lines[] = ' * @param array $arguments Arguments to pass down to the ParentFormConstructor method';
+            $lines[] = ' * ';
         }
 
-        $ret .= '     * @return ' . $this->getFormClassType() . "\n";
-        $ret .= '     */' . "\n";
-        $ret .= '    public function get' . $this->getUpperName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')' . "\n";
-        $ret .= '    {' . "\n";
-        $ret .= '        return new ' . $this->getFormClassType() . '(\'' . $this->name . '\'';
+        $lines[] = ' * @return ' . $this->getFormClassType() . "\n";
+        $lines[] = ' */';
+        $lines[] = 'public function get' . $this->getUpperName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')';
+        $lines[] = '{';
+        $lines[] =     'return new ' . $this->getFormClassType() . '(';
+        $lines[] =         '\'' . $this->name . '\'';
 
         $properties = [];
 
-        $properties[] = '            [\'id\' => \'' . $formName . '_' . $this->name . '\']';
-        $properties[] = '            [\'renderEngine\' => \'twig\']';
+        $properties[] = '[\'id\' => \'' . $formName . '_' . $this->name . '\']';
+        $properties[] = '[\'renderEngine\' => \'twig\']';
 
         if(!$this->autoIncrement) {
-            if(!$this->null && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {
-                $properties[] = '            [\'required\' => \'' . $this->getRequiredMessage() . '\']';
+            if(!$this->getNull() && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {
+                $properties[] = '[\'required\' => \'' . $this->getRequiredMessage() . '\']';
             }
 
             if (!is_null($this->minSize)) {
                 if ($this->size != $this->minSize) {
-                    $properties[] = '            [\'minSize\' => ' . $this->minSize . ']';
-                    $properties[] = '            [\'minSizeMessage\' => \'' . $this->getMinMessage() . '\']';
+                    $properties[] = '[\'minSize\' => ' . $this->minSize . ']';
+                    $properties[] = '[\'minSizeMessage\' => \'' . $this->getMinMessage() . '\']';
                 } else {
-                    $properties[] = '            [\'exactSize\' => ' . $this->size . ']';
-                    $properties[] = '            [\'exactSize\' => \'' . $this->getExactMessage() . '\']';
+                    $properties[] = '[\'exactSize\' => ' . $this->size . ']';
+                    $properties[] = '[\'exactSize\' => \'' . $this->getExactMessage() . '\']';
                 }
             }
 
-            if ( (is_null($this->minSize) && !is_null($this->size)) || $this->size != $this->minSize) {
-                $properties[] = '            [\'maxSize\' => ' . $this->size . ']';
-                $properties[] = '            [\'maxSizeMessage\' => \'' . $this->getMaxMessage() . '\']';
+            if ( (null === $this->minSize && null !== $this->size) || $this->size !== $this->minSize) {
+                $properties[] = '[\'maxSize\' => ' . $this->size . ']';
+                $properties[] = '[\'maxSizeMessage\' => \'' . $this->getMaxMessage() . '\']';
             }
 
-            if ($this->getFormClassType() === 'Entity' && null !== $this->getForeignEntity()) {
-                if ($this->getForeign() == 'ManyToMany') {
-                    $properties[] = '            [\'symfonyMultiple\' => true] // ' . $this->getForeign();
-                } elseif ($this->getForeign() == 'ManyToOne') {
-                    $properties[] = '            [\'symfonyMultiple\' => false] // ' . $this->getForeign();
+            if ('Entity' === $this->getFormClassType() && null !== $this->getForeignEntity()) {
+                if ('ManyToMany' === $this->getForeign()) {
+                    $properties[] = '[\'symfonyMultiple\' => true] // ' . $this->getForeign();
+                } elseif ('ManyToOne' === $this->getForeign()) {
+                    $properties[] = '[\'symfonyMultiple\' => false] // ' . $this->getForeign();
                 }
             }
 
-            // Is already done on the type collection by default
-            //if ($this->getFormClassType() === 'Collection') {
-            //    $properties[] = '                [\'symfonyByReference\' => false]';
-            //}
-
-            if (null !== $this->min) {
-                $properties[] = '        [\'min\' => ' . $this->min . ']';
+            if (null !== $this->getMin()) {
+                $properties[] = '[\'min\' => ' . $this->getMin() . ']';
             }
 
-            if (null !== $this->max) {
-                $properties[] = '        [\'max\' => ' . $this->max . ']';
+            if (null !== $this->getMax()) {
+                $properties[] = '[\'max\' => ' . $this->getMax() . ']';
             }
         }
 
         if (count($properties) > 0) {
+            $lines[count($lines) - 1] .= ',';
+
             switch ($this->getFormClassType()) {
                 case 'Entity':
-                    $ret .= ', \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),' . "\n";
+                    $lines[] = '\'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
+                    $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
                     break;
                 case 'Collection':
-                    $ret .= ', $this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),' . "\n";
+                    $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
                     break;
                 default:
-                    $ret .= ', null,' . "\n";
+                    $lines[] = 'null,';
                     break;
             }
 
-            $ret .= implode(',' . "\n", $properties);
-            $ret .= "\n";
-            $ret .= '        ';
+            for ($i = 0; $i < count($properties) - 1; $i++) {
+                $properties[$i] .= ',';
+            }
+
+            $lines = array_merge($lines, $properties);
+
+            $lines[] = '';
         }
 
-        $ret .= ');' . "\n";
-        $ret .= '    }' . "\n";
+        $lines[] =     ');';
+        $lines[] = '}';
 
-
-        return $ret;
+        return $lines;
     }
 
     public function getSetterName()
