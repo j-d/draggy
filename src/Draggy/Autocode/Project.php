@@ -1183,7 +1183,7 @@ class Project extends ProjectBase
         $twigReadName = $twigReadTemplate->getFilename();
 
         if ($entity->getCrudRead()) {
-            return new File($twigReadPath, $twigReadNamePhp, $twigReadTemplate->render());
+            return new File($twigReadPath, $twigReadName, $twigReadTemplate->render());
         } else {
             $fileCollection = new FileCollection();
 
@@ -1207,7 +1207,7 @@ class Project extends ProjectBase
         $twigUpdateName = $twigUpdateTemplate->getFilename();
 
         if ($entity->getCrudUpdate()) {
-            return new File($twigUpdatePath, $twigUpdateNamePhp, $twigUpdateTemplate->render());
+            return new File($twigUpdatePath, $twigUpdateName, $twigUpdateTemplate->render());
         } else {
             $fileCollection = new FileCollection();
 

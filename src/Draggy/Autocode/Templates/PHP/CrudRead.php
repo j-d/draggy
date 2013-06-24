@@ -52,7 +52,7 @@ class CrudRead extends CrudReadBase
      */
     public function getFilename()
     {
-        return 'list' . $this->getEntity()->getName() . '.html.twig';
+        return 'list' . $this->getEntity()->getName() . '.html.twig.php';
     }
 
     public function render()

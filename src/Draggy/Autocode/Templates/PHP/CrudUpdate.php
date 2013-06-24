@@ -52,7 +52,7 @@ class CrudUpdate extends CrudUpdateBase
      */
     public function getFilename()
     {
-        return 'edit' . $this->getEntity()->getName() . '.html.twig';
+        return 'edit' . $this->getEntity()->getName() . '.html.twig.php';
     }
 
     public function render()
