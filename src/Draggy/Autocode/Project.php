@@ -947,20 +947,11 @@ class Project extends ProjectBase
     {
         $fileCollection = new FileCollection();
 
-        $entityPath = $path;
-
-        if ($this->getFramework() == 'Symfony2') {
-            $entityPath .= 'Entity/';
-        }
-
-        $basePath = $entityPath;
-
-        if ($this->base) {
-            $basePath .= 'Base/';
-        }
-
         $entityTemplate     = $this->getEntityTemplate()->setEntity($entity);
         $entityBaseTemplate = $this->getEntityBaseTemplate()->setEntity($entity);
+
+        $entityPath = $path . $entityTemplate->getPath();
+        $basePath   = $path . $entityBaseTemplate->getPath();
 
         $entityName     = $entityTemplate->getFilename();
         $entityBaseName = $entityBaseTemplate->getFilename();
@@ -1013,7 +1004,7 @@ class Project extends ProjectBase
     {
         $repositoryTemplate = $this->getRepositoryTemplate()->setEntity($entity);
 
-        $repositoryPath = $path . 'Entity/';
+        $repositoryPath = $path . $repositoryTemplate->getPath();
         $repositoryName = $repositoryTemplate->getFilename();
 
         if ($entity->getHasRepository()) {
@@ -1034,8 +1025,8 @@ class Project extends ProjectBase
         $formTemplate     = $this->getFormTemplate()->setEntity($entity);
         $formBaseTemplate = $this->getFormBaseTemplate()->setEntity($entity);
 
-        $formPath     = $path . 'Form/';
-        $formBasePath = $formPath . 'Base/';
+        $formPath     = $path . $formTemplate->getPath();
+        $formBasePath = $path . $formBaseTemplate->getPath();
 
         $formName     = $formTemplate->getFilename();
         $formBaseName = $formBaseTemplate->getFilename();
@@ -1066,7 +1057,7 @@ class Project extends ProjectBase
     {
         $controllerTemplate = $this->getControllerTemplate()->setEntity($entity);
 
-        $controllerPath = $path . 'Controller/';
+        $controllerPath = $path . $controllerTemplate->getPath();
         $controllerName = $controllerTemplate->getFilename();
 
         if ($entity->getHasController()) {
@@ -1086,7 +1077,7 @@ class Project extends ProjectBase
     {
         $fixturesTemplate = $this->getFixturesTemplate()->setEntity($entity);
 
-        $fixturesPath = $path . 'DataFixtures/ORM/';
+        $fixturesPath = $path . $fixturesTemplate->getPath();
         $fixturesName = $fixturesTemplate->getFilename();
 
         if ($entity->getHasFixtures()) {
@@ -1106,7 +1097,7 @@ class Project extends ProjectBase
     {
         $routesTemplate = $this->getRoutesTemplate()->setEntity($entity);
 
-        $routesPath = $path . 'Resources/config/';
+        $routesPath = $path . $routesTemplate->getPath();
         $routesName = $routesTemplate->getFilename();
 
         if ($entity->getHasRoutes()) {
@@ -1126,7 +1117,7 @@ class Project extends ProjectBase
     {
         $routesRoutingTemplate = $this->getRoutesRoutingTemplate();
 
-        $routesRoutingPath = $path . 'Resources/config/';
+        $routesRoutingPath = $path . $routesRoutingTemplate->getPath();
         $routesRoutingName = $routesRoutingTemplate->getFilename();
 
         $routesArray = [];
@@ -1164,7 +1155,7 @@ class Project extends ProjectBase
     {
         $twigCreateTemplate = $this->getCrudCreateTwigTemplate()->setEntity($entity);
 
-        $twigCreatePath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigCreatePath = $path . $twigCreateTemplate->getPath();
         $twigCreateName = $twigCreateTemplate->getFilename();
 
         if ($entity->getCrudCreate()) {
@@ -1188,7 +1179,7 @@ class Project extends ProjectBase
     {
         $twigReadTemplate = $this->getCrudReadTwigTemplate()->setEntity($entity);
 
-        $twigReadPath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigReadPath = $path . $twigReadTemplate->getPath();
         $twigReadName = $twigReadTemplate->getFilename();
 
         if ($entity->getCrudRead()) {
@@ -1212,7 +1203,7 @@ class Project extends ProjectBase
     {
         $twigUpdateTemplate = $this->getCrudUpdateTwigTemplate()->setEntity($entity);
 
-        $twigUpdatePath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigUpdatePath = $path . $twigUpdateTemplate->getPath();
         $twigUpdateName = $twigUpdateTemplate->getFilename();
 
         if ($entity->getCrudUpdate()) {
@@ -1236,7 +1227,7 @@ class Project extends ProjectBase
     {
         $interfaceTemplate = $this->getInterfaceTemplate()->setEntity($entity);
 
-        $interfacePath = $path . 'Interfaces/';
+        $interfacePath = $path . $interfaceTemplate->getPath();
         $interfaceName = $interfaceTemplate->getFilename();
 
         return new File($interfacePath, $interfaceName, $interfaceTemplate->render());
@@ -1252,7 +1243,7 @@ class Project extends ProjectBase
     {
         $traitTemplate = $this->getTraitTemplate()->setEntity($entity);
 
-        $traitPath     = $path . 'Traits/';
+        $traitPath     = $path . $traitTemplate->getPath();
         $traitName     = $traitTemplate->getFilename();
 
         return new File($traitPath, $traitName, $traitTemplate->render());

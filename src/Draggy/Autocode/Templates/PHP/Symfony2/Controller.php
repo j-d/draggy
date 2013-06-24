@@ -42,6 +42,14 @@ class Controller extends ControllerBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Controller/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'Controller.php';

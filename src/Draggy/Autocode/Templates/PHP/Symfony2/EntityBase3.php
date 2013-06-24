@@ -39,6 +39,16 @@ class EntityBase3 extends EntityBase3Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getPath()
+    {
+        return $this->getEntity()->getProject()->getBase()
+            ? 'Entity/Base/'
+            : 'Entity/';
+    }
+
     public function getFilenameLine()
     {
         return '// ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . '.php';

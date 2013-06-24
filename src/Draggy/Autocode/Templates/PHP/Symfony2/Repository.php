@@ -42,6 +42,14 @@ class Repository extends RepositoryBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Entity/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'Repository.php';

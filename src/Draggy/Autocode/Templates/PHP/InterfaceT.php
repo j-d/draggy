@@ -42,6 +42,14 @@ class InterfaceT extends InterfaceTBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Interfaces/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'Interface.php';

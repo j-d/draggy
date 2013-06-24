@@ -42,6 +42,14 @@ class CrudUpdate extends CrudUpdateBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Resources/views/' . $this->getEntity()->getName() . '/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return 'edit' . $this->getEntity()->getName() . '.html.twig';

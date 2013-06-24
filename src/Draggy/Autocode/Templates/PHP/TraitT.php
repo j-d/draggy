@@ -44,6 +44,14 @@ class TraitT extends TraitTBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Traits/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'Trait.php';

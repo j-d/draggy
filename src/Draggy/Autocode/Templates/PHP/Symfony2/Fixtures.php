@@ -42,6 +42,14 @@ class Fixtures extends FixturesBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'DataFixtures/ORM/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'Fixtures.php';

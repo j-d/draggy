@@ -42,6 +42,14 @@ class Form extends FormBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Form/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'Type.php';

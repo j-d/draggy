@@ -42,6 +42,14 @@ class Routes extends RoutesBase
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Resources/config/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return 'auto_' . $this->getEntity()->getLowerName() . '.yml';

@@ -44,6 +44,14 @@ class Entity1 extends Entity1Base
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return '/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getNameBase() . '.php';

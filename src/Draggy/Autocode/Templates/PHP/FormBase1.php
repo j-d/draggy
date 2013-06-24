@@ -42,6 +42,14 @@ class FormBase1 extends FormBase1Base
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return 'Form/Base/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . 'TypeBase.php';

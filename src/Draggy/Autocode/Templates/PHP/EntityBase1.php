@@ -42,6 +42,16 @@ class EntityBase1 extends EntityBase1Base
     /**
      * {@inheritDoc}
      */
+    public function getPath()
+    {
+        return $this->getEntity()->getProject()->getBase()
+            ? 'Base/'
+            : '/';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFilename()
     {
         return $this->getEntity()->getName() . '.php';

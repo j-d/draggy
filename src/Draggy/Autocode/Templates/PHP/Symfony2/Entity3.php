@@ -40,6 +40,14 @@ class Entity3 extends Entity3Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getPath()
+    {
+        return 'Entity/';
+    }
+
     public function getAttributeDocumentationLinesAssertPart(PHPAttribute $attribute)
     {
         $lines = [];
