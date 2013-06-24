@@ -43,6 +43,14 @@ class PHPEntity extends PHPEntityBase
     {
         return $this->attributes;
     }
+
+    /**
+     * @return PHPAttribute[]
+     */
+    public function getFormAttributes()
+    {
+        return parent::getFormAttributes();
+    }
     // </user-additions>
     // </editor-fold>
 

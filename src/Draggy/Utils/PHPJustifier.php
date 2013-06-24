@@ -239,7 +239,12 @@ class PHPJustifier extends AbstractJustifier
     {
         $line = $this->lines[$lineNumber];
 
-        if (1 === substr_count($line, ' => ')) {
+        if (
+            1 === substr_count($line, ' => ') &&
+            !$this->isStartBracesBlock($lineNumber) &&
+            !$this->isStartSquaredBracketsBlock($lineNumber) &&
+            !$this->isStartBracketsBlock($lineNumber)
+        ) {
             return true;
         }
 
@@ -287,7 +292,11 @@ class PHPJustifier extends AbstractJustifier
     {
         $line = $this->lines[$lineNumber];
 
-        if ('$' === substr($line, 0, 1) && ';' === substr($line, -1) && 1 === substr_count($line, ' = ')) {
+        if (
+            ('$' === substr($line, 0, 1) || '//$' === substr($line, 0, 3)) &&
+            ';' === substr($line, -1) &&
+            1 === substr_count($line, ' = ')
+        ) {
             return true;
         }
 

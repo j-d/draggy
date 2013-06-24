@@ -74,35 +74,8 @@ class Form extends FormBase
     {
         $lines = [];
         
-        $lines[] = 'use Common\\Html\\FormItem;';
         $lines[] = 'use Symfony\\Component\\Form\\FormBuilderInterface;';
         $lines[] = 'use ' . $this->getEntity()->getNamespace() . '\\Form\\Base\\' . $this->getEntity()->getName() . 'TypeBase;';
-
-        $useEntity = false;
-
-        foreach ($this->getEntity()->getFormAttributes() as $attr) {
-            if (null !== $attr->getForeign()) {
-                $useEntity = true;
-                break;
-            }
-        }
-
-        if ($useEntity) {
-            $lines[] = '// use Common\\Html\\Entity;';
-        }
-
-        $useCollection = false;
-
-        foreach ($this->getEntity()->getFormAttributes() as $attr) {
-            if ('Collection' === $attr->getFormClassType()) {
-                $useCollection = true;
-                break;
-            }
-        }
-
-        if ($useCollection) {
-            $lines[] = '// use Common\\Html\\Collection;';
-        }
 
         $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
         
@@ -161,7 +134,7 @@ class Form extends FormBase
         $constructorLines = [];
 
         foreach ($this->getEntity()->getFormAttributes() as $attr) {
-            if ($attr->getFormClassType() !== 'Collection') {
+            if ('Collection' !== $attr->getFormClassType()) {
                 $constructorLines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
             } else {
                 $someCollections = true;

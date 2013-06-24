@@ -77,19 +77,6 @@ class FormBase1 extends FormBase1Base
         $lines[] = 'use Symfony\\Component\\Form\\AbstractType;';
         $lines[] = 'use Symfony\\Component\\Form\\FormBuilderInterface;';
         $lines[] = 'use Symfony\\Component\\OptionsResolver\\OptionsResolverInterface;';
-        $lines[] = '';
-        $lines[] = 'use Common\\Html\\FormItem;';
-
-        $usesIncluded = [];
-
-        foreach ($this->getEntity()->getFormAttributes() as $attr) {
-            $type = $attr->getFormClassType();
-
-            if (!isset($usesIncluded[$type])) {
-                $lines[] = 'use Common\\Html\\' . $type . ';';
-                $usesIncluded[$type] = true;
-            }
-        }
 
         $useTypes = [];
 
@@ -100,6 +87,7 @@ class FormBase1 extends FormBase1Base
         }
 
         if (count($useTypes) > 0) {
+            $lines[] = '';
             $lines[] = implode("\n", array_keys($useTypes));
         }
 
@@ -111,121 +99,242 @@ class FormBase1 extends FormBase1Base
         return strtolower(str_replace('\\', '_', substr($this->getEntity()->getNamespace(), 0, substr($this->getEntity()->getNamespace(), -6) == 'Bundle' ? -6 : null)) . '_' . $this->getEntity()->getName());
     }
 
+    public function getFieldsAttributeLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @var array Form fields';
+        $lines[] = ' */';
+        $lines[] = 'protected $fields = [];';
+
+        return $lines;
+    }
+
+    public function getFieldsAttributeGetterLines()
+    {
+        $lines = [];
+
+        $lines[] = 'public function getFields()';
+        $lines[] = '{';
+        $lines[] =     'return $this->fields;';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getDefaultOptionsDataClassAttributeLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @var string';
+        $lines[] = ' */';
+        $lines[] = 'protected $defaultOptionsDataClass = \'' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . '\';';
+
+        return $lines;
+    }
+
+    public function getDefaultOptionsDataClassSetterLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @param string $defaultOptionsDataClass';
+        $lines[] = ' */';
+        $lines[] = 'public function setDefaultOptionsDataClass($defaultOptionsDataClass)';
+        $lines[] = '{';
+        $lines[] =     '$this->defaultOptionsDataClass = $defaultOptionsDataClass;';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getDefaultOptionsDataClassGetterLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @return string';
+        $lines[] = ' */';
+        $lines[] = 'public function getDefaultOptionsDataClass()';
+        $lines[] = '{';
+        $lines[] =     'return $this->defaultOptionsDataClass;';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getDefaultOptionsEmptyDataAttributeLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @var null|string|callable';
+        $lines[] = ' */';
+        $lines[] = 'protected $defaultOptionsEmptyData;';
+
+        return $lines;
+    }
+
+    public function getDefaultOptionsEmptyDataSetterLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @param null|string|callable $defaultOptionsEmptyData';
+        $lines[] = ' */';
+        $lines[] = 'public function setDefaultOptionsEmptyData($defaultOptionsEmptyData)';
+        $lines[] = '{';
+        $lines[] =     '$this->defaultOptionsEmptyData = $defaultOptionsEmptyData;';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getDefaultOptionsEmptyDataGetterLines()
+    {
+        $lines = [];
+
+        $lines[] = '/**';
+        $lines[] = ' * @return null|string|callable';
+        $lines[] = ' */';
+        $lines[] = 'public function getDefaultOptionsEmptyData()';
+        $lines[] = '{';
+        $lines[] =     'return $this->defaultOptionsEmptyData;';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getAttributeFieldGetterLines()
+    {
+        $lines = [];
+
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
+            $lines = array_merge($lines, $attr->getFormClassLinesBasic($this->getFormName())); // TODO: Allow injection of PHPAttribute Template
+
+            $lines[] = '';
+        }
+
+        unset($lines[count($lines) - 1]);
+
+        return $lines;
+    }
+
+    public function getBuildFormLines()
+    {
+        $lines = [];
+
+        $lines[] = 'public function buildForm(FormBuilderInterface $builder, array $options)';
+        $lines[] = '{';
+        $lines[] =     'foreach ($this->fields as $field) {';
+        $lines[] =         '$builder->add(';
+        $lines[] =             '$field[\'name\'],';
+        $lines[] =             '$field[\'type\'],';
+        $lines[] =             '$field[\'options\']';
+        $lines[] =         ');';
+        $lines[] =     '}';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getSetDefaultOptionsLines()
+    {
+        $lines = [];
+
+        $lines[] = 'public function setDefaultOptions(OptionsResolverInterface $resolver)';
+        $lines[] = '{';
+        $lines[] =     '$defaults = [';
+        $lines[] =         '\'data_class\' => $this->getDefaultOptionsDataClass()';
+        $lines[] =     '];';
+        $lines[] = '';
+        $lines[] =     'if (null !== $this->getDefaultOptionsEmptyData()) {';
+        $lines[] =         '$defaults[\'empty_data\'] = $this->getDefaultOptionsEmptyData();';
+        $lines[] =     '}';
+        $lines[] = '';
+        $lines[] =     '$resolver->setDefaults($defaults);';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getGetNameLines()
+    {
+        $lines = [];
+
+        $lines[] = 'public function getName()';
+        $lines[] = '{';
+        $lines[] =     'return \'' . $this->getFormName() . '\';';
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function getTypeBaseBodyPartLines()
+    {
+        $lines = [];
+
+        // Attributes
+        $lines = array_merge($lines, $this->getFieldsAttributeLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getDefaultOptionsDataClassAttributeLines());
+
+        $lines[] = '';
+
+        // Methods
+        $lines = array_merge($lines, $this->getDefaultOptionsEmptyDataAttributeLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getAttributeFieldGetterLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getDefaultOptionsDataClassSetterLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getDefaultOptionsDataClassGetterLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getDefaultOptionsEmptyDataSetterLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getDefaultOptionsEmptyDataGetterLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getBuildFormLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getSetDefaultOptionsLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getGetNameLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getFieldsAttributeGetterLines());
+
+        return $lines;
+    }
+
     public function getFileLines()
     {
         $lines[] = 'abstract class ' . $this->getEntity()->getName() . 'TypeBase extends AbstractType';
         $lines[] = '{';
-        $lines[] = '    /**';
-        $lines[] = '     * @var FormItem[] Form fields';
-        $lines[] = '     */';
-        $lines[] = '    protected $fields = [];';
-        $lines[] = '    ';
 
-        $lines[] = '    /**';
-        $lines[] = '     * @var string';
-        $lines[] = '     */';
-        $lines[] = '    protected $defaultOptionsDataClass = \'' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . '\';';
-        $lines[] = '    ';
-        $lines[] = '    /**';
-        $lines[] = '     * @var null|string|callable';
-        $lines[] = '     */';
-        $lines[] = '    protected $defaultOptionsEmptyData;';
-        $lines[] = '    ';
+        $lines = array_merge($lines, $this->getTypeBaseBodyPartLines());
 
-        foreach ($this->getEntity()->getFormAttributes() as $attr) {
-            $lines = array_merge($lines, $attr->getFormClassLines($this->getFormName()));
-            $lines[] = '';
-        }
-
-        $lines[] = '    /**';
-        $lines[] = '     * @param string $defaultOptionsDataClass';
-        $lines[] = '     */';
-        $lines[] = '    public function setDefaultOptionsDataClass($defaultOptionsDataClass)';
-        $lines[] = '    {';
-        $lines[] = '        $this->defaultOptionsDataClass = $defaultOptionsDataClass;';
-        $lines[] = '    }';
-        $lines[] = '    ';
-
-        $lines[] = '    /**';
-        $lines[] = '     * @return string';
-        $lines[] = '     */';
-        $lines[] = '    public function getDefaultOptionsDataClass()';
-        $lines[] = '    {';
-        $lines[] = '        return $this->defaultOptionsDataClass;';
-        $lines[] = '    }';
-        $lines[] = '    ';
-
-        $lines[] = '    /**';
-        $lines[] = '     * @param null|string|callable $defaultOptionsEmptyData';
-        $lines[] = '     */';
-        $lines[] = '    public function setDefaultOptionsEmptyData($defaultOptionsEmptyData)';
-        $lines[] = '    {';
-        $lines[] = '        $this->defaultOptionsEmptyData = $defaultOptionsEmptyData;';
-        $lines[] = '    }';
-        $lines[] = '    ';
-
-        $lines[] = '    /**';
-        $lines[] = '     * @return null|string|callable';
-        $lines[] = '     */';
-        $lines[] = '    public function getDefaultOptionsEmptyData()';
-        $lines[] = '    {';
-        $lines[] = '        return $this->defaultOptionsEmptyData;';
-        $lines[] = '    }';
-        $lines[] = '    ';
-
-        $lines[] = '    /**';
-        $lines[] = '     * Shortcut for adding FormItems';
-        $lines[] = '     *';
-        $lines[] = '     * @param FormBuilderInterface $builder';
-        $lines[] = '     * @param FormItem             $item';
-        $lines[] = '     * @param ...                  $furtherItems';
-        $lines[] = '     */';
-        $lines[] = '    protected function addFormItem(FormBuilderInterface $builder, FormItem $item)';
-        $lines[] = '    {';
-        $lines[] = '        for ($i = 1; $i < func_num_args(); $i++) {';
-        $lines[] = '            $builder->add(';
-        $lines[] = '                func_get_arg($i)->getName(),';
-        $lines[] = '                func_get_arg($i)->getSymfonyType(),';
-        $lines[] = '                func_get_arg($i)->getSymfonyOptions()';
-        $lines[] = '            );';
-        $lines[] = '        }';
-        $lines[] = '    }';
-        $lines[] = '    ';
-        $lines[] = '    public function buildForm(FormBuilderInterface $builder, array $options)';
-        $lines[] = '    {';
-        $lines[] = '        foreach ($this->fields as $field) {';
-        $lines[] = '            $builder->add(';
-        $lines[] = '                $field->getName(),';
-        $lines[] = '                $field->getSymfonyType(),';
-        $lines[] = '                $field->getSymfonyOptions()';
-        $lines[] = '            );';
-        $lines[] = '        }';
-        $lines[] = '    }';
-        $lines[] = '    ';
-        $lines[] = '    public function setDefaultOptions(OptionsResolverInterface $resolver)';
-        $lines[] = '    {';
-        $lines[] = '        $defaults = [';
-        $lines[] = '            \'data_class\' => $this->getDefaultOptionsDataClass()';
-        $lines[] = '        ];';
-        $lines[] = '        ';
-        $lines[] = '        if (null !== $this->getDefaultOptionsEmptyData()) {';
-        $lines[] = '            $defaults[\'empty_data\'] = $this->getDefaultOptionsEmptyData();';
-        $lines[] = '        }';
-        $lines[] = '        ';
-        $lines[] = '        $resolver->setDefaults($defaults);';
-        $lines[] = '    }';
-        $lines[] = '    ';
-        $lines[] = '    public function getName()';
-        $lines[] = '    {';
-        $lines[] = '        return \'' . $this->getFormName() . '\';';
-        $lines[] = '    }';
-        $lines[] = '    ';
-        $lines[] = '    public function getFields()';
-        $lines[] = '    {';
-        $lines[] = '        return $this->fields;';
-        $lines[] = '    }';
         $lines[] = '}';
-        $lines[] = '';
 
         return $lines;
     }
