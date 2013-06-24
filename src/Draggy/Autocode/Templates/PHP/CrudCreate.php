@@ -39,60 +39,60 @@ class CrudCreate extends CrudCreateBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+
+
     public function render()
     {
-        $entity = $this->getEntity();
+        $lines = [];
 
-        $file = '';
+        $lines[] = '<?php';
+        $lines[] = '';
+        $lines[] = $this->getUserAdditions('template');
+        $lines[] = 'use Common\Twig as T;';
+        $lines[] = 'use Common\Html\FormItem;';
+        $lines[] = 'use Common\Html\Table;';
+        $lines[] = 'use Common\Html\Cell;';
+        $lines[] = 'use Common\Html\Submit;';
+        $lines[] = '';
+        $lines[] = '/** @var $type FormItem[] */';
+        $lines[] = '$type = $GLOBALS[\'twigPhpParameters\'];';
+        $lines[] = '';
+        $lines[] = 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\';';
+        $lines[] = '';
+        $lines[] = 'echo    \'{% block title %}\', \'Add ' . $this->getEntity()->getName() . '\', \' {% endblock %}\';';
+        $lines[] = '';
+        $lines[] = '$form = new Table();';
+        $lines[] = '';
+        $lines[] = '$form';
+        $lines[] = '    ->setRenderEngineParameter(\'form\')';
+        $lines[] = '    ->addCss(\'noBorder\');';
+        $lines[] = '';
+        $lines[] = '$form';
+        $lines[] = '    ->addRows(';
 
-        $file .= '<?php' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '// <user-additions' . ' part="template">' . PHP_EOL;
-        $file .= 'use Common\Twig as T;' . PHP_EOL;
-        $file .= 'use Common\Html\FormItem;' . PHP_EOL;
-        $file .= 'use Common\Html\Table;' . PHP_EOL;
-        $file .= 'use Common\Html\Cell;' . PHP_EOL;
-        $file .= 'use Common\Html\Submit;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '/** @var $type FormItem[] */' . PHP_EOL;
-        $file .= '$type = $GLOBALS[\'twigPhpParameters\'];' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% block title %}\', \'Add ' . $entity->getName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$form = new Table();' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$form' . PHP_EOL;
-        $file .= '    ->setRenderEngineParameter(\'form\')' . PHP_EOL;
-        $file .= '    ->addCss(\'noBorder\');' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$form' . PHP_EOL;
-        $file .= '    ->addRows(' . PHP_EOL;
-
-        foreach ($entity->getFormAttributes() as $attr) {
-            $file .= '        [' . PHP_EOL;
-            $file .= '            $type[\'' . $attr->getName() . '\']->toTwigLabel(),' . PHP_EOL;
-            $file .= '            $type[\'' . $attr->getName() . '\']' . PHP_EOL;
-            $file .= '        ],' . PHP_EOL;
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
+            $lines[] = '        [';
+            $lines[] = '            $type[\'' . $attr->getName() . '\']->toTwigLabel(),';
+            $lines[] = '            $type[\'' . $attr->getName() . '\']';
+            $lines[] = '        ],';
         }
 
-        $file .= '        new Cell(new Submit(\'#submit\',\'Add\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')' . PHP_EOL;
-        $file .= '    );' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% block body %}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            \'{{ parent() }}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            T::form(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\',\'form\'),' . PHP_EOL;
-        $file .= '                T::formErrors(\'form\'),' . PHP_EOL;
-        $file .= '                    $form->toHtml(),' . PHP_EOL;
-        $file .= '                T::formRest(\'form\'),' . PHP_EOL;
-        $file .= '            T::_FORM,' . PHP_EOL;
-        $file .= '        \'{% endblock %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    T::blockJS($form->getJS());' . PHP_EOL;
-        $file .= '// </user-additions' . '>' . PHP_EOL;
+        $lines[] = '        new Cell(new Submit(\'#submit\',\'Add\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')';
+        $lines[] = '    );';
+        $lines[] = '';
+        $lines[] = 'echo    \'{% block body %}\', PHP_EOL,';
+        $lines[] = '            \'{{ parent() }}\', PHP_EOL,';
+        $lines[] = '            T::form(\'' . strtolower($this->getEntity()->getModuleNoBundle()) . '_' . strtolower($this->getEntity()->getName()) . '_add\',\'form\'),';
+        $lines[] = '                T::formErrors(\'form\'),';
+        $lines[] = '                    $form->toHtml(),';
+        $lines[] = '                T::formRest(\'form\'),';
+        $lines[] = '            T::_FORM,';
+        $lines[] = '        \'{% endblock %}\';';
+        $lines[] = '';
+        $lines[] = 'echo    T::blockJS($form->getJS());';
+        $lines[] = $this->getEndUserAdditions();
 
-        return $file;
+        return implode("\n", $lines);
     }
     // </user-additions>
     // </editor-fold>

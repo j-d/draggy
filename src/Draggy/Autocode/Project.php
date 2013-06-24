@@ -369,7 +369,7 @@ class Project extends ProjectBase
 
         if (!empty($autocodeTemplateProperties['crud-create-twig'])) {
             if (!class_exists($autocodeTemplateProperties['crud-create-twig'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['crud-create-twig']));
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeTemplateProperties['crud-create-twig']));
             }
 
             $this->setCrudCreateTwigTemplate(new $autocodeTemplateProperties['crud-create-twig']);
@@ -377,7 +377,7 @@ class Project extends ProjectBase
 
         if (!empty($autocodeTemplateProperties['crud-read-twig'])) {
             if (!class_exists($autocodeTemplateProperties['crud-read-twig'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['crud-read-twig']));
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeTemplateProperties['crud-read-twig']));
             }
 
             $this->setCrudReadTwigTemplate(new $autocodeTemplateProperties['crud-read-twig']);
@@ -385,7 +385,7 @@ class Project extends ProjectBase
 
         if (!empty($autocodeTemplateProperties['crud-update-twig'])) {
             if (!class_exists($autocodeTemplateProperties['crud-update-twig'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['crud-update-twig']));
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeTemplateProperties['crud-update-twig']));
             }
 
             $this->setCrudUpdateTwigTemplate(new $autocodeTemplateProperties['crud-update-twig']);
