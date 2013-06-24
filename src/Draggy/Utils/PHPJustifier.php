@@ -10,6 +10,13 @@ class PHPJustifier extends AbstractJustifier
     protected $lineTypes;
 
     /**
+     * Validation passes
+     *
+     * @var array
+     */
+    protected $passes;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($indentationCharacter = ' ', $indentationCount = 4, $eol = PHP_EOL)
@@ -42,6 +49,7 @@ class PHPJustifier extends AbstractJustifier
         $this->outputLines = $this->lines;
 
         $this->identifyLines();
+        $this->initJustificationRules();
     }
 
     protected function identifyLines()
@@ -67,6 +75,27 @@ class PHPJustifier extends AbstractJustifier
             $this->lineTypes['atParam'][$lineNumber]     = $this->isAtParamLine($lineNumber);
             $this->lineTypes['special'][$lineNumber]     = $this->isSpecialIndentationBlock($lineNumber);
         }
+    }
+
+    protected function findEndStandardBlock($name, $lineNumber, $maxLine, $targetStepsInto = 0)
+    {
+        $stepsInto = 0;
+
+        for ($i = $lineNumber; $i <= $maxLine; $i++) {
+            if ($this->lineTypes['end' . $name][$i] && $i > $lineNumber) {
+                $stepsInto--;
+
+                if ($stepsInto === $targetStepsInto) {
+                    return $i;
+                }
+            }
+
+            if ($this->lineTypes['start' . $name][$i]) {
+                $stepsInto++;
+            }
+        }
+
+        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber);
     }
 
     protected function isStartCommentBlock($lineNumber)
@@ -124,27 +153,6 @@ class PHPJustifier extends AbstractJustifier
         return false;
     }
 
-    protected function findEndBracesBlock($lineNumber, $maxLine, $targetStepsInto = 0)
-    {
-        $stepsInto = 0;
-
-        for ($i = $lineNumber; $i <= $maxLine; $i++) {
-            if ($this->lineTypes['endBraces'][$i] && $i > $lineNumber) {
-                $stepsInto--;
-
-                if ($stepsInto === $targetStepsInto) {
-                    return $i;
-                }
-            }
-
-            if ($this->lineTypes['startBraces'][$i]) {
-                $stepsInto++;
-            }
-        }
-
-        throw new \RuntimeException('Cannot find the end of the braces block starting in line ' . $lineNumber);
-    }
-
     protected function isStartBracketsBlock($lineNumber)
     {
         $line = $this->lines[$lineNumber];
@@ -173,27 +181,6 @@ class PHPJustifier extends AbstractJustifier
         }
 
         return false;
-    }
-
-    protected function findEndBracketsBlock($lineNumber, $maxLine, $targetStepsInto = 0)
-    {
-        $stepsInto = 0;
-
-        for ($i = $lineNumber; $i <= $maxLine; $i++) {
-            if ($this->lineTypes['endBrackets'][$i] && $i > $lineNumber) {
-                $stepsInto--;
-
-                if ($stepsInto === $targetStepsInto) {
-                    return $i;
-                }
-            }
-
-            if ($this->lineTypes['startBrackets'][$i]) {
-                $stepsInto++;
-            }
-        }
-
-        throw new \RuntimeException('Cannot find the end of the brackets block starting in line ' . $lineNumber);
     }
 
     protected function isStartSquaredBracketsBlock($lineNumber)
@@ -226,27 +213,6 @@ class PHPJustifier extends AbstractJustifier
         return false;
     }
 
-    protected function findEndSquaredBracketsBlock($lineNumber, $maxLine, $targetStepsInto = 0)
-    {
-        $stepsInto = 0;
-
-        for ($i = $lineNumber; $i <= $maxLine; $i++) {
-            if ($this->lineTypes['endSquaredBrackets'][$i] && $i > $lineNumber) {
-                $stepsInto--;
-
-                if ($stepsInto === $targetStepsInto) {
-                    return $i;
-                }
-            }
-
-            if ($this->lineTypes['startSquaredBrackets'][$i]) {
-                $stepsInto++;
-            }
-        }
-
-        throw new \RuntimeException('Cannot find the end of the squared brackets block starting in line ' . $lineNumber);
-    }
-
     protected function isStartCaseBlock($lineNumber)
     {
         $line = $this->lines[$lineNumber];
@@ -271,7 +237,7 @@ class PHPJustifier extends AbstractJustifier
 
     protected function findEndCaseBlock($lineNumber, $maxLine)
     {
-        $maxLine = $this->findEndBracesBlock($lineNumber, $maxLine, -1) - 1;
+        $maxLine = $this->findEndStandardBlock('Braces', $lineNumber, $maxLine, -1) - 1;
 
         for ($i = $lineNumber; $i <= $maxLine; $i++) {
             if ($this->lineTypes['endCase'][$i]) {
@@ -474,61 +440,96 @@ class PHPJustifier extends AbstractJustifier
         return false;
     }
 
-    public function blockIndent($startLine, $endLine)
+    public function addJustificationRule($pass, $rule)
     {
-        if ($endLine < $startLine) {
-            return;
-        }
+        $this->passes[$pass][] = $rule;
+    }
 
-        for ($i = $startLine; $i <= $endLine; $i++) {
+    public function initJustificationRules()
+    {
+        $this->addJustificationRule(1, function ($i, $endLine) {
             if ($this->isStartCommentBlock($i)) {
                 $this->indentCommentBlock($i, $this->findEndCommentBlock($i, $endLine));
             }
-        }
+        });
 
-        for ($i = $startLine; $i <= $endLine; $i++) {
+        $this->addJustificationRule(2, function ($i, $endLine) {
             if ($this->lineTypes['startBraces'][$i]) {
-                $this->indentLines($i + 1, $this->findEndBracesBlock($i, $endLine) - 1);
+                $this->indentLines($i + 1, $this->findEndStandardBlock('Braces', $i, $endLine) - 1);
             }
+        });
 
+        $this->addJustificationRule(2, function ($i, $endLine) {
             if ($this->lineTypes['startBrackets'][$i]) {
-                $this->indentLines($i + 1, $this->findEndBracketsBlock($i, $endLine) - 1);
+                $this->indentLines($i + 1, $this->findEndStandardBlock('Brackets', $i, $endLine) - 1);
             }
+        });
 
+        $this->addJustificationRule(2, function ($i, $endLine) {
             if ($this->lineTypes['startSquaredBrackets'][$i]) {
-                $this->indentLines($i + 1, $this->findEndSquaredBracketsBlock($i, $endLine) - 1);
+                $this->indentLines($i + 1, $this->findEndStandardBlock('SquaredBrackets', $i, $endLine) - 1);
             }
+        });
 
+        $this->addJustificationRule(2, function ($i, $endLine) {
             if ($this->lineTypes['startCase'][$i]) {
                 $this->indentLines($i + 1, $this->findEndCaseBlock($i, $endLine));
             }
+        });
 
+        $this->addJustificationRule(2, function ($i) {
             if ($this->lineTypes['special'][$i]) {
                 $this->indentLines($i, $i);
             }
+        });
 
-            if ($i > $startLine) {
+        $this->addJustificationRule(2, function ($i, $endLine) {
+            if ($i > 0) {
                 if ($this->lineTypes['arrow'][$i] && !$this->lineTypes['arrow'][$i - 1]) {
                     $this->indentLines($i, $this->findEndArrowsBlock($i, $endLine));
                 }
+            }
+        });
 
+        $this->addJustificationRule(2, function ($i, $endLine) {
+            if ($i > 0) {
                 if ($this->lineTypes['doubleArrow'][$i] && !$this->lineTypes['doubleArrow'][$i - 1]) {
                     $this->alignDoubleArrowLines($i, $this->findEndDoubleArrowBlock($i, $endLine));
                 }
+            }
+        });
 
+        $this->addJustificationRule(2, function ($i, $endLine) {
+            if ($i > 0) {
                 if ($this->lineTypes['assignment'][$i] && !$this->lineTypes['assignment'][$i - 1]) {
                     $this->alignAssignmentsLines($i, $this->findEndAssignmentsBlock($i, $endLine));
                 }
+            }
+        });
 
+        $this->addJustificationRule(2, function ($i, $endLine) {
+            if ($i > 0) {
                 if ($this->lineTypes['atParam'][$i] && !$this->lineTypes['atParam'][$i - 1]) {
                     $this->alignAtParamLines($i, $this->findEndAtParamBlock($i, $endLine));
                 }
             }
-        }
+        });
     }
 
     public function justify()
     {
-        $this->blockIndent(0, count($this->lines) - 1);
+        $endLine = count($this->lines) - 1;
+
+        if ($endLine < 0) {
+            return;
+        }
+
+        foreach ($this->passes as $pass) {
+            for ($i = 0; $i <= $endLine; $i++) {
+                foreach ($pass as $rule) {
+                    $rule($i, $endLine);
+                }
+            }
+        }
     }
 }
