@@ -83,7 +83,7 @@ Modify the `routing_dev.yml` file to add Draggy routes
 
 ```yml
 ... 
-DraggyBundle:
+_draggy:
     resource: "@DraggyBundle/Resources/config/routing.yml"
     prefix:   /_draggy/
 ```
