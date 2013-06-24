@@ -1,0 +1,25 @@
+{% extends 'MockBundle:Default:base.html.twig' %}
+
+{% block content %}
+    <header class="logo row-fluid">
+        {#<a href="{{ path('somePath') }}" title="someTitle"><img src="{{ asset('bundles/mock/images/someimage.png') }}" alt="someAlt" title="someTitle" width="200" height="200"/></a>#}
+        <h1 id="page-title">{% block pageTitle "" %}</h1>
+    </header>
+    <div class="row-fluid">
+        <nav class="navigation span2">
+            {% block navigation "" %}
+        </nav>
+        <section class="contents span10">
+            <div id="messages">
+                {% for message in app.session.flashbag.get('info') %}
+                    <div class="alert alert-info">{{ message }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>
+                {% endfor %}
+            </div>
+            {% block contents "" %}
+        </section>
+    </div>
+    <div class="row-fluid">
+        <footer>Draggy Mock template placeholder</footer>
+    </div>
+    {{ parent() }}
+{% endblock %}

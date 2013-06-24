@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        {% block head %}
+            <base href="{{ app.request.schemeAndHttpHost }}">
+            <title>{% block title %}Draggy Mock{% endblock %}</title>
+            {% block stylesheets %}
+                {#{% stylesheets debug=false filter='cssrewrite'#}
+                    {#'css/bootstrap.css'#}
+                    {#'css/bootstrap.responsive.css'#}
+                    {#'bundles/mock/css/source/css.css'#}
+                {#%}#}
+                    {#<link rel="stylesheet" type="text/css" href="{{ asset_url }}" media="all">#}
+                {#{% endstylesheets %}#}
+        {% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        {#{% javascripts debug=false#}
+            {#'bundles/common/js/source/modernizr.js'#}
+        {#%}#}
+        {#<script type="text/javascript" src="{{ asset_url }}"></script>#}
+        {#{% endjavascripts %}#}
+        {% endblock %}
+    </head>
+    <body>
+    {% block body %}
+        <div class="container-fluid">
+            {% block content "" %}
+        </div>
+        {% block javascripts %}
+            {#{% javascripts debug=false#}
+            {#'bundles/common/js/source/jquery.min.js'#}
+            {#'js/bootstrap.js'#}
+            {#'bundles/mock/js/source/jquery.infinitescroll.js'#}
+            {#'bundles/common/js/source/jquery-ui-1.8.18.min.js'#}
+            {#'js/jquery.chosen.js'#}
+            {#%}#}
+            {#<script type="text/javascript" src="{{ asset_url }}"></script>#}
+            {#{% endjavascripts %}#}
+        {% endblock %}
+        <script type="text/javascript">
+            {% block js "" %}
+        </script>
+    {% endblock %}
+    </body>
+</html>
