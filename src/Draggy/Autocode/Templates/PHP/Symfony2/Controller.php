@@ -65,13 +65,18 @@ class Controller extends ControllerBase
         return 'namespace ' . $this->getEntity()->getNamespace() . '\\Controller;';
     }
 
+    public function getUseLineControllerPart()
+    {
+        return 'use Symfony\Bundle\FrameworkBundle\Controller\Controller;';
+    }
+
     public function getUseLinesMandatoryPart()
     {
         $lines = [];
 
         $entity = $this->getEntity();
 
-        $lines[] = 'use Common\Symfony\Controller;';
+        $lines[] = $this->getUseLineControllerPart();
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\Request;';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\Response;';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\RedirectResponse;';
@@ -80,18 +85,15 @@ class Controller extends ControllerBase
         $lines[] = '// use Doctrine\\Common\\Collections\\ArrayCollection;';
         $lines[] = '';
 
-        if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
-            $lines[] = '// use use Common\\Html\\FormItemArray;';
-            $lines[] = '';
-        }
-
         $lines[] = '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';';
 
-        if ($entity->getHasRepository())
+        if ($entity->getHasRepository()) {
             $lines[] = '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;';
+        }
 
-        if ($entity->getHasForm())
+        if ($entity->getHasForm()) {
             $lines[] = '// use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;';
+        }
 
         foreach ($entity->getAttributes() as $attr) {
             if (null !== $attr->getForeignEntity()) {
@@ -117,7 +119,6 @@ class Controller extends ControllerBase
         }
 
         if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
-            $lines[] = 'use Common\\Html\\FormItemArray;';
             $lines[] = 'use Symfony\\Component\\HttpFoundation\\Request;';
             $lines[] = 'use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;';
         }
@@ -168,7 +169,7 @@ class Controller extends ControllerBase
 
         $lines[] = 'public function xxxAction(Request $request)';
         $lines[] = '{';
-        $lines[] =     '$em = $this->getManager();';
+        $lines[] =     '$em = $this->getDoctrine()->Manager();';
         $lines[] =     '$xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();';
         $lines[] = '';
 
@@ -217,10 +218,10 @@ class Controller extends ControllerBase
             $lines[] = '$form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');';
             $lines[] = '';
             $lines[] = 'if ($request->isMethod(\'POST\')) {';
-            $lines[] =     '$form->bind($request);';
+            $lines[] =     '$form->submit($request->request->get($form->getName()));';
             $lines[] = '';
             $lines[] =     'if ($form->isValid()) {';
-            $lines[] =         '$em = $this->getManager();';
+            $lines[] =         '$em = $this->getDoctrine()->Manager();';
             $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
             $lines[] =         '$em->flush();';
             $lines[] = '';
@@ -273,7 +274,7 @@ class Controller extends ControllerBase
             $lines[] = '// <user-additions' . ' part="listAction">';
             $lines[] = 'public function listAction()';
             $lines[] = '{';
-            $lines[] =     '$em = $this->getManager();';
+            $lines[] =     '$em = $this->getDoctrine()->Manager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
             $lines[] =     '$' . $entity->getPluralLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findBy([], [\'' . $entity->getPrimaryAttribute()->getName() . '\' => \'ASC\']);';
@@ -287,6 +288,21 @@ class Controller extends ControllerBase
             $lines[] = '}';
             $lines[] = '// </user-additions' . '>';
         }
+
+        return $lines;
+    }
+
+    public function getControllerAddActionLinesReturnPart()
+    {
+        $lines = [];
+
+        $lines[] = 'return $this->render(';
+        $lines[] =     '\'' . $this->getEntity()->getModule() . ':' . $this->getEntity()->getName() . ':add' . $this->getEntity()->getName() . '.html.twig\',';
+        $lines[] =     '[';
+        $lines[] =         '\'form\' => $form->createView(),';
+        $lines[] =     '],';
+        $lines[] =     'null';
+        $lines[] = ');';
 
         return $lines;
     }
@@ -311,10 +327,10 @@ class Controller extends ControllerBase
                 $lines[] = '$form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');';
                 $lines[] = '';
                 $lines[] = 'if ($request->isMethod(\'POST\')) {';
-                $lines[] =     '$form->bind($request);';
+                $lines[] =     '$form->submit($request->request->get($form->getName()));';
                 $lines[] = '';
                 $lines[] =     'if ($form->isValid()) {';
-                $lines[] =         '$em = $this->getManager();';
+                $lines[] =         '$em = $this->getDoctrine()->Manager();';
                 $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
                 $lines[] =         '$em->flush();';
                 $lines[] = '';
@@ -326,17 +342,24 @@ class Controller extends ControllerBase
                 $lines[] = '';
             }
 
-            $lines[] =     'return $this->render(';
-            $lines[] =         '\'' . $entity->getModule() . ':' . $entity->getName() . ':add' . $entity->getName() . '.html.twig\',';
-            $lines[] =         '[';
-            $lines[] =             '\'form\' => $form->createView(),';
-            $lines[] =         '],';
-            $lines[] =         'null,';
-            $lines[] =         'new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())';
-            $lines[] =     ');';
+            $lines = array_merge($lines, $this->getControllerAddActionLinesReturnPart());
+
             $lines[] = '}';
             $lines[] = '// </user-additions' . '>';
         }
+
+        return $lines;
+    }
+
+    public function getControllerEditActionLinesReturnPart()
+    {
+        $lines[] = 'return $this->render(';
+        $lines[] =     '\'' . $this->getEntity()->getModule() . ':' . $this->getEntity()->getName() . ':edit' . $this->getEntity()->getName() . '.html.twig\',';
+        $lines[] =     '[';
+        $lines[] =         '\'form\' => $form->createView(),';
+        $lines[] =         '\'id\' => $id,';
+        $lines[] =     ']';
+        $lines[] = ');';
 
         return $lines;
     }
@@ -355,7 +378,7 @@ class Controller extends ControllerBase
             $lines[] = '{';
 
             if ($entity->getHasForm()) {
-                $lines[] = '$em = $this->getManager();';
+                $lines[] = '$em = $this->getDoctrine()->Manager();';
                 $lines[] = '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
                 $lines[] = '';
                 $lines[] = '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
@@ -369,7 +392,7 @@ class Controller extends ControllerBase
                 $lines[] = '$form = $this->createForm($' . $entity->getLowerName() . 'Type, $' . $entity->getLowerName() . ');';
                 $lines[] = '';
                 $lines[] = 'if ($request->isMethod(\'POST\')) {';
-                $lines[] =     '$form->bind($request);';
+                $lines[] =     '$form->submit($request->request->get($form->getName()));';
                 $lines[] = '';
                 $lines[] =     'if ($form->isValid()) {';
                 $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
@@ -383,15 +406,8 @@ class Controller extends ControllerBase
                 $lines[] = '';
             }
 
-            $lines[] =     'return $this->render(';
-            $lines[] =         '\'' . $entity->getModule() . ':' . $entity->getName() . ':edit' . $entity->getName() . '.html.twig\',';
-            $lines[] =         '[';
-            $lines[] =             '\'form\' => $form->createView(),';
-            $lines[] =             '\'id\' => $id,';
-            $lines[] =         '],';
-            $lines[] =         'null,';
-            $lines[] =         'new FormItemArray($' . $entity->getLowerName() . 'Type->getFields())';
-            $lines[] =     ');';
+            $lines = array_merge($lines, $this->getControllerEditActionLinesReturnPart());
+
             $lines[] = '}';
             $lines[] = '// </user-additions' . '>';
         }
@@ -411,7 +427,7 @@ class Controller extends ControllerBase
             $lines[] = '// <user-additions' . ' part="deleteAction">';
             $lines[] = 'public function deleteAction(Request $request, $id)';
             $lines[] = '{';
-            $lines[] =     '$em = $this->getManager();';
+            $lines[] =     '$em = $this->getDoctrine()->Manager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
             $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
