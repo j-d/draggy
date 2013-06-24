@@ -169,7 +169,7 @@ class Controller extends ControllerBase
 
         $lines[] = 'public function xxxAction(Request $request)';
         $lines[] = '{';
-        $lines[] =     '$em = $this->getDoctrine()->Manager();';
+        $lines[] =     '$em = $this->getDoctrine()->getManager();';
         $lines[] =     '$xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();';
         $lines[] = '';
 
@@ -221,7 +221,7 @@ class Controller extends ControllerBase
             $lines[] =     '$form->submit($request->request->get($form->getName()));';
             $lines[] = '';
             $lines[] =     'if ($form->isValid()) {';
-            $lines[] =         '$em = $this->getDoctrine()->Manager();';
+            $lines[] =         '$em = $this->getDoctrine()->getManager();';
             $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
             $lines[] =         '$em->flush();';
             $lines[] = '';
@@ -274,7 +274,7 @@ class Controller extends ControllerBase
             $lines[] = '// <user-additions' . ' part="listAction">';
             $lines[] = 'public function listAction()';
             $lines[] = '{';
-            $lines[] =     '$em = $this->getDoctrine()->Manager();';
+            $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
             $lines[] =     '$' . $entity->getPluralLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findBy([], [\'' . $entity->getPrimaryAttribute()->getName() . '\' => \'ASC\']);';
@@ -330,7 +330,7 @@ class Controller extends ControllerBase
                 $lines[] =     '$form->submit($request->request->get($form->getName()));';
                 $lines[] = '';
                 $lines[] =     'if ($form->isValid()) {';
-                $lines[] =         '$em = $this->getDoctrine()->Manager();';
+                $lines[] =         '$em = $this->getDoctrine()->getManager();';
                 $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
                 $lines[] =         '$em->flush();';
                 $lines[] = '';
@@ -378,7 +378,7 @@ class Controller extends ControllerBase
             $lines[] = '{';
 
             if ($entity->getHasForm()) {
-                $lines[] = '$em = $this->getDoctrine()->Manager();';
+                $lines[] = '$em = $this->getDoctrine()->getManager();';
                 $lines[] = '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
                 $lines[] = '';
                 $lines[] = '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
@@ -427,7 +427,7 @@ class Controller extends ControllerBase
             $lines[] = '// <user-additions' . ' part="deleteAction">';
             $lines[] = 'public function deleteAction(Request $request, $id)';
             $lines[] = '{';
-            $lines[] =     '$em = $this->getDoctrine()->Manager();';
+            $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
             $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
