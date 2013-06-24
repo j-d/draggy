@@ -39,6 +39,14 @@ class Controller extends ControllerBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return $this->getEntity()->getName() . 'Controller.php';
+    }
+
     public function getFilenameLine()
     {
         return '// ' . $this->getEntity()->getNamespace() . '\\Controller\\' . $this->getEntity()->getName() . 'Controller.php';

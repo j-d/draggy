@@ -39,6 +39,14 @@ class FormBase1 extends FormBase1Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return $this->getEntity()->getName() . 'TypeBase.php';
+    }
+
     public function render()
     {
         $entity = $this->getEntity();

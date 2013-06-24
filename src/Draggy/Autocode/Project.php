@@ -959,12 +959,18 @@ class Project extends ProjectBase
             $basePath .= 'Base/';
         }
 
-        $fileCollection->add(new File($basePath, $entity->getNameBase() . '.php', $this->getEntityTemplate()->setEntity($entity)->render()));
+        $entityTemplate     = $this->getEntityTemplate()->setEntity($entity);
+        $entityBaseTemplate = $this->getEntityBaseTemplate()->setEntity($entity);
+
+        $entityName     = $entityTemplate->getFilename();
+        $entityBaseName = $entityBaseTemplate->getFilename();
+
+        $fileCollection->add(new File($basePath, $entityName, $entityTemplate->render()));
 
         if ($this->getBase()) {
-            $fileCollection->add(new File($entityPath, $entity->getName() . '.php', $this->getEntityBaseTemplate()->setEntity($entity)->render()));
+            $fileCollection->add(new File($entityPath, $entityBaseName, $entityBaseTemplate->render()));
         } else {
-            $fileCollection->add(new NoFile($entityPath, $entity->getName() . '.php', sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($entityPath, $entityBaseName, sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
         }
 
         return $fileCollection;
@@ -1005,11 +1011,13 @@ class Project extends ProjectBase
      */
     private function getRepositoryFile(Entity $entity, $path)
     {
+        $repositoryTemplate = $this->getRepositoryTemplate()->setEntity($entity);
+
         $repositoryPath = $path . 'Entity/';
-        $repositoryName = $entity->getName() . 'Repository.php';
+        $repositoryName = $repositoryTemplate->getFilename();
 
         if ($entity->getHasRepository()) {
-            return new File($repositoryPath, $repositoryName, $this->getRepositoryTemplate()->setEntity($entity)->render());
+            return new File($repositoryPath, $repositoryName, $repositoryTemplate->render());
         } else {
             return new NoFile($repositoryPath, $repositoryName, sprintf('The entity \'%s\' is not marked to have a repository.', $entity->getFullyQualifiedName()));
         }
@@ -1023,35 +1031,23 @@ class Project extends ProjectBase
      */
     private function getFormFile($entity, $path)
     {
+        $formTemplate     = $this->getFormTemplate()->setEntity($entity);
+        $formBaseTemplate = $this->getFormBaseTemplate()->setEntity($entity);
+
         $formPath     = $path . 'Form/';
         $formBasePath = $formPath . 'Base/';
 
-        $formName     = $entity->getName() . 'Type.php';
-        $formBaseName = $entity->getName() . 'TypeBase.php';
+        $formName     = $formTemplate->getFilename();
+        $formBaseName = $formBaseTemplate->getFilename();
 
         $fileCollection = new FileCollection();
 
         if ($entity->getHasForm()) {
             // Form
-            $fileCollection->add(new File($formPath, $formName, $this->getFormTemplate()->setEntity($entity)->render()));
+            $fileCollection->add(new File($formPath, $formName, $formTemplate->render()));
 
             // Form Base
-            $fileCollection->add(new File($formBasePath, $formBaseName, $this->getFormBaseTemplate()->setEntity($entity)->render()));
-
-            // Form Dependencies TODO: WHAT IS THIS DOING?!
-            /*foreach ($entity->getAttributes() as $attr) {
-                if(!is_null($attr->getForeignEntity()) && $attr->getOwnerSide()) {
-                    $componentName = $entity->getName() . '_' . $attr->getForeignEntity()->getName();
-
-                    $targetComponentBaseFile = $formBasePath . $componentName . 'TypeBase.php';
-
-                    $this->saveFile($targetComponentBaseFile,'Component Base Form', $attr->getForeignEntity()->toFormComponentBaseFile($entity));
-
-                    $targetComponentFile = $path . $componentName . 'Type.php';
-
-                    $this->saveFile($targetComponentFile,'Component Form', $attr->getForeignEntity()->toFormComponentFile($entity));
-                }
-            }*/
+            $fileCollection->add(new File($formBasePath, $formBaseName, $formBaseTemplate->render()));
         } else {
             $fileCollection->add(new NoFile($formPath, $formName, sprintf('The entity \'%s\' is not marked to have a form.', $entity->getFullyQualifiedName())));
             $fileCollection->add(new NoFile($formBasePath, $formBaseName, sprintf('The entity \'%s\' is not marked to have a form.', $entity->getFullyQualifiedName())));
@@ -1068,11 +1064,13 @@ class Project extends ProjectBase
      */
     private function getControllerFile($entity, $path)
     {
+        $controllerTemplate = $this->getControllerTemplate()->setEntity($entity);
+
         $controllerPath = $path . 'Controller/';
-        $controllerName = $entity->getName() . 'Controller.php';
+        $controllerName = $controllerTemplate->getFilename();
 
         if ($entity->getHasController()) {
-            return new File($controllerPath, $controllerName, $this->getControllerTemplate()->setEntity($entity)->render());
+            return new File($controllerPath, $controllerName, $controllerTemplate->render());
         } else {
             return new NoFile($controllerPath, $controllerName, sprintf('The entity \'%s\' is not marked to have a controller.', $entity->getFullyQualifiedName()));
         }
@@ -1086,11 +1084,13 @@ class Project extends ProjectBase
      */
     private function getFixturesFile($entity, $path)
     {
+        $fixturesTemplate = $this->getFixturesTemplate()->setEntity($entity);
+
         $fixturesPath = $path . 'DataFixtures/ORM/';
-        $fixturesName = $entity->getName() . 'Fixtures.php';
+        $fixturesName = $fixturesTemplate->getFilename();
 
         if ($entity->getHasFixtures()) {
-            return new File($fixturesPath, $fixturesName, $this->getFixturesTemplate()->setEntity($entity)->render());
+            return new File($fixturesPath, $fixturesName, $fixturesTemplate->render());
         } else {
             return new NoFile($fixturesPath, $fixturesName, sprintf('The entity \'%s\'is not marked to have fixtures.', $entity->getFullyQualifiedName()));
         }
@@ -1104,11 +1104,13 @@ class Project extends ProjectBase
      */
     private function getRoutesFile($entity, $path)
     {
+        $routesTemplate = $this->getRoutesTemplate()->setEntity($entity);
+
         $routesPath = $path . 'Resources/config/';
-        $routesName = 'auto_' . $entity->getLowerName() . '.yml';
+        $routesName = $routesTemplate->getFilename();
 
         if ($entity->getHasRoutes()) {
-            return new File($routesPath, $routesName, $this->getRoutesTemplate()->setEntity($entity)->render());
+            return new File($routesPath, $routesName, $routesTemplate->render());
         } else {
             return new NoFile($routesPath, $routesName, sprintf('The entity \'%s\' is not marked to have CRUD.', $entity->getFullyQualifiedName()));
         }
@@ -1122,15 +1124,19 @@ class Project extends ProjectBase
      */
     private function getRoutesRoutingFile($module, $path)
     {
+        $routesRoutingTemplate = $this->getRoutesRoutingTemplate();
+
         $routesRoutingPath = $path . 'Resources/config/';
-        $routesRoutingName = 'routing.yml';
+        $routesRoutingName = $routesRoutingTemplate->getFilename();
 
         $routesArray = [];
 
         /** @var Entity $entity */
         foreach ($this->moduleEntities[$module] as $entity) {
             if ($entity->getHasRoutes()) {
-                $routesArray[] = $this->getRoutesRoutingTemplate()->setEntity($entity)->render();
+                $routesRoutingTemplate->setEntity($entity);
+
+                $routesArray[] = $routesRoutingTemplate->render();
             }
         }
 
@@ -1156,17 +1162,17 @@ class Project extends ProjectBase
      */
     private function getTwigCreateFile($entity, $path)
     {
-        $twigCreatePath    = $path . 'Resources/views/' . $entity->getName() . '/';
-        $twigCreateName    = 'add' . $entity->getName() . '.html.twig';
-        $twigCreateNamePhp = 'add' . $entity->getName() . '.html.twig.php';
+        $twigCreateTemplate = $this->getCrudCreateTwigTemplate()->setEntity($entity);
+
+        $twigCreatePath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigCreateName = $twigCreateTemplate->getFilename();
 
         if ($entity->getCrudCreate()) {
-            return new File($twigCreatePath, $twigCreateNamePhp, $this->getCrudCreateTwigTemplate()->setEntity($entity)->render());
+            return new File($twigCreatePath, $twigCreateName, $twigCreateTemplate->render());
         } else {
             $fileCollection = new FileCollection();
 
             $fileCollection->add(new NoFile($twigCreatePath, $twigCreateName, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName())));
-            $fileCollection->add(new NoFile($twigCreatePath, $twigCreateNamePhp, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName())));
 
             return $fileCollection;
         }
@@ -1180,17 +1186,17 @@ class Project extends ProjectBase
      */
     private function getTwigReadFile($entity, $path)
     {
-        $twigReadPath    = $path . 'Resources/views/' . $entity->getName() . '/';
-        $twigReadName    = 'list' . $entity->getName() . '.html.twig';
-        $twigReadNamePhp = 'list' . $entity->getName() . '.html.twig.php';
+        $twigReadTemplate = $this->getCrudReadTwigTemplate()->setEntity($entity);
+
+        $twigReadPath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigReadName = $twigReadTemplate->getFilename();
 
         if ($entity->getCrudRead()) {
-            return new File($twigReadPath, $twigReadNamePhp, $this->getCrudReadTwigTemplate()->setEntity($entity)->render());
+            return new File($twigReadPath, $twigReadNamePhp, $twigReadTemplate->render());
         } else {
             $fileCollection = new FileCollection();
 
             $fileCollection->add(new NoFile($twigReadPath, $twigReadName, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName())));
-            $fileCollection->add(new NoFile($twigReadPath, $twigReadNamePhp, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName())));
 
             return $fileCollection;
         }
@@ -1204,17 +1210,17 @@ class Project extends ProjectBase
      */
     private function getTwigUpdateFile($entity, $path)
     {
-        $twigUpdatePath    = $path . 'Resources/views/' . $entity->getName() . '/';
-        $twigUpdateName    = 'edit' . $entity->getName() . '.html.twig';
-        $twigUpdateNamePhp = 'edit' . $entity->getName() . '.html.twig.php';
+        $twigUpdateTemplate = $this->getCrudUpdateTwigTemplate()->setEntity($entity);
+
+        $twigUpdatePath = $path . 'Resources/views/' . $entity->getName() . '/';
+        $twigUpdateName = $twigUpdateTemplate->getFilename();
 
         if ($entity->getCrudUpdate()) {
-            return new File($twigUpdatePath, $twigUpdateNamePhp, $this->getCrudUpdateTwigTemplate()->setEntity($entity)->render());
+            return new File($twigUpdatePath, $twigUpdateNamePhp, $twigUpdateTemplate->render());
         } else {
             $fileCollection = new FileCollection();
 
             $fileCollection->add(new NoFile($twigUpdatePath, $twigUpdateName, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName())));
-            $fileCollection->add(new NoFile($twigUpdatePath, $twigUpdateNamePhp, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName())));
 
             return $fileCollection;
         }
@@ -1228,10 +1234,12 @@ class Project extends ProjectBase
      */
     private function getInterfaceFile($entity, $path)
     {
-        $interfacePath = $path . 'Interfaces/';
-        $interfaceName = $entity->getName() . 'Interface.php';
+        $interfaceTemplate = $this->getInterfaceTemplate()->setEntity($entity);
 
-        return new File($interfacePath, $interfaceName, $this->getInterfaceTemplate()->setEntity($entity)->render());
+        $interfacePath = $path . 'Interfaces/';
+        $interfaceName = $interfaceTemplate->getFilename();
+
+        return new File($interfacePath, $interfaceName, $interfaceTemplate->render());
     }
 
     /**
@@ -1242,10 +1250,12 @@ class Project extends ProjectBase
      */
     private function getTraitFile($entity, $path)
     {
-        $traitPath     = $path . 'Traits/';
-        $traitName     = $entity->getName() . 'Trait.php';
+        $traitTemplate = $this->getTraitTemplate()->setEntity($entity);
 
-        return new File($traitPath, $traitName, $this->getTraitTemplate()->setEntity($entity)->render());
+        $traitPath     = $path . 'Traits/';
+        $traitName     = $traitTemplate->getFilename();
+
+        return new File($traitPath, $traitName, $traitTemplate->render());
     }
 
     public function supportsReverseAttributes()

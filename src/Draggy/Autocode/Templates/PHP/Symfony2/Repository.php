@@ -39,6 +39,14 @@ class Repository extends RepositoryBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return $this->getEntity()->getName() . 'Repository.php';
+    }
+
     public function getFilenameLine()
     {
         return '// ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . 'Repository.php';

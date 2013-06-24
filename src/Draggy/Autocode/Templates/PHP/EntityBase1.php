@@ -39,6 +39,14 @@ class EntityBase1 extends EntityBase1Base
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return $this->getEntity()->getName() . '.php';
+    }
+
     public function getFilenameLine()
     {
         return '// ' . $this->getEntity()->getNamespace() . '\\' . $this->getEntity()->getName() . '.php';

@@ -193,6 +193,11 @@ abstract class Template extends TemplateBase
     abstract public function getUserAdditions($part);
 
     abstract public function getEndUserAdditions();
+
+    /**
+     * @return string
+     */
+    abstract public function getFilename();
     // </user-additions>
     // </editor-fold>
 }

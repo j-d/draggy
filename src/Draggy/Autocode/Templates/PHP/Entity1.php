@@ -42,6 +42,14 @@ class Entity1 extends Entity1Base
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return $this->getEntity()->getNameBase() . '.php';
+    }
+
+    /**
      * Returns a condition to check for the $attribute type. It allows for one or more types, including objects.
      *
      * @param PHPAttribute $attribute

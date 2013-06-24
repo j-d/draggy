@@ -39,6 +39,14 @@ class Routes extends RoutesBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return 'auto_' . $this->getEntity()->getLowerName() . '.yml';
+    }
+
     public function getCrudReadPart()
     {
         $entity = $this->getEntity();

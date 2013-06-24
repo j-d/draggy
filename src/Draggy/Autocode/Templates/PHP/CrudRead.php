@@ -39,6 +39,14 @@ class CrudRead extends CrudReadBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return 'list' . $this->getEntity()->getName() . '.html.twig';
+    }
+
     public function render()
     {
         $entity = $this->getEntity();

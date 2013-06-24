@@ -39,7 +39,13 @@ class CrudCreate extends CrudCreateBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return 'add' . $this->getEntity()->getName() . '.html.twig';
+    }
 
     public function render()
     {
@@ -47,7 +53,7 @@ class CrudCreate extends CrudCreateBase
 
         $lines[] = '<?php';
         $lines[] = '';
-        $lines[] = $this->getUserAdditions('template');
+        //$lines[] = $this->getUserAdditions('template');
         $lines[] = 'use Common\Twig as T;';
         $lines[] = 'use Common\Html\FormItem;';
         $lines[] = 'use Common\Html\Table;';
@@ -90,7 +96,7 @@ class CrudCreate extends CrudCreateBase
         $lines[] = '        \'{% endblock %}\';';
         $lines[] = '';
         $lines[] = 'echo    T::blockJS($form->getJS());';
-        $lines[] = $this->getEndUserAdditions();
+        //$lines[] = $this->getEndUserAdditions();
 
         return implode("\n", $lines);
     }

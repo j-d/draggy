@@ -39,6 +39,14 @@ class Fixtures extends FixturesBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilename()
+    {
+        return $this->getEntity()->getName() . 'Fixtures.php';
+    }
+
     public function getFilenameLine()
     {
         return '// ' . $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM\\' . $this->getEntity()->getName() . 'Fixtures.php';
