@@ -90,7 +90,6 @@ class Form extends FormBase
                     $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
                     $lines[] =     '->setSymfonyExpanded(true)';
 
-
                     $line = '->setSymfonyProperty(\'xxx\'); // Possible choices: ';
 
                     foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {

@@ -62,13 +62,6 @@ class CrudCreate extends CrudCreateBase
         return 'Add ' . $this->getEntity()->getName();
     }
 
-    public function getNavigationLines()
-    {
-        $lines = [];
-
-        return $lines;
-    }
-
     public function getContentLines()
     {
         $lines = [];
@@ -83,7 +76,7 @@ class CrudCreate extends CrudCreateBase
     {
         $lines = [];
 
-        $lines[] = $this->getUserAdditions('template');
+        //$lines[] = $this->getUserAdditions('template');
         $lines[] = $this->getExtendLine();
         $lines[] = '';
         $lines[] = $this->getBlockTitleLine();
@@ -97,7 +90,7 @@ class CrudCreate extends CrudCreateBase
 
         $lines = array_merge($lines, $this->getBlockContentLines());
 
-        $lines[] = $this->getEndUserAdditions();
+        //$lines[] = $this->getEndUserAdditions();
 
         return $lines;
     }

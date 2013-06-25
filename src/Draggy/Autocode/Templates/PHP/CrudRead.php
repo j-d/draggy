@@ -42,107 +42,100 @@ class CrudRead extends CrudReadBase
     /**
      * {@inheritDoc}
      */
-    public function getPath()
-    {
-        return 'Resources/views/' . $this->getEntity()->getName() . '/';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getName()
     {
         return 'list' . $this->getEntity()->getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getFilename()
+    public function getExtendBundlePath()
     {
-        return $this->getName() . '.html.twig.php';
+        return 'MockBundle:Default:navigationPage.html.twig';
     }
 
-    public function render()
+    public function getTitleLinePart()
     {
-        $entity = $this->getEntity();
+        return '{{ parent() }} | List ' . $this->getEntity()->getName();
+    }
 
-        $file = '';
+    public function getPageTitleLinePart()
+    {
+        return 'List ' . $this->getEntity()->getName();
+    }
 
-        $file .= '<?php' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '// <user-additions' . ' part="template">' . PHP_EOL;
-        $file .= 'use Common\Twig as T;' . PHP_EOL;
-        $file .= 'use Common\Html\Table;' . PHP_EOL;
-        $file .= 'use Common\Html\Row;' . PHP_EOL;
-        $file .= 'use Common\Html\Cell;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% block title %}\', \'List ' . $entity->getPluralName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$table = new Table();' . PHP_EOL;
-        $file .= '$table' . PHP_EOL;
-        $file .= '    ->addHeadingRow(' . PHP_EOL;
+    public function getContentLines()
+    {
+        $lines = [];
 
-        foreach ($entity->getAttributes() as $attr) {
-            $file .= '        \'' . $attr->getUpperName() . '\',' . PHP_EOL;
-        }
+        $lines[] = '<table class="table table-hover table-bordered">';
+        $lines[] =     '<thead>';
+        $lines[] =         '<tr>';
 
-        $file .= '        \'Actions\'' . PHP_EOL;
-        $file .= '    );' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$tableRow = new Row(' . PHP_EOL;
-        $file .= '                $table,' . PHP_EOL;
-
-        foreach ($entity->getAttributes() as $attr) {
-            if ($attr->getPhpType() !== 'boolean') {
-                $file .= '                \'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() }}\',' . PHP_EOL;
-            }
-            else {
-                $file .= '                new Cell(\'{{ ' . $entity->getLowerName() . '.get' . $attr->getUpperName() . '() ? \\\'Y\\\' : \\\'\\\' }}\', \'center\'),' . PHP_EOL;
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if (null === $attr->getForeign()) {
+                $lines[] = '<th>' . $attr->getUpperName() . '</th>';
             }
         }
 
-        $file .= '                new Cell(' . PHP_EOL;
+        $lines[] =             '<th>Actions</th>';
+        $lines[] =         '</tr>';
+        $lines[] =     '</thead>';
 
-        $actionsArray = [];
+        $lines[] =     '<tbody>';
+        $lines[] =         '{% for ' . $this->getEntity()->getLowerName() . ' in ' . $this->getEntity()->getPluralLowerName() . ' %}';
+        $lines[] =             '<tr>';
 
-        if ($entity->getCrudUpdate()) {
-            $actionsArray[] = '                    T::a(\'Edit\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_edit\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
+        foreach ($this->getEntity()->getAttributes() as $attr) {
+            if (null === $attr->getForeign()) {
+                if ('boolean' === $attr->getType()) {
+                    $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() ? \'Y\' : \'\' }}</td>';
+                } else {
+                    $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() }}</td>';
+                }
+            }
         }
-        if ($entity->getCrudDelete()) {
-            $actionsArray[] = '                    T::a(\'Delete\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_delete\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
+
+        $lines[] =             '<td>';
+
+        if ($this->getEntity()->getCrudUpdate()) {
+            $lines[] = 'Edit';
+            //$actionsArray[] = 'T::a(\'Edit\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_edit\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
         }
 
-        $file .= implode(' . \' \' .' . PHP_EOL,$actionsArray) . PHP_EOL;
+        if ($this->getEntity()->getCrudDelete()) {
+            $lines[] = 'Delete';
+            //$actionsArray[] = 'T::a(\'Delete\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_delete\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
+        }
 
-        $file .= '                    ,\'center\'' . PHP_EOL;
-        $file .= '                )' . PHP_EOL;
-        $file .= '            );' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% block body %}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            \'{{ parent() }}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            \'{% if ' . $entity->getPluralLowerName() . ' is not empty %}\', PHP_EOL,' . PHP_EOL;
-        $file .= '                $table->toHtmlSections(' . PHP_EOL;
-        $file .= '                    true,' . PHP_EOL;
-        $file .= '                    true,' . PHP_EOL;
-        $file .= '                    \'{% for ' . $entity->getLowerName() . ' in ' . $entity->getPluralLowerName() . ' %}\' . PHP_EOL .' . PHP_EOL;
-        $file .= '                        $tableRow->toHtml() .' . PHP_EOL;
-        $file .= '                    \'{% endfor %}\' . PHP_EOL,' . PHP_EOL;
-        $file .= '                    true,' . PHP_EOL;
-        $file .= '                    true' . PHP_EOL;
-        $file .= '                ),' . PHP_EOL;
-        $file .= '            \'{% else %}\', PHP_EOL,' . PHP_EOL;
-        $file .= '                T::P, PHP_EOL,' . PHP_EOL;
-        $file .= '                    \'There are no ' . $entity->getPluralName() . ' at present.\', PHP_EOL,' . PHP_EOL;
-        $file .= '                T::_P,' . PHP_EOL;
-        $file .= '            \'{% endif %}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            T::a(\'Add  ' . $entity->getName() . '\',\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_add\'),' . PHP_EOL;
-        $file .= '        \'{% endblock %}\', PHP_EOL;' . PHP_EOL;
-        $file .= '// </user-additions' . '>' . PHP_EOL;
+        $lines[] =             '</td>';
+        $lines[] =             '</tr>';
+        $lines[] =         '{% endfor %}';
+        $lines[] =     '</tbody>';
+        $lines[] = '</table>';
 
-        return $file;
+        return $lines;
+    }
+
+    public function getFileLines()
+    {
+        $lines = [];
+
+        //$lines[] = $this->getUserAdditions('template');
+        $lines[] = $this->getExtendLine();
+        $lines[] = '';
+        $lines[] = $this->getBlockTitleLine();
+        $lines[] = '';
+        $lines[] = $this->getBlockPageTitleLine();
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getBlockNavigationLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getBlockContentLines());
+
+        //$lines[] = $this->getEndUserAdditions();
+
+        return $lines;
     }
     // </user-additions>
     // </editor-fold>

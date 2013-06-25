@@ -602,28 +602,27 @@ class PHPAttribute extends PHPAttributeBase
 //            }
         }
 
-        if (count($properties) > 0) {
-//            switch ($this->getFormClassType()) {
-//                case 'Entity':
-//                    $lines[] = '\'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
-//                    $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
-//                    break;
-//                case 'Collection':
-//                    $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
-//                    break;
-//                default:
-//                    $lines[] = 'null,';
-//                    break;
-//            }
 
-            $lines[] = '\'options\' => [';
+//        switch ($this->getFormClassType()) {
+//            case 'Entity':
+//                $lines[] = '\'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
+//                $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+//                break;
+//            case 'Collection':
+//                $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+//                break;
+//            default:
+//                $lines[] = 'null,';
+//                break;
+//        }
 
-            $lines = array_merge($lines, $properties);
+        $lines[] = '\'options\' => [';
 
-            $lines[] = '\'error_bubbling\' => true';
+        $lines = array_merge($lines, $properties);
 
-            $lines[] = ']';
-        }
+        $lines[] = '\'error_bubbling\' => true';
+
+        $lines[] = ']';
 
         $lines[] =     '];';
         $lines[] = '}';

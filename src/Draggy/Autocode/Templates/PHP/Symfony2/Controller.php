@@ -82,7 +82,7 @@ class Controller extends ControllerBase
             $lines[] = 'use ' . $entity->getFullyQualifiedName() . ';';
         }
 
-        if ($entity->getCrudRead()) {
+        if ($entity->getCrudRead() && $entity->getHasRepository()) {
             $lines[] = 'use ' . $entity->getFullyQualifiedRepositoryName() . ';';
         }
 
@@ -96,10 +96,6 @@ class Controller extends ControllerBase
         $lines[] = '';
 
         $lines[] = '// use ' . $entity->getFullyQualifiedName() . ';';
-
-        if ($entity->getHasRepository()) {
-            $lines[] = '// use ' . $entity->getFullyQualifiedRepositoryName() . ';';
-        }
 
         foreach ($entity->getAttributes() as $attr) {
             if (null !== $attr->getForeignEntity()) {

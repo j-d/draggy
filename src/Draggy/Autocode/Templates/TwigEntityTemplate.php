@@ -93,7 +93,39 @@ abstract class TwigEntityTemplate extends EntityTemplate
 
     public function getNavigationLines()
     {
-        return [];
+        $lines = [];
+
+        $lines[] = '<ul class="nav nav-list">';
+        $lines[] =     '<li class="nav-header">' . $this->getEntity()->getPluralName() . '</li>';
+
+        if ($this->getEntity()->getCrudCreate()) {
+            $lines[] = '<li><a href="{{ path(\'' . $this->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getEntity()->getLowerName() . '</a></li>';
+        }
+
+        if ($this->getEntity()->getCrudRead()) {
+            $lines[] = '<li><a href="{{ path(\'' . $this->getEntity()->getListRoute() . '\') }}">View ' . $this->getEntity()->getPluralLowerName() . '</a></li>';
+        }
+
+        $otherEntityLines = [];
+
+        foreach ($this->getEntity()->getProject()->getEntities() as $entity) {
+            if ($entity !== $this->getEntity()) {
+                if ($entity->getCrudRead()) {
+                    $otherEntityLines[] = '<li><a href="{{ path(\'' . $entity->getListRoute() . '\') }}">' . $entity->getPluralName() . '</a></li>';
+                }
+            }
+        }
+
+        if (count($otherEntityLines) > 0) {
+            $lines[] = '<li class="divider"></li>';
+            $lines[] = '<li class="nav-header">Other</li>';
+
+            $lines = array_merge($lines, $otherEntityLines);
+        }
+
+        $lines[] = '</ul>';
+
+        return $lines;
     }
 
     public function getBlockNavigationLines()

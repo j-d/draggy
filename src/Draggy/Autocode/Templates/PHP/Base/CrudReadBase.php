@@ -19,11 +19,12 @@ namespace Draggy\Autocode\Templates\PHP\Base;
 use Draggy\Autocode\Templates\PHP\CrudRead;
 use Draggy\Autocode\Templates\PHPEntityTemplate;
 use Draggy\Autocode\Entity;
+use Draggy\Autocode\Templates\TwigEntityTemplate;
 
 /**
  * Draggy\Autocode\Templates\PHP\Entity\Base\CrudRead
  */
-abstract class CrudReadBase extends PHPEntityTemplate
+abstract class CrudReadBase extends TwigEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>
