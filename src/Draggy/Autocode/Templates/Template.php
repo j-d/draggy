@@ -202,11 +202,27 @@ abstract class Template extends TemplateBase
     /**
      * @return string
      */
+    abstract public function getName();
+
+    /**
+     * @return string
+     */
     abstract public function getFilename();
 
+    /**
+     * @return string
+     */
     public function getPathAndFilename()
     {
         return $this->getPath() . $this->getFilename();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullPathAndFilename()
+    {
+        return $this->getPathAndFilename();
     }
     // </user-additions>
     // </editor-fold>

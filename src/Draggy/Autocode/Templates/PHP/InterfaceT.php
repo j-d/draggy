@@ -50,9 +50,9 @@ class InterfaceT extends InterfaceTBase
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . 'Interface.php';
+        return $this->getEntity()->getName() . 'Interface';
     }
 
     public function render()

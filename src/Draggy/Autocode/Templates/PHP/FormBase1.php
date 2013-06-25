@@ -44,20 +44,15 @@ class FormBase1 extends FormBase1Base
      */
     public function getPath()
     {
-        return 'Form/Base/';
+        return 'Form/Type/Base/';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . 'TypeBase.php';
-    }
-
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\Form\\Base\\' . $this->getEntity()->getName() . 'TypeBase.php';
+        return $this->getEntity()->getName() . 'TypeBase';
     }
 
     public function getDescriptionCodeLines()
@@ -67,7 +62,7 @@ class FormBase1 extends FormBase1Base
 
     public function getNamespaceLine()
     {
-        return 'namespace ' . $this->getEntity()->getNamespace() . '\\Form\\Base;';
+        return 'namespace ' . $this->getFullNamespace() . ';';
     }
 
     public function getUseLines()

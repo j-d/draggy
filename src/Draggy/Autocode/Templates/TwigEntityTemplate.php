@@ -43,6 +43,14 @@ abstract class TwigEntityTemplate extends EntityTemplate
     /**
      * {@inheritDoc}
      */
+    public function getFilename()
+    {
+        return $this->getName() . '.html.twig';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPath()
     {
         return 'Resources/views/' . $this->getEntity()->getName() . '/';

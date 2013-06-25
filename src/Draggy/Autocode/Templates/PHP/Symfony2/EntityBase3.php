@@ -44,14 +44,7 @@ class EntityBase3 extends EntityBase3Base
      */
     public function getPath()
     {
-        return $this->getEntity()->getProject()->getBase()
-            ? 'Entity/Base/'
-            : 'Entity/';
-    }
-
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . '.php';
+        return 'Entity/' . parent::getPath();
     }
 
     public function getNamespaceLine()

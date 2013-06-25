@@ -324,6 +324,14 @@ class PHPAttribute extends PHPAttributeBase
     {
         return $this->getThisFunctionAssistant($this->getMultipleContainsName());
     }
+
+    /**
+     * @return PHPEntity
+     */
+    public function &getForeignEntity()
+    {
+        return parent::getForeignEntity();
+    }
     // </user-additions>
     // </editor-fold>
 

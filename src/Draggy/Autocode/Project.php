@@ -956,12 +956,12 @@ class Project extends ProjectBase
         $entityName     = $entityTemplate->getFilename();
         $entityBaseName = $entityBaseTemplate->getFilename();
 
-        $fileCollection->add(new File($basePath, $entityName, $entityTemplate->render()));
+        $fileCollection->add(new File($basePath, $entityBaseName, $entityBaseTemplate->render()));
 
         if ($this->getBase()) {
-            $fileCollection->add(new File($entityPath, $entityBaseName, $entityBaseTemplate->render()));
+            $fileCollection->add(new File($entityPath, $entityName, $entityTemplate->render()));
         } else {
-            $fileCollection->add(new NoFile($entityPath, $entityBaseName, sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($entityPath, $entityName, sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
         }
 
         return $fileCollection;

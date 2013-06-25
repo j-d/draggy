@@ -50,14 +50,9 @@ class Fixtures extends FixturesBase
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . 'Fixtures.php';
-    }
-
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\DataFixtures\\ORM\\' . $this->getEntity()->getName() . 'Fixtures.php';
+        return $this->getEntity()->getName() . 'Fixtures';
     }
 
     public function getDescriptionCodeLines()

@@ -104,6 +104,21 @@ class PHPEntity extends PHPEntityBase
     {
         return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_disable';
     }
+
+    public function getFullyQualifiedRepositoryName()
+    {
+        return $this->getProject()->getRepositoryTemplate()->getFullyQualifiedName();
+    }
+
+    public function getFullyQualifiedFormName()
+    {
+        return $this->getProject()->getFormTemplate()->getFullyQualifiedName();
+    }
+
+    public function getFullyQualifiedFormBaseName()
+    {
+        return $this->getProject()->getFormBaseTemplate()->getFullyQualifiedName();
+    }
     // </user-additions>
     // </editor-fold>
 }

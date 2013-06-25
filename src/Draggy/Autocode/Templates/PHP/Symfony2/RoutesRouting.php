@@ -47,12 +47,17 @@ class RoutesRouting extends RoutesRoutingBase
         return 'Resources/config/';
     }
 
+    public function getName()
+    {
+        return 'routing';
+    }
+
     /**
      * {@inheritDoc}
      */
     public function getFilename()
     {
-        return 'routing.yml';
+        return $this->getName() . '.yml';
     }
 
     public function render()

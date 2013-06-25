@@ -50,14 +50,9 @@ class Repository extends RepositoryBase
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . 'Repository.php';
-    }
-
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . 'Repository.php';
+        return $this->getEntity()->getName() . 'Repository';
     }
 
     public function getDescriptionCodeLines()

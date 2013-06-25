@@ -42,9 +42,9 @@ class CrudCreate extends CrudCreateBase
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return 'add' . $this->getEntity()->getName() . '.html.twig';
+        return 'add' . $this->getEntity()->getName();
     }
 
     public function getExtendBundlePath()

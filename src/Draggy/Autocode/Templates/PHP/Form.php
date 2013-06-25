@@ -44,20 +44,15 @@ class Form extends FormBase
      */
     public function getPath()
     {
-        return 'Form/';
+        return 'Form/Type/';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . 'Type.php';
-    }
-    
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\Form\\' . $this->getEntity()->getName() . 'Type.php';
+        return $this->getEntity()->getName() . 'Type';
     }
 
     public function getDescriptionCodeLines()
@@ -67,7 +62,7 @@ class Form extends FormBase
     
     public function getNamespaceLine()
     {
-        return 'namespace ' . $this->getEntity()->getNamespace() . '\\Form;'; 
+        return 'namespace ' . $this->getFullNamespace() . ';';
     }
     
     public function getUseLines()
@@ -75,7 +70,7 @@ class Form extends FormBase
         $lines = [];
         
         $lines[] = 'use Symfony\\Component\\Form\\FormBuilderInterface;';
-        $lines[] = 'use ' . $this->getEntity()->getNamespace() . '\\Form\\Base\\' . $this->getEntity()->getName() . 'TypeBase;';
+        $lines[] = 'use ' . $this->getEntity()->getFullyQualifiedFormBaseName() . ';';
 
         $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
         

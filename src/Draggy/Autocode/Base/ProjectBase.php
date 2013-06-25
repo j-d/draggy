@@ -19,6 +19,7 @@ namespace Draggy\Autocode\Base;
 use Draggy\Autocode\Project;
 use Draggy\Autocode\Entity;
 use Draggy\Autocode\Templates\EntityTemplate;
+use Draggy\Autocode\Templates\PHPEntityTemplate;
 
 /**
  * Draggy\Autocode\Entity\Base\Project
@@ -1092,7 +1093,7 @@ abstract class ProjectBase
     /**
      * Get repositoryTemplate
      *
-     * @return EntityTemplate|null
+     * @return PHPEntityTemplate|null
      */
     public function getRepositoryTemplate()
     {
@@ -1122,7 +1123,7 @@ abstract class ProjectBase
     /**
      * Get formTemplate
      *
-     * @return EntityTemplate|null
+     * @return PHPEntityTemplate|null
      */
     public function getFormTemplate()
     {
@@ -1152,7 +1153,7 @@ abstract class ProjectBase
     /**
      * Get formBaseTemplate
      *
-     * @return EntityTemplate|null
+     * @return PHPEntityTemplate|null
      */
     public function getFormBaseTemplate()
     {

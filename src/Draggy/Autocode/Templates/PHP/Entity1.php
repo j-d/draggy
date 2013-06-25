@@ -46,15 +46,17 @@ class Entity1 extends Entity1Base
      */
     public function getPath()
     {
-        return '/';
+        return $this->getEntity()->getProject()->getBase()
+            ? 'Base/'
+            : '';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getNameBase() . '.php';
+        return $this->getEntity()->getNameBase();
     }
 
     /**
@@ -1095,30 +1097,9 @@ class Entity1 extends Entity1Base
     }
     // </editor-fold>
 
-    public function getFilenameLine()
-    {
-        $line = '// ' . $this->getEntity()->getNamespace() . '\\';
-
-        if ($this->getEntity()->getProject()->getBase()) {
-            $line .= 'Base\\';
-        }
-
-        $line .= $this->getEntity()->getName() . '.php';
-
-        return $line;
-    }
-
     public function getNamespaceLine()
     {
-        $line = 'namespace ' . $this->getEntity()->getNamespace();
-
-        if ($this->getEntity()->getProject()->getBase()) {
-            $line .= '\\Base';
-        }
-
-        $line .= ';';
-
-        return $line;
+        return 'namespace ' . $this->getFullNamespace() . ';';
     }
 
     public function getRequiredEntities()

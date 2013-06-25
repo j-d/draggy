@@ -45,7 +45,7 @@ class Entity3 extends Entity3Base
      */
     public function getPath()
     {
-        return 'Entity/';
+        return 'Entity/' . parent::getPath();
     }
 
     public function getAttributeDocumentationLinesAssertPart(PHPAttribute $attribute)
@@ -113,19 +113,6 @@ class Entity3 extends Entity3Base
         }
 
         return $lines;
-    }
-
-    public function getFilenameLine()
-    {
-        $line = '// ' . $this->getEntity()->getNamespace() . '\\Entity\\';
-
-        if ($this->getEntity()->getProject()->getBase()) {
-            $line .= 'Base\\';
-        }
-
-        $line .= $this->getEntity()->getName() . '.php';
-
-        return $line;
     }
 
     public function getNamespaceLine()

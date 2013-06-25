@@ -58,20 +58,14 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
      */
     public static function getEntityUseLine(Entity $entity)
     {
-        $line = 'use ' . $entity->getNamespace();
-
-        if ('Symfony2' === $entity->getProject()->getFramework()) {
-            $line .= '\\Entity';
-        }
-
-        $line .= '\\' . $entity->getName() . ';';
+        $line = 'use ' . $entity->getFullyQualifiedName() . ';';
 
         return $line;
     }
 
     public function getFilenameLine()
     {
-        return null;
+        return '// ' . $this->getFullPathAndFilename();
     }
 
     public function getNamespaceLine()
@@ -173,6 +167,35 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     public function getEndUserAdditions()
     {
         return '// </user-additions' . '>';
+    }
+
+    public function getFilename()
+    {
+        return $this->getName() . '.php';
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullNamespace()
+    {
+        return substr($this->getEntity()->getNamespace() . '\\' . str_replace('/', '\\', $this->getPath()), 0, -1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFullPathAndFilename()
+    {
+        return $this->getFullNamespace() . '\\' . $this->getFilename();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullyQualifiedName()
+    {
+        return $this->getFullNamespace() . '\\' . $this->getName();
     }
     // </user-additions>
     // </editor-fold>

@@ -44,22 +44,15 @@ class EntityBase1 extends EntityBase1Base
      */
     public function getPath()
     {
-        return $this->getEntity()->getProject()->getBase()
-            ? 'Base/'
-            : '/';
+        return '';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . '.php';
-    }
-
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\' . $this->getEntity()->getName() . '.php';
+        return $this->getEntity()->getName();
     }
 
     public function getNamespaceLine()

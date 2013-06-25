@@ -50,14 +50,9 @@ class Controller extends ControllerBase
     /**
      * {@inheritDoc}
      */
-    public function getFilename()
+    public function getName()
     {
-        return $this->getEntity()->getName() . 'Controller.php';
-    }
-
-    public function getFilenameLine()
-    {
-        return '// ' . $this->getEntity()->getNamespace() . '\\Controller\\' . $this->getEntity()->getName() . 'Controller.php';
+        return $this->getEntity()->getName() . 'Controller';
     }
 
     public function getNamespaceLine()
@@ -77,6 +72,21 @@ class Controller extends ControllerBase
         $entity = $this->getEntity();
 
         $lines[] = $this->getUseLineControllerPart();
+
+        if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
+            $lines[] = 'use Symfony\\Component\\HttpFoundation\\Request;';
+            $lines[] = 'use ' . $entity->getFullyQualifiedFormName() . ';';
+        }
+
+        if ($entity->getCrudCreate()) {
+            $lines[] = 'use ' . $entity->getFullyQualifiedName() . ';';
+        }
+
+        if ($entity->getCrudRead()) {
+            $lines[] = 'use ' . $entity->getFullyQualifiedRepositoryName() . ';';
+        }
+
+        $lines[] = '';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\Request;';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\Response;';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\RedirectResponse;';
@@ -85,46 +95,20 @@ class Controller extends ControllerBase
         $lines[] = '// use Doctrine\\Common\\Collections\\ArrayCollection;';
         $lines[] = '';
 
-        $lines[] = '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';';
+        $lines[] = '// use ' . $entity->getFullyQualifiedName() . ';';
 
         if ($entity->getHasRepository()) {
-            $lines[] = '// use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;';
-        }
-
-        if ($entity->getHasForm()) {
-            $lines[] = '// use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;';
+            $lines[] = '// use ' . $entity->getFullyQualifiedRepositoryName() . ';';
         }
 
         foreach ($entity->getAttributes() as $attr) {
             if (null !== $attr->getForeignEntity()) {
-                $lines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';';
+                $lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
 
                 if ($attr->getForeignEntity()->getHasRepository()) {
-                    $lines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . 'Repository;';
+                    $lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedRepositoryName() . ';';
                 }
             }
-        }
-
-        return $lines;
-    }
-
-    public function getUseLinesInsideUserAdditionsPart()
-    {
-        $lines = [];
-
-        $entity = $this->getEntity();
-
-        if ($entity->getCrudCreate()) {
-            $lines[] = 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . ';';
-        }
-
-        if ($entity->getCrudCreate() || $entity->getCrudUpdate()) {
-            $lines[] = 'use Symfony\\Component\\HttpFoundation\\Request;';
-            $lines[] = 'use ' . $entity->getNamespace() . '\\Form\\' . $entity->getName() . 'Type;';
-        }
-
-        if ($entity->getCrudRead()) {
-            $lines[] = 'use ' . $entity->getNamespace() . '\\Entity\\' . $entity->getName() . 'Repository;';
         }
 
         return $lines;
@@ -138,11 +122,7 @@ class Controller extends ControllerBase
 
         $lines[] = '';
 
-        $lines[] = '// <user-additions' . ' part="use">';
-
-        $lines = array_merge($lines, $this->getUseLinesInsideUserAdditionsPart());
-
-        $lines[] = '// </user-additions' . '>';
+        $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
 
         return $lines;
     }
@@ -256,8 +236,8 @@ class Controller extends ControllerBase
     {
         $lines = [];
 
-        $lines[] = '// <user-additions' . ' part="actions">';
-        $lines[] = '// </user-additions' . '>';
+        $lines[] = $this->getUserAdditions('actions');
+        $lines[] = $this->getEndUserAdditions();
 
         return $lines;
     }
@@ -271,7 +251,7 @@ class Controller extends ControllerBase
         if ($entity->getCrudRead()) {
             $lines[] = '';
 
-            $lines[] = '// <user-additions' . ' part="listAction">';
+            $lines[] = $this->getUserAdditions('listAction');
             $lines[] = 'public function listAction()';
             $lines[] = '{';
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
@@ -286,7 +266,7 @@ class Controller extends ControllerBase
             $lines[] =         ']';
             $lines[] =     ');';
             $lines[] = '}';
-            $lines[] = '// </user-additions' . '>';
+            $lines[] = $this->getEndUserAdditions();
         }
 
         return $lines;
@@ -316,7 +296,7 @@ class Controller extends ControllerBase
         if ($entity->getCrudCreate()) {
             $lines[] = '';
 
-            $lines[] = '// <user-additions' . ' part="addAction">';
+            $lines[] = $this->getUserAdditions('addAction');
             $lines[] = 'public function addAction(Request $request)';
             $lines[] = '{';
 
@@ -345,7 +325,7 @@ class Controller extends ControllerBase
             $lines = array_merge($lines, $this->getControllerAddActionLinesReturnPart());
 
             $lines[] = '}';
-            $lines[] = '// </user-additions' . '>';
+            $lines[] = $this->getEndUserAdditions();
         }
 
         return $lines;
@@ -373,7 +353,7 @@ class Controller extends ControllerBase
         if ($entity->getCrudUpdate()) {
             $lines[] = '';
 
-            $lines[] = '// <user-additions' . ' part="editAction">';
+            $lines[] = $this->getUserAdditions('editAction');
             $lines[] = 'public function editAction(Request $request, $id)';
             $lines[] = '{';
 
@@ -409,7 +389,7 @@ class Controller extends ControllerBase
             $lines = array_merge($lines, $this->getControllerEditActionLinesReturnPart());
 
             $lines[] = '}';
-            $lines[] = '// </user-additions' . '>';
+            $lines[] = $this->getEndUserAdditions();
         }
 
         return $lines;
@@ -424,7 +404,7 @@ class Controller extends ControllerBase
         if ($entity->getCrudDelete()) {
             $lines[] = '';
 
-            $lines[] = '// <user-additions' . ' part="deleteAction">';
+            $lines[] = $this->getUserAdditions('deleteAction');
             $lines[] = 'public function deleteAction(Request $request, $id)';
             $lines[] = '{';
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
@@ -443,7 +423,7 @@ class Controller extends ControllerBase
             $lines[] = '';
             $lines[] =     'return $this->redirect($this->generateUrl(\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '\'));';
             $lines[] = '}';
-            $lines[] = '// </user-additions' . '>';
+            $lines[] = $this->getEndUserAdditions();
         }
 
         return $lines;
