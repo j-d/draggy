@@ -106,7 +106,8 @@ class Controller extends ControllerBase
                 $lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
 
                 if ($attr->getForeignEntity()->getHasRepository()) {
-                    $lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedRepositoryName() . ';';
+                    $lines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . 'Repository;';
+                    //$lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedRepositoryName() . ';'; // TODO: FIX AND USE THIS INSTEAD
                 }
             }
         }
