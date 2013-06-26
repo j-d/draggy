@@ -51,7 +51,7 @@ abstract class EntityTemplateBase extends Template
     /**
      * Get entity
      *
-     * @return $this
+     * @return Entity
      */
     public function getEntity()
     {

@@ -448,7 +448,13 @@ class PHPJustifier extends AbstractJustifier
         $this->addJustificationRule(2, function ($lineNumber, $endLine) {
             if ($lineNumber > 0) {
                 if ($this->lineTypes['arrow'][$lineNumber] && !$this->lineTypes['arrow'][$lineNumber - 1]) {
-                    $this->indentLines($lineNumber, $this->findEndArrowsBlock($lineNumber, $endLine));
+                    $endArrowsBlock = $this->findEndArrowsBlock($lineNumber, $endLine);
+
+                    if ($this->lineTypes['startBrackets'][$lineNumber]) {
+                        $endArrowsBlock = $this->findEndStandardBlock('Brackets', $lineNumber, $endLine);
+                    }
+
+                    $this->indentLines($lineNumber, $endArrowsBlock);
                 }
             }
         });

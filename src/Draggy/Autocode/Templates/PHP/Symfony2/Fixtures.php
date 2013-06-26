@@ -156,6 +156,9 @@ class Fixtures extends FixturesBase
     {
         $lines = [];
 
+        $lines[] = '/**';
+        $lines[] = ' * @var ContainerInterface';
+        $lines[] = ' */';
         $lines[] = 'private $container;';
         $lines[] = '';
         $lines[] = 'public function getOrder()';
