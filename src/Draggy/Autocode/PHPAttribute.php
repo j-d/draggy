@@ -460,7 +460,7 @@ class PHPAttribute extends PHPAttributeBase
         $properties[] = '[\'renderEngine\' => \'twig\']';
 
         if(!$this->autoIncrement) {
-            if(!$this->getNull() && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {
+            if(!$this->getNull() && 'boolean' !== $this->type && 'Collection' !== $this->getFormClassType()) {
                 $properties[] = '[\'required\' => \'' . $this->getRequiredMessage() . '\']';
             }
 
@@ -569,8 +569,22 @@ class PHPAttribute extends PHPAttributeBase
         $properties = [];
 
         if(!$this->autoIncrement) {
-            if(!$this->getNull() && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection') {
-                $properties[] = '\'required\' => true,';
+            switch ($this->getFormClassType()) {
+                case 'Entity':
+                    $properties[] = '\'class\' => \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
+                    //$lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+                    break;
+                case 'Collection':
+                    //$lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+                    break;
+                default:
+                    //$lines[] = 'null,';
+                    break;
+            }
+
+
+            if(!(!$this->getNull() && $this->type !== 'boolean' && $this->getFormClassType() !== 'Collection')) {
+                $properties[] = '\'required\' => false,';
             }
 
 //            if (null !== $this->minSize) {
@@ -601,20 +615,6 @@ class PHPAttribute extends PHPAttributeBase
 //                $properties[] = '\'max\' => ' . $this->getMax() . ',';
 //            }
         }
-
-
-//        switch ($this->getFormClassType()) {
-//            case 'Entity':
-//                $lines[] = '\'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
-//                $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
-//                break;
-//            case 'Collection':
-//                $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
-//                break;
-//            default:
-//                $lines[] = 'null,';
-//                break;
-//        }
 
         $lines[] = '\'options\' => [';
 

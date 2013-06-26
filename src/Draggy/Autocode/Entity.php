@@ -217,7 +217,7 @@ class Entity extends EntityBase
     }
 
     /**
-     * @return Attribute[]
+     * @return $this[]
      */
     public function getFormAttributes()
     {

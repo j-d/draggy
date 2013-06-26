@@ -107,17 +107,17 @@ class PHPEntity extends PHPEntityBase
 
     public function getFullyQualifiedRepositoryName()
     {
-        return $this->getProject()->getRepositoryTemplate()->getFullyQualifiedName();
+        return $this->getProject()->getRepositoryTemplate()->setEntity($this)->getFullyQualifiedName();
     }
 
     public function getFullyQualifiedFormName()
     {
-        return $this->getProject()->getFormTemplate()->getFullyQualifiedName();
+        return $this->getProject()->getFormTemplate()->setEntity($this)->getFullyQualifiedName();
     }
 
     public function getFullyQualifiedFormBaseName()
     {
-        return $this->getProject()->getFormBaseTemplate()->getFullyQualifiedName();
+        return $this->getProject()->getFormBaseTemplate()->setEntity($this)->getFullyQualifiedName();
     }
     // </user-additions>
     // </editor-fold>

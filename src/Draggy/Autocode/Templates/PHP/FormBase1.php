@@ -76,8 +76,8 @@ class FormBase1 extends FormBase1Base
         $useTypes = [];
 
         foreach ($this->getEntity()->getFormAttributes() as $attr) {
-            if (in_array($attr->getFormClassType(), ['Entity', 'Collection']) && $attr->getForeignEntity()->getHasForm()) {
-                $useTypes['use ' . $attr->getForeignEntity()->getNamespace() . '\\Form\\' . $attr->getForeignEntity()->getName() . 'Type;'] = true;
+            if (in_array($attr->getFormClassType(), ['Entity', 'Collection'], true) && $attr->getForeignEntity()->getHasForm()) {
+                $useTypes['use ' . $attr->getForeignEntity()->getFullyQualifiedFormName() . ';'] = true;
             }
         }
 

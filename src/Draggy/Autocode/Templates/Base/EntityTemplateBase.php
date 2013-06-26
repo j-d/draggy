@@ -39,7 +39,7 @@ abstract class EntityTemplateBase extends Template
      *
      * @param Entity $entity
      *
-     * @return EntityTemplate
+     * @return $this
      */
     public function setEntity(Entity $entity)
     {
@@ -51,7 +51,7 @@ abstract class EntityTemplateBase extends Template
     /**
      * Get entity
      *
-     * @return Entity
+     * @return $this
      */
     public function getEntity()
     {
