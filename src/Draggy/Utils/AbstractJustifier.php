@@ -2,8 +2,7 @@
 
 namespace Draggy\Utils;
 
-
-abstract class AbstractJustifier
+abstract class AbstractJustifier implements JustifierInterface
 {
     /**
      * @var string Character used to indent, typically a space or a tab
@@ -34,16 +33,6 @@ abstract class AbstractJustifier
      * @var string[] Lines to be returned
      */
     protected $outputLines;
-
-    /**
-     * @var bool[] Indicator of which lines don't need to be processed
-     */
-    protected $processedLines;
-
-    /**
-     * @var array
-     */
-    protected $lineTypes;
 
     /**
      * Validation passes
@@ -79,76 +68,52 @@ abstract class AbstractJustifier
         $this->eol                  = $eol;
     }
 
-    protected function indentLines($startLine, $endLine)
+    public function getLine($lineNumber)
+    {
+        return isset($this->lines[$lineNumber])
+            ? $this->lines[$lineNumber]
+            : null;
+    }
+
+    public function getLines()
+    {
+        return $this->lines;
+    }
+
+    public function getOutputLine($lineNumber)
+    {
+        return isset($this->outputLines[$lineNumber])
+            ? $this->outputLines[$lineNumber]
+            : null;
+    }
+
+    public function setOutputLine($lineNumber, $line)
+    {
+        $this->outputLines[$lineNumber] = $line;
+    }
+
+    public function indentLines($startLine, $endLine)
     {
         for ($i = $startLine; $i <= $endLine; $i++) {
-            if (!$this->processedLines[$i]) {
+            if ('' !== $this->lines[$i]) { // Don't justify blank lines
                 $this->outputLines[$i] = $this->indentation . $this->outputLines[$i];
             }
         }
     }
 
-    protected abstract function initialise();
-
     protected function initialiseFromSourceFile($sourceFile)
     {
         $this->lines = explode($this->eol, $sourceFile);
-
-        $this->initialise();
     }
 
     protected function initialiseFromLines($lines)
     {
         $this->lines = $lines;
-
-        $this->initialise();
     }
-
-    protected abstract function identifyLines();
 
     protected function addJustificationRule($pass, $rule)
     {
         $this->passes[$pass][] = $rule;
-    }
-
-    protected function findEndStandardBlock($name, $lineNumber, $maxLine, $targetStepsInto = 0)
-    {
-        $stepsInto = 0;
-
-        for ($i = $lineNumber; $i <= $maxLine; $i++) {
-            if ($this->lineTypes['end' . $name][$i] && $i > $lineNumber) {
-                $stepsInto--;
-
-                if ($stepsInto === $targetStepsInto) {
-                    return $i;
-                }
-            }
-
-            if ($this->lineTypes['start' . $name][$i]) {
-                $stepsInto++;
-            }
-        }
-
-        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber);
-    }
-
-    abstract public function initJustificationRules();
-
-    public function justify()
-    {
-        $endLine = count($this->lines) - 1;
-
-        if ($endLine < 0) {
-            return;
-        }
-
-        foreach ($this->passes as $pass) {
-            for ($i = 0; $i <= $endLine; $i++) {
-                foreach ($pass as $rule) {
-                    $rule($i, $endLine);
-                }
-            }
-        }
     }
 
     public function justifyFromLines($lines)
@@ -172,5 +137,14 @@ abstract class AbstractJustifier
     public function getIndentation()
     {
         return $this->indentation;
+    }
+
+    protected function prepareToJustify()
+    {
+        foreach ($this->lines as $lineNumber => $line) {
+            $this->lines[$lineNumber] = trim($line);
+        }
+
+        $this->outputLines = $this->lines;
     }
 }
