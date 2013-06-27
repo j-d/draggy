@@ -148,36 +148,39 @@ class Form extends FormBase
     public function getFileLines()
     {
         $lines[] = 'class ' . $this->getEntity()->getName() . 'Type extends ' . $this->getEntity()->getName() . 'TypeBase';
-        $lines[] =     '// <user-additions' . ' part="implements">';
-        $lines[] =     '// </user-additions' . '>';
+        $lines[] =     $this->getUserAdditions('implements');
+        $lines[] =     $this->getEndUserAdditions();
         $lines[] = '{';
-        $lines[] =     '// <user-additions' . ' part="traitsUse">';
-        $lines[] =     '// </user-additions' . '>';
+        $lines[] =     $this->getUserAdditions('traitsUse');
+        $lines[] =     $this->getEndUserAdditions();
         $lines[] = '';
-        $lines[] =     '// <user-additions' . ' part="constructorDeclaration">';
+        $lines[] =     $this->getUserAdditions('constructorDeclaration');
         $lines[] =     'public function __construct()';
-        $lines[] =     '// </user-additions' . '>';
+        $lines[] =     $this->getEndUserAdditions();
         $lines[] =     '{';
 
         $lines = array_merge($lines, $this->getConstructorHelpLines());
 
-        $lines[] = '// <user-additions' . ' part="constructor">';
+        //$lines[] = $this->getUserAdditions('constructor');
 
         $lines = array_merge($lines, $this->getConstructorInsideLines());
 
-        $lines[] =     '    // </user-additions' . '>';
+        //$lines[] = $this->getEndUserAdditions();
+
         $lines[] =     '}';
         $lines[] = '';
-        $lines[] =     '// <user-additions' . ' part="methods">';
-        $lines[] =     '// </user-additions' . '>';
+        $lines[] =     $this->getUserAdditions('methods');
+        $lines[] =     $this->getEndUserAdditions();
         $lines[] = '';
         $lines[] =     'public function buildForm(FormBuilderInterface $builder, array $options)';
         $lines[] =     '{';
-        $lines[] =     '    // parent::buildForm($builder, $options);';
-        $lines[] =     '    ';
-        $lines[] =     '    // <user-additions' . ' part="buildForm">';
-        $lines[] =     '    parent::buildForm($builder, $options);';
-        $lines[] =     '    // </user-additions' . '>';
+        $lines[] =         '// parent::buildForm($builder, $options);';
+        $lines[] =         '';
+        //$lines[] =         $this->getUserAdditions('buildForm');
+        $lines[] =         'parent::buildForm($builder, $options);';
+        $lines[] =         '';
+        $lines[] =         '$builder->add(\'save\', \'submit\', [\'attr\' => [\'class\' => \'btn btn-primary\']]);';
+        //$lines[] =         $this->getEndUserAdditions();
         $lines[] =     '}';
         $lines[] = '}';
 
