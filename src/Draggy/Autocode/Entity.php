@@ -333,6 +333,11 @@ class Entity extends EntityBase
         return $uniqueAttributes;
     }
 
+    public function getListRoute()
+    {
+        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName());
+    }
+
     public function getAddRoute()
     {
         return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_add';

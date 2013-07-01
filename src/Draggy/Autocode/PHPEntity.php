@@ -75,11 +75,6 @@ class PHPEntity extends PHPEntityBase
         return false;
     }
 
-    public function getListRoute()
-    {
-        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName());
-    }
-
     public function getFullyQualifiedRepositoryName()
     {
         return $this->getProject()->getRepositoryTemplate()->setEntity($this)->getFullyQualifiedName();
