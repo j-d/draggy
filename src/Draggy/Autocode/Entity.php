@@ -60,7 +60,7 @@ class Entity extends EntityBase
      */
     public function getLowerName()
     {
-        return strtolower($this->name[0]) . substr($this->name,1);
+        return lcfirst($this->name);
     }
 
     public function getModuleNoBundle()

@@ -49,7 +49,7 @@ abstract class AbstractLineJustifier implements LineJustifierInterface
             }
         }
 
-        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber);
+        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber . ' (' . $this->justifierMachine->getLine($lineNumber) . ')');
     }
 
     protected function identifyLines()

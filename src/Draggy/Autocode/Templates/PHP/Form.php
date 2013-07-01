@@ -18,12 +18,13 @@ namespace Draggy\Autocode\Templates\PHP;
 
 use Draggy\Autocode\Templates\PHP\Base\FormBase;
 // <user-additions part="use">
+use Draggy\Autocode\Templates\RenderizableTemplateInterface;
 // </user-additions>
 
 /**
  * Draggy\Autocode\Templates\PHP\Entity\Form
  */
-class Form extends FormBase
+class Form extends FormBase implements RenderizableTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -161,11 +162,11 @@ class Form extends FormBase
 
         $lines = array_merge($lines, $this->getConstructorHelpLines());
 
-        //$lines[] = $this->getUserAdditions('constructor');
+        $lines[] = $this->getUserAdditions('constructor');
 
         $lines = array_merge($lines, $this->getConstructorInsideLines());
 
-        //$lines[] = $this->getEndUserAdditions();
+        $lines[] = $this->getEndUserAdditions();
 
         $lines[] =     '}';
         $lines[] = '';
@@ -176,11 +177,11 @@ class Form extends FormBase
         $lines[] =     '{';
         $lines[] =         '// parent::buildForm($builder, $options);';
         $lines[] =         '';
-        //$lines[] =         $this->getUserAdditions('buildForm');
+        $lines[] =         $this->getUserAdditions('buildForm');
         $lines[] =         'parent::buildForm($builder, $options);';
         $lines[] =         '';
         $lines[] =         '$builder->add(\'save\', \'submit\', [\'attr\' => [\'class\' => \'btn btn-primary\']]);';
-        //$lines[] =         $this->getEndUserAdditions();
+        $lines[] =         $this->getEndUserAdditions();
         $lines[] =     '}';
         $lines[] = '}';
 

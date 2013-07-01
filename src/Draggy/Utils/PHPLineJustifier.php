@@ -28,6 +28,9 @@ class PHPLineJustifier extends AbstractLineJustifier
             $this->lineTypes['startCase'][$lineNumber] = $this->isStartCaseBlock($lineNumber);
             $this->lineTypes['endCase'][$lineNumber]   = $this->isEndCaseBlock($lineNumber);
 
+            $this->lineTypes['startEcho'][$lineNumber] = $this->isStartEchoBlock($lineNumber);
+            $this->lineTypes['endEcho'][$lineNumber]   = $this->isEndEchoBlock($lineNumber);
+
             $this->lineTypes['arrow'][$lineNumber]       = $this->isArrowsRow($lineNumber);
             $this->lineTypes['doubleArrow'][$lineNumber] = $this->isDoubleArrowLine($lineNumber);
             $this->lineTypes['assignment'][$lineNumber]  = $this->isAssignmentLine($lineNumber);
@@ -144,6 +147,28 @@ class PHPLineJustifier extends AbstractLineJustifier
         }
 
         if ('];' === substr($line, 0, 2) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isStartEchoBlock($lineNumber)
+    {
+        $line = $this->justifierMachine->getLine($lineNumber);
+
+        if ('<?=' === substr($line, 0, 3) && false === strstr($line, '?>')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isEndEchoBlock($lineNumber)
+    {
+        $line = $this->justifierMachine->getLine($lineNumber);
+
+        if ('?>' === substr($line, -2) && false === strstr($line, '<?=')) {
             return true;
         }
 
@@ -417,6 +442,12 @@ class PHPLineJustifier extends AbstractLineJustifier
         $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startSquaredBrackets'][$lineNumber]) {
                 $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('SquaredBrackets', $lineNumber, $endLine) - 1);
+            }
+        }));
+
+        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+            if ($this->lineTypes['startEcho'][$lineNumber]) {
+                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Echo', $lineNumber, $endLine) - 1);
             }
         }));
 

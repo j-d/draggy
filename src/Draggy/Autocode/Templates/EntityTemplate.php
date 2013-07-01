@@ -23,7 +23,7 @@ use Draggy\Autocode\Templates\Base\EntityTemplateBase;
 /**
  * Draggy\Autocode\Templates\Entity\EntityTemplate
  */
-abstract class EntityTemplate extends EntityTemplateBase
+abstract class EntityTemplate extends EntityTemplateBase implements EntityTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -34,29 +34,39 @@ abstract class EntityTemplate extends EntityTemplateBase
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
+    /**
+     * @return ConcreteEntityTemplateInterface
+     */
+    public function getTemplate()
+    {
+        return parent::getTemplate();
+    }
     // </user-additions>
     // </editor-fold>
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    protected function getDescriptionCodeLines()
-    {
-        $lines = [];
-
-        if ( '' !== trim($this->getEntity()->getDescription()) ) {
-            $lines[] = '/*';
-            $lines[] = ' * ' . trim($this->getEntity()->getDescription());
-            $lines[] = ' */';
-            $lines[] = '';
-        }
-
-        return $lines;
-    }
-
-    protected function getDescriptionCode()
+    public function getDescriptionCode()
     {
         return $this->convertLinesToCode($this->getDescriptionCodeLines());
     }
+
+    /**
+     * @return string
+     */
+    public function getPathAndFilename()
+    {
+        return $this->getPath() . $this->getFilename();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullPathAndFilename()
+    {
+        return $this->getPathAndFilename();
+    }
+
     // </user-additions>
     // </editor-fold>
 }

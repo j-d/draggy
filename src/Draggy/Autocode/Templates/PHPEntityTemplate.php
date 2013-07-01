@@ -26,7 +26,7 @@ use Draggy\Utils\PHPJustifier;
 /**
  * Draggy\Autocode\Templates\Entity\PHPEntityTemplate
  */
-abstract class PHPEntityTemplate extends PHPEntityTemplateBase
+abstract class PHPEntityTemplate extends PHPEntityTemplateBase implements PHPEntityTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -38,13 +38,11 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
     /**
-     * Get entity
-     *
-     * @return PHPEntity
+     * {@inheritdoc}
      */
     public function getEntity()
     {
-        return $this->entity;
+        return parent::getEntity();
     }
     // </user-additions>
     // </editor-fold>
@@ -52,11 +50,11 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
-     * @param Entity $entity
+     * @param PHPEntity $entity
      *
      * @return string
      */
-    public static function getEntityUseLine(Entity $entity)
+    public static function getEntityUseLine(PHPEntity $entity)
     {
         $line = 'use ' . $entity->getFullyQualifiedName() . ';';
 
@@ -71,6 +69,20 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase
     public function getNamespaceLine()
     {
         return null;
+    }
+
+    public function getDescriptionCodeLines()
+    {
+        $lines = [];
+
+        if ( '' !== trim($this->getEntity()->getDescription()) ) {
+            $lines[] = '/*';
+            $lines[] = ' * ' . trim($this->getEntity()->getDescription());
+            $lines[] = ' */';
+            $lines[] = '';
+        }
+
+        return $lines;
     }
 
     public function getUseLinesUserAdditionsPart()

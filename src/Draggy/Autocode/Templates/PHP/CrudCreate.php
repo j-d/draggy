@@ -18,12 +18,13 @@ namespace Draggy\Autocode\Templates\PHP;
 
 use Draggy\Autocode\Templates\PHP\Base\CrudCreateBase;
 // <user-additions part="use">
+use Draggy\Autocode\Templates\RenderizableTemplateInterface;
 // </user-additions>
 
 /**
  * Draggy\Autocode\Templates\PHP\Entity\CrudCreate
  */
-class CrudCreate extends CrudCreateBase
+class CrudCreate extends CrudCreateBase implements RenderizableTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {

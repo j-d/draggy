@@ -24,7 +24,7 @@ use Draggy\Utils\TwigJustifier;
 /**
  * Draggy\Autocode\Templates\Entity\PHPEntityTemplate
  */
-abstract class TwigEntityTemplate extends EntityTemplate
+class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -35,6 +35,13 @@ abstract class TwigEntityTemplate extends EntityTemplate
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
+    /**
+     * @return ConcreteTwigEntityTemplateInterface
+     */
+    public function getTemplate()
+    {
+        return parent::getTemplate();
+    }
     // </user-additions>
     // </editor-fold>
 
@@ -45,7 +52,7 @@ abstract class TwigEntityTemplate extends EntityTemplate
      */
     public function getFilename()
     {
-        return $this->getName() . '.html.twig';
+        return $this->getTemplate()->getName() . '.html.twig';
     }
 
     /**
@@ -53,42 +60,27 @@ abstract class TwigEntityTemplate extends EntityTemplate
      */
     public function getPath()
     {
-        return 'Resources/views/' . $this->getEntity()->getName() . '/';
+        return 'Resources/views/' . $this->getTemplate()->getEntity()->getName() . '/';
     }
 
     public function getFilenameLine()
     {
-        return '{# ' . $this->getPathAndFilename() . ' #}';
-    }
-
-    public function getExtendBundlePath()
-    {
-        return null;
+        return '{# ' . $this->getTemplate()->getPathAndFilename() . ' #}';
     }
 
     public function getExtendLine()
     {
-        return '{% extends \'' . $this->getExtendBundlePath() . '\' %}';
-    }
-
-    public function getTitleLinePart()
-    {
-        return null;
+        return '{% extends \'' . $this->getTemplate()->getExtendBundlePath() . '\' %}';
     }
 
     public function getBlockTitleLine()
     {
-        return '{% block title %}' . $this->getTitleLinePart() . '{% endblock %}';
-    }
-
-    public function getPageTitleLinePart()
-    {
-        return null;
+        return '{% block title %}' . $this->getTemplate()->getTitleLinePart() . '{% endblock %}';
     }
 
     public function getBlockPageTitleLine()
     {
-        return '{% block pageTitle %}' . $this->getPageTitleLinePart() . '{% endblock %}';
+        return '{% block pageTitle %}' . $this->getTemplate()->getPageTitleLinePart() . '{% endblock %}';
     }
 
     public function getNavigationLines()
@@ -96,20 +88,20 @@ abstract class TwigEntityTemplate extends EntityTemplate
         $lines = [];
 
         $lines[] = '<ul class="nav nav-list">';
-        $lines[] =     '<li class="nav-header">' . $this->getEntity()->getPluralName() . '</li>';
+        $lines[] =     '<li class="nav-header">' . $this->getTemplate()->getEntity()->getPluralName() . '</li>';
 
-        if ($this->getEntity()->getCrudCreate()) {
-            $lines[] = '<li><a href="{{ path(\'' . $this->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getEntity()->getLowerName() . '</a></li>';
+        if ($this->getTemplate()->getEntity()->getCrudCreate()) {
+            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getTemplate()->getEntity()->getLowerName() . '</a></li>';
         }
 
-        if ($this->getEntity()->getCrudRead()) {
-            $lines[] = '<li><a href="{{ path(\'' . $this->getEntity()->getListRoute() . '\') }}">View ' . $this->getEntity()->getPluralLowerName() . '</a></li>';
+        if ($this->getTemplate()->getEntity()->getCrudRead()) {
+            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getListRoute() . '\') }}">View ' . $this->getTemplate()->getEntity()->getPluralLowerName() . '</a></li>';
         }
 
         $otherEntityLines = [];
 
-        foreach ($this->getEntity()->getProject()->getEntities() as $entity) {
-            if ($entity !== $this->getEntity()) {
+        foreach ($this->getTemplate()->getEntity()->getProject()->getEntities() as $entity) {
+            if ($entity !== $this->getTemplate()->getEntity()) {
                 if ($entity->getCrudRead()) {
                     $otherEntityLines[] = '<li><a href="{{ path(\'' . $entity->getListRoute() . '\') }}">' . $entity->getPluralName() . '</a></li>';
                 }
@@ -134,7 +126,7 @@ abstract class TwigEntityTemplate extends EntityTemplate
 
         $lines[] = '{% block navigation %}';
 
-        $lines = array_merge($lines, $this->getNavigationLines());
+        $lines = array_merge($lines, $this->getTemplate()->getNavigationLines());
 
         $lines[] = '{% endblock %}';
 
@@ -152,7 +144,7 @@ abstract class TwigEntityTemplate extends EntityTemplate
 
         $lines[] = '{% block contents %}';
 
-        $lines = array_merge($lines, $this->getContentLines());
+        $lines = array_merge($lines, $this->getTemplate()->getContentLines());
 
         $lines[] = '{% endblock %}';
 
@@ -168,16 +160,16 @@ abstract class TwigEntityTemplate extends EntityTemplate
     {
         $lines = [];
 
-        $lines[] = $this->getFilenameLine();
+        $lines[] = $this->getTemplate()->getFilenameLine();
         $lines[] = '';
 
-        $lines = array_merge($lines, $this->getFileLines());
+        $lines = array_merge($lines, $this->getTemplate()->getFileLines());
 
-        $twigJustifier = new TwigJustifier($this->getIndentation(), 1);
+        $twigJustifier = new TwigJustifier($this->getTemplate()->getIndentation(), 1);
 
         $lines = $twigJustifier->justifyFromLines($lines);
 
-        return $this->convertLinesToCode($lines);
+        return $this->getTemplate()->convertLinesToCode($lines);
     }
 
     public function getUserAdditions($part)
@@ -188,6 +180,11 @@ abstract class TwigEntityTemplate extends EntityTemplate
     public function getEndUserAdditions()
     {
         return '{# </user-additions' . '> #}';
+    }
+
+    public function getDescriptionCodeLines()
+    {
+        return [];
     }
     // </user-additions>
     // </editor-fold>

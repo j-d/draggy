@@ -20,12 +20,13 @@ use Draggy\Autocode\Templates\PHP\Base\Entity1Base;
 // <user-additions part="use">
 use Draggy\Autocode\Attribute;
 use Draggy\Autocode\PHPAttribute;
+use Draggy\Autocode\Templates\RenderizableTemplateInterface;
 // </user-additions>
 
 /**
  * Draggy\Autocode\Templates\PHP\Entity\Entity1
  */
-class Entity1 extends Entity1Base
+class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {

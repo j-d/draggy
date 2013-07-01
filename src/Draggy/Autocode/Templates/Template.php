@@ -23,12 +23,16 @@ use Draggy\Autocode\Templates\Base\TemplateBase;
 /**
  * Draggy\Autocode\Templates\Entity\Template
  */
-abstract class Template extends TemplateBase
+abstract class Template extends TemplateBase implements TemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
+    /**
+     * @var TemplateInterface
+     */
+    protected $template;
     // </user-additions>
     // </editor-fold>
 
@@ -38,6 +42,7 @@ abstract class Template extends TemplateBase
     // </user-additions>
     {
         // <user-additions part="constructor">
+        $this->setTemplate($this);
         $this->eol = PHP_EOL;
         // </user-additions>
     }
@@ -45,17 +50,31 @@ abstract class Template extends TemplateBase
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
+    /**
+     * @param TemplateInterface $template
+     *
+     * @return $this
+     */
+    public function setTemplate(TemplateInterface $template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return TemplateInterface
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
     // </user-additions>
     // </editor-fold>
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    /**
-     * Renders a template and returns its contents
-     *
-     * @return string
-     */
-    abstract public function render();
+
 
     /**
      * Returns all the indentation that should be put before the current line
@@ -75,40 +94,10 @@ abstract class Template extends TemplateBase
         $indentation = '';
 
         for ($i = 0; $i < $times; $i++) {
-            $indentation .= $this->getIndentation();
+            $indentation .= $this->getTemplate()->getIndentation();
         }
 
         return $indentation;
-    }
-
-    public function increaseIndentation()
-    {
-        $this->indentationCount++;
-    }
-
-    public function decreaseIndentation()
-    {
-        if ($this->indentationCount > 0) {
-            $this->indentationCount--;
-        }
-    }
-
-    public function indent($line, $times=1)
-    {
-        if ('' !== $line) {
-            return $this->getIndentationPrefix($times) . $line;
-        } else {
-            return '';
-        }
-    }
-
-    public function indentLines($lines, $times=1)
-    {
-        foreach ($lines as $key => $line) {
-            $lines[$key] = $this->indent($line, $times);
-        }
-
-        return $lines;
     }
 
     /**
@@ -123,7 +112,7 @@ abstract class Template extends TemplateBase
             return '';
         }
 
-        if (0 !== strlen($this->getIndentationPrefix())) {
+        if (0 !== strlen($this->getTemplate()->getIndentationPrefix())) {
             foreach ($lines as $lineNumber => $line) {
                 if (null === $line) {
                     unset($lines[$lineNumber]);
@@ -133,7 +122,7 @@ abstract class Template extends TemplateBase
             }
         }
 
-        return implode($this->getEol(), $lines) . $this->getEol();
+        return implode($this->getTemplate()->getEol(), $lines) . $this->getTemplate()->getEol();
     }
 
     /**
@@ -165,7 +154,7 @@ abstract class Template extends TemplateBase
 
     public function getBlurb()
     {
-        return $this->convertLinesToCode($this->getBlurbLines());
+        return $this->getTemplate()->convertLinesToCode($this->getTemplate()->getBlurbLines());
     }
 
     public function getHashBlurbLines()
@@ -187,42 +176,7 @@ abstract class Template extends TemplateBase
 
     public function getHashBlurb()
     {
-        return $this->convertLinesToCode($this->getHashBlurbLines());
-    }
-
-    abstract public function getUserAdditions($part);
-
-    abstract public function getEndUserAdditions();
-
-    /**
-     * @return string
-     */
-    abstract public function getPath();
-
-    /**
-     * @return string
-     */
-    abstract public function getName();
-
-    /**
-     * @return string
-     */
-    abstract public function getFilename();
-
-    /**
-     * @return string
-     */
-    public function getPathAndFilename()
-    {
-        return $this->getPath() . $this->getFilename();
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullPathAndFilename()
-    {
-        return $this->getPathAndFilename();
+        return $this->getTemplate()->convertLinesToCode($this->getTemplate()->getHashBlurbLines());
     }
     // </user-additions>
     // </editor-fold>

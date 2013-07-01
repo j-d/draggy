@@ -18,12 +18,13 @@ namespace Draggy\Autocode\Templates\PHP;
 
 use Draggy\Autocode\Templates\PHP\Base\FormBase1Base;
 // <user-additions part="use">
+use Draggy\Autocode\Templates\RenderizableTemplateInterface;
 // </user-additions>
 
 /**
  * Draggy\Autocode\Templates\PHP\Entity\FormBase1
  */
-class FormBase1 extends FormBase1Base
+class FormBase1 extends FormBase1Base implements RenderizableTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
