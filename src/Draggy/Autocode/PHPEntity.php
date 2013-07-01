@@ -80,31 +80,6 @@ class PHPEntity extends PHPEntityBase
         return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName());
     }
 
-    public function getAddRoute()
-    {
-        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_add';
-    }
-
-    public function getEditRoute()
-    {
-        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_edit';
-    }
-
-    public function getDeleteRoute()
-    {
-        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_delete';
-    }
-
-    public function getEnableRoute()
-    {
-        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_enable';
-    }
-
-    public function getDisableRoute()
-    {
-        return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_disable';
-    }
-
     public function getFullyQualifiedRepositoryName()
     {
         return $this->getProject()->getRepositoryTemplate()->setEntity($this)->getFullyQualifiedName();
