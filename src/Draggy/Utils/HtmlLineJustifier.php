@@ -26,6 +26,9 @@ class HtmlLineJustifier extends AbstractLineJustifier
             $this->lineTypes['startTr'][$lineNumber] = $this->isStartTrBlock($lineNumber);
             $this->lineTypes['endTr'][$lineNumber]   = $this->isEndTrBlock($lineNumber);
 
+            $this->lineTypes['startTd'][$lineNumber] = $this->isStartTdBlock($lineNumber);
+            $this->lineTypes['endTd'][$lineNumber]   = $this->isEndTdBlock($lineNumber);
+
             $this->lineTypes['startUl'][$lineNumber] = $this->isStartUlBlock($lineNumber);
             $this->lineTypes['endUl'][$lineNumber]   = $this->isEndUlBlock($lineNumber);
 
@@ -125,6 +128,28 @@ class HtmlLineJustifier extends AbstractLineJustifier
         $line = $this->justifierMachine->getLine($lineNumber);
 
         if ('</tr>' === substr($line, -5)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isStartTdBlock($lineNumber)
+    {
+        $line = $this->justifierMachine->getLine($lineNumber);
+
+        if ('<td' === substr($line, 0, 3) && false === strstr($line, '</td>')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isEndTdBlock($lineNumber)
+    {
+        $line = $this->justifierMachine->getLine($lineNumber);
+
+        if ('</td>' === substr($line, -5)) {
             return true;
         }
 
@@ -272,6 +297,12 @@ class HtmlLineJustifier extends AbstractLineJustifier
         $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startTr'][$lineNumber]) {
                 $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Tr', $lineNumber, $endLine) - 1);
+            }
+        }));
+
+        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+            if ($this->lineTypes['startTd'][$lineNumber]) {
+                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Td', $lineNumber, $endLine) - 1);
             }
         }));
 
