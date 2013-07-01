@@ -98,13 +98,11 @@ class CrudRead extends CrudReadBase implements RenderizableTemplateInterface
         $lines[] =             '<td>';
 
         if ($this->getEntity()->getCrudUpdate()) {
-            $lines[] = 'Edit';
-            //$actionsArray[] = 'T::a(\'Edit\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_edit\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
+            $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getEditRoute() . '\', {\'id\': ' . $this->getEntity()->getLowerName() . '.getId()}) }}">Edit</a>';
         }
 
         if ($this->getEntity()->getCrudDelete()) {
-            $lines[] = 'Delete';
-            //$actionsArray[] = 'T::a(\'Delete\',[\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_delete\',[\'id\'=>\'{{ ' . $entity->getLowerName() . '.getId() }}\']])';
+            $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getDeleteRoute() . '\', {\'id\': ' . $this->getEntity()->getLowerName() . '.getId()}) }}">Delete</a>';
         }
 
         $lines[] =             '</td>';
