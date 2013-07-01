@@ -409,7 +409,7 @@ class Controller extends ControllerBase
             $lines[] = '';
             $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
             $lines[] = '';
-            $lines[] =     'if (!$' . $entity->getLowerName() . ') {';
+            $lines[] =     'if (null === $' . $entity->getLowerName() . ') {';
             $lines[] =         'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);';
             $lines[] =     '}';
             $lines[] = '';
