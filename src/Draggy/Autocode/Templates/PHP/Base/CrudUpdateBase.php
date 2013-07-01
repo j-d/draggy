@@ -16,14 +16,12 @@
 
 namespace Draggy\Autocode\Templates\PHP\Base;
 
-use Draggy\Autocode\Templates\PHP\CrudUpdate;
-use Draggy\Autocode\Templates\PHPEntityTemplate;
-use Draggy\Autocode\Entity;
+use Draggy\Autocode\Templates\TwigEntityTemplate;
 
 /**
  * Draggy\Autocode\Templates\PHP\Entity\Base\CrudUpdate
  */
-abstract class CrudUpdateBase extends PHPEntityTemplate
+abstract class CrudUpdateBase extends TwigEntityTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>

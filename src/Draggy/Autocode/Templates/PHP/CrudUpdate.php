@@ -43,84 +43,57 @@ class CrudUpdate extends CrudUpdateBase implements RenderizableTemplateInterface
     /**
      * {@inheritDoc}
      */
-    public function getPath()
-    {
-        return 'Resources/views/' . $this->getEntity()->getName() . '/';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getName()
     {
         return 'edit' . $this->getEntity()->getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getFilename()
+    public function getExtendBundlePath()
     {
-        return $this->getName() . '.html.twig.php';
+        return 'MockBundle:Default:navigationPage.html.twig';
     }
 
-    public function render()
+    public function getTitleLinePart()
     {
-        $entity = $this->getEntity();
+        return '{{ parent() }} | Edit ' . $this->getEntity()->getName();
+    }
 
-        $file = '';
+    public function getPageTitleLinePart()
+    {
+        return 'Edit ' . $this->getEntity()->getName();
+    }
 
-        $file .= '<?php' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '// <user-additions' . ' part="template">' . PHP_EOL;
-        $file .= 'use Common\Twig as T;' . PHP_EOL;
-        $file .= 'use Common\Html\FormItem;' . PHP_EOL;
-        $file .= 'use Common\Html\Table;' . PHP_EOL;
-        $file .= 'use Common\Html\Cell;' . PHP_EOL;
-        $file .= 'use Common\Html\Submit;' . PHP_EOL;
-        $file .= 'use Common\Html\FormItemArray;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '/** @var $type FormItemArray|FormItem[] */' . PHP_EOL;
-        $file .= '$type = $GLOBALS[\'twigPhpParameters\'];' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$type->setRenderEngineParameter(\'form\');' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% extends \\\'CommonBundle:Default:base.html.twig\\\' %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% block title %}\', \'Edit ' . $entity->getName() . '\', \' {% endblock %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$form = new Table();' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$form' . PHP_EOL;
-        $file .= '    ->setRenderEngineParameter(\'form\')' . PHP_EOL;
-        $file .= '    ->addCss(\'noBorder\');' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= '$form' . PHP_EOL;
-        $file .= '    ->addRows(' . PHP_EOL;
+    public function getContentLines()
+    {
+        $lines = [];
 
-        foreach ($entity->getFormAttributes() as $attr) {
-            $file .= '        [' . PHP_EOL;
-            $file .= '            $type[\'' . $attr->getName() . '\']->toTwigLabel(),' . PHP_EOL;
-            $file .= '            $type[\'' . $attr->getName() . '\']' . PHP_EOL;
-            $file .= '        ],' . PHP_EOL;
-        }
+        $lines[] = '{{ parent() }}';
+        $lines[] = '{{ form(form) }}';
 
-        $file .= '        new Cell(new Submit(\'#submit\',\'Save\',[\'validate\'=>\'\']),[\'colspan\'=>2],\'center\')' . PHP_EOL;
-        $file .= '    );' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    \'{% block body %}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            \'{{ parent() }}\', PHP_EOL,' . PHP_EOL;
-        $file .= '            T::form([\'' . strtolower($entity->getModuleNoBundle()) . '_' . strtolower($entity->getName()) . '_edit\',[\'id\'=>\'{{ id }}\']],\'form\'),' . PHP_EOL;
-        $file .= '                T::formErrors(\'form\'),' . PHP_EOL;
-        $file .= '                    $form->toHtml(),' . PHP_EOL;
-        $file .= '                T::formRest(\'form\'),' . PHP_EOL;
-        $file .= '            T::_FORM,' . PHP_EOL;
-        $file .= '        \'{% endblock %}\' . PHP_EOL;' . PHP_EOL;
-        $file .= PHP_EOL;
-        $file .= 'echo    T::blockJS($form->getJS());' . PHP_EOL;
-        $file .= '// </user-additions' . '>' . PHP_EOL;
+        return $lines;
+    }
 
-        return $file;
+    public function getFileLines()
+    {
+        $lines = [];
+
+        //$lines[] = $this->getUserAdditions('template');
+        $lines[] = $this->getExtendLine();
+        $lines[] = '';
+        $lines[] = $this->getBlockTitleLine();
+        $lines[] = '';
+        $lines[] = $this->getBlockPageTitleLine();
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getBlockNavigationLines());
+
+        $lines[] = '';
+
+        $lines = array_merge($lines, $this->getBlockContentLines());
+
+        //$lines[] = $this->getEndUserAdditions();
+
+        return $lines;
     }
     // </user-additions>
     // </editor-fold>
