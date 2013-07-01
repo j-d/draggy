@@ -75,8 +75,8 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $phpTypes     = ['boolean', 'integer', 'float', 'string', 'array', 'object', 'null', 'NULL'];
         $phpFunctions = [
             'boolean' => 'is_bool',
-            'integer' => 'is_int',
-            'float'   => 'is_float',
+            'integer' => 'is_numeric',
+            'float'   => 'is_numeric',
             'string'  => 'is_string',
             'array'   => 'is_array'
         ];
@@ -314,7 +314,13 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+        if ('integer' === $attribute->getPhpType()) {
+            $lines[] = $attribute->getThisName() . ' = intval($' . $attribute->getLowerName() . ');';
+        } elseif ('float' === $attribute->getPhpType()) {
+            $lines[] = $attribute->getThisName() . ' = floatval($' . $attribute->getLowerName() . ');';
+        } else {
+            $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+        }
 
         return $lines;
     }
