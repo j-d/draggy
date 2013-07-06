@@ -39,6 +39,8 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase implements PHPEnt
     // <user-additions part="settersAndGetters">
     /**
      * {@inheritdoc}
+     *
+     * @return PHPEntity
      */
     public function getEntity()
     {

@@ -427,7 +427,7 @@ class PHPAttribute extends PHPAttributeBase
             $lines[] = ' * ';
             $lines[] = ' * @return ' . ($this->getForeignEntity()->getHasForm() ? $this->getForeignEntity()->getName() . 'Type' : 'null');
             $lines[] = ' */';
-            $lines[] = 'protected function get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments)';
+            $lines[] = 'protected function ' . $this->getGetterName() . 'FieldParentFormConstructor($arguments)';
             $lines[] = '{';
 
             if ('Entity' === $this->getFormClassType()) {
@@ -449,7 +449,7 @@ class PHPAttribute extends PHPAttributeBase
 
         $lines[] = ' * @return ' . $this->getFormClassType() . "\n";
         $lines[] = ' */';
-        $lines[] = 'public function get' . $this->getUpperName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')';
+        $lines[] = 'public function ' . $this->getGetterName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')';
         $lines[] = '{';
         $lines[] =     'return new ' . $this->getFormClassType() . '(';
         $lines[] =         '\'' . $this->name . '\'';
@@ -502,10 +502,10 @@ class PHPAttribute extends PHPAttributeBase
             switch ($this->getFormClassType()) {
                 case 'Entity':
                     $lines[] = '\'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
-                    $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+                    $lines[] = '$this->' . $this->getGetterName() . 'FieldParentFormConstructor($arguments),';
                     break;
                 case 'Collection':
-                    $lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+                    $lines[] = '$this->' . $this->getGetterName() . 'FieldParentFormConstructor($arguments),';
                     break;
                 default:
                     $lines[] = 'null,';
@@ -537,7 +537,7 @@ class PHPAttribute extends PHPAttributeBase
             $lines[] = ' * ';
             $lines[] = ' * @return ' . ($this->getForeignEntity()->getHasForm() ? $this->getForeignEntity()->getName() . 'Type' : 'null');
             $lines[] = ' */';
-            $lines[] = 'protected function get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments)';
+            $lines[] = 'protected function ' . $this->getGetterName() . 'FieldParentFormConstructor($arguments)';
             $lines[] = '{';
 
             if ('Entity' === $this->getFormClassType()) {
@@ -559,7 +559,7 @@ class PHPAttribute extends PHPAttributeBase
 
         $lines[] = ' * @return array';
         $lines[] = ' */';
-        $lines[] = 'public function get' . $this->getUpperName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')';
+        $lines[] = 'public function ' . $this->getGetterName() . 'Field(' . ('Entity' === $this->getFormClassType() || 'Collection' === $this->getFormClassType() ? '$arguments = []' : '') . ')';
         $lines[] = '{';
         $lines[] =     'return [';
         $lines[] =         '\'name\' => \'' . $this->getName() . '\',';
@@ -572,10 +572,10 @@ class PHPAttribute extends PHPAttributeBase
             switch ($this->getFormClassType()) {
                 case 'Entity':
                     $properties[] = '\'class\' => \'' . $this->getForeignEntity()->getModule() . ':' . $this->getForeignEntity()->getName() . '\',';
-                    //$lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+                    //$lines[] = '$this->' . $this->getGetterName() . 'FieldParentFormConstructor($arguments),';
                     break;
                 case 'Collection':
-                    //$lines[] = '$this->get' . $this->getUpperName() . 'FieldParentFormConstructor($arguments),';
+                    //$lines[] = '$this->' . $this->getGetterName() . 'FieldParentFormConstructor($arguments),';
                     break;
                 default:
                     //$lines[] = 'null,';

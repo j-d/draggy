@@ -85,17 +85,17 @@ class Form extends FormBase implements RenderizableTemplateInterface
         foreach ($this->getEntity()->getFormAttributes() as $attr) {
             switch ($attr->getFormClassType()) {
                 case 'Entity':
-                    $lines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
-                    $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
+                    $lines[] = '$this->fields[\'' . $attr->getFullName() . '\'] = $this->' . $attr->getGetterName() . 'Field();';
+                    $lines[] = '$this->fields[\'' . $attr->getFullName() . '\']';
                     $lines[] =     '->setParentForm($this);';
-                    $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
+                    $lines[] = '$this->fields[\'' . $attr->getFullName() . '\']';
                     $lines[] =     '->setSymfonyExpanded(true)';
 
                     $line = '->setSymfonyProperty(\'xxx\'); // Possible choices: ';
 
                     foreach ($attr->getForeignEntity()->getAttributes() as $foreignAttr) {
                         if (null === $foreignAttr->getForeign() && 'boolean' !== $foreignAttr->getPhpType()) {
-                            $line .= ' ' . $foreignAttr->getName();
+                            $line .= ' ' . $foreignAttr->getFullName();
                         }
                     }
 
@@ -104,16 +104,16 @@ class Form extends FormBase implements RenderizableTemplateInterface
 
                     break;
                 case 'Collection':
-                    $lines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
-                    $lines[] = '$' . $attr->getName() . ' = $this->fields[\'' . $attr->getName() . '\'];';
-                    $lines[] = '$this->fields[\'' . $attr->getName() . '\']';
+                    $lines[] = '$this->fields[\'' . $attr->getFullName() . '\'] = $this->' . $attr->getGetterName() . 'Field();';
+                    $lines[] = '$' . $attr->getFullName() . ' = $this->fields[\'' . $attr->getFullName() . '\'];';
+                    $lines[] = '$this->fields[\'' . $attr->getFullName() . '\']';
                     $lines[] =     '->setSymfonyAllowAdd(true)';
                     $lines[] =     '->setSymfonyAllowDelete(true);';
                     $lines[] = '';
 
                     break;
                 default:
-                    $lines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
+                    $lines[] = '$this->fields[\'' . $attr->getFullName() . '\'] = $this->' . $attr->getGetterName() . 'Field();';
                     break;
             }
         }
@@ -130,10 +130,10 @@ class Form extends FormBase implements RenderizableTemplateInterface
 
         foreach ($this->getEntity()->getFormAttributes() as $attr) {
             if ('Collection' !== $attr->getFormClassType()) {
-                $constructorLines[] = '$this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
+                $constructorLines[] = '$this->fields[\'' . $attr->getFullName() . '\'] = $this->' . $attr->getGetterName() . 'Field();';
             } else {
                 $someCollections = true;
-                $constructorLines[] = '// $this->fields[\'' . $attr->getName() . '\'] = $this->get' . $attr->getUpperName() . 'Field();';
+                $constructorLines[] = '// $this->fields[\'' . $attr->getFullName() . '\'] = $this->' . $attr->getGetterName() . 'Field();';
             }
         }
 
