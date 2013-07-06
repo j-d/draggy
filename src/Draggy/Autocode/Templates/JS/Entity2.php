@@ -197,7 +197,7 @@ class Entity2 extends Entity2Base
         }
 
         $ret .= ' */' . "\n";
-        $ret .= $attribute->getEntity()->getName() . ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '') . '.prototype.set' . $attribute->getUpperName() . ' = function (' . $attribute->getLowerSafeName() . ')' . "\n";
+        $ret .= $attribute->getEntity()->getName() . ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '') . '.prototype.' . $attribute->getSetterName() . ' = function (' . $attribute->getLowerSafeName() . ')' . "\n";
         $ret .= '{' . "\n";
 
         //$ret .= $val;
@@ -220,7 +220,7 @@ class Entity2 extends Entity2Base
         $ret .= ' *' . "\n";
         $ret .= ' * @return {' . $attribute->getJSType() . '}' . "\n";
         $ret .= ' */' . "\n";
-        $ret .= $attribute->getEntity()->getName() . ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '') . '.prototype.get' . $attribute->getUpperName() . ' = function ()' . "\n";
+        $ret .= $attribute->getEntity()->getName() . ($attribute->getEntity()->getProject()->getBase() ? 'Base' : '') . '.prototype.' . $attribute->getGetterName() . ' = function ()' . "\n";
         $ret .= '{' . "\n";
         $ret .= '    return this.' . $attribute->getLowerName() . ';' . "\n";
         $ret .= '};' . "\n";
@@ -241,13 +241,13 @@ class Entity2 extends Entity2Base
         $ret .= '     *' . "\n";
         $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
         $ret .= '     */' . "\n";
-        $ret .= '    public function add' . $attribute->getSingleUpperName() . '(' . ( $attribute->getType() !== '' ? $attribute->getType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
+        $ret .= '    public function ' . $attribute->getSingleAdderName() . '(' . ( $attribute->getType() !== '' ? $attribute->getType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
         $ret .= '    {' . "\n";
 
         if (!$attribute->getSettingFromInverse()) {
             $ret .= '        $this->' . $attribute->getLowerName() . '[] = $' . $attribute->getSingleName() . ';' . "\n";
         } else {
-            $ret .= '        $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+            $ret .= '        $' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSingleAdderName() . '($this);' . "\n";
         }
 
         $ret .= "\n";
@@ -263,7 +263,7 @@ class Entity2 extends Entity2Base
         $ret .= '     *' . "\n";
         $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
         $ret .= '     */' . "\n";
-        $ret .= '    public function add' . $attribute->getUpperName() . '(' . $attribute->getType() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
+        $ret .= '    public function ' . $attribute->getSingleAdderName() . '(' . $attribute->getType() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
         $ret .= '    {' . "\n";
 
         if (!$attribute->getSettingFromInverse()) {
@@ -272,7 +272,7 @@ class Entity2 extends Entity2Base
             $ret .= '        }' . "\n";
         } else {
             $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '            $' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+            $ret .= '            $' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSingleAdderName() . '($this);' . "\n";
             $ret .= '        }' . "\n";
         }
 
@@ -296,7 +296,7 @@ class Entity2 extends Entity2Base
         $ret .= '     *' . "\n";
         $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
         $ret .= '     */' . "\n";
-        $ret .= '    public function remove' . $attribute->getSingleUpperName() . '(' . ( $attribute->getType() !== '' ? $attribute->getType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
+        $ret .= '    public function ' . $attribute->getSingleRemoverName() . '(' . ( $attribute->getType() !== '' ? $attribute->getType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')' . "\n";
         $ret .= '    {' . "\n";
 
         if ($attribute->getType() === 'array' && !is_null($attribute->getSubtype())) {
@@ -310,7 +310,7 @@ class Entity2 extends Entity2Base
             if (!$attribute->getSettingFromInverse()) {
                 $ret .= '        $this->' . $attribute->getLowerName() . '->removeElement($' . $attribute->getSingleName() . ');' . "\n";
             } else {
-                $ret .= '        $' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+                $ret .= '        $' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSingleRemoverName() . '($this);' . "\n";
             }
         }
 
@@ -327,12 +327,12 @@ class Entity2 extends Entity2Base
         $ret .= '     *' . "\n";
         $ret .= '     * @return ' . $attribute->getEntity()->getName() . "\n";
         $ret .= '     */' . "\n";
-        $ret .= '    public function remove' . $attribute->getUpperName() . '(' . $attribute->getType() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
+        $ret .= '    public function ' . $attribute->getSingleRemoverName() . '(' . $attribute->getType() . ' ' . '$' . $attribute->getLowerName() . ')' . "\n";
         $ret .= '    {' . "\n";
 
         if ($attribute->getType() === 'array' && !is_null($attribute->getSubtype())) {
             $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-            $ret .= '            $this->remove' . $attribute->getSingleUpperName() . '($' . $attribute->getSingleName() . ');' . "\n";
+            $ret .= '            $this->' . $attribute->getSingleRemoverName() . '($' . $attribute->getSingleName() . ');' . "\n";
             $ret .= '        }' . "\n";
         } else {
             if (!$attribute->getSettingFromInverse()) {
@@ -341,7 +341,7 @@ class Entity2 extends Entity2Base
                 $ret .= '        }' . "\n";
             } else {
                 $ret .= '        foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {' . "\n";
-                $ret .= '            $' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this);' . "\n";
+                $ret .= '            $' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSingleRemoverName() . '($this);' . "\n";
                 $ret .= '        }' . "\n";
             }
         }
