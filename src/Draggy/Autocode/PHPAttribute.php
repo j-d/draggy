@@ -284,8 +284,8 @@ class PHPAttribute extends PHPAttributeBase
     public function getThisName()
     {
         return $this->getStatic()
-            ? 'self::$' . $this->getName()
-            : '$this->' . $this->getLowerName();
+            ? 'self::$' . $this->getFullName()
+            : '$this->' . $this->getLowerFullName();
     }
 
     private function getThisFunctionAssistant($name)

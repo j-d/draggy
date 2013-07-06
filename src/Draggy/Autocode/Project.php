@@ -22,7 +22,6 @@ use Draggy\Autocode\Templates\PHP as PHPTemplates;
 use Draggy\Autocode\Templates\JS as JSTemplates;
 use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 use Draggy\Log;
-
 // </user-additions>
 
 /**
@@ -78,9 +77,9 @@ class Project extends ProjectBase
 
         $module = $entity->getModule();
 
-        if ($module != '') {
+        if ('' !== $module) {
             if (!in_array($module, $this->modules)) {
-                $this->modules[] = $module;
+                $this->modules[]                 = $module;
                 $this->moduleNamespaces[$module] = $entity->getNamespace();
             }
 
@@ -664,6 +663,35 @@ class Project extends ProjectBase
         // Add OneToOne and OneToMany inverse attributes
         $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
 
+        $attributesToBeAdded = [];
+
+        // Find ideal new attribute counters
+        foreach ($foreignKeys as $foreignKey) {
+            $relationAttributes = (array)$foreignKey->attributes();
+            $relationAttributes = $relationAttributes['@attributes'];
+
+            $type = $relationAttributes['type'];
+
+            $sourceEntityName = (string)$foreignKey->attributes()->from;
+            $targetEntityName = (string)$foreignKey->attributes()->to;
+
+            $sourceEntity = &$this->getEntityByFullyQualifiedName($sourceEntityName);
+            $targetEntity = & $this->getEntityByFullyQualifiedName($targetEntityName);
+
+            if ('OneToOne' === $type) {
+                $desiredName = $targetEntity->getLowerName();
+            } else {
+                $desiredName = $targetEntity->getPluralLowerName();
+            }
+
+            if (!isset($attributesToBeAdded[$sourceEntity->getFullyQualifiedName()][$desiredName])) {
+                $attributesToBeAdded[$sourceEntity->getFullyQualifiedName()][$desiredName] = 1;
+            } else {
+                $attributesToBeAdded[$sourceEntity->getFullyQualifiedName()][$desiredName]++;
+            }
+        }
+
+        // Actually add the attributes
         foreach ($foreignKeys as $foreignKey) {
             $relationAttributes = (array)$foreignKey->attributes();
             $relationAttributes = $relationAttributes['@attributes'];
@@ -683,28 +711,32 @@ class Project extends ProjectBase
             $type = $relationAttributes['type'];
 
             if ($targetEntity->getRenderizable()) {
+                if ('OneToOne' === $type) {
+                    $desiredName = $targetEntity->getLowerName();
+                } else {
+                    $desiredName = $targetEntity->getPluralLowerName();
+                }
+
+                list($attributeName, $attributeSuffix) = 1 === $attributesToBeAdded[$sourceEntity->getFullyQualifiedName()][$desiredName]
+                    ? $this->getActualAttributeName($sourceEntity, $desiredName)
+                    : $this->getActualAttributeName($sourceEntity, $desiredName, $targetAttribute->getUpperName(), true);
+
                 if ($type === 'OneToOne') {
                     /** @var Attribute $inverseAttribute */
-                    $inverseAttribute = new $attributeClass($sourceEntity, $targetEntity->getLowerName(), 'object');
+                    $inverseAttribute = new $attributeClass($sourceEntity, $attributeName, 'object');
                     $inverseAttribute
+                        ->setSuffix($attributeSuffix)
                         ->setInverse(true)
                         ->setSubtype($targetEntity->getRelativePathName())
                         ->setForeign('OneToOne')
                         ->setForeignEntity($targetEntity)
                         ->setForeignKey($targetAttribute)
                         ->setNull($targetAttribute->getNull()); // TODO: CHECK
-
-                    try {
-                        $sourceEntity->addAttribute($inverseAttribute);
-                    } catch (DuplicateAttributeException $e) {
-                        //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
-
-                        $this->log->prepend('*** The OneToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.');
-                    }
                 } else { // ManyToOne
                     /** @var Attribute $inverseAttribute */
-                    $inverseAttribute = new $attributeClass($sourceEntity, $targetEntity->getPluralLowerName(), 'array');
+                    $inverseAttribute = new $attributeClass($sourceEntity, $attributeName, 'array');
                     $inverseAttribute
+                        ->setSuffix($attributeSuffix)
                         ->setInverse(true)
                         ->setSubtype($targetEntity->getRelativePathName())
                         ->setForeign('ManyToOne')
@@ -714,15 +746,13 @@ class Project extends ProjectBase
                         ->setReverseAttribute($targetAttribute);
 
                     $targetAttribute->setReverseAttribute($inverseAttribute);
-
-                    try {
-                        $sourceEntity->addAttribute($inverseAttribute);
-                    } catch (DuplicateAttributeException $e) {
-                        //$existingAttribute = $sourceEntity->getAttributeByName($inverseAttribute->getName());
-
-                        $this->log->prepend('*** The ManyToOne inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there.');
-                    }
                 }
+
+                if ($sourceEntity->hasAttributeByName($desiredName . $attributeSuffix)) {
+                    $this->log->prepend('*** The ' . $type . ' inverse attribute \'' . $inverseAttribute->getLowerName() . '\' could not be added to the Entity \'' . $sourceEntity->getName() . '\' because there is an attribute with that name already there. It had to be renamed to \'' . $attributeName . '\'.');
+                }
+
+                $sourceEntity->addAttribute($inverseAttribute);
 
                 $targetAttribute->setCascadePersist('both'); // Backwards compatibility
                 $targetAttribute->setCascadeRemove('both'); // Backwards compatibility
@@ -755,6 +785,36 @@ class Project extends ProjectBase
         }
 
         return $this;
+    }
+
+    /**
+     * Sometimes the automatic name cannot be used because the entity already has an attribute with that name or because is linked many times.
+     * This method gives an actual final name that will be unique.
+     *
+     * @param Entity  $entity
+     * @param string  $name
+     * @param string  $hint
+     * @param boolean $force If it should force the use of the hint
+     *
+     * @return array
+     */
+    public function getActualAttributeName(Entity $entity, $name, $hint = '', $force = false)
+    {
+        if ($entity->hasAttributeByName($name) || $force) {
+            if (!$entity->hasAttributeByName($name . $hint)) {
+                return [$name, $hint];
+            }
+
+            $append = 1;
+
+            while ($entity->hasAttributeByName($name . $append . $hint)) {
+                $append++;
+            }
+
+            return [$name . $append, $hint];
+        }
+
+        return [$name, ''];
     }
 
     private function findExistingExtraFiles($path)
@@ -1252,6 +1312,64 @@ class Project extends ProjectBase
     public function supportsReverseAttributes()
     {
         return 'Doctrine2' === $this->getOrm();
+    }
+
+    /**
+     * Get the plural name from a singular
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function singlelise($string)
+    {
+        $rules = [
+            'ies' => 'y',
+            'ves' => 'f',
+            's'   => '',
+        ];
+
+        foreach ($rules as $ending => $replacement) {
+            if ($ending === substr($string, -strlen($ending))) {
+                return substr($string, 0, -strlen($ending)) . $replacement;
+            }
+        }
+
+        return $string . 'Single';
+    }
+
+    /**
+     * Get the plural name from a singular
+     * Source: http://en.wikipedia.org/wiki/English_plurals
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function pluralise($string)
+    {
+        $rules = [
+            'tus' => 'tuses', // status to statuses
+
+            'ss'  => 'sses', // kiss to kissess
+            'sh'  => 'shes', // dish to dishes
+            'ch'  => 'ches', // witch to witches
+            'oy'  => 'oys',  // boy to boys
+            'ay'  => 'ays',  // day to days
+            'ey'  => 'eys',  // monkey to monkeys
+
+            'o'   => 'oes', // hero to heroes
+            'y'   => 'ies', // cherry to cherries
+            'f'   => 'ves', // leaf to leaves
+        ];
+
+        foreach ($rules as $ending => $replacement) {
+            if ($ending === substr($string, -strlen($ending))) {
+                return substr($string, 0, -strlen($ending)) . $replacement;
+            }
+        }
+
+        return $string . 's';
     }
     // </user-additions>
     // </editor-fold>

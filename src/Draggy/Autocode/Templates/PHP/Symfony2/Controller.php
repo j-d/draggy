@@ -18,6 +18,7 @@ namespace Draggy\Autocode\Templates\PHP\Symfony2;
 
 use Draggy\Autocode\Templates\PHP\Symfony2\Base\ControllerBase;
 // <user-additions part="use">
+use Draggy\Autocode\PHPEntity;
 // </user-additions>
 
 /**
@@ -69,6 +70,7 @@ class Controller extends ControllerBase
     {
         $lines = [];
 
+        /** @var PHPEntity $entity */
         $entity = $this->getEntity();
 
         $lines[] = $this->getUseLineControllerPart();
@@ -86,6 +88,10 @@ class Controller extends ControllerBase
             $lines[] = 'use ' . $entity->getFullyQualifiedRepositoryName() . ';';
         }
 
+        if ($entity->getCrudRead() || $entity->getCrudRead() || $entity->getCrudRead() || $entity->getCrudRead()) {
+            $lines[] = 'use Doctrine\ORM\EntityManager;';
+        }
+
         $lines[] = '';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\Request;';
         $lines[] = '// use Symfony\\Component\\HttpFoundation\\Response;';
@@ -97,16 +103,19 @@ class Controller extends ControllerBase
 
         $lines[] = '// use ' . $entity->getFullyQualifiedName() . ';';
 
+        $attributeUses = [];
+
         foreach ($entity->getAttributes() as $attr) {
             if (null !== $attr->getForeignEntity()) {
-                $lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
+                $attributeUses[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';';
 
                 if ($attr->getForeignEntity()->getHasRepository()) {
-                    $lines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . 'Repository;';
-                    //$lines[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedRepositoryName() . ';'; // TODO: FIX AND USE THIS INSTEAD
+                    $attributeUses[] = '// use ' . $attr->getForeignEntity()->getFullyQualifiedRepositoryName() . ';';
                 }
             }
         }
+
+        $lines = array_merge($lines, array_unique($attributeUses));
 
         return $lines;
     }
@@ -146,6 +155,7 @@ class Controller extends ControllerBase
 
         $lines[] = 'public function xxxAction(Request $request)';
         $lines[] = '{';
+        $lines[] =     '/** @var EntityManager $em */';
         $lines[] =     '$em = $this->getDoctrine()->getManager();';
         $lines[] =     '$xxx = $em->getRepository(\'' . $entity->getModule() . ':' . $entity->getName() . '\')->findXYZ();';
         $lines[] = '';
@@ -165,7 +175,7 @@ class Controller extends ControllerBase
         }
 
         if (count($getRepositoryLines) > 0) {
-            $lines = array_merge($lines, $getRepositoryLines);
+            $lines = array_merge($lines, array_unique($getRepositoryLines));
 
             $lines[] = '';
         }
@@ -179,7 +189,7 @@ class Controller extends ControllerBase
         }
 
         if (count($newRepositoryLines) > 0) {
-            $lines = array_merge($lines, $newRepositoryLines);
+            $lines = array_merge($lines, array_unique($newRepositoryLines));
 
             $lines[] = '';
         }
@@ -198,6 +208,7 @@ class Controller extends ControllerBase
             $lines[] =     '$form->submit($request->request->get($form->getName()));';
             $lines[] = '';
             $lines[] =     'if ($form->isValid()) {';
+            $lines[] =         '/** @var EntityManager $em */';
             $lines[] =         '$em = $this->getDoctrine()->getManager();';
             $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
             $lines[] =         '$em->flush();';
@@ -251,6 +262,7 @@ class Controller extends ControllerBase
             $lines[] = $this->getUserAdditions('listAction');
             $lines[] = 'public function listAction()';
             $lines[] = '{';
+            $lines[] =     '/** @var EntityManager $em */';
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
@@ -307,6 +319,7 @@ class Controller extends ControllerBase
                 $lines[] =     '$form->submit($request->request->get($form->getName()));';
                 $lines[] = '';
                 $lines[] =     'if ($form->isValid()) {';
+                $lines[] =         '/** @var EntityManager $em */';
                 $lines[] =         '$em = $this->getDoctrine()->getManager();';
                 $lines[] =         '$em->persist($' . $entity->getLowerName() . ');';
                 $lines[] =         '$em->flush();';
@@ -355,6 +368,7 @@ class Controller extends ControllerBase
             $lines[] = '{';
 
             if ($entity->getHasForm()) {
+                $lines[] = '/** @var EntityManager $em */';
                 $lines[] = '$em = $this->getDoctrine()->getManager();';
                 $lines[] = '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
                 $lines[] = '';
@@ -404,6 +418,7 @@ class Controller extends ControllerBase
             $lines[] = $this->getUserAdditions('deleteAction');
             $lines[] = 'public function deleteAction(Request $request, $id)';
             $lines[] = '{';
+            $lines[] =     '/** @var EntityManager $em */';
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';

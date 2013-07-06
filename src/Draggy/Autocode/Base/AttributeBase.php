@@ -190,6 +190,8 @@ abstract class AttributeBase
      */
     protected $cascadeRemove = null;
 
+
+    protected $suffix = '';
     // </editor-fold>
 
     // <editor-fold desc="Setters and getters">
@@ -1135,6 +1137,18 @@ abstract class AttributeBase
     public function getCascadeRemove()
     {
         return $this->cascadeRemove;
+    }
+
+    public function setSuffix($suffix)
+    {
+        $this->suffix = $suffix;
+
+        return $this;
+    }
+
+    public function getSuffix()
+    {
+        return $this->suffix;
     }
     // </editor-fold>
 

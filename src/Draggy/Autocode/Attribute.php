@@ -88,14 +88,29 @@ abstract class Attribute extends AttributeBase
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
+    public function getFullName()
+    {
+        return $this->getName() . $this->getSuffix();
+    }
+
     public function getLowerName()
     {
-        return strtolower($this->name[0]) . substr($this->name, 1);
+        return lcfirst($this->name);
+    }
+
+    public function getLowerFullName()
+    {
+        return lcfirst($this->getFullName());
     }
 
     public function getUpperName()
     {
-        return strtoupper($this->name[0]) . substr($this->name, 1);
+        return ucfirst($this->name);
+    }
+
+    public function getUpperFullName()
+    {
+        return ucfirst($this->getFullName());
     }
 
     public function getHumanName()
@@ -105,22 +120,12 @@ abstract class Attribute extends AttributeBase
 
     public function getSingleName()
     {
-        if (substr($this->getName(),-3) == 'ies')
-            return substr($this->getName(),0,-3) . 'y';
-        elseif (substr($this->getName(),-3) == 'ves')
-            return substr($this->getName(),0,-3) . 'f';
-        elseif (substr($this->getName(),-1) == 's')
-            return substr($this->getName(),0,-1);
-        else
-            return $this->getName() . 'Single';
-        //throw new \RuntimeException('Doesn\'t know how to calculate the singular of ' . $this->getName());
+        return Project::singlelise($this->getName());
     }
 
     public function getSingleUpperName()
     {
-        $upperName = $this->getSingleName();
-
-        return strtoupper($upperName[0]) . substr($upperName,1);
+        return ucfirst($this->getSingleName());
     }
 
     public function getMaxMessage()
@@ -329,47 +334,47 @@ abstract class Attribute extends AttributeBase
 
     public function getSetterName()
     {
-        return 'set' . $this->getUpperName();
+        return 'set' . $this->getUpperName() . $this->getSuffix();
     }
 
     public function getClearName()
     {
-        return 'clear' . $this->getUpperName();
+        return 'clear' . $this->getUpperName() . $this->getSuffix();
     }
 
     public function getGetterName()
     {
-        return 'get' . $this->getUpperName();
+        return 'get' . $this->getUpperName() . $this->getSuffix();
     }
 
     public function getSingleAdderName()
     {
-        return 'add' . $this->getSingleUpperName();
+        return 'add' . $this->getSingleUpperName() . $this->getSuffix();
     }
 
     public function getMultipleAdderName()
     {
-        return 'add' . $this->getUpperName();
+        return 'add' . $this->getUpperName() . $this->getSuffix();
     }
 
     public function getSingleRemoverName()
     {
-        return 'remove' . $this->getSingleUpperName();
+        return 'remove' . $this->getSingleUpperName() . $this->getSuffix();
     }
 
     public function getMultipleRemoverName()
     {
-        return 'remove' . $this->getUpperName();
+        return 'remove' . $this->getUpperName() . $this->getSuffix();
     }
 
     public function getSingleContainsName()
     {
-        return 'contains' . $this->getSingleUpperName();
+        return 'contains' . $this->getSingleUpperName() . $this->getSuffix();
     }
 
     public function getMultipleContainsName()
     {
-        return 'contains' . $this->getUpperName();
+        return 'contains' . $this->getUpperName() . $this->getSuffix();
     }
     // </user-additions>
     // </editor-fold>

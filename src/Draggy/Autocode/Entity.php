@@ -68,34 +68,9 @@ class Entity extends EntityBase
         return substr($this->module,0,substr($this->module,-6) == 'Bundle' ? -6 : null);
     }
 
-    /**
-     * Get the plural name from a singular
-     * Source: http://en.wikipedia.org/wiki/English_plurals
-     *
-     * @return string
-     */
     public function getPluralName()
     {
-        $rules = [
-            'ss' => 'sses', // kiss to kissess
-            'sh' => 'shes', // dish to dishes
-            'ch' => 'ches', // witch to witches
-            'oy' => 'oys',  // boy to boys
-            'ay' => 'ays',  // day to days
-            'ey' => 'eys',  // monkey to monkeys
-
-            'o'  => 'oes', // hero to heroes
-            'y'  => 'ies', // cherry to cherries
-            'f'  => 'ves', // leaf to leaves
-        ];
-
-        foreach ($rules as $ending => $replacement) {
-            if ($ending === substr($this->getName(), -strlen($ending))) {
-                return substr($this->getName(), 0, -strlen($ending)) . $replacement;
-            }
-        }
-
-        return $this->getName() . 's';
+        return Project::pluralise($this->getName());
     }
 
     public function getPluralLowerName()
@@ -166,21 +141,26 @@ class Entity extends EntityBase
         return $relativePath;
     }
 
+    public function hasAttributeByName($name)
+    {
+        return isset($this->attributes[$name]);
+    }
+
     /**
      * @inheritDoc
      */
     public function addAttribute(Attribute $attribute, $allowRepeatedValues = true)
     {
-        if (isset( $this->attributes[$attribute->getName()] )) {
+        if ($this->hasAttributeByName($attribute->getFullName())) {
             throw new DuplicateAttributeException( 'Tried to add an attribute by the name of \'' . $attribute->getName() . '\' to the entity \'' . $this->getName() . '\' but there was already an attribute by that name.' );
         }
 
-        $this->attributeNames[] = $attribute->getName();
-        $this->attributes[$attribute->getName()] = $attribute;
+        $this->attributeNames[]                  = $attribute->getFullName();
+        $this->attributes[$attribute->getFullName()] = $attribute;
 
         if ($attribute->getPrimary()) {
-            $attribute                                      = &$this->getAttributeByName($attribute->getName()); // Get it by reference so they point to the same one
-            $this->primaryAttributes[$attribute->getName()] = $attribute;
+            $attribute                                          = &$this->getAttributeByName($attribute->getFullName()); // Get it by reference so they point to the same one
+            $this->primaryAttributes[$attribute->getFullName()] = $attribute;
         }
 
         return $this;

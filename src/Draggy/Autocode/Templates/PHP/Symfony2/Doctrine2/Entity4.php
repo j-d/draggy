@@ -102,7 +102,7 @@ class Entity4 extends Entity4Base
                     break;
                 case 'OneToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerFullName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
                     } else {
                         $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) . ')';
@@ -249,14 +249,14 @@ class Entity4 extends Entity4Base
 
         $linesManySide = [
             'foreach (' . $attribute->getThisName() . ' as $' . $attribute->getSingleName() . ') {',
-                'if (!$' . $attribute->getLowerName() . '->contains($' . $attribute->getSingleName() . ')) {',
+                'if (!$' . $attribute->getLowerFullName() . '->contains($' . $attribute->getSingleName() . ')) {',
                     $attribute->getThisSingleRemoverName() . '($' . $attribute->getSingleName() . ', $_reverseCall);',
                 '} else {',
-                    '$' . $attribute->getLowerName() . '->removeElement($' . $attribute->getSingleName() . ');',
+                    '$' . $attribute->getLowerFullName() . '->removeElement($' . $attribute->getSingleName() . ');',
                 '}',
             '}',
             '',
-            $attribute->getThisMultipleAdderName() . '($' . $attribute->getLowerName() . ', false, $_reverseCall);',
+            $attribute->getThisMultipleAdderName() . '($' . $attribute->getLowerFullName() . ', false, $_reverseCall);',
         ];
 
         if ('ManyToMany' === $attribute->getForeign()) {
@@ -267,18 +267,18 @@ class Entity4 extends Entity4Base
             }
         } elseif ('ManyToOne' === $attribute->getForeign()) {
             if (!$settingFromInverse) {
-                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+                $lines[] = 'if ($' . $attribute->getLowerFullName() . ' !== ' . $attribute->getThisName() . ') {';
                 $lines[] =     'if ($_reverseCall) {';
-                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                 $lines[] =     '} else {';
                 $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
-                $lines[] =             $attribute->getThisName() . '->remove' . $this->getEntity()->getName() . '($this);';
+                $lines[] =             $attribute->getThisName() . '->' . $attribute->getReverseAttribute()->getSingleRemoverName() . '($this);';
                 $lines[] =         '}';
                 $lines[] = '';
-                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                 $lines[] = '';
-                $lines[] =         'if (null !== ' . $attribute->getThisName() . ' && !' . $attribute->getThisName() . '->contains' . $this->getEntity()->getName() . '($this)) {';
-                $lines[] =             $attribute->getThisName() . '->add' . $this->getEntity()->getName() . '($this);';
+                $lines[] =         'if (null !== ' . $attribute->getThisName() . ' && !' . $attribute->getThisName() . '->' . $attribute->getReverseAttribute()->getSingleContainsName() . '($this)) {';
+                $lines[] =             $attribute->getThisName() . '->' . $attribute->getReverseAttribute()->getSingleAdderName() . '($this);';
                 $lines[] =         '}';
                 $lines[] =     '}';
                 $lines[] = '}';
@@ -294,39 +294,40 @@ class Entity4 extends Entity4Base
             //     Tell the new one that needs to link to this. Can't say not to call back because perhaps it was linked to another one
 
             if (!$settingFromInverse) {
-                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+                $lines[] = 'if ($' . $attribute->getLowerFullName() . ' !== ' . $attribute->getThisName() . ') {';
 
                 if ($attribute->getSetter()) {
                     $lines[] =     'if (!$_reverseCall) {';
-                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] =     '} else {';
                     $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
                     $lines[] = $attribute->getNull()
-                        ? $attribute->getThisName() . '->set' . $attribute->getEntity()->getName() . '(null, false);'
-                        : $attribute->getThisName() . '->clear' . $attribute->getEntity()->getName() . '();';
+                        ? $attribute->getThisName() . '->set' . $attribute->getEntity()->getName() . '(null, false); // CHECK' // TODO
+                        : $attribute->getThisName() . '->clear' . $attribute->getEntity()->getName() . '(); // CHECK'; // TODO
 
                     $lines[] =         '}';
                     $lines[] = '';
-                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
-                    $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
-                    $lines[] =             '$' . $attribute->getName() . '->set' . $attribute->getEntity()->getName() . '($this);';
+                    $lines[] =         'if (null !== $' . $attribute->getLowerFullName() . ') {';
+                    $lines[] =             '$' . $attribute->getName() . '->set' . $attribute->getEntity()->getName() . '($this); // REMOVE?'; // TODO
+                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getSetterName() . '($this); // CHECK'; // TODO
                     $lines[] =         '}';
                     $lines[] =     '}';
                 } else {
-                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
                     $lines[] = '// Reverse entity doesn\'t have a setter so the reverse call cannot be made';
                 }
 
                 $lines[] = '}';
             } else {
-                $lines[] = 'if ($' . $attribute->getLowerName() . ' !== ' . $attribute->getThisName() . ') {';
+                $lines[] = 'if ($' . $attribute->getLowerFullName() . ' !== ' . $attribute->getThisName() . ') {';
 
                 if ($attribute->getForeignKey()->getSetter()) {
                     $lines[] =     'if (!$_reverseCall) {';
-                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] =     '} else {';
                     $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
@@ -336,14 +337,14 @@ class Entity4 extends Entity4Base
 
                     $lines[] =         '}';
                     $lines[] = '';
-                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
-                    $lines[] =         'if (null !== $' . $attribute->getLowerName() . ') {';
+                    $lines[] =         'if (null !== $' . $attribute->getLowerFullName() . ') {';
                     $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
                     $lines[] =         '}';
                     $lines[] =     '}';
                 } else {
-                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+                    $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
                     $lines[] = '// Reverse entity doesn\'t have a setter so the reverse call cannot be made';
                 }
@@ -397,9 +398,9 @@ class Entity4 extends Entity4Base
         $lines[] = 'if ($_reverseCall) {';
 
         if ('ManyToMany' === $attribute->getForeign()) {
-            $lines[] = '$' . $attribute->getSingleName() . '->add' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this, $_allowRepeatedValues, false);';
+            $lines[] = '$' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSingleAdderName() . '($this, $_allowRepeatedValues, false);';
         } elseif ('ManyToOne' === $attribute->getForeign() && !$attribute->getOwnerSide()) {
-            $lines[] = '$' . $attribute->getSingleName() . '->set' . $attribute->getReverseAttribute()->getUpperName() . '($this, false);';
+            $lines[] = '$' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSetterName() . '($this, false);';
         }
 
         $lines[] = '}';
@@ -472,9 +473,9 @@ class Entity4 extends Entity4Base
         $lines[] = 'if (' . $attribute->getThisName() . '->removeElement($' . $attribute->getSingleName() . ') && $_reverseCall) {';
 
         if ('ManyToMany' === $attribute->getForeign()) {
-            $lines[] = '$' . $attribute->getSingleName() . '->remove' . $attribute->getReverseAttribute()->getSingleUpperName() . '($this, false);';
+            $lines[] = '$' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSingleRemoverName() . '($this, false);';
         } elseif ('ManyToOne' === $attribute->getForeign() && !$attribute->getOwnerSide()) {
-            $lines[] = '$' . $attribute->getSingleName() . '->set' . $attribute->getEntity()->getName() . '(null, false);';
+            $lines[] = '$' . $attribute->getSingleName() . '->' . $attribute->getReverseAttribute()->getSetterName() . '(null, false);';
         }
 
         $lines[] = '}';

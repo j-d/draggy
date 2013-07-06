@@ -98,9 +98,9 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
                 $names[] = $type;
 
                 if ('null' === $type || 'NULL' === $type) {
-                    $condition[] = 'null !== $' . $attribute->getLowerName();
+                    $condition[] = 'null !== $' . $attribute->getLowerFullName();
                 } else {
-                    $condition[] = '!' . $phpFunctions[$type] . '($' . $attribute->getLowerName() . ')';
+                    $condition[] = '!' . $phpFunctions[$type] . '($' . $attribute->getLowerFullName() . ')';
                 }
             }
         }
@@ -114,7 +114,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $lines = [];
 
         $lines[] = 'if (' . implode(' && ', $condition) . ') {';
-        $lines[] =     'throw new \InvalidArgumentException(\'The attribute ' . $attribute->getLowerName() . ' on the class ' . $attribute->getEntity()->getName() . ' has to be ' . $types . ' (\' . gettype($' . $attribute->getLowerName() . ') . (\'object\' === gettype($' . $attribute->getLowerName() . ') ? \' \' . get_class($' . $attribute->getLowerName() . ') : \'\') . \' given).\');';
+        $lines[] =     'throw new \InvalidArgumentException(\'The attribute ' . $attribute->getLowerFullName() . ' on the class ' . $attribute->getEntity()->getName() . ' has to be ' . $types . ' (\' . gettype($' . $attribute->getLowerFullName() . ') . (\'object\' === gettype($' . $attribute->getLowerFullName() . ') ? \' \' . get_class($' . $attribute->getLowerFullName() . ') : \'\') . \' given).\');';
         $lines[] = '}';
 
         return $lines;
@@ -130,7 +130,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
             $lines[] = '';
         }
 
-        $lines[] = '@var ' . $attribute->getPhpAnnotationType() . ' $' . $attribute->getLowerName();
+        $lines[] = '@var ' . $attribute->getPhpAnnotationType() . ' $' . $attribute->getLowerFullName();
 
         return $lines;
     }
@@ -154,9 +154,9 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         if ($attribute->getEntity()->getProject()->getBase()) {
             if (!$attribute->getStatic()) {
-                $line = 'protected $' . $attribute->getLowerName();
+                $line = 'protected $' . $attribute->getLowerFullName();
             } else {
-                $line = 'protected static $' . $attribute->getName();
+                $line = 'protected static $' . $attribute->getLowerFullName();
             }
 
             if (null === $attribute->getDefaultValue()) {
@@ -174,14 +174,14 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
             $lines[] = $line;
         } else {
             if (null === $attribute->getDefaultValue()) {
-                $lines[] = 'private $' . $attribute->getLowerName() . ';';
+                $lines[] = 'private $' . $attribute->getLowerFullName() . ';';
             } else {
                 switch($attribute->getPhpType()) {
                     case 'string':
-                        $lines[] = 'private $' . $attribute->getLowerName() . ' = \'' . str_replace('\'','\\\'',$attribute->getDefaultValue()) . '\';';
+                        $lines[] = 'private $' . $attribute->getLowerFullName() . ' = \'' . str_replace('\'','\\\'',$attribute->getDefaultValue()) . '\';';
                         break;
                     default:
-                        $lines[] = 'private $' . $attribute->getLowerName() . ' = ' . $attribute->getDefaultValue() . ';';
+                        $lines[] = 'private $' . $attribute->getLowerFullName() . ' = ' . $attribute->getDefaultValue() . ';';
                 }
             }
         }
@@ -222,8 +222,8 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
                         if (null !== $attribute->getMinSize()) {
                             $lines[] = '';
 
-                            $lines[] = 'if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {';
-                            $lines[] =     'throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');';
+                            $lines[] = 'if (strlen($' . $attribute->getLowerFullName() . ') < ' . $attribute->getMinSize() . ') {';
+                            $lines[] =     'throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerFullName() . ', the length of the string \' . $' . $attribute->getLowerFullName() . ' . \' is \' . strlen($' . $attribute->getLowerFullName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');';
                             $lines[] = '}';
                         }
                     } else {
@@ -232,8 +232,8 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
                         if (null !== $attribute->getMinSize()) {
                             $lines[] = '';
 
-                            $lines[] = 'if (strlen($' . $attribute->getLowerName() . ') < ' . $attribute->getMinSize() . ') {';
-                            $lines[] =     'throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerName() . ', the length of the string \' . $' . $attribute->getLowerName() . ' . \' is \' . strlen($' . $attribute->getLowerName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');';
+                            $lines[] = 'if (strlen($' . $attribute->getLowerFullName() . ') < ' . $attribute->getMinSize() . ') {';
+                            $lines[] =     'throw new \InvalidArgumentException(\'On the attribute ' . $attribute->getLowerFullName() . ', the length of the string \' . $' . $attribute->getLowerFullName() . ' . \' is \' . strlen($' . $attribute->getLowerFullName() . ') . \' which is shorter than the minimum allowed (' . $attribute->getMinSize() . ').\');';
                             $lines[] = '}';
                         }
                     }
@@ -266,7 +266,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerFullName();
 
         return $lines;
     }
@@ -275,7 +275,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = 'Set ' . $attribute->getLowerName();
+        $lines[] = 'Set ' . $attribute->getLowerFullName();
         $lines[] = '';
 
         $lines = array_merge($lines, $this->getSetterCodeDocumentationParameterLines($attribute));
@@ -299,8 +299,8 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         // It always has to allow for nulls because of when the foreign entity is being set and this doesn't have a match anymore
         $parameters[] = null === $attribute->getPhpParameterType()
-            ? '$' . $attribute->getLowerName()
-            : $attribute->getPhpParameterType() . ' $' . $attribute->getLowerName();
+            ? '$' . $attribute->getLowerFullName()
+            : $attribute->getPhpParameterType() . ' $' . $attribute->getLowerFullName();
 
         return $parameters;
     }
@@ -315,11 +315,11 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $lines = [];
 
         if ('integer' === $attribute->getPhpType()) {
-            $lines[] = $attribute->getThisName() . ' = intval($' . $attribute->getLowerName() . ');';
+            $lines[] = $attribute->getThisName() . ' = intval($' . $attribute->getLowerFullName() . ');';
         } elseif ('float' === $attribute->getPhpType()) {
-            $lines[] = $attribute->getThisName() . ' = floatval($' . $attribute->getLowerName() . ');';
+            $lines[] = $attribute->getThisName() . ' = floatval($' . $attribute->getLowerFullName() . ');';
         } else {
-            $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerName() . ';';
+            $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
         }
 
         return $lines;
@@ -359,7 +359,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = 'Clear ' . $attribute->getLowerName();
+        $lines[] = 'Clear ' . $attribute->getLowerFullName();
 
         if (!$attribute->getStatic()) {
             $lines[] = '';
@@ -400,7 +400,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = 'Get ' . $attribute->getLowerName();
+        $lines[] = 'Get ' . $attribute->getLowerFullName();
         $lines[] = '';
         $lines[] = '@return ' . $attribute->getPhpAnnotationTypeBase();
 
@@ -503,7 +503,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerFullName();
         $lines[] = '@param bool $_allowRepeatedValues';
 
         return $lines;
@@ -513,7 +513,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = 'Add ' . $attribute->getLowerName();
+        $lines[] = 'Add ' . $attribute->getLowerFullName();
         $lines[] = '';
 
         $lines = array_merge($lines, $this->getMultipleAdderCodeDocumentationParameterLines($attribute));
@@ -530,7 +530,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $parameters = [];
 
-        $parameters[] = $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName();
+        $parameters[] = $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerFullName();
         $parameters[] = '$_allowRepeatedValues = false';
 
         return $parameters;
@@ -559,7 +559,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $lines[] = $this->getMultipleAdderDeclarationLine($attribute);
         $lines[] = '{';
 
-        $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+        $lines[] = 'foreach ($' . $attribute->getLowerFullName() . ' as $' . $attribute->getSingleName() . ') {';
 
         $lines = array_merge($lines, $this->getMultipleAdderCodeLinesAssignmentPart($attribute));
 
@@ -605,7 +605,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getSingleContainsCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getSingleUpperName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function ' . $attribute->getSingleContainsName() . '(' . ( '' !== $attribute->getPhpSingleParameterType() ? $attribute->getPhpSingleParameterType() . ' ' : '' ) . '$' . $attribute->getSingleName() . ')';
         $lines[] = '{';
 
         $lines = array_merge($lines, $this->getSingleContainsCodeLinesBodyPart($attribute));
@@ -619,9 +619,9 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = 'Contains ' . $attribute->getLowerName();
+        $lines[] = 'Contains ' . $attribute->getLowerFullName();
         $lines[] = '';
-        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerFullName();
         $lines[] = '';
         $lines[] = '@return bool';
 
@@ -634,9 +634,9 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         $lines = array_merge($lines, $this->surroundDocumentationBlock($this->getMultipleContainsCodeDocumentationLines($attribute)));
 
-        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function contains' . $attribute->getUpperName() . '(' . (null !== $attribute->getPhpParameterTypeBase() ? $attribute->getPhpParameterTypeBase() . ' ' : '') . '$' . $attribute->getLowerName() . ')';
+        $lines[] = 'public ' . ($attribute->getStatic() ? 'static ' : '') . 'function ' . $attribute->getMultipleContainsName() . '(' . (null !== $attribute->getPhpParameterTypeBase() ? $attribute->getPhpParameterTypeBase() . ' ' : '') . '$' . $attribute->getLowerFullName() . ')';
         $lines[] = '{';
-        $lines[] =     'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+        $lines[] =     'foreach ($' . $attribute->getLowerFullName() . ' as $' . $attribute->getSingleName() . ') {';
         $lines[] =         'if (!' . $attribute->getThisSingleContainsName() . '($' . $attribute->getSingleName() . ')) {';
         $lines[] =             'return false;';
         $lines[] =         '}';
@@ -727,7 +727,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerName();
+        $lines[] = '@param ' . $attribute->getPhpAnnotationTypeBase() . ' $' . $attribute->getLowerFullName();
 
         return $lines;
     }
@@ -736,7 +736,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $lines = [];
 
-        $lines[] = 'Remove ' . $attribute->getLowerName();
+        $lines[] = 'Remove ' . $attribute->getLowerFullName();
         $lines[] = '';
 
         $lines = array_merge($lines, $this->getMultipleRemoverCodeDocumentationParameterLines($attribute));
@@ -753,7 +753,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         $parameters = [];
 
-        $parameters[] = $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerName();
+        $parameters[] = $attribute->getPhpParameterTypeBase() . ' ' . '$' . $attribute->getLowerFullName();
 
         return $parameters;
     }
@@ -781,7 +781,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $lines[] = $this->getMultipleRemoverDeclarationLine($attribute);
         $lines[] = '{';
 
-        $lines[] = 'foreach ($' . $attribute->getLowerName() . ' as $' . $attribute->getSingleName() . ') {';
+        $lines[] = 'foreach ($' . $attribute->getLowerFullName() . ' as $' . $attribute->getSingleName() . ') {';
 
         $lines = array_merge($lines, $this->getMultipleRemoverCodeLinesBodyCallPart($attribute));
 
@@ -1255,7 +1255,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
                 $attributeDefaultValueConstructor = $attr->getDefaultValueConstructorInit();
 
                 if ('' !== $attributeDefaultValueConstructor) {
-                    $lines[] = '$this->' . $attr->getLowerName() . ' = ' . $attributeDefaultValueConstructor . ';';
+                    $lines[] = '$this->' . $attr->getLowerFullName() . ' = ' . $attributeDefaultValueConstructor . ';';
                 }
             }
 
