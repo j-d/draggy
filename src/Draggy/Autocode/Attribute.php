@@ -337,9 +337,19 @@ abstract class Attribute extends AttributeBase
         return 'set' . $this->getUpperName() . $this->getSuffix();
     }
 
+    public function getSetterEntityName()
+    {
+        return 'set' . $this->getEntity()->getName() . $this->getSuffix();
+    }
+
     public function getClearName()
     {
         return 'clear' . $this->getUpperName() . $this->getSuffix();
+    }
+
+    public function getClearEntityName()
+    {
+        return 'clear' . $this->getEntity()->getName() . $this->getSuffix();
     }
 
     public function getGetterName()

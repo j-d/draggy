@@ -303,16 +303,15 @@ class Entity4 extends Entity4Base
                     $lines[] =         'if (null !== ' . $attribute->getThisName() . ') {';
 
                     $lines[] = $attribute->getNull()
-                        ? $attribute->getThisName() . '->set' . $attribute->getEntity()->getName() . '(null, false); // CHECK' // TODO
-                        : $attribute->getThisName() . '->clear' . $attribute->getEntity()->getName() . '(); // CHECK'; // TODO
+                        ? $attribute->getThisName() . '->' . $attribute->getSetterEntityName() . '(null, false);'
+                        : $attribute->getThisName() . '->' . $attribute->getClearEntityName() . '();';
 
                     $lines[] =         '}';
                     $lines[] = '';
                     $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
                     $lines[] =         'if (null !== $' . $attribute->getLowerFullName() . ') {';
-                    $lines[] =             '$' . $attribute->getName() . '->set' . $attribute->getEntity()->getName() . '($this); // REMOVE?'; // TODO
-                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getSetterName() . '($this); // CHECK'; // TODO
+                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getSetterEntityName() . '($this);';
                     $lines[] =         '}';
                     $lines[] =     '}';
                 } else {

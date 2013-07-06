@@ -79,11 +79,15 @@ class Fixtures extends FixturesBase
         $lines[] = '';
         $lines[] = 'use ' . $this->getEntity()->getNamespace() . '\\Entity\\' . $this->getEntity()->getName() . ';';
 
+        $attributeLines = [];
+
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if (null !== $attr->getForeignEntity()) {
-                $lines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';';
+                $attributeLines[] = '// use ' . $attr->getForeignEntity()->getNamespace() . '\\Entity\\' . $attr->getForeignEntity()->getName() . ';';
             }
         }
+
+        $lines = array_merge($lines, array_unique($attributeLines));
 
         $lines = array_merge($lines, $this->getUseLinesUserAdditionsPart());
 
