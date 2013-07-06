@@ -8,6 +8,7 @@ Draggy.prototype.framework = null;
 Draggy.prototype.saveAddress = null;
 Draggy.prototype.previewAddress = null;
 Draggy.prototype.generateAddress = null;
+Draggy.prototype.ignoreFiles = [];
 
 Draggy.prototype.addClass = function (name,container) {
     new Class(name,container);
@@ -183,6 +184,10 @@ Draggy.prototype.setFramework = function (framework) {
     Draggy.prototype.framework = framework;
 
     return this;
+};
+
+Draggy.prototype.setIgnoreFiles = function(ignoreFiles){
+    Draggy.prototype.ignoreFiles = ignoreFiles;
 };
 
 Draggy.prototype.allOptions = {

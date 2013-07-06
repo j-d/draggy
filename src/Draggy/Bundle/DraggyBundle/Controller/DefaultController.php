@@ -195,7 +195,7 @@ class DefaultController extends Controller
             return $this->render(
                 'DraggyBundle:Default:error.html.twig',
                 [
-                'message' => $exception->getMessage()
+                    'message' => $exception->getMessage()
                 ]
             );
         }
@@ -204,16 +204,23 @@ class DefaultController extends Controller
 
         $targetFolder = $this->getSourcePath($file, $self);
 
-        $project = new Project();
+        $project = (new Project())
+            ->loadFile($modelFile);
 
-        $project
-            ->loadFile($modelFile)
-            ->saveTo($targetFolder);
+        //$this->getRequest()->get('ignore')
+
+        $toProcess = $this->getRequest()->get('process');
+
+        if(null!== $toProcess) {
+            $project
+                ->setFilesToProcess($toProcess)
+                ->saveTo($targetFolder);
+        }
 
         return $this->render(
             'DraggyBundle:Default:generateEntities.html.twig',
             [
-            'log' => $project->getLog()
+                'log' => $project->getLog()
             ]
         );
     }
@@ -253,8 +260,8 @@ class DefaultController extends Controller
         return $this->render(
             'DraggyBundle:Default:parts/autocodeChanges.html.twig',
             [
-            'changes' => $changes,
-            'error' => $error,
+                'changes' => $changes,
+                'error' => $error,
             ]
         );
     }
@@ -292,7 +299,7 @@ class DefaultController extends Controller
             $response = $this->render(
                 'DraggyBundle:Default:ajaxMessage.txt.twig',
                 [
-                'message' => $exception->getMessage(),
+                    'message' => $exception->getMessage(),
                 ]
             );
 
@@ -304,7 +311,7 @@ class DefaultController extends Controller
         return $this->render(
             'DraggyBundle:Default:ajaxMessage.txt.twig',
             [
-            'message' => 'OK',
+                'message' => 'OK',
             ]
         );
     }

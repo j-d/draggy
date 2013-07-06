@@ -37,6 +37,11 @@ class Project extends ProjectBase
      * @var Log
      */
     protected $log;
+
+    /**
+     * @var array
+     */
+    protected $filesToProcess = [];
     // </user-additions>
     // </editor-fold>
 
@@ -115,6 +120,28 @@ class Project extends ProjectBase
         } else {
             return $log;
         }
+    }
+
+    /**
+     * Set the files that are going to be processed (all others will be ignored)
+     *
+     * @param $filesToProcess
+     *
+     * @return $this
+     */
+    public function setFilesToProcess($filesToProcess)
+    {
+        $this->filesToProcess = $filesToProcess;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilesToProcess()
+    {
+        return $this->filesToProcess;
     }
     // </user-additions>
     // </editor-fold>
@@ -928,7 +955,6 @@ class Project extends ProjectBase
         return $diffArray;
     }
 
-
     public function saveTo($path)
     {
         if (!is_dir($path)) {
@@ -937,9 +963,18 @@ class Project extends ProjectBase
         }
 
         $fileCollection = $this->getModelFiles($path);
-        $fileCollection->setOverwrite($this->getOverwrite());
 
-        $fileCollection->save();
+        $filteredFileCollection = new FileCollection();
+
+        foreach ($fileCollection->getFiles() as $file) {
+            if (in_array($file->getFullName(), $this->filesToProcess)) {
+                $filteredFileCollection->add($file);
+            }
+        }
+
+        $filteredFileCollection
+            ->setOverwrite($this->getOverwrite())
+            ->save();
 
         $this->log->append($fileCollection->getLog());
     }

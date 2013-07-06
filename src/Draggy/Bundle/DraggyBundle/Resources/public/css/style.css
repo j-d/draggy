@@ -580,3 +580,17 @@ div.autocode-error {
     color: #444;
     font-size: 14pt;
 }
+
+input.autocode-change-checkbox {
+    float: left;
+    margin-right: 10px;
+}
+
+#autocode-changes-controls {
+    display: none;
+    margin: 5px 0;
+}
+
+span.generate-entities-check-all, span.generate-entities-uncheck-all, span.generate-entities-fold-all, span.generate-entities-unfold-all {
+    cursor: pointer;
+}

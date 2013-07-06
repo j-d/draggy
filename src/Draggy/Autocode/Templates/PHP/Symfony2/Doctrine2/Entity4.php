@@ -102,7 +102,7 @@ class Entity4 extends Entity4Base
                     break;
                 case 'OneToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerFullName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
                     } else {
                         $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) . ')';

@@ -1,8 +1,15 @@
 <div id="generate-entities-dialog" class="draggy-dialog" title="Generate entities">
     <div id="generate-entities-messages">
-        <p>WARNING: If you continue your project will be saved</p>
+        <p><strong>WARNING: If you continue your project will be saved</strong></p>
         <p>It is recommended that you double check that you have a copy of the '{{ targetFolder }}' folder before continuing.</p>
         <p>Please review the changes and confirm by pressing 'Generate'...</p>
+
+        <div id="autocode-changes-controls">
+            <span class="generate-entities-check-all"><img src="{{ asset('bundles/draggy/img/check-all.png') }}" alt="Check all"> Check all</span> /
+            <span class="generate-entities-uncheck-all"><img src="{{ asset('bundles/draggy/img/uncheck-all.png') }}" alt="Uncheck all"> Uncheck all</span> /
+            <span class="generate-entities-fold-all">Fold all</span> /
+            <span class="generate-entities-unfold-all">Unfold all</span>
+        </div>
         <div id="autocode-changes"></div>
     </div>
     <div id="generate-entities-success"></div>
@@ -10,6 +17,30 @@
 
 <script>
     $(function () {
+        $("span.generate-entities-check-all").click(function(){
+            $("input.autocode-change-checkbox").attr("checked", "checked");
+        });
+
+        $("span.generate-entities-uncheck-all").click(function(){
+            $("input.autocode-change-checkbox").removeAttr("checked");
+        });
+
+        $("span.generate-entities-fold-all").click(function(){
+            var $autocodeChange = $("div.autocode-change");
+
+            $autocodeChange.find("div.autocode-change-lines").slideUp();
+            $autocodeChange.find("div.unfold-icon span.icon-down").css('display', 'block');
+            $autocodeChange.find("div.unfold-icon span.icon-up").hide();
+        });
+
+        $("span.generate-entities-unfold-all").click(function(){
+            var $autocodeChange = $("div.autocode-change");
+
+            $autocodeChange.find("div.autocode-change-lines").slideDown();
+            $autocodeChange.find("div.unfold-icon span.icon-down").hide();
+            $autocodeChange.find("div.unfold-icon span.icon-up").css('display', 'block');
+        });
+
         $("#generate-entities-dialog").dialog({
             autoOpen: false,
             height: 800,
@@ -27,11 +58,32 @@
                     $("#generate-entities-messages").hide();
                     $("#generate-entities-success").html('Generating...').show();
 
+                    var toChange           = [];
+                    var toIgnore           = [];
+                    var toChangeCheckboxes = $(".autocode-change-checkbox");
+
+                    for (var i = 0; i < toChangeCheckboxes.length; i++) {
+                        var $toChangeCheckbox = $(toChangeCheckboxes[i]);
+
+                        if (undefined !== $toChangeCheckbox.attr("checked")) {
+                            toChange.push($toChangeCheckbox.val());
+                        } else {
+                            toIgnore.push($toChangeCheckbox.val());
+                        }
+                    }
+
+                    Draggy.prototype.setIgnoreFiles(toIgnore);
+
                     $.ajax({
                         type: 'POST',
                         url: Draggy.prototype.generateAddress,
-                        cache: false
+                        cache: false,
+                        data: {process: toChange, ignore: toIgnore}
                     }).done(function (html) {
+                        if (0 === html.length) {
+                            html = 'Done!';
+                        }
+
                         $("#generate-entities-success").html(html).show();
                     }).fail(function (html) {
                         $("#generate-entities-success").html('There was some sort of error generating the entities.').append(html).show();

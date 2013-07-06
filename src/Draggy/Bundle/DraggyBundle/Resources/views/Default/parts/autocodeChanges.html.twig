@@ -1,6 +1,7 @@
 {% if error is empty %}
     {% for change in changes %}
         <div class="autocode-change">
+            <input class="autocode-change-checkbox" type="checkbox" checked="checked" value="{{ change.path }}{{ change.name }}">
             <div class="autocode-change-summary">
                 <div class="full-file-name" title="{{ change.path }}{{ change.name }}">
                     {% if change.what == 'NEW' %}
@@ -69,7 +70,12 @@
 {% endif %}
 
 <script>
-    $("div.autocode-change").click(function () {
+    $("div.autocode-change").click(function (e) {
+        // Don't do anything if clicked on the checkbox
+        if ($(e.target).is('input:checkbox')) {
+            return;
+        }
+
         $(this).find("div.autocode-change-lines").slideToggle();
 
         if ($(this).find("div.unfold-icon span.icon-down").first().css('display') === "none") {
