@@ -119,7 +119,12 @@ Attribute.prototype.getSubtype = function ()
 
 Attribute.prototype.setName = function (desiredName)
 {
-    this.name = Connectable.prototype.connectables[this.getOwner()].getValidAttributeName(desiredName, this);
+    // Before runtime the attribute names are assumed to be correct. This is because it could happen that an attribute
+    // is required that has not been loaded yet. Otherwise it has to check that it is available.
+
+    this.name = System.prototype.runtime
+        ? Connectable.prototype.connectables[this.getOwner()].getValidAttributeName(desiredName, this)
+        : desiredName;
 };
 
 Attribute.prototype.setSize = function (size)
