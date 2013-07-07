@@ -30,6 +30,9 @@ GenerateEntitiesDialog.prototype.openDialog = function () {
         success: function (msg) {
             if (!(msg.indexOf("autocode-no-changes") != -1 || msg.indexOf("autocode-error") != -1)) {
                 $('#generate-entities-dialog').dialog("option", "buttons", GenerateEntitiesDialog.prototype.defaultButtons);
+                $("#autocode-changes-controls").show();
+            } else {
+                $("#autocode-changes-controls").hide();
             }
 
             $("#autocode-changes").html(msg);
@@ -39,8 +42,6 @@ GenerateEntitiesDialog.prototype.openDialog = function () {
             for (var i = 0; i < ignoreFiles.length; i++) {
                 $("input.autocode-change-checkbox[value=\"" + ignoreFiles[i] + "\"]").removeAttr("checked");
             }
-
-            $("#autocode-changes-controls").show();
         },
         error: function (msg) {
             Notification.prototype.error('Error loading the preview: ' + msg.responseText);
