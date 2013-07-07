@@ -642,6 +642,8 @@ class Project extends ProjectBase
             $targetAttribute->setForeignKey($sourceAttribute);
         }
 
+        $attributesToBeAdded = [];
+
         foreach ($manyToManyRelationships as $manyToManyRelationship) {
             $manyToManyEntityNameArray          = (array)$manyToManyRelationship->attributes();
             $manyToManyEntityName               = $manyToManyEntityNameArray['@attributes']['name'];
@@ -683,14 +685,23 @@ class Project extends ProjectBase
                 $ownerEntity->addAttribute($manyToManyAttributeOwner);
                 $targetEntity->addAttribute($manyToManyAttributeTarget);
 
+                if (!isset($attributesToBeAdded[$ownerEntity->getFullyQualifiedName()][$manyToManyTargetAttribute->getName()])) {
+                    $attributesToBeAdded[$ownerEntity->getFullyQualifiedName()][$manyToManyTargetAttribute->getName()] = 1;
+                } else {
+                    $attributesToBeAdded[$ownerEntity->getFullyQualifiedName()][$manyToManyTargetAttribute->getName()]++;
+                }
+
+                if (!isset($attributesToBeAdded[$targetEntity->getFullyQualifiedName()][$manyToManyOwnerAttribute->getName()])) {
+                    $attributesToBeAdded[$targetEntity->getFullyQualifiedName()][$manyToManyOwnerAttribute->getName()] = 1;
+                } else {
+                    $attributesToBeAdded[$targetEntity->getFullyQualifiedName()][$manyToManyOwnerAttribute->getName()]++;
+                }
                 // $manyToManyEntity->setRenderizable(false);
             }
         }
 
         // Add OneToOne and OneToMany inverse attributes
         $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
-
-        $attributesToBeAdded = [];
 
         // Find ideal new attribute counters
         foreach ($foreignKeys as $foreignKey) {
