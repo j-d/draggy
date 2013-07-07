@@ -769,7 +769,10 @@ class Project extends ProjectBase
                         ->setForeign('OneToOne')
                         ->setForeignEntity($targetEntity)
                         ->setForeignKey($targetAttribute)
-                        ->setNull($targetAttribute->getNull()); // TODO: CHECK
+                        ->setNull($targetAttribute->getNull()) // TODO: CHECK
+                        ->setReverseAttribute($targetAttribute);
+
+                    $targetAttribute->setReverseAttribute($inverseAttribute);
                 } else { // ManyToOne
                     /** @var Attribute $inverseAttribute */
                     $inverseAttribute = new $attributeClass($sourceEntity, $attributeName, 'array');
