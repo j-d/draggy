@@ -88,44 +88,44 @@ class Entity4 extends Entity4Base
 
         // ORM
         if (null === $attribute->getForeign()) {
-            $lines[] = '@ORM\\Column(name="' . $attribute->getName() . '", type="' . $attribute->getType() . '"' . ('string' === $attribute->getType() ? ', length=' . $attribute->getSize() : '') . ($attribute->getUnique() ? ', unique=true' : '') . ($attribute->getNull() ? ', nullable=true' : ($attribute->getPrimary() ? '' : ', nullable=false')) . ')';
+            $lines[] = '@ORM\\Column(name="' . $attribute->getFullName() . '", type="' . $attribute->getType() . '"' . ('string' === $attribute->getType() ? ', length=' . $attribute->getSize() : '') . ($attribute->getUnique() ? ', unique=true' : '') . ($attribute->getNull() ? ', nullable=true' : ($attribute->getPrimary() ? '' : ', nullable=false')) . ')';
         } else {
             switch ($attribute->getForeign()) {
                 case 'ManyToOne':
                     if ($attribute->getOwnerSide()) {
                         $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '"' . $this->getCascadeOwnerPart($attribute) .')';
-                        $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
+                        $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getFullName() . '", referencedColumnName="' . $attribute->getForeignKey()->getFullName() . '")';
                     } else {
-                        $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) .')';
+                        $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getFullName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) .')';
                     }
 
                     break;
                 case 'OneToOne':
                     if ($attribute->getOwnerSide()) {
                         $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
-                        $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")';
+                        $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getFullName() . '", referencedColumnName="' . $attribute->getForeignKey()->getFullName() . '")';
                     } else {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) . ')';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getFullName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) . ')';
                     }
 
                     break;
                 case 'ManyToMany':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getName() . '")';
+                        $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getFullName() . '")';
                         $lines[] = '@ORM\JoinTable(';
                         $lines[] =     'name="' . $attribute->getManyToManyEntityName() . '",';
 
-                        //if ($attribute->getForeignEntity()->getName() === $attribute->getEntity()->getName()) { // Is reflexive? (Testing with the names for everything)
-                            $lines[] = 'joinColumns={@ORM\JoinColumn(name="' . $attribute->getReverseAttribute()->getName() . '", referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
-                            $lines[] = 'inverseJoinColumns={@ORM\JoinColumn(name="' . $attribute->getName() . '", referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
+                        //if ($attribute->getForeignEntity()->getFullName() === $attribute->getEntity()->getFullName()) { // Is reflexive? (Testing with the names for everything)
+                            $lines[] = 'joinColumns={@ORM\JoinColumn(name="' . $attribute->getReverseAttribute()->getFullName() . '", referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getFullName() . '")},';
+                            $lines[] = 'inverseJoinColumns={@ORM\JoinColumn(name="' . $attribute->getFullName() . '", referencedColumnName="' . $attribute->getForeignKey()->getFullName() . '")}';
                         //} else {
-                        //    $lines[] = 'joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getName() . '")},';
-                        //    $lines[] = 'inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getName() . '")}';
+                        //    $lines[] = 'joinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getEntity()->getPrimaryAttribute()->getFullName() . '")},';
+                        //    $lines[] = 'inverseJoinColumns={@ORM\JoinColumn(referencedColumnName="' . $attribute->getForeignKey()->getFullName() . '")}';
                         //}
 
                         $lines[] = ')';
                     } else {
-                        $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getName() . '")';
+                        $lines[] = '@ORM\\ManyToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getReverseAttribute()->getFullName() . '")';
                     }
 
                     break;
@@ -205,7 +205,7 @@ class Entity4 extends Entity4Base
                 $lines[] = '';
 
                 foreach ($uniqueAttributes as $attr) {
-                    $lines[] = '@DoctrineAssert\\UniqueEntity(fields="' . $attr->getName() . '", message="' . $attr->getUniqueMessage() . '")';
+                    $lines[] = '@DoctrineAssert\\UniqueEntity(fields="' . $attr->getFullName() . '", message="' . $attr->getUniqueMessage() . '")';
                 }
             }
         }
@@ -311,7 +311,7 @@ class Entity4 extends Entity4Base
                     $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
                     $lines[] =         'if (null !== $' . $attribute->getLowerFullName() . ') {';
-                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getReverseAttribute()->getSetterName() . '($this);';
+                    $lines[] =             '$' . $attribute->getFullName() . '->' . $attribute->getReverseAttribute()->getSetterName() . '($this);';
                     $lines[] =         '}';
                     $lines[] =     '}';
                 } else {
@@ -339,7 +339,7 @@ class Entity4 extends Entity4Base
                     $lines[] =         $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
                     $lines[] = '';
                     $lines[] =         'if (null !== $' . $attribute->getLowerFullName() . ') {';
-                    $lines[] =             '$' . $attribute->getName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
+                    $lines[] =             '$' . $attribute->getFullName() . '->' . $attribute->getForeignKey()->getSetterName() . '($this);';
                     $lines[] =         '}';
                     $lines[] =     '}';
                 } else {

@@ -92,7 +92,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
             if (is_array($type)) {
                 $names[] = $type['object'];
 
-                $condition[] = '!$' . $attribute->getName() . ' instanceof ' . $type['object'];
+                $condition[] = '!$' . $attribute->getFullName() . ' instanceof ' . $type['object'];
             } else {
                 /** @var string $type */
                 $names[] = $type;
@@ -144,7 +144,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     {
         if ('' !== $attribute->getEntity()->getProject()->getORM()) {
             if ('string' === $attribute->getType() && null === $attribute->getSize()) {
-                throw new \RuntimeException('The attribute ' . $attribute->getName() . ' on the entity ' . $attribute->getEntity()->getName() . ' is a string but doesn\'t have size.');
+                throw new \RuntimeException('The attribute ' . $attribute->getFullName() . ' on the entity ' . $attribute->getEntity()->getName() . ' is a string but doesn\'t have size.');
             }
         }
 
@@ -876,10 +876,10 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         if (null === $this->getEntity()->getToString()) {
             $lines[] = '' !== $this->getEntity()->getProject()->getORM()
-                ? 'return \'' . $this->getEntity()->getName() . '(\' . $this->' . $this->getEntity()->getPrimaryAttribute()->getName() . ' . \')\';'
+                ? 'return \'' . $this->getEntity()->getName() . '(\' . $this->' . $this->getEntity()->getPrimaryAttribute()->getFullName() . ' . \')\';'
                 : 'return \'' . $this->getEntity()->getName() . '\';';
         } else {
-            $lines[] = 'return strval($this->' . $this->getEntity()->getAttributeByName($this->getEntity()->getToString())->getName() . ');';
+            $lines[] = 'return strval($this->' . $this->getEntity()->getAttributeByName($this->getEntity()->getToString())->getFullName() . ');';
         }
 
         $lines[] = '}';
@@ -922,7 +922,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $lines[] = 'case \'' . $attr->getName() . '\':';
+                $lines[] = 'case \'' . $attr->getFullName() . '\':';
                 $lines[] =     '$this->' . $attr->getSetterName() . '($value);';
                 $lines[] =     'break;';
             }
@@ -961,7 +961,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         $attributes = [];
         foreach ($this->getEntity()->getAttributes() as $attr) {
-            $attributes[] = '\'' . $attr->getName() . '\'';
+            $attributes[] = '\'' . $attr->getFullName() . '\'';
         }
 
         $lines[] =     'return in_array($offset, [' . implode(', ', $attributes) . ']);';
@@ -1005,14 +1005,14 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $lines[] = 'case \'' . $attr->getName() . '\':';
+                $lines[] = 'case \'' . $attr->getFullName() . '\':';
 
                 if ('' != $attr->getDefaultValueAttributeInit()) {
                     $lines[] = '$this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueAttributeInit() . ');';
                 } elseif ('' != $attr->getDefaultValueConstructorInit()) {
                     $lines[] = '$this->' . $attr->getSetterName() . '(' . $attr->getDefaultValueConstructorInit() . ');';
                 } else {
-                    $lines[] = '$this->' . $attr->getName() . ' = null;';
+                    $lines[] = '$this->' . $attr->getFullName() . ' = null;';
                 }
 
                 $lines[] = 'break;';
@@ -1064,7 +1064,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
             if ($attr->getSetter()) {
-                $lines[] = 'case \'' . $attr->getName() . '\':';
+                $lines[] = 'case \'' . $attr->getFullName() . '\':';
                 $lines[] =     'return $this->' . $attr->getGetterName() . '();';
             }
         }
@@ -1213,7 +1213,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $renderAttributes = [];
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
-            if ( null === $this->getEntity()->getParentEntity() || !in_array($attr->getName(), array_keys($this->getEntity()->getParentEntity()->getAttributes())) ) {
+            if ( null === $this->getEntity()->getParentEntity() || !in_array($attr->getFullName(), array_keys($this->getEntity()->getParentEntity()->getAttributes())) ) {
                 $renderAttributes[] = $attr;
             }
         }
@@ -1276,7 +1276,7 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $setterGetterLines = [];
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
-            if ( null === $this->getEntity()->getParentEntity() || !in_array($attr->getName(), array_keys($this->getEntity()->getParentEntity()->getAttributes())) ) {
+            if ( null === $this->getEntity()->getParentEntity() || !in_array($attr->getFullName(), array_keys($this->getEntity()->getParentEntity()->getAttributes())) ) {
                 if (0 !== count($setterGetterLines)) {
                     $setterGetterLines[] = '';
                 }
