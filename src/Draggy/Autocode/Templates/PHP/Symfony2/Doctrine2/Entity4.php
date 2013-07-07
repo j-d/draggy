@@ -93,7 +93,7 @@ class Entity4 extends Entity4Base
             switch ($attribute->getForeign()) {
                 case 'ManyToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getPluralLowerName() . '"' . $this->getCascadeOwnerPart($attribute) .')';
+                        $lines[] = '@ORM\\ManyToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getFullName() . '"' . $this->getCascadeOwnerPart($attribute) .')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getFullName() . '", referencedColumnName="' . $attribute->getForeignKey()->getFullName() . '")';
                     } else {
                         $lines[] = '@ORM\\OneToMany(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getFullName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) .')';
@@ -102,7 +102,7 @@ class Entity4 extends Entity4Base
                     break;
                 case 'OneToOne':
                     if ($attribute->getOwnerSide()) {
-                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getEntity()->getLowerName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
+                        $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", inversedBy="' . $attribute->getReverseAttribute()->getFullName() . '"' . $this->getCascadeOwnerPart($attribute) . ')';
                         $lines[] = '@ORM\\JoinColumn(name="' . $attribute->getFullName() . '", referencedColumnName="' . $attribute->getForeignKey()->getFullName() . '")';
                     } else {
                         $lines[] = '@ORM\\OneToOne(targetEntity="' . $attribute->getForeignEntity()->getFullyQualifiedName() . '", mappedBy="' . $attribute->getForeignKey()->getFullName() . '"' . $this->getCascadeInversePart($attribute->getForeignKey()) . ')';
