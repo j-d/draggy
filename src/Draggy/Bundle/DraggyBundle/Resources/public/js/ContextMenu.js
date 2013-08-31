@@ -10,8 +10,8 @@ ContextMenu.prototype.initializeMenuOptions = function () {
 
     for (var i in entities) {
         showDivisor = true;
-        ContextMenu.prototype.backgroundMenuOptions['add' + entities[i].name] = {name: 'Add ' + entities[i].name, icon: i};
-        ContextMenu.prototype.moduleMenuOptions['add' + entities[i].name] = {name: 'Add ' + entities[i].name, icon: i};
+        ContextMenu.prototype.backgroundMenuOptions['add-' + i] = {name: 'Add ' + entities[i].name, icon: i};
+        ContextMenu.prototype.moduleMenuOptions['add-' + i] = {name: 'Add ' + entities[i].name, icon: i};
     }
 
     if (showDivisor) {
@@ -40,16 +40,16 @@ ContextMenu.prototype.enableMenus = function () {
             var top = $contextMenu.css('top');
 
             switch (key) {
-                case 'addClass':
+                case 'add-class':
                     (new Class()).moveTo(left, top);
                     break;
-                case 'addAbstract':
+                case 'add-abstract':
                     (new Abstract()).moveTo(left, top);
                     break;
-                case 'addInterface':
+                case 'add-interface':
                     (new Interface()).moveTo(left, top);
                     break;
-                case 'addTrait':
+                case 'add-trait':
                     (new Trait()).moveTo(left, top);
                     break;
                 case 'addModule':
@@ -80,16 +80,16 @@ ContextMenu.prototype.enableMenus = function () {
             var containerName = Container.prototype.containers[containerId].getName();
 
             switch (key) {
-                case 'addClass':
+                case 'add-class':
                     (new Class(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
-                case 'addAbstract':
+                case 'add-abstract':
                     (new Abstract(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
-                case 'addInterface':
+                case 'add-interface':
                     (new Interface(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
-                case 'addTrait':
+                case 'add-trait':
                     (new Trait(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
                 case 'disableContext':

@@ -31,6 +31,8 @@ function Class (name, container) {
     this.crud = null;
     this.routes = false;
     this.arrayAccess = false;
+
+    this.type = 'class';
 }
 
 Class.prototype.isPureManyToMany = function () {

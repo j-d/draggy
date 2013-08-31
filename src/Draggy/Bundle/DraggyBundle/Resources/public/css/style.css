@@ -187,6 +187,8 @@ div.draggy-dialog {
 .icon-many-top           { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -67px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-many-null-top      { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -82px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-none-top           { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -97px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-composite-top      { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -112px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-aggregate-top      { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -127px -15px; bottom: 0; left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 
 .icon-inheritance-bottom { width: 9px;  height: 14px; background: url('er_icons.png') no-repeat -22px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-one-bottom         { width: 9px;  height: 14px; background: url('er_icons.png') no-repeat -37px 0;     top: 0;    left: -4px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
@@ -194,6 +196,8 @@ div.draggy-dialog {
 .icon-many-bottom        { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -67px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-many-null-bottom   { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -82px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-none-bottom        { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -97px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-composite-bottom   { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -112px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-aggregate-bottom   { width: 11px; height: 14px; background: url('er_icons.png') no-repeat -127px 0;     top: 0;    left: -5px; position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 
 .icon-inheritance-left   { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -22px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-one-left           { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -37px -31px; top: -4px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
@@ -201,6 +205,8 @@ div.draggy-dialog {
 .icon-many-left          { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -67px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-many-null-left     { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -82px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-none-left          { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -97px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-composite-left     { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -112px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-aggregate-left     { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -127px -31px; top: -5px; right: 0;   position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 
 .icon-inheritance-right  { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -22px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-one-right          { width: 14px; height: 9px;  background: url('er_icons.png') no-repeat -37px -43px; top: -4px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
@@ -208,6 +214,8 @@ div.draggy-dialog {
 .icon-many-right         { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -67px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-many-null-right    { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -82px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 .icon-none-right         { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -97px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-composite-right    { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -112px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
+.icon-aggregate-right    { width: 14px; height: 11px; background: url('er_icons.png') no-repeat -127px -43px; top: -5px; left: 0;    position: absolute; display: block; text-indent: -99999px; overflow: hidden; }
 
 div.connector {
     z-index: 1;

@@ -23,6 +23,8 @@ function Abstract (name, container) {
     this.setDrawn(true);
 
     this.reDraw();
+
+    this.type = 'abstract';
 }
 
 Abstract.prototype.toXML = function () {

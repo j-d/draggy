@@ -130,9 +130,9 @@ relationships:
             direct-name:  Inherits from
             inverse-name: Inherited by
             icons:
-                from:      inheritance
+                from:      none
                 from-null: ~
-                to:        none
+                to:        inheritance
                 to-null:   ~
             entities:
                 class:     [class, abstract]

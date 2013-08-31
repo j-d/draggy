@@ -103,7 +103,7 @@ EditItemDialog.prototype.deleteLink = function (linkId, rowId) {
     var j, k;
 
     // If I am destroying an inheritance link, remove the inherited attributes from the Attributes tab
-    if (link.getType() === 'Inheritance' && link.from === this.connectable.getId()) {
+    if (link.getType() === 'inheritance' && link.from === this.connectable.getId()) {
         var parentAttributes = Connectable.prototype.connectables[link.to].attributes;
 
         for (k = 0; k < parentAttributes.length; k++)
@@ -151,16 +151,15 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
         targetAttribute = link.getToAttribute();
         sourceAttribute = link.getFromAttribute();
 
-        if (type === 'Inheritance') {
+        if (type === 'inheritance') {
             type = 'Inherits from';
             inheritance = true;
         }
     }
     else {
-        if (type === 'OneToMany') {
+        if (type === 'one-to-many') {
             type = 'ManyToOne';
-        }
-        else if (type === 'Inheritance') {
+        } else if (type === 'inheritance') {
             type = 'Inherited by';
             inheritance = true;
         }

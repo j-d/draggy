@@ -272,7 +272,7 @@ Draggy.prototype.mergeArrays = function (target, source) {
 };
 
 Draggy.prototype.mergeConfigurations = function (target, source) {
-    var configurationParts = ['configuration', 'attributes', 'entities', 'relationships', 'autocode', 'languages', 'frameworks', 'orms'];
+    var configurationParts = ['attributes', 'entities', 'relationships', 'autocode', 'languages', 'frameworks', 'orms'];
 
     var myTarget = 0 !== target.length
         ? jQuery.extend(true, {}, target)
@@ -352,6 +352,8 @@ Draggy.prototype.getEntityTypes = function () {
 };
 
 Draggy.prototype.getRelationshipTypes = function () {
+
+
     var relationshipTypes = undefined !== Draggy.prototype.getCurrentConfiguration().relationships
         ? Draggy.prototype.getCurrentConfiguration().relationships.types
         : {};
