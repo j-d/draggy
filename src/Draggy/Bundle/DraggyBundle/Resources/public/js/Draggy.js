@@ -9,6 +9,8 @@ Draggy.prototype.saveAddress = null;
 Draggy.prototype.previewAddress = null;
 Draggy.prototype.generateAddress = null;
 Draggy.prototype.ignoreFiles = [];
+Draggy.prototype.configuration = {};
+Draggy.prototype.currentConfiguration = {};
 
 Draggy.prototype.addClass = function (name,container) {
     new Class(name,container);
@@ -48,20 +50,24 @@ Draggy.prototype.getModelXML = function () {
 
     ret += '\t<project>\n';
     ret += '\t\t<language>' + Draggy.prototype.getLanguage() + '</language>\n';
-    ret += '\t\t<description>' + Draggy.prototype.getDescription() + '</description>\n';
 
-    if (Draggy.prototype.getORM() !== '' && Draggy.prototype.getORM() !== undefined) {
-        ret += '\t\t<orm>' + Draggy.prototype.getORM() + '</orm>\n';
-    } else {
-        ret += '\t\t<orm/>\n';
-    }
-
-    if (Draggy.prototype.getFramework() !== '' && Draggy.prototype.getFramework() !== undefined) {
+    if (Draggy.prototype.getFramework() !== '' && Draggy.prototype.getFramework() !== null && Draggy.prototype.getFramework() !== undefined) {
         ret += '\t\t<framework>' + Draggy.prototype.getFramework() + '</framework>\n';
     } else {
         ret += '\t\t<framework/>\n';
     }
 
+    if (Draggy.prototype.getORM() !== '' && Draggy.prototype.getORM() !== null && Draggy.prototype.getORM() !== undefined) {
+        ret += '\t\t<orm>' + Draggy.prototype.getORM() + '</orm>\n';
+    } else {
+        ret += '\t\t<orm/>\n';
+    }
+
+    if (Draggy.prototype.getDescription() != '' && Draggy.prototype.getDescription() != null && Draggy.prototype.getDescription() !== undefined) {
+        ret += '\t\t<description>' + Draggy.prototype.getDescription() + '</description>\n';
+    } else {
+        ret += '\t\t<description/>\n';
+    }
 
     ret += '\t</project>\n';
 
@@ -138,7 +144,7 @@ Draggy.prototype.removeLink = function (linkId) {
 Draggy.prototype.setLanguage = function (language) {
     Draggy.prototype.language = language;
 
-    Draggy.prototype.options = Draggy.prototype.allOptions[language];
+    //Draggy.prototype.options = Draggy.prototype.allOptions[language];
 
     return this;
 };
@@ -169,9 +175,9 @@ Draggy.prototype.getORM = function () {
 Draggy.prototype.setORM = function (orm) {
     Draggy.prototype.orm = orm;
 
-    for (var i in Draggy.prototype.allORMOptions[orm]) {
-        Draggy.prototype.options[i] = Draggy.prototype.allORMOptions[orm][i];
-    }
+//    for (var i in Draggy.prototype.allORMOptions[orm]) {
+//        Draggy.prototype.options[i] = Draggy.prototype.allORMOptions[orm][i];
+//    }
 
     return this;
 };
@@ -190,42 +196,140 @@ Draggy.prototype.setIgnoreFiles = function(ignoreFiles){
     Draggy.prototype.ignoreFiles = ignoreFiles;
 };
 
-Draggy.prototype.allOptions = {
-    'PHP': {
-        classes: true,
-        abstracts: true,
-        interfaces: true,
-        traits: true
-    },
-    'JS':  {
-        classes: true,
-        abstracts: true,
-        interfaces: false,
-        traits: false
+Draggy.prototype.getLanguages = function() {
+    var languages = {};
+
+    for (var i in Draggy.prototype.configuration.languages) {
+        languages[i] = Draggy.prototype.configuration.languages[i]['name'];
+    }
+
+    return languages;
+};
+
+Draggy.prototype.getCurrentConfiguration = function() {
+    return Draggy.prototype.currentConfiguration;
+};
+
+Draggy.prototype.updateConfiguration = function() {
+    Draggy.prototype.currentConfiguration = jQuery.extend(true, {}, Draggy.prototype.configuration);
+
+    var language  = Draggy.prototype.getLanguage();
+    var framework = Draggy.prototype.getFramework();
+    var orm       = Draggy.prototype.getORM();
+
+    if (
+        null !== language &&
+        typeof Draggy.prototype.configuration.languages[language] != "undefined"
+    ) {
+        Draggy.prototype.currentConfiguration = Draggy.prototype.mergeConfigurations(
+            Draggy.prototype.currentConfiguration,
+            Draggy.prototype.configuration.languages[language]
+        );
+    }
+
+    if (
+        null !== framework &&
+        typeof Draggy.prototype.currentConfiguration.frameworks[framework] != "undefined"
+    ) {
+        Draggy.prototype.currentConfiguration = Draggy.prototype.mergeConfigurations(
+            Draggy.prototype.currentConfiguration,
+            Draggy.prototype.currentConfiguration.frameworks[framework]
+        );
+    }
+
+    if (
+        null !== orm &&
+        typeof Draggy.prototype.currentConfiguration.orms[orm] != "undefined"
+    ) {
+        Draggy.prototype.currentConfiguration = Draggy.prototype.mergeConfigurations(
+            Draggy.prototype.currentConfiguration,
+            Draggy.prototype.currentConfiguration.orms[orm]
+        );
     }
 };
 
-Draggy.prototype.allORMOptions = {
-    '': {
-        oneToOne: true,
-        oneToMany: true,
-        manyToOne: true,
-        manyToMany: true,
-        inheritance: true,
-        linkClasses: true
-    },
-    'Doctrine2': {
-        oneToOne: true,
-        oneToMany: true,
-        manyToOne: false,
-        manyToMany: false,
-        inheritance: true,
-        linkClasses: false
+Draggy.prototype.mergeArrays = function (target, source) {
+    var myTarget = 0 !== target.length
+        ? jQuery.extend(true, {}, target)
+        : {};
+
+    for (var i in source) {
+        if (typeof target[i] == "undefined") {
+            myTarget[i] = jQuery.extend(true, {}, source[i]);
+        } else if (source[i] instanceof Object || source[i] instanceof Array) {
+            myTarget[i] = Draggy.prototype.mergeArrays(target[i], source[i]);
+        } else { // Is not like an array (is a value)
+            myTarget[i] = source[i];
+        }
     }
+
+    return myTarget;
 };
 
-// Defaults (static)
-Draggy.prototype.setLanguage('PHP');
-Draggy.prototype.description = null;
-Draggy.prototype.setORM('');
-Draggy.prototype.setFramework('Symfony2');
+Draggy.prototype.mergeConfigurations = function (target, source) {
+    var configurationParts = ['configuration', 'attributes', 'entities', 'relationships', 'autocode', 'languages', 'frameworks', 'orms'];
+
+    var myTarget = 0 !== target.length
+        ? jQuery.extend(true, {}, target)
+        : {};
+
+    for (var i = 0; i < configurationParts.length; i++) {
+        if (typeof target[configurationParts[i]] != "undefined" && typeof source[configurationParts[i]] != "undefined") {
+            myTarget[configurationParts[i]] = Draggy.prototype.mergeArrays(target[configurationParts[i]], source[configurationParts[i]]);
+        }
+    }
+
+    return myTarget;
+};
+
+Draggy.prototype.getAutocodeProperties = function () {
+    var properties = undefined !== Draggy.prototype.getCurrentConfiguration().autocode
+        ? Draggy.prototype.getCurrentConfiguration().autocode.properties
+        : {};
+
+    var returnProperties = {};
+
+    for (var i in properties) {
+        if (properties[i].enabled) {
+            returnProperties[i] = properties[i];
+        }
+    }
+
+    return returnProperties;
+};
+
+Draggy.prototype.getAutocodeConfigurations = function () {
+    var configurations = undefined !== Draggy.prototype.getCurrentConfiguration().autocode
+        ? Draggy.prototype.getCurrentConfiguration().autocode.configurations
+        : {};
+
+    var returnConfigurations = {};
+
+    for (var i in configurations) {
+        if (configurations[i].enabled) {
+            returnConfigurations[i] = configurations[i];
+        }
+    }
+
+    return returnConfigurations;
+};
+
+Draggy.prototype.getAutocodeTemplates = function () {
+    var templates = undefined !== Draggy.prototype.getCurrentConfiguration().autocode
+        ? Draggy.prototype.getCurrentConfiguration().autocode.templates
+        : {};
+
+    var returnTemplates = {};
+
+    for (var i in templates) {
+        if (templates[i].enabled) {
+            returnTemplates[i] = templates[i];
+        }
+    }
+
+    return returnTemplates;
+};
+
+Draggy.prototype.options = []; // TODO: Remove
+
+Draggy.prototype.currentConfiguration = jQuery.extend(true, {}, Draggy.prototype.configuration);

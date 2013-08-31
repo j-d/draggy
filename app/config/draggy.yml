@@ -1,97 +1,145 @@
 languages:
+    java:
+        name: Java
     php:
         name: PHP
-        configuration:
-            framework:
-                - symfony2
-        framework:
+        frameworks:
             symfony2:
                 name: Symfony 2
-                configuration:
-                    orm:
-                        - symfony2_doctrine2
                 autocode:
+                    configurations:
+                        namespace:
+                            name:    Namespace
+                            enabled: true
                     templates:
                         entity:
+                            name:     Entity
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Entity1
-                        entity_base:
+                            enabled:  true
+                        entity-base:
+                            name:     Entity base
                             template: Draggy\Autocode\Templates\PHP\Symfony2\EntityBase1
+                            enabled:  true
                         interface:
+                            name:     Interface
                             template: Draggy\Autocode\Templates\PHP\Symfony2\InterfaceT
+                            enabled:  true
                         trait:
+                            name:     Trait
                             template: Draggy\Autocode\Templates\PHP\Symfony2\TraitT
+                            enabled:  true
                         form:
+                            name:     Form
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Form
-                        form_base:
+                            enabled:  true
+                        form-base:
+                            name:     Form base
                             template: Draggy\Autocode\Templates\PHP\Symfony2\FormBase1
-                        crud_create:
+                            enabled:  true
+                        crud-create:
+                            name:     CRUD (Create)
                             template: Draggy\Autocode\Templates\PHP\Symfony2\CrudCreate
-                        crud_read:
+                            enabled:  true
+                        crud-read:
+                            name:     CRUD (Read / View / List)
                             templace: Draggy\Autocode\Templates\PHP\Symfony2\CrudRead
-                        crud_update:
+                            enabled:  true
+                        crud-update:
+                            name:     CRUD (Update / Edit)
                             template: Draggy\Autocode\Templates\PHP\Symfony2\CrudUpdate
+                            enabled:  true
                         controller:
+                            name:     Controller
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Controller
+                            enabled:  true
                         fixtures:
+                            name:     Fixtures
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Fixtures
+                            enabled:  true
                         routes:
+                            name:     Routes
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Routes
-                        routes_routing:
+                            enabled:  true
+                        routes-routing:
+                            name:     Routes (routing)
                             template: Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting
+                            enabled:  true
                         repository:
+                            name:     Repository
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Repository
-        orm:
-            symfony2_doctrine2:
-                name: Symfony 2 \ Doctrine 2
-                configuration:
-                    link_classes: false
-                attributes:
-                    types:
-                        - array
-                        - bigint
-                        - boolean
-                        - date
-                        - datetime
-                        - decimal
-                        - integer
-                        - object
-                        - smallint
-                        - string
-                        - text
-                        - time
-                    typeMapping:
-                        bigint:   integer
-                        date:     datetime
-                        decimal:  float
-                        smallint: integer
-                        text:     string
-                        time:     datetime
-                relationships:
-                    types:
-                        many_to_one:  false
-                        many_to_many: false
-                autocode:
-                    templates:
-                        entity:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity1
-                        entity_base:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase1
-                        form:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Form
-                        form_base:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\FormBase1
-                        crud_create:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudCreate
-                        crud_read:
-                            templace: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudRead
-                        crud_update:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudUpdate
-                        controller:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Controller
-                        fixtures:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Fixtures
-                        repository:
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Repository
+                            enabled:  true
+                orms:
+                    symfony2-doctrine2:
+                        name: Symfony 2 \ Doctrine 2
+                        configuration:
+                            link-classes: false
+                        attributes:
+                            types:
+                                - array
+                                - bigint
+                                - boolean
+                                - date
+                                - datetime
+                                - decimal
+                                - integer
+                                - object
+                                - smallint
+                                - string
+                                - text
+                                - time
+                            typeMapping:
+                                bigint:   integer
+                                date:     datetime
+                                decimal:  float
+                                smallint: integer
+                                text:     string
+                                time:     datetime
+                        relationships:
+                            types:
+                                many-to-one:  false
+                                many-to-many: false
+                        autocode:
+                            templates:
+                                entity:
+                                    name:     Entity
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity1
+                                    enabled:  true
+                                entity-base:
+                                    name:     Entity base
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase1
+                                    enabled:  true
+                                form:
+                                    name:     Form
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Form
+                                    enabled:  true
+                                form-base:
+                                    name:     Form base
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\FormBase1
+                                    enabled:  true
+                                crud-create:
+                                    name:     CRUD (Create)
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudCreate
+                                    enabled:  true
+                                crud-read:
+                                    name:     CRUD (Read / View / List)
+                                    templace: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudRead
+                                    enabled:  true
+                                crud-update:
+                                    name:     CRUD (Update / Edit)
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudUpdate
+                                    enabled:  true
+                                controller:
+                                    name:     Controller
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Controller
+                                    enabled:  true
+                                fixtures:
+                                    name:     Fixtures
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Fixtures
+                                    enabled:  true
+                                repository:
+                                    name:     Repository
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Repository
+                                    enabled:  true
         attributes:
             types:
                 - array
@@ -102,25 +150,52 @@ languages:
                 - object
                 - string
         autocode:
+            properties:
+                base:
+                    name:    Base
+                    enabled: true
+                    default: true
+                validation:
+                    name:    Validation
+                    enabled: true
+                    default: true
             templates:
                 entity:
+                    name:     Entity
                     template: Draggy\Autocode\Templates\PHP\Entity1
-                entity_base:
+                    enabled:  true
+                entity-base:
+                    name:     Entity base
                     template: Draggy\Autocode\Templates\PHP\EntityBase1
+                    enabled:  true
                 interface:
+                    name:     Interface
                     template: Draggy\Autocode\Templates\PHP\InterfaceT
+                    enabled:  true
                 trait:
+                    name:     Trait
                     template: Draggy\Autocode\Templates\PHP\TraitT
+                    enabled:  true
                 form:
+                    name:     Form
                     template: Draggy\Autocode\Templates\PHP\Form
-                form_base:
+                    enabled:  true
+                form-base:
+                    name:     Form base
                     template: Draggy\Autocode\Templates\PHP\FormBase1
-                crud_create:
+                    enabled:  true
+                crud-create:
+                    name:     CRUD (Create)
                     template: Draggy\Autocode\Templates\PHP\CrudCreate
-                crud_read:
+                    enabled:  true
+                crud-read:
+                    name:     CRUD (Read / View / List)
                     templace: Draggy\Autocode\Templates\PHP\CrudRead
-                crud_update:
+                    enabled:  true
+                crud-update:
+                    name:     CRUD (Update / Edit)
                     template: Draggy\Autocode\Templates\PHP\CrudUpdate
+                    enabled:  true
     js:
         name: JavaScript
         attributes:
@@ -136,10 +211,12 @@ languages:
         autocode:
             templates:
                 entity:
+                    name:     Entity
                     template: Draggy\Autocode\Templates\JS\Entity2
-                entity_base:
+                    enabled:  true
+                entity-base:
+                    name:     Entity base
                     template: Draggy\Autocode\Templates\JS\EntityBase2
-    java:
-        name: Java
+                    enabled:  true
     cpp:
         name: C++

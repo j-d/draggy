@@ -184,7 +184,7 @@ class DefaultController extends Controller
                 'targetFolder'     => $targetFolder,
                 'file'             => $file,
                 'self'             => $self,
-                'configuration'    => YamlLoader::loadConfiguration(),
+                'configuration'    => json_encode(YamlLoader::loadConfiguration()),
             ]
         );
     }

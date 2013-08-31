@@ -9,7 +9,6 @@
         <link type="text/css" href="{{ asset('bundles/draggy/css/style.css') }}" rel="stylesheet"/>
     </head>
     <body>
-
         <div id="menu">
             {% if saveable %}
                 <span onClick="Draggy.prototype.save();">Save</span>
@@ -67,6 +66,7 @@
                 Draggy.prototype.previewAddress  = '{{ path('self_autocode_preview') }}';
                 Draggy.prototype.generateAddress = '{{ path('self_autocode_generate') }}';
             {% endif %}
+            Draggy.prototype.configuration = {{ configuration | raw }};
         </script>
 
         <script>
@@ -90,5 +90,14 @@
         {% include 'DraggyBundle:Default:dialogs/linkClassDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/projectPropertiesDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/generateEntitiesDialog.html.twig' %}
+        <script>
+            {% if loaderJS is empty %}
+                $(document).ready(function() {
+                    ProjectPropertiesDialog.prototype.openDialog();
+                });
+            {% else %}
+                Draggy.prototype.updateConfiguration();
+            {% endif %}
+        </script>
     </body>
 </html>

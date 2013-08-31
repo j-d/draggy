@@ -6,83 +6,76 @@
         </ul>
 
         <div id="project-properties-tabs-general">
-            <label for="project-language">Language:</label>
-            <select id="project-language">
-                <option value="PHP">PHP</option>
-                <option value="JS">JS</option>
-            </select><br/>
+            <table>
+                <tr>
+                    <td><label for="project-language">Language:</label></td>
+                    <td>
+                        <select id="project-language">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="project-framework">Project Framework:</label></td>
+                    <td>
+                        <select id="project-framework">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="project-orm">Project ORM:</label></td>
+                    <td>
+                        <select id="project-orm">
+                        </select>
+                    </td>
+                </tr>
+            </table>
 
             <label for="project-description">Description:</label><br/>
             <textarea id="project-description" name="description" size="40" cols="70" rows="8"></textarea><br/>
-
-            <label for="project-orm">Project ORM:</label>
-            <select id="project-orm">
-                <option value="">(none)</option>
-                <option value="Doctrine2">Doctrine 2</option>
-            </select><br/>
-
-            <label for="project-framework">Project Framework:</label>
-            <select id="project-framework">
-                <option value="">(none)</option>
-                <option value="Symfony2">Symfony 2</option>
-            </select><br/>
         </div>
         <div id="project-properties-tabs-autocode">
-            <div id="autocode-buttons">
-                <input id="autocode-base" type="checkbox"><label for="autocode-base">Base?</label>
-                <input id="autocode-overwrite" type="checkbox"><label for="autocode-overwrite">Overwrite?</label>
-                <input id="autocode-deleteUnmapped" type="checkbox"><label for="autocode-deleteUnmapped">Delete unmapped?</label>
-                <input id="autocode-validation" type="checkbox"><label for="autocode-validation">Validation?</label>
+            <div id="autocode-properties">
             </div>
-            <br/>
-            <label for="autocode-namespace">Namespace:</label>
-            <input id="autocode-namespace" type="text" name="namespace" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-entityTemplate">Entity template:</label>
-            <input id="autocode-entityTemplate" type="text" name="entityTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-entityBaseTemplate">Entity base template:</label>
-            <input id="autocode-entityBaseTemplate" type="text" name="entityBaseTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-repositoryTemplate">Repository template:</label>
-            <input id="autocode-repositoryTemplate" type="text" name="repositoryTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-formTemplate">Form template:</label>
-            <input id="autocode-formTemplate" type="text" name="formTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-formBaseTemplate">Form base template:</label>
-            <input id="autocode-formBaseTemplate" type="text" name="formBaseTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-controllerTemplate">Controller template:</label>
-            <input id="autocode-controllerTemplate" type="text" name="controllerTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-fixturesTemplate">Fixtures template:</label>
-            <input id="autocode-fixturesTemplate" type="text" name="fixturesTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-routesTemplate">Routes template:</label>
-            <input id="autocode-routesTemplate" type="text" name="routesTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-routesRoutingTemplate">Routes routing template:</label>
-            <input id="autocode-routesRoutingTemplate" type="text" name="routesRoutingTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-crudCreateTwigTemplate">Crud create Twig template:</label>
-            <input id="autocode-crudCreateTwigTemplate" type="text" name="crudCreateTwigTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-crudReadTwigTemplate">Crud read Twig template:</label>
-            <input id="autocode-crudReadTwigTemplate" type="text" name="crudReadTwigTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
-            <label for="autocode-crudUpdateTwigTemplate">Crud update Twig template:</label>
-            <input id="autocode-crudUpdateTwigTemplate" type="text" name="crudUpdateTwigTemplate" size="30" class="text ui-widget-content ui-corner-all" />
-            <br/>
+
+            <div id="autocode-configurations">
+                <br/>
+                <strong>Configurations:</strong>
+                <table></table>
+            </div>
+
+            <div id="autocode-templates">
+                <br/>
+                <strong>Templates:</strong>
+                <table></table>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     $(function() {
-        $('#project-properties-tabs').tabs();
+        var $projectLanguage  = $('#project-language');
+        var $projectFramework = $('#project-framework');
+        var $projectORM       = $('#project-orm');
 
-        $('#autocode-buttons').buttonset();
+        $('#project-properties-tabs').tabs({
+            beforeActivate: function( event, ui ) {
+                if ($(ui.newTab).children('a').html() == 'Autocode')
+                    ProjectPropertiesDialog.prototype.loadAutocodeTab();
+            }
+        });
+
+        $projectLanguage.change(function () {
+            ProjectPropertiesDialog.prototype.changedLanguage($projectLanguage.val());
+        });
+
+        $projectFramework.change(function () {
+            ProjectPropertiesDialog.prototype.changedFramework($projectFramework.val());
+        });
+
+        $projectORM.change(function () {
+            ProjectPropertiesDialog.prototype.changedORM($projectORM.val());
+        });
 
         $("#project-properties-dialog").dialog({
             autoOpen: false,
