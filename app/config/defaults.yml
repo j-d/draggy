@@ -1,55 +1,56 @@
-draggy:
-    configuration:
-        framework:    []
-        orm:          []
+configuration:
+    framework:    []
+    orm:          []
 
-        link_classes: true
-    attributes:
-        types: []
-        properties:
-            nullable:      true
-            primary_key:   true
-            autoincrement: true
-            unique:        true
-            default:       true
-            description:   true
-    entities:
-        types:
-            class:     true
-            abstract:  true
-            interface: true
-            trait:     true
-        properties:
-            programming:
-                properties:
-                  constructor:  true
-                  repository:   true
-                  form:         true
-                  controller:   true
-                  fixtures:     true
-                  array_access: true
-                  crud:         [CRUD, CRU, CUD, CRD, CR, CU, CD, C, RUD, RU, RD, R, UD, U, D]
-                  to_string:    true
-                attribute_properties:
-                    setter:   true
-                    getter:   true
-                    min_size: true
-                    email:    true
-                    min:      true
-                    max:      true
-                    static:   true
-    relationships:
-        types:
-            one_to_one:    true
-            one_to_many:   true
-            many_to_one:   true
-            many_to_many:  true
-            inheritance:   true
-        properties: ~
-    autocode:
-        properties:
-            base:            true
-            overwrite:       true
-            delete_unmapped: true
-            validation:      true
-        templates: []
+    link_classes: true
+attributes:
+    types: []
+    typeMapping: []
+    properties:
+        nullable:      true
+        primary_key:   true
+        autoincrement: true
+        unique:        true
+        default:       true
+        description:   true
+entities:
+    types:
+        class:     true
+        abstract:  true
+        interface: true
+        trait:     true
+    properties:
+        programming:
+            properties:
+              constructor:  true
+              repository:   true
+              form:         true
+              controller:   true
+              fixtures:     true
+              array_access: true
+              crud:         [CRUD, CRU, CUD, CRD, CR, CU, CD, C, RUD, RU, RD, R, UD, U, D]
+              to_string:    true
+            attribute_properties:
+                setter:   true
+                getter:   true
+                min_size: true
+                email:    true
+                min:      true
+                max:      true
+                static:   true
+relationships:
+    types:
+        one_to_one:    true
+        one_to_many:   true
+        many_to_one:   true
+        many_to_many:  true
+        inheritance:   true
+    properties: ~
+autocode:
+    properties:
+        base:            true
+        overwrite:       true
+        delete_unmapped: true
+        validation:      true
+    templates: []
+languages: []
