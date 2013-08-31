@@ -1,18 +1,16 @@
 <?php
 
-namespace Draggy\Utils;
+namespace Draggy\Utils\Justifier\Html;
 
-class TwigJustifier extends AbstractJustifier implements JustifierMachineInterface
+use Draggy\Utils\Justifier\AbstractJustifier;
+use Draggy\Utils\Justifier\JustifierMachineInterface;
+
+class HtmlJustifier extends AbstractJustifier implements JustifierMachineInterface
 {
     /**
      * @var HtmlLineJustifier
      */
     protected $htmlLineJustifier;
-
-    /**
-     * @var TwigLineJustifier
-     */
-    protected $twigLineJustifier;
 
     /**
      * {@inheritdoc}
@@ -22,7 +20,6 @@ class TwigJustifier extends AbstractJustifier implements JustifierMachineInterfa
         parent::__construct($indentationCharacter, $indentationCount, $eol);
 
         $this->htmlLineJustifier = new HtmlLineJustifier($this);
-        $this->twigLineJustifier = new TwigLineJustifier($this);
     }
 
     public function justify()
@@ -30,6 +27,5 @@ class TwigJustifier extends AbstractJustifier implements JustifierMachineInterfa
         $this->prepareToJustify();
 
         $this->htmlLineJustifier->justify();
-        $this->twigLineJustifier->justify();
     }
 }

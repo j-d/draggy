@@ -1,6 +1,10 @@
 <?php
 
-namespace Draggy\Utils;
+namespace Draggy\Utils\Justifier\Twig;
+
+use Draggy\Utils\Justifier\AbstractLineJustifier;
+use Draggy\Utils\Justifier\JustificationRule;
+use Draggy\Utils\Justifier\JustifierMachineInterface;
 
 class TwigLineJustifier extends AbstractLineJustifier
 {

@@ -1,13 +1,22 @@
 <?php
 
-namespace Draggy\Utils;
+namespace Draggy\Utils\Justifier\PHP;
 
-class HtmlJustifier extends AbstractJustifier implements JustifierMachineInterface
+use Draggy\Utils\Justifier\AbstractJustifier;
+use Draggy\Utils\Justifier\Html\HtmlLineJustifier;
+use Draggy\Utils\Justifier\JustifierMachineInterface;
+
+class PHPJustifier extends AbstractJustifier implements JustifierMachineInterface
 {
     /**
      * @var HtmlLineJustifier
      */
     protected $htmlLineJustifier;
+
+    /**
+     * @var PHPLineJustifier
+     */
+    protected $phpLineJustifier;
 
     /**
      * {@inheritdoc}
@@ -17,6 +26,7 @@ class HtmlJustifier extends AbstractJustifier implements JustifierMachineInterfa
         parent::__construct($indentationCharacter, $indentationCount, $eol);
 
         $this->htmlLineJustifier = new HtmlLineJustifier($this);
+        $this->phpLineJustifier = new PHPLineJustifier($this);
     }
 
     public function justify()
@@ -24,5 +34,6 @@ class HtmlJustifier extends AbstractJustifier implements JustifierMachineInterfa
         $this->prepareToJustify();
 
         $this->htmlLineJustifier->justify();
+        $this->phpLineJustifier->justify();
     }
 }

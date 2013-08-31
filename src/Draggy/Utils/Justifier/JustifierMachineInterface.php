@@ -1,6 +1,6 @@
 <?php
 
-namespace Draggy\Utils;
+namespace Draggy\Utils\Justifier;
 
 interface JustifierMachineInterface
 {
