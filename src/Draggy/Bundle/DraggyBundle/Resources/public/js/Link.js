@@ -14,15 +14,6 @@ Link.prototype.suffixes = [
     '-left'
 ];
 
-Link.prototype.iconNames = {
-    inheritance:    'icon-inheritance',
-    one:            'icon-one',
-    oneNull:        'icon-one-null',
-    many:           'icon-many',
-    manyNull:       'icon-many-null',
-    null:           'icon-none'
-};
-
 function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.innitScreenItem('Link');
 

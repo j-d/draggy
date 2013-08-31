@@ -5,9 +5,13 @@ LinkClassDialog.prototype.connectable = null;
 
 LinkClassDialog.prototype.innit = function () {
     $('#link-item-type').change(function () {
+        var relationshipTypes = Draggy.prototype.getRelationshipTypes();
+
+        var thisRelationship = relationshipTypes[$('#link-item-type').val()];
+
         var attributeSelectors = $('#link-item-dialog').find('.attribute-selector');
 
-        if ($('#link-item-type').val() !== 'Inheritance') {
+        if (!thisRelationship['connect-entity']) {
             attributeSelectors.show();
             //LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=sourceAttribute]',$('#link-item-dialog input[name=class]').val(),true);
             //LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-dialog select[name=destinationItem]').val());
@@ -15,15 +19,17 @@ LinkClassDialog.prototype.innit = function () {
             if (Draggy.prototype.options.linkClasses) {
                 $('#link-item-source').parents('.attribute-selector').hide();
             }
-        }
-        else {
+        } else {
             attributeSelectors.hide();
         }
     });
 
     // Change when changing target
     $('#link-item-destination-class').change(function () {
-        LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-destination-class').val());
+        LinkClassDialog.prototype.populateOptions(
+            '#link-item-dialog select[name=destinationAttribute]',
+            $('#link-item-destination-class').val()
+        );
     });
 };
 
@@ -53,16 +59,15 @@ LinkClassDialog.prototype.openDialog = function (connectableId) {
     }
 
     // Add types
-    for (i = 0; i < Config.prototype.relationships.length; i++) {
-        if (Draggy.prototype.options[Config.prototype.relationships[i].optionsName]) {
-            if ( Config.prototype.relationships[i].internalName !== 'Inheritance' || c.getInheritedFrom() == null ) {
-                $('<option value="' + Config.prototype.relationships[i].internalName + '">' + Config.prototype.relationships[i].nameSelf + '</option>').appendTo($type);
-            }
+    var relationshipTypes = Draggy.prototype.getRelationshipTypes();
+
+    for (i in relationshipTypes) {
+        if ( relationshipTypes[i].name !== 'Inheritance' || c.getInheritedFrom() == null ) {
+            $('<option value="' + i + '">' + relationshipTypes[i]['direct-name'] + '</option>').appendTo($type);
         }
     }
 
-    //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
-    $sourceClass.attr('value',c.getFullyQualifiedName());
+    $sourceClass.attr('value', c.getFullyQualifiedName());
 
     // Populate options for the first time
     LinkClassDialog.prototype.populateOptions('#link-item-source',$sourceClass.val(),true);

@@ -178,7 +178,7 @@ Connectable.prototype.reDraw = function () {
 
     this.makeInteractive();
 
-    if (this.children.length > 0) {
+    if (undefined !== this.children && this.children.length > 0) {
         for (var i = 0; i < this.children.length; i++) {
             Connectable.prototype.connectables[this.children[i]].reDraw();
         }

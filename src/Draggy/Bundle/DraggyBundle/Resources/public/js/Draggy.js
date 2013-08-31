@@ -351,6 +351,54 @@ Draggy.prototype.getEntityTypes = function () {
     return returnTypes;
 };
 
+Draggy.prototype.getRelationshipTypes = function () {
+    var relationshipTypes = undefined !== Draggy.prototype.getCurrentConfiguration().relationships
+        ? Draggy.prototype.getCurrentConfiguration().relationships.types
+        : {};
+
+    var returnTypes = {};
+
+    for (var i in relationshipTypes) {
+        if (relationshipTypes[i].enabled) {
+            returnTypes[i] = relationshipTypes[i];
+        }
+    }
+
+    return returnTypes;
+};
+
+Draggy.prototype.getAttributeTypes = function () {
+    var attributeTypes = undefined !== Draggy.prototype.getCurrentConfiguration().attributes
+        ? Draggy.prototype.getCurrentConfiguration().attributes.types
+        : {};
+
+    var returnTypes = {};
+
+    for (var i in attributeTypes) {
+        if(attributeTypes[i].enabled) {
+            returnTypes[i] = attributeTypes[i];
+        }
+    }
+
+    return returnTypes;
+};
+
+Draggy.prototype.getAttributeProperties = function () {
+    var attributeProperties = undefined !== Draggy.prototype.getCurrentConfiguration().attributes
+        ? Draggy.prototype.getCurrentConfiguration().attributes.properties
+        : {};
+
+    var returnProperties = {};
+
+    for (var i in attributeProperties) {
+        if(attributeProperties[i].enabled) {
+            returnProperties[i] = attributeProperties[i];
+        }
+    }
+
+    return returnProperties;
+};
+
 Draggy.prototype.options = []; // TODO: Remove
 
 Draggy.prototype.currentConfiguration = jQuery.extend(true, {}, Draggy.prototype.configuration);

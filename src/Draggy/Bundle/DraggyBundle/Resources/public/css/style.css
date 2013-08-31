@@ -594,3 +594,7 @@ input.autocode-change-checkbox {
 span.generate-entities-check-all, span.generate-entities-uncheck-all, span.generate-entities-fold-all, span.generate-entities-unfold-all {
     cursor: pointer;
 }
+
+.ui-tabs .ui-state-disabled {
+    display: none; /* disabled tabs don't show up */
+}

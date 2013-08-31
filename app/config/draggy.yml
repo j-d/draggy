@@ -3,10 +3,21 @@ languages:
         name: Java
     php:
         name: PHP
-        entities:
+        relationships:
             types:
+                one-to-one:
+                    enabled: true
+                one-to-many:
+                    enabled: true
+                many-to-one:
+                    enabled: true
+                many-to-many:
+                    enabled: true
+                inheritance:
+                    enabled: true
+                implements:
+                    enabled: true
                 trait:
-                    name:    Trait
                     enabled: true
         frameworks:
             symfony2:
@@ -80,29 +91,40 @@ languages:
                             link-classes: false
                         attributes:
                             types:
-                                - array
-                                - bigint
-                                - boolean
-                                - date
-                                - datetime
-                                - decimal
-                                - integer
-                                - object
-                                - smallint
-                                - string
-                                - text
-                                - time
-                            typeMapping:
-                                bigint:   integer
-                                date:     datetime
-                                decimal:  float
-                                smallint: integer
-                                text:     string
-                                time:     datetime
+                                bigint:
+                                    name:      bigint
+                                    enabled:   true
+                                    mapped-to: integer
+                                date:
+                                    name:      date
+                                    enabled:   true
+                                    mapped-to: datetime
+                                decimal:
+                                    name:       decimal
+                                    enabled:    true
+                                    mapped-top: float
+                                smallint:
+                                    name:      smallint
+                                    enabled:   true
+                                    mapped-to: integer
+                                text:
+                                    name:      text
+                                    enabled:   true
+                                    mapped-to: string
+                                time:
+                                    name:      time
+                                    enabled:   true
+                                    mapped-to: datetime
                         relationships:
                             types:
-                                many-to-one:  false
-                                many-to-many: false
+                                one-to-one:
+                                    connect-entity: false
+                                one-to-many:
+                                    connect-entity: false
+                                many-to-one:
+                                    enabled: false
+                                many-to-many:
+                                    enabled: false
                         autocode:
                             templates:
                                 entity:
@@ -127,7 +149,7 @@ languages:
                                     enabled:  true
                                 crud-read:
                                     name:     CRUD (Read / View / List)
-                                    templace: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudRead
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudRead
                                     enabled:  true
                                 crud-update:
                                     name:     CRUD (Update / Edit)
@@ -147,13 +169,27 @@ languages:
                                     enabled:  true
         attributes:
             types:
-                - array
-                - boolean
-                - datetime
-                - float
-                - integer
-                - object
-                - string
+                array:
+                    name:    array
+                    enabled: true
+                boolean:
+                    name:    boolean
+                    enabled: true
+                datetime:
+                    name:    datetime
+                    enabled: true
+                float:
+                    name:    float
+                    enabled: true
+                integer:
+                    name:    integer
+                    enabled: true
+                object:
+                    name:    object
+                    enabled: true
+                string:
+                    name:    string
+                    enabled: true
         autocode:
             properties:
                 base:
@@ -195,7 +231,7 @@ languages:
                     enabled:  true
                 crud-read:
                     name:     CRUD (Read / View / List)
-                    templace: Draggy\Autocode\Templates\PHP\CrudRead
+                    template: Draggy\Autocode\Templates\PHP\CrudRead
                     enabled:  true
                 crud-update:
                     name:     CRUD (Update / Edit)

@@ -59,56 +59,6 @@ ProjectPropertiesDialog.prototype.openDialog = function () {
 
     this.loadAutocodeTab();
 
-//
-//    // Autocode tab
-//    var $base, $overwrite, $deleteUnmapped, $validation;
-//    $base = $("#autocode-base");
-//    $overwrite = $("#autocode-overwrite");
-//    $deleteUnmapped = $("#autocode-deleteUnmapped");
-//    $validation = $("#autocode-validation");
-//
-//    if (Autocode.prototype.getBase()) {
-//        $base.attr('checked','checked');
-//    } else {
-//        $base.removeAttr('checked');
-//    }
-//    $base.button('refresh');
-//
-//    if (Autocode.prototype.getOverwrite()) {
-//        $overwrite.attr('checked','checked');
-//    } else {
-//        $overwrite.removeAttr('checked');
-//    }
-//    $overwrite.button('refresh');
-//
-//    if (Autocode.prototype.getDeleteUnmapped()) {
-//        $deleteUnmapped.attr('checked','checked');
-//    } else {
-//        $deleteUnmapped.removeAttr('checked');
-//    }
-//    $deleteUnmapped.button('refresh');
-//
-//    if (Autocode.prototype.getValidation()) {
-//        $validation.attr('checked','checked');
-//    } else {
-//        $validation.removeAttr('checked');
-//    }
-//    $validation.button('refresh');
-//
-//    $('#autocode-namespace').val(Autocode.prototype.getNamespace());
-//    $('#autocode-entityTemplate').val(Autocode.prototype.getEntityTemplate());
-//    $('#autocode-entityBaseTemplate').val(Autocode.prototype.getEntityBaseTemplate());
-//    $('#autocode-repositoryTemplate').val(Autocode.prototype.getRepositoryTemplate());
-//    $('#autocode-formTemplate').val(Autocode.prototype.getFormTemplate());
-//    $('#autocode-formBaseTemplate').val(Autocode.prototype.getFormBaseTemplate());
-//    $('#autocode-controllerTemplate').val(Autocode.prototype.getControllerTemplate());
-//    $('#autocode-fixturesTemplate').val(Autocode.prototype.getFixturesTemplate());
-//    $('#autocode-routesTemplate').val(Autocode.prototype.getRoutesTemplate());
-//    $('#autocode-routesRoutingTemplate').val(Autocode.prototype.getRoutesRoutingTemplate());
-//    $('#autocode-crudCreateTwigTemplate').val(Autocode.prototype.getCrudCreateTwigTemplate());
-//    $('#autocode-crudReadTwigTemplate').val(Autocode.prototype.getCrudReadTwigTemplate());
-//    $('#autocode-crudUpdateTwigTemplate').val(Autocode.prototype.getCrudUpdateTwigTemplate());
-
     $('#project-properties-dialog').dialog('open');
 };
 
@@ -244,7 +194,7 @@ ProjectPropertiesDialog.prototype.updateAutocodeTab = function()
                     '<label for="autocode-template-' + i + '">' + templates[i].name + ':</label>' +
                 '</td>' +
                 '<td>' +
-                    '<input id="autocode-template-' + i + '" type="text" name="autocode-template-' + i + '" size="30" class="text ui-widget-content ui-corner-all" />' +
+                    '<input id="autocode-template-' + i + '" type="text" name="autocode-template-' + i + '" size="50" placeholder="' + templates[i].template + '" class="text ui-widget-content ui-corner-all" />' +
                 '</td>' +
             '</tr>'
         );
