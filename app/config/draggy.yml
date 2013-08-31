@@ -3,6 +3,11 @@ languages:
         name: Java
     php:
         name: PHP
+        entities:
+            types:
+                trait:
+                    name:    Trait
+                    enabled: true
         frameworks:
             symfony2:
                 name: Symfony 2
@@ -205,9 +210,6 @@ languages:
                 - number
                 - object
                 - string
-        entities:
-            types:
-                trait: false
         autocode:
             templates:
                 entity:

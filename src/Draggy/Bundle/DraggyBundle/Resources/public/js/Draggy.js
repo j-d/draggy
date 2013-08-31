@@ -1,10 +1,12 @@
 function Draggy () { }
 
 Draggy.prototype.issuedIds = [];
+
 Draggy.prototype.language = null;
 Draggy.prototype.description = null;
 Draggy.prototype.orm = null;
 Draggy.prototype.framework = null;
+
 Draggy.prototype.saveAddress = null;
 Draggy.prototype.previewAddress = null;
 Draggy.prototype.generateAddress = null;
@@ -246,6 +248,9 @@ Draggy.prototype.updateConfiguration = function() {
             Draggy.prototype.currentConfiguration.orms[orm]
         );
     }
+
+    ContextMenu.prototype.disableMenus();
+    ContextMenu.prototype.enableMenus();
 };
 
 Draggy.prototype.mergeArrays = function (target, source) {
@@ -328,6 +333,22 @@ Draggy.prototype.getAutocodeTemplates = function () {
     }
 
     return returnTemplates;
+};
+
+Draggy.prototype.getEntityTypes = function () {
+    var entityTypes = undefined !== Draggy.prototype.getCurrentConfiguration().entities
+        ? Draggy.prototype.getCurrentConfiguration().entities.types
+        : {};
+
+    var returnTypes = {};
+
+    for (var i in entityTypes) {
+        if (entityTypes[i].enabled) {
+            returnTypes[i] = entityTypes[i];
+        }
+    }
+
+    return returnTypes;
 };
 
 Draggy.prototype.options = []; // TODO: Remove

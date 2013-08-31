@@ -12,10 +12,15 @@ attributes:
         description:   true
 entities:
     types:
-        class:     true
-        abstract:  true
-        interface: true
-        trait:     true
+        class:
+            name:    Class
+            enabled: true
+        abstract:
+            name:    Abstract class
+            enabled: true
+        interface:
+            name:    Interface
+            enabled: true
     properties:
         programming:
             properties:
@@ -37,12 +42,22 @@ entities:
                 static:   true
 relationships:
     types:
-        one-to-one:    true
-        one-to-many:   true
-        many-to-one:   true
-        many-to-many:  true
-        inheritance:   true
-    properties: ~
+        one-to-one:
+            name:    One to one
+            enabled: true
+        one-to-many:
+            name:    One to many
+            enabled: true
+        many-to-one:
+            name:    Many to one
+            enabled: true
+        many-to-many:
+            name:    Many to many
+            enabled: true
+        inheritance:
+            name:    Inheritance
+            enabled: true
+    properties: []
 autocode:
     properties:
         overwrite:
