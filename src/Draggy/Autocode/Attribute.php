@@ -128,6 +128,16 @@ abstract class Attribute extends AttributeBase
         return ucfirst($this->getSingleName());
     }
 
+    public function getPluralName()
+    {
+        return Project::pluralise($this->getName());
+    }
+
+    public function getPluralUpperName()
+    {
+        return ucfirst($this->getPluralName());
+    }
+
     public function getMaxMessage()
     {
         return $this->getHumanName() . ' is too long. It should have ' . $this->getSize() . ' characters or less.';

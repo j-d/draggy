@@ -74,11 +74,22 @@ class FormBase1 extends FormBase1Base implements RenderizableTemplateInterface
         $lines[] = 'use Symfony\\Component\\Form\\FormBuilderInterface;';
         $lines[] = 'use Symfony\\Component\\OptionsResolver\\OptionsResolverInterface;';
 
+        foreach ($this->getEntity()->getFormAttributes() as $attr) {
+            if ('OneToOne' === $attr->getForeign()) {
+                $lines[] = 'use Doctrine\ORM\EntityRepository;';
+                break;
+            }
+        }
+
         $useTypes = [];
 
         foreach ($this->getEntity()->getFormAttributes() as $attr) {
             if (in_array($attr->getFormClassType(), ['Entity', 'Collection'], true) && $attr->getForeignEntity()->getHasForm()) {
                 $useTypes['use ' . $attr->getForeignEntity()->getFullyQualifiedFormName() . ';'] = true;
+            }
+
+            if ('OneToOne' === $attr->getForeign()) {
+                $useTypes['use ' . $attr->getForeignEntity()->getFullyQualifiedName() . ';'] = true;
             }
         }
 

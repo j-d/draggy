@@ -420,6 +420,14 @@ class PHPLineJustifier extends AbstractLineJustifier
             return true;
         }
 
+        if ('? ' === substr($line, 0, 2)) {
+            return true;
+        }
+
+        if (': ' === substr($line, 0, 2)) {
+            return true;
+        }
+
         return false;
     }
 

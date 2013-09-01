@@ -372,10 +372,13 @@ class Controller extends ControllerBase
         $id = $entity->getPrimaryAttribute();
 
         if ($entity->getCrudUpdate()) {
-            $lines[] = '';
+            $idName = null === $id->getForeign()
+                ? $id->getName()
+                : $id->getForeignEntity()->getPrimaryAttribute()->getName();
 
+            $lines[] = '';
             $lines[] = $this->getUserAdditions('editAction');
-            $lines[] = 'public function editAction(Request $request, $' . $id->getName() . ')';
+            $lines[] = 'public function editAction(Request $request, $' . $idName . ')';
             $lines[] = '{';
 
             if ($entity->getHasForm()) {
@@ -383,10 +386,10 @@ class Controller extends ControllerBase
                 $lines[] = '$em = $this->getDoctrine()->getManager();';
                 $lines[] = '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
                 $lines[] = '';
-                $lines[] = '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'' . $id->getName() . '\' => $' . $id->getName() . ']);';
+                $lines[] = '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'' . $id->getName() . '\' => $' . $idName . ']);';
                 $lines[] = '';
                 $lines[] = 'if (null === $' . $entity->getLowerName() . ') {';
-                $lines[] =     'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for ' . $id->getName() . ' \' . $' . $id->getName() . ');';
+                $lines[] =     'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for ' . $id->getName() . ' \' . $' . $idName . ');';
                 $lines[] = '}';
                 $lines[] = '';
                 $lines[] = '$' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();';
@@ -426,19 +429,22 @@ class Controller extends ControllerBase
         $id = $entity->getPrimaryAttribute();
 
         if ($entity->getCrudDelete()) {
-            $lines[] = '';
+            $idName = null === $id->getForeign()
+                ? $id->getName()
+                : $id->getForeignEntity()->getPrimaryAttribute()->getName();
 
+            $lines[] = '';
             $lines[] = $this->getUserAdditions('deleteAction');
-            $lines[] = 'public function deleteAction(Request $request, $' . $id->getName() . ')';
+            $lines[] = 'public function deleteAction(Request $request, $' . $idName . ')';
             $lines[] = '{';
             $lines[] =     '/** @var EntityManager $em */';
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
-            $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'' . $id->getName() . '\' => $' . $id->getName() . ']);';
+            $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'' . $id->getName() . '\' => $' . $idName . ']);';
             $lines[] = '';
             $lines[] =     'if (null === $' . $entity->getLowerName() . ') {';
-            $lines[] =         'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for ' . $id->getName() . ' \' . $' . $id->getName() . ');';
+            $lines[] =         'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for ' . $id->getName() . ' \' . $' . $idName . ');';
             $lines[] =     '}';
             $lines[] = '';
             $lines[] =     '$em->remove($' . $entity->getLowerName() . ');';
