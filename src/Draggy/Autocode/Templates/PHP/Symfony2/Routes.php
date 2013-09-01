@@ -96,9 +96,17 @@ class Routes extends RoutesBase
 
         $file = '';
 
+        $id = $entity->getPrimaryAttribute();
+
         $file .= '# <user-additions' . ' part="edit">' . "\n";
         $file .= $entity->getEditRoute() . ':' . "\n";
-        $file .= '    pattern:  /' . strtolower($entity->getName()) . '/edit/{id}' . "\n";
+
+        if (null === $id->getForeign()) {
+            $file .= '    pattern:  /' . strtolower($entity->getName()) . '/edit/{' . $id->getName() . '}' . "\n";
+        } else {
+            $file .= '    pattern:  /' . strtolower($entity->getName()) . '/edit/{' . $id->getForeignEntity()->getPrimaryAttribute()->getName() . '}' . "\n";
+        }
+
         $file .= '    defaults: { _controller: ' . $entity->getModule() . ':' . $entity->getName() . ':edit }' . "\n";
         $file .= '# </user-additions' . '>' . "\n";
 
@@ -111,9 +119,17 @@ class Routes extends RoutesBase
 
         $file = '';
 
+        $id = $entity->getPrimaryAttribute();
+
         $file .= '# <user-additions' . ' part="delete">' . "\n";
         $file .=  $entity->getDeleteRoute() . ':' . "\n";
-        $file .= '    pattern:  /' . strtolower($entity->getName()) . '/delete/{id}' . "\n";
+
+        if (null === $id->getForeign()) {
+            $file .= '    pattern:  /' . strtolower($entity->getName()) . '/delete/{' . $id->getName() . '}' . "\n";
+        } else {
+            $file .= '    pattern:  /' . strtolower($entity->getName()) . '/delete/{' . $id->getForeignEntity()->getPrimaryAttribute()->getName() . '}' . "\n";
+        }
+
         $file .= '    defaults: { _controller: ' . $entity->getModule() . ':' . $entity->getName() . ':delete }' . "\n";
         $file .= '# </user-additions' . '>' . "\n";
 
@@ -126,9 +142,11 @@ class Routes extends RoutesBase
 
         $file = '';
 
+        $id = $entity->getPrimaryAttribute();
+
         $file .= '# <user-additions' . ' part="enable">' . "\n";
         $file .=  $entity->getEnableRoute() . ':' . "\n";
-        $file .= '    pattern:  /' . strtolower($entity->getName()) . '/enable/{id}' . "\n";
+        $file .= '    pattern:  /' . strtolower($entity->getName()) . '/enable/{' . $id->getName() . '}' . "\n";
         $file .= '    defaults: { _controller: ' . $entity->getModule() . ':' . $entity->getName() . ':enable }' . "\n";
         $file .= '# </user-additions' . '>' . "\n";
 
@@ -141,9 +159,11 @@ class Routes extends RoutesBase
 
         $file = '';
 
+        $id = $entity->getPrimaryAttribute();
+
         $file .= '# <user-additions' . ' part="disable">' . "\n";
         $file .=  $entity->getDisableRoute() . ':' . "\n";
-        $file .= '    pattern:  /' . strtolower($entity->getName()) . '/disable/{id}' . "\n";
+        $file .= '    pattern:  /' . strtolower($entity->getName()) . '/disable/{' . $id->getName() . '}' . "\n";
         $file .= '    defaults: { _controller: ' . $entity->getModule() . ':' . $entity->getName() . ':disable }' . "\n";
         $file .= '# </user-additions' . '>' . "\n";
 

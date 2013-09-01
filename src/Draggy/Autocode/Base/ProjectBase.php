@@ -55,7 +55,7 @@ abstract class ProjectBase
     /**
      * @var string $language
      */
-    protected $language = 'PHP';
+    protected $language = 'php';
 
     /**
      * @var string $description
@@ -65,12 +65,12 @@ abstract class ProjectBase
     /**
      * @var string $orm
      */
-    protected $orm = 'Doctrine2';
+    protected $orm = 'doctrine2';
 
     /**
      * @var string $framework
      */
-    protected $framework;
+    protected $framework = 'symfony2';
 
     /**
      * @var string $attributeClass

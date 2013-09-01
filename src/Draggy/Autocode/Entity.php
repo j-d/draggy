@@ -53,6 +53,26 @@ class Entity extends EntityBase
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
+    public function getHumanName()
+    {
+        return strtoupper($this->getName()[0]) . substr(preg_replace('/(?!^)[A-Z]{2,}(?=[A-Z][a-z])|[A-Z][a-z]/', ' $' . '0', $this->getLowerName()), 1);
+    }
+
+    public function getLowerHumanName()
+    {
+        return strtolower($this->getHumanName());
+    }
+
+    public function getPluralHumanName()
+    {
+        return strtoupper($this->getPluralName(2)[0]) . substr(preg_replace('/(?!^)[A-Z]{2,}(?=[A-Z][a-z])|[A-Z][a-z]/', ' $' . '0', $this->getPluralLowerName()), 1);
+    }
+
+    public function getPluralLowerHumanName()
+    {
+        return strtolower($this->getPluralHumanName());
+    }
+
     /**
      * Get lowerName
      *
@@ -100,7 +120,7 @@ class Entity extends EntityBase
     {
         $ret = $this->getNamespace() . '\\';
 
-        if ($this->getProject()->getFramework() === 'Symfony2') {
+        if ($this->getProject()->getFramework() === 'symfony2') {
             $ret .= 'Entity\\';
         }
 
@@ -113,7 +133,7 @@ class Entity extends EntityBase
     {
         $ret = $this->getNamespace() . '\\';
 
-        if ($this->getProject()->getFramework() === 'Symfony2') {
+        if ($this->getProject()->getFramework() === 'symfony2') {
             $ret .= 'Entity\\';
         }
 

@@ -55,12 +55,12 @@ class CrudRead extends CrudReadBase implements RenderizableTemplateInterface
 
     public function getTitleLinePart()
     {
-        return '{{ parent() }} | List ' . $this->getEntity()->getName();
+        return '{{ parent() }} | View ' . $this->getEntity()->getPluralLowerHumanName();
     }
 
     public function getPageTitleLinePart()
     {
-        return 'List ' . $this->getEntity()->getName();
+        return 'View ' . $this->getEntity()->getPluralLowerHumanName();
     }
 
     public function getContentLines()
@@ -72,7 +72,11 @@ class CrudRead extends CrudReadBase implements RenderizableTemplateInterface
         $lines[] =         '<tr>';
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
-            if (null === $attr->getForeign()) {
+            if (
+                null === $attr->getForeign() ||
+                'OneToOne' === $attr->getForeign() ||
+                ('ManyToOne' === $attr->getForeign() && $attr->getOwnerSide())
+            ) {
                 $lines[] = '<th>' . $attr->getUpperName() . '</th>';
             }
         }
@@ -86,9 +90,19 @@ class CrudRead extends CrudReadBase implements RenderizableTemplateInterface
         $lines[] =             '<tr>';
 
         foreach ($this->getEntity()->getAttributes() as $attr) {
-            if (null === $attr->getForeign()) {
+            if (
+                null === $attr->getForeign() ||
+                'OneToOne' === $attr->getForeign() ||
+                ('ManyToOne' === $attr->getForeign() && $attr->getOwnerSide())
+            ) {
                 if ('boolean' === $attr->getType()) {
                     $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() ? \'Y\' : \'\' }}</td>';
+                } elseif ('date' === $attr->getType()) {
+                    $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() | date(\'d-M-Y\') }}</td>';
+                } elseif ('time' === $attr->getType()) {
+                    $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() | date(\'H:i:s\') }}</td>';
+                } elseif ('datetime' === $attr->getType()) {
+                    $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() | date(\'d-M-Y H:i:s\') }}</td>';
                 } else {
                     $lines[] = '<td>{{ ' . $this->getEntity()->getLowerName() . '.' . $attr->getGetterName() . '() }}</td>';
                 }
@@ -97,12 +111,24 @@ class CrudRead extends CrudReadBase implements RenderizableTemplateInterface
 
         $lines[] =             '<td>';
 
+        $id = $this->getEntity()->getPrimaryAttribute();
+
         if ($this->getEntity()->getCrudUpdate()) {
-            $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getEditRoute() . '\', {\'id\': ' . $this->getEntity()->getLowerName() . '.getId()}) }}">Edit</a>';
+            if (null === $id->getForeign()) {
+                $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getEditRoute() . '\', {\'' . $id->getName() . '\': ' . $this->getEntity()->getLowerName() . '.' . $id->getGetterName() . '()}) }}">Edit</a>';
+            } else {
+                // Is also foreign
+                $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getEditRoute() . '\', {\'' . $id->getForeignEntity()->getPrimaryAttribute()->getName() . '\': ' . $this->getEntity()->getLowerName() . '.' . $id->getGetterName() . '().' . $id->getForeignEntity()->getPrimaryAttribute()->getGetterName() . '()}) }}">Edit</a>';
+            }
         }
 
         if ($this->getEntity()->getCrudDelete()) {
-            $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getDeleteRoute() . '\', {\'id\': ' . $this->getEntity()->getLowerName() . '.getId()}) }}">Delete</a>';
+            if (null === $id->getForeign()) {
+                $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getDeleteRoute() . '\', {\'' . $id->getName() . '\': ' . $this->getEntity()->getLowerName() . '.' . $id->getGetterName() . '()}) }}">Delete</a>';
+            } else {
+                // Is also foreign
+                $lines[] = $actionsArray[] = '<a href="{{ path(\'' . $this->getEntity()->getDeleteRoute() . '\', {\'' . $id->getForeignEntity()->getPrimaryAttribute()->getName() . '\': ' . $this->getEntity()->getLowerName() . '.' . $id->getGetterName() . '().' . $id->getForeignEntity()->getPrimaryAttribute()->getGetterName() . '()}) }}">Delete</a>';
+            }
         }
 
         $lines[] =             '</td>';

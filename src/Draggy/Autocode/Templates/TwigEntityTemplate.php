@@ -18,7 +18,7 @@ namespace Draggy\Autocode\Templates;
 
 use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
-use Draggy\Utils\TwigJustifier;
+use Draggy\Utils\Justifier\Twig\TwigJustifier;
 // </user-additions>
 
 /**
@@ -91,11 +91,11 @@ class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInt
         $lines[] =     '<li class="nav-header">' . $this->getTemplate()->getEntity()->getPluralName() . '</li>';
 
         if ($this->getTemplate()->getEntity()->getCrudCreate()) {
-            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getTemplate()->getEntity()->getLowerName() . '</a></li>';
+            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getTemplate()->getEntity()->getLowerHumanName() . '</a></li>';
         }
 
         if ($this->getTemplate()->getEntity()->getCrudRead()) {
-            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getListRoute() . '\') }}">View ' . $this->getTemplate()->getEntity()->getPluralLowerName() . '</a></li>';
+            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getListRoute() . '\') }}">View ' . $this->getTemplate()->getEntity()->getPluralLowerHumanName() . '</a></li>';
         }
 
         $otherEntityLines = [];
@@ -103,7 +103,7 @@ class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInt
         foreach ($this->getTemplate()->getEntity()->getProject()->getEntities() as $entity) {
             if ($entity !== $this->getTemplate()->getEntity()) {
                 if ($entity->getCrudRead()) {
-                    $otherEntityLines[] = '<li><a href="{{ path(\'' . $entity->getListRoute() . '\') }}">' . $entity->getPluralName() . '</a></li>';
+                    $otherEntityLines[] = '<li><a href="{{ path(\'' . $entity->getListRoute() . '\') }}">' . $entity->getPluralHumanName() . '</a></li>';
                 }
             }
         }

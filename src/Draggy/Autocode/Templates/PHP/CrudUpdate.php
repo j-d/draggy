@@ -55,12 +55,12 @@ class CrudUpdate extends CrudUpdateBase implements RenderizableTemplateInterface
 
     public function getTitleLinePart()
     {
-        return '{{ parent() }} | Edit ' . $this->getEntity()->getName();
+        return '{{ parent() }} | Edit ' . $this->getEntity()->getLowerHumanName();
     }
 
     public function getPageTitleLinePart()
     {
-        return 'Edit ' . $this->getEntity()->getName();
+        return 'Edit ' . $this->getEntity()->getLowerHumanName();
     }
 
     public function getContentLines()

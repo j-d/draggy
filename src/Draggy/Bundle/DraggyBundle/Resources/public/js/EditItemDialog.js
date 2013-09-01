@@ -84,6 +84,8 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
         $($li1).removeClass('ui-state-disabled');
         $($li2).removeClass('ui-state-disabled');
     }
+
+    EditItemDialog.prototype.loadProgrammingTab(); // Don't remove this ! Otherwise error when saving if not clicked
 };
 
 EditItemDialog.prototype.deleteAttribute = function (attributeId, rowId) {
@@ -389,7 +391,7 @@ EditItemDialog.prototype.commitChanges = function () {
 
     var description = $('#edit-item-description');
 
-    if (!EditItemDialog.prototype.connectable instanceof Interface) {
+    if (!(EditItemDialog.prototype.connectable instanceof Interface)) {
         var toString = $('#edit-item-tostring');
 
         if (toString.val() != '') {

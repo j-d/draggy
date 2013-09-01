@@ -183,7 +183,7 @@ class Project extends ProjectBase
     {
         $reservedWords = [];
 
-        if ($this->getLanguage() === 'PHP') {
+        if ($this->getLanguage() === 'php') {
             // PHP 5.4 reserved words as per http://php.net/manual/en/reserved.keywords.php
             $reservedWords = array_merge($reservedWords, ['__HALT_COMPILER', 'ABSTRACT', 'AND', 'ARRAY', 'AS', 'BREAK', 'CALLABLE', 'CASE', 'CATCH', 'CLASS', 'CLONE', 'CONST', 'CONTINUE', 'DECLARE', 'DEFAULT', 'DIE', 'DO', 'ECHO', 'ELSE', 'ELSEIF', 'EMPTY', 'ENDDECLARE', 'ENDFOR', 'ENDFOREACH', 'ENDIF', 'ENDSWITCH', 'ENDWHILE', 'EVAL()', 'EXIT', 'EXTENDS', 'FINAL', 'FOR', 'FOREACH', 'FUNCTION', 'GLOBAL', 'GOTO', 'IF', 'IMPLEMENTS', 'INCLUDE', 'INCLUDE_ONCE', 'INSTANCEOF', 'INSTEADOF', 'INTERFACE', 'ISSET', 'LIST', 'NAMESPACE', 'NEW', 'OR', 'PRINT', 'PRIVATE', 'PROTECTED', 'PUBLIC', 'REQUIRE', 'REQUIRE_ONCE', 'RETURN', 'STATIC', 'SWITCH', 'THROW', 'TRAIT', 'TRY', 'UNSET', 'USE', 'VAR', 'WHILE', 'XOR']);
         }
@@ -1586,7 +1586,7 @@ class Project extends ProjectBase
 
     public function supportsReverseAttributes()
     {
-        return 'Doctrine2' === $this->getOrm();
+        return 'doctrine2' === $this->getOrm();
     }
 
     /**

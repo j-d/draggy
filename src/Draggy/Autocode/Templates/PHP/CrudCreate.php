@@ -55,12 +55,12 @@ class CrudCreate extends CrudCreateBase implements RenderizableTemplateInterface
 
     public function getTitleLinePart()
     {
-        return '{{ parent() }} | Add ' . $this->getEntity()->getName();
+        return '{{ parent() }} | Add ' . $this->getEntity()->getLowerHumanName();
     }
 
     public function getPageTitleLinePart()
     {
-        return 'Add ' . $this->getEntity()->getName();
+        return 'Add ' . $this->getEntity()->getLowerHumanName();
     }
 
     public function getContentLines()
