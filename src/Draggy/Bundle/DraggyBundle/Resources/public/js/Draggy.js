@@ -78,14 +78,14 @@ Draggy.prototype.getModelXML = function () {
     }
 
     ret += '\t<loose>\n';
-    for (i = 0; i < Class.prototype.classList.length; i++) {
-        if (Class.prototype.classList[i].getModule() == '') {
-            ret += '\t\t' + Class.prototype.classList[i].toXML();
-        }
-    }
     for (i = 0; i < Abstract.prototype.abstractList.length; i++) {
         if (Abstract.prototype.abstractList[i].getModule() == '') {
             ret += '\t\t' + Abstract.prototype.abstractList[i].toXML();
+        }
+    }
+    for (i = 0; i < Class.prototype.classList.length; i++) {
+        if (Class.prototype.classList[i].getModule() == '') {
+            ret += '\t\t' + Class.prototype.classList[i].toXML();
         }
     }
     for (i = 0; i < Interface.prototype.interfaceList.length; i++) {

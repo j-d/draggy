@@ -21,9 +21,9 @@ class YamlLoader
         return $target;
     }
 
-    protected static function mergeConfigurations($target, $source)
+    public static function mergeConfigurations($target, $source)
     {
-        foreach (['configuration', 'attributes', 'entities', 'relationships', 'autocode', 'languages', 'frameworks', 'orms'] as $configurationPart) {
+        foreach (['attributes', 'entities', 'relationships', 'autocode', 'languages', 'frameworks', 'orms'] as $configurationPart) {
             if (isset($source[$configurationPart])) {
                 $target[$configurationPart] = self::mergeArrays($target[$configurationPart], $source[$configurationPart]);
             }

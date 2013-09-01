@@ -30,39 +30,11 @@ languages:
                     templates:
                         entity:
                             name:     Entity
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Entity1
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\Entity3
                             enabled:  true
                         entity-base:
                             name:     Entity base
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\EntityBase1
-                            enabled:  true
-                        interface:
-                            name:     Interface
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\InterfaceT
-                            enabled:  true
-                        trait:
-                            name:     Trait
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\TraitT
-                            enabled:  true
-                        form:
-                            name:     Form
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\Form
-                            enabled:  true
-                        form-base:
-                            name:     Form base
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\FormBase1
-                            enabled:  true
-                        crud-create:
-                            name:     CRUD (Create)
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\CrudCreate
-                            enabled:  true
-                        crud-read:
-                            name:     CRUD (Read / View / List)
-                            templace: Draggy\Autocode\Templates\PHP\Symfony2\CrudRead
-                            enabled:  true
-                        crud-update:
-                            name:     CRUD (Update / Edit)
-                            template: Draggy\Autocode\Templates\PHP\Symfony2\CrudUpdate
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\EntityBase3
                             enabled:  true
                         controller:
                             name:     Controller
@@ -129,43 +101,11 @@ languages:
                             templates:
                                 entity:
                                     name:     Entity
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity1
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity4
                                     enabled:  true
                                 entity-base:
                                     name:     Entity base
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase1
-                                    enabled:  true
-                                form:
-                                    name:     Form
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Form
-                                    enabled:  true
-                                form-base:
-                                    name:     Form base
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\FormBase1
-                                    enabled:  true
-                                crud-create:
-                                    name:     CRUD (Create)
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudCreate
-                                    enabled:  true
-                                crud-read:
-                                    name:     CRUD (Read / View / List)
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudRead
-                                    enabled:  true
-                                crud-update:
-                                    name:     CRUD (Update / Edit)
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudUpdate
-                                    enabled:  true
-                                controller:
-                                    name:     Controller
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Controller
-                                    enabled:  true
-                                fixtures:
-                                    name:     Fixtures
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Fixtures
-                                    enabled:  true
-                                repository:
-                                    name:     Repository
-                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Repository
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase4
                                     enabled:  true
         attributes:
             types:

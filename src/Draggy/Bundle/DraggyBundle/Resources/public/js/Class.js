@@ -40,8 +40,8 @@ Class.prototype.isPureManyToMany = function () {
         this.getAttribute(0).getForeign() &&
         this.getAttribute(1).getForeign() &&
         (
-            Link.prototype.links[this.getAttribute(0).getLink(0)].getType() == 'OneToMany' ||
-            Link.prototype.links[this.getAttribute(1).getLink(0)].getType() == 'OneToMany'
+            Link.prototype.links[this.getAttribute(0).getLink(0)].getType() == 'one-to-many' ||
+            Link.prototype.links[this.getAttribute(1).getLink(0)].getType() == 'one-to-many'
         );
 };
 

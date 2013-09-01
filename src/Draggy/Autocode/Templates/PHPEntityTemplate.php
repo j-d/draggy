@@ -20,7 +20,7 @@ use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
 use Draggy\Autocode\Entity;
 use Draggy\Autocode\PHPEntity;
-use Draggy\Utils\PHPJustifier;
+use Draggy\Utils\Justifier\PHP\PHPJustifier;
 // </user-additions>
 
 /**

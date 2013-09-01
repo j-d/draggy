@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <draggy>
 	<project>
-		<language>PHP</language>
+		<language>php</language>
 		<description>Draggy to code</description>
 		<orm/>
 		<framework/>
@@ -343,39 +343,43 @@
 		</abstract>
 	</loose>
 	<relationships>
-		<relation from="PHPAttribute" to="Attribute" type="Inheritance"/>
-		<relation from="JSAttribute" to="Attribute" type="Inheritance"/>
-		<relation from="Templates\EntityTemplate" to="Templates\Template" type="Inheritance"/>
-		<relation from="Templates\PHPEntityTemplate" to="Templates\EntityTemplate" type="Inheritance"/>
-		<relation from="Templates\AttributeTemplate" to="Templates\Template" type="Inheritance"/>
-		<relation from="Templates\PHP\Symfony2\Repository" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\EntityBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Form" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\FormBase1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\Controller" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\Routes" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\RoutesRouting" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\CrudRead" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\CrudCreate" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\CrudUpdate" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Entity1" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\Fixtures" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\JS\Entity2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\JS\EntityBase2" to="Templates\EntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="PHPEntity" to="Entity" type="Inheritance"/>
-		<relation from="Templates\PHP\InterfaceT" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\TraitT" to="Templates\PHPEntityTemplate" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\Entity3" to="Templates\PHP\Entity1" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\Doctrine2\Entity4" to="Templates\PHP\Symfony2\Entity3" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\Doctrine2\EntityBase4" to="Templates\PHP\Symfony2\EntityBase3" type="Inheritance" broken="true"/>
-		<relation from="Templates\PHP\Symfony2\EntityBase3" to="Templates\PHP\EntityBase1" type="Inheritance" broken="true"/>
+		<relation from="PHPAttribute" to="Attribute" type="inheritance"/>
+		<relation from="JSAttribute" to="Attribute" type="inheritance"/>
+		<relation from="Templates\EntityTemplate" to="Templates\Template" type="inheritance"/>
+		<relation from="Templates\PHPEntityTemplate" to="Templates\EntityTemplate" type="inheritance"/>
+		<relation from="Templates\AttributeTemplate" to="Templates\Template" type="inheritance"/>
+		<relation from="Templates\PHP\Symfony2\Repository" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\EntityBase1" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Form" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\FormBase1" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Controller" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Routes" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\RoutesRouting" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudRead" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudCreate" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\CrudUpdate" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Entity1" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Fixtures" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\JS\Entity2" to="Templates\EntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\JS\EntityBase2" to="Templates\EntityTemplate" type="inheritance" broken="true"/>
+		<relation from="PHPEntity" to="Entity" type="inheritance"/>
+		<relation from="Templates\PHP\InterfaceT" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\TraitT" to="Templates\PHPEntityTemplate" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Entity3" to="Templates\PHP\Entity1" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Doctrine2\Entity4" to="Templates\PHP\Symfony2\Entity3" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\Doctrine2\EntityBase4" to="Templates\PHP\Symfony2\EntityBase3" type="inheritance" broken="true"/>
+		<relation from="Templates\PHP\Symfony2\EntityBase3" to="Templates\PHP\EntityBase1" type="inheritance" broken="true"/>
 	</relationships>
 	<autocode>
-		<base>true</base>
-		<overwrite>true</overwrite>
-		<delete-unmapped>true</delete-unmapped>
-		<validation>false</validation>
-		<namespace>Draggy\Autocode</namespace>
+        <properties>
+            <base>true</base>
+            <overwrite>true</overwrite>
+            <delete-unmapped>true</delete-unmapped>
+            <validation>false</validation>
+        </properties>
+        <configurations>
+		    <namespace>Draggy\Autocode</namespace>
+        </configurations>
 		<templates>
 			<entity/>
 			<entity-base/>

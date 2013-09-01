@@ -101,6 +101,7 @@ class Loader
         $r .= 'Draggy.prototype.setDescription(\'' . str_replace('\'', '\\\'', $projectOptions['description']) . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setORM(\'' . $projectOptions['orm'] . '\');' . PHP_EOL;
         $r .= 'Draggy.prototype.setFramework(\'' . $projectOptions['framework'] . '\');' . PHP_EOL;
+        $r .= 'Draggy.prototype.updateConfiguration();' . PHP_EOL;
 
         return $r;
     }

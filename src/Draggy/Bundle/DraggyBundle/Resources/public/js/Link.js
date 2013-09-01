@@ -465,8 +465,6 @@ Link.prototype.draw = function () {
         var linkTypes = Draggy.prototype.getRelationshipTypes();
         var thisLinkType = linkTypes[this.type];
 
-        console.log(this.type);
-
         var fromType = 'icon-' + thisLinkType.icons.from + Link.prototype.suffixes[fromConnector];
         var toType   = 'icon-' + thisLinkType.icons.to + Link.prototype.suffixes[toConnector];
 

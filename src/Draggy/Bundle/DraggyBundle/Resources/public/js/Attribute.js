@@ -92,11 +92,13 @@ Attribute.prototype.setSubtype = function (subtype)
             this.subtype = subtype;
         }
 
-        if (oldSubtype !== '' && oldSubtype !== null && Config.prototype.types.indexOf(oldSubtype) === -1) { // It was a class subtype
+        var attributeTypes = Draggy.prototype.getAttributeTypes();
+
+        if (oldSubtype !== '' && oldSubtype !== null && undefined === attributeTypes[oldSubtype]) { // It was a class subtype
             Connectable.prototype.getConnectableFromName(oldSubtype).removeDependantAttribute(this.getId());
         }
 
-        if (subtype !== '' && subtype !== null && subtype !== undefined && Config.prototype.types.indexOf(subtype) === -1) { // Is a class subtype
+        if (subtype !== '' && subtype !== null && subtype !== undefined && undefined === attributeTypes[subtype]) { // Is a class subtype
             Connectable.prototype.getConnectableFromName(subtype).addDependantAttribute(this.getId());
         }
 

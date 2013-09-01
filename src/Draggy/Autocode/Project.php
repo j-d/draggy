@@ -18,10 +18,12 @@ namespace Draggy\Autocode;
 
 use Draggy\Autocode\Base\ProjectBase;
 // <user-additions part="use">
+use Draggy\Autocode\Templates\EntityTemplate;
 use Draggy\Autocode\Templates\PHP as PHPTemplates;
 use Draggy\Autocode\Templates\JS as JSTemplates;
-use Draggy\Autocode\Exceptions\DuplicateAttributeException;
+use Draggy\Autocode\Templates\Template;
 use Draggy\Log;
+use Draggy\Utils\Yaml\YamlLoader;
 // </user-additions>
 
 /**
@@ -42,6 +44,26 @@ class Project extends ProjectBase
      * @var array
      */
     protected $filesToProcess = [];
+
+    /**
+     * @var array
+     */
+    protected $configuration;
+
+    /**
+     * @var bool[]
+     */
+    protected $autocodeProperties;
+
+    /**
+     * @var string[]
+     */
+    protected $autocodeConfigurations;
+
+    /**
+     * @var string[]
+     */
+    protected $autocodeTemplates;
     // </user-additions>
     // </editor-fold>
 
@@ -193,9 +215,9 @@ class Project extends ProjectBase
 
         /** @var Entity $entity */
         if ($moduleName !== '') {
-            $entity = new $entityClass( $this, $this->namespace . '\\' . $moduleName, $moduleName, $entityName );
+            $entity = new $entityClass( $this, $this->getNamespace() . '\\' . $moduleName, $moduleName, $entityName );
         } else {
-            $entity = new $entityClass( $this, $this->namespace, '', $entityName );
+            $entity = new $entityClass( $this, $this->getNamespace(), '', $entityName );
         }
 
         foreach ($classAttributes as $classAttributeName => $classAttributeValue)
@@ -276,20 +298,320 @@ class Project extends ProjectBase
         return $this;
     }
 
+    protected function calculateConfiguration()
+    {
+        $configuration   = YamlLoader::loadConfiguration();
+        $myConfiguration = $configuration;
+
+        $language  = $this->getLanguage();
+        $framework = $this->getFramework();
+        $orm       = $this->getOrm();
+
+        if (!empty($language) && isset($myConfiguration['languages'][$language])) {
+            $myConfiguration = YamlLoader::mergeConfigurations($myConfiguration, $myConfiguration['languages'][$language]);
+        }
+
+        if (!empty($framework) && isset($myConfiguration['frameworks'][$framework])) {
+            $myConfiguration = YamlLoader::mergeConfigurations($myConfiguration, $myConfiguration['frameworks'][$framework]);
+        }
+
+        if (!empty($orm) && isset($myConfiguration['orms'][$orm])) {
+            $myConfiguration = YamlLoader::mergeConfigurations($myConfiguration, $myConfiguration['orms'][$orm]);
+        }
+
+        return $myConfiguration;
+    }
+
+    public function getAutocodeProperties()
+    {
+        $configuration = $this->getConfiguration();
+
+        $properties = [];
+
+        foreach ($configuration['autocode']['properties'] as $propertyName => $propertyValue) {
+            if ($propertyValue['enabled']) {
+                $properties[$propertyName] = $propertyValue;
+            }
+        }
+
+        return $properties;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * @param string $property
+     * @param bool   $value
+     *
+     * @return $this
+     */
+    public function setAutocodeProperty($property, $value)
+    {
+        $this->autocodeProperties[$property] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param $property
+     *
+     * @return bool
+     */
+    public function getAutocodeProperty($property)
+    {
+        return $this->autocodeProperties[$property];
+    }
+
+    /**
+     * @param string $configuration
+     * @param bool   $value
+     *
+     * @return $this
+     */
+    public function setAutocodeConfiguration($configuration, $value)
+    {
+        $this->autocodeConfigurations[$configuration] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $configuration
+     *
+     * @return string
+     */
+    public function getAutocodeConfiguration($configuration)
+    {
+        return $this->autocodeConfigurations[$configuration];
+    }
+
+    /**
+     * @param string $template
+     * @param Template $value
+     *
+     * @return $this
+     */
+    public function setAutocodeTemplate($template, Template $value)
+    {
+        $this->autocodeTemplates[$template] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $template
+     *
+     * @return Template
+     */
+    public function getAutocodeTemplate($template)
+    {
+        return $this->autocodeTemplates[$template];
+    }
+
+    // <editor-fold desc="Deprecated methods">
+    /**
+     * @deprecated
+     *
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->getAutocodeConfiguration('namespace');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return bool
+     */
+    public function getBase()
+    {
+        return $this->getAutocodeProperty('base');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return bool
+     */
+    public function getOverwrite()
+    {
+        return $this->getAutocodeProperty('overwrite');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return bool
+     */
+    public function getDeleteUnmapped()
+    {
+        return $this->getAutocodeProperty('delete-unmapped');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return bool
+     */
+    public function getValidation()
+    {
+        return $this->getAutocodeProperty('validation');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getEntityTemplate()
+    {
+        return $this->getAutocodeTemplate('entity');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getEntityBaseTemplate()
+    {
+        return $this->getAutocodeTemplate('entity-base');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getRepositoryTemplate()
+    {
+        return $this->getAutocodeTemplate('repository');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getFormTemplate()
+    {
+        return $this->getAutocodeTemplate('form');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getFormBaseTemplate()
+    {
+        return $this->getAutocodeTemplate('form-base');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getControllerTemplate()
+    {
+        return $this->getAutocodeTemplate('controller');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getFixturesTemplate()
+    {
+        return $this->getAutocodeTemplate('fixtures');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getRoutesTemplate()
+    {
+        return $this->getAutocodeTemplate('routes');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getRoutesRoutingTemplate()
+    {
+        return $this->getAutocodeTemplate('routes-routing');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getCrudCreateTwigTemplate()
+    {
+        return $this->getAutocodeTemplate('crud-create');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getCrudReadTwigTemplate()
+    {
+        return $this->getAutocodeTemplate('crud-read');
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return EntityTemplate
+     */
+    public function getCrudUpdateTwigTemplate()
+    {
+        return $this->getAutocodeTemplate('crud-update');
+    }
+    // </editor-fold>
+
+    /**
+     * Loads the XML design to the project
+     *
+     * @param \SimpleXMLElement $xmlDesign
+     *
+     * @return $this
+     *
+     * @throws \RuntimeException
+     * @throws \Exception
+     */
     public function loadDesign(\SimpleXMLElement $xmlDesign)
     {
         // Load project properties
         $projectProperties = (array) $xmlDesign->xpath('project')[0];
 
         $this->setLanguage((string) $projectProperties['language']);
-        $this->setDescription((string) $projectProperties['description']);
-        $this->setOrm((string) $projectProperties['orm']);
         $this->setFramework((string) $projectProperties['framework']);
+        $this->setOrm((string) $projectProperties['orm']);
+        $this->setDescription((string) $projectProperties['description']);
 
-        if ($this->getLanguage() === 'PHP') {
+        $this->configuration = $this->calculateConfiguration();
+
+        if ($this->getLanguage() === 'php') {
             $this->setAttributeClass('Draggy\\Autocode\\PHPAttribute');
             $this->setEntityClass('Draggy\\Autocode\\PHPEntity');
-        } elseif ($this->getLanguage() === 'JS') {
+        } elseif ($this->getLanguage() === 'js') {
             $this->setAttributeClass('Draggy\\Autocode\\JSAttribute');
             $this->setEntityClass('Draggy\\Autocode\\Entity');
         }
@@ -297,124 +619,33 @@ class Project extends ProjectBase
         $attributeClass = $this->getAttributeClass();
 
         // Load autocode settings
-        $autocodeProperties = (array) $xmlDesign->xpath('autocode')[0];
+        $autocode = (array) $xmlDesign->xpath('autocode')[0];
 
-        if (!empty($autocodeProperties['base'])) {
-            $this->setBase($autocodeProperties['base'] === 'true');
+        $autocodeProperties     = (array)$autocode['properties'];
+        $autocodeConfigurations = (array)$autocode['configurations'];
+        $autocodeTemplates      = (array)$autocode['templates'];
+
+        foreach ($autocodeProperties as $propertyName => $propertyValue) {
+            $this->setAutocodeProperty($propertyName, 'true' === $propertyValue);
         }
 
-        if (!empty($autocodeProperties['overwrite'])) {
-            $this->setOverwrite($autocodeProperties['overwrite'] === 'true');
+        foreach ($autocodeConfigurations as $configurationName => $configurationValue) {
+            $this->setAutocodeConfiguration($configurationName, $configurationValue);
         }
 
-        if (!empty($autocodeProperties['delete-unmapped'])) {
-            $this->setDeleteUnmapped($autocodeProperties['delete-unmapped'] === 'true');
-        }
-
-        if (!empty($autocodeProperties['validation'])) {
-            $this->setValidation($autocodeProperties['validation'] === 'true');
-        }
-
-        if (!empty($autocodeProperties['namespace'])) {
-            $this->setNamespace($autocodeProperties['namespace']);
-        }
-
-        $autocodeTemplateProperties = (array) $xmlDesign->xpath('autocode/templates')[0];
-
-        if (!empty($autocodeTemplateProperties['entity'])) {
-            if (!class_exists($autocodeTemplateProperties['entity'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['entity']));
+        foreach ($autocodeTemplates as $templateName => $templateValue) {
+            if (!is_string($templateValue)) {
+                // Use the default template
+                $template = $this->getConfiguration()['autocode']['templates'][$templateName]['template'];
+            } else {
+                $template = $templateValue;
             }
 
-            $this->setEntityTemplate(new $autocodeTemplateProperties['entity']);
-        }
-
-        if (!empty($autocodeTemplateProperties['entity-base'])) {
-            if (!class_exists($autocodeTemplateProperties['entity-base'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['entity-base']));
+            if (!class_exists($template)) {
+                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $template));
             }
 
-            $this->setEntityBaseTemplate(new $autocodeTemplateProperties['entity-base']);
-        }
-
-        if (!empty($autocodeTemplateProperties['repository'])) {
-            if (!class_exists($autocodeTemplateProperties['repository'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['repository']));
-            }
-
-            $this->setRepositoryTemplate(new $autocodeTemplateProperties['repository']);
-        }
-
-        if (!empty($autocodeTemplateProperties['form'])) {
-            if (!class_exists($autocodeTemplateProperties['form'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['form']));
-            }
-
-            $this->setFormTemplate(new $autocodeTemplateProperties['form']);
-        }
-
-        if (!empty($autocodeTemplateProperties['form-base'])) {
-            if (!class_exists($autocodeTemplateProperties['form-base'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['form-base']));
-            }
-
-            $this->setFormBaseTemplate(new $autocodeTemplateProperties['form-base']);
-        }
-
-        if (!empty($autocodeTemplateProperties['controller'])) {
-            if (!class_exists($autocodeTemplateProperties['controller'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['controller']));
-            }
-
-            $this->setControllerTemplate(new $autocodeTemplateProperties['controller']);
-        }
-
-        if (!empty($autocodeTemplateProperties['fixtures'])) {
-            if (!class_exists($autocodeTemplateProperties['fixtures'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['fixtures']));
-            }
-
-            $this->setFixturesTemplate(new $autocodeTemplateProperties['fixtures']);
-        }
-
-        if (!empty($autocodeTemplateProperties['routes'])) {
-            if (!class_exists($autocodeTemplateProperties['routes'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['routes']));
-            }
-
-            $this->setRoutesTemplate(new $autocodeTemplateProperties['routes']);
-        }
-
-        if (!empty($autocodeTemplateProperties['routes-routing'])) {
-            if (!class_exists($autocodeTemplateProperties['routes-routing'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeProperties['routes-routing']));
-            }
-
-            $this->setRoutesRoutingTemplate(new $autocodeTemplateProperties['routes-routing']);
-        }
-
-        if (!empty($autocodeTemplateProperties['crud-create-twig'])) {
-            if (!class_exists($autocodeTemplateProperties['crud-create-twig'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeTemplateProperties['crud-create-twig']));
-            }
-
-            $this->setCrudCreateTwigTemplate(new $autocodeTemplateProperties['crud-create-twig']);
-        }
-
-        if (!empty($autocodeTemplateProperties['crud-read-twig'])) {
-            if (!class_exists($autocodeTemplateProperties['crud-read-twig'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeTemplateProperties['crud-read-twig']));
-            }
-
-            $this->setCrudReadTwigTemplate(new $autocodeTemplateProperties['crud-read-twig']);
-        }
-
-        if (!empty($autocodeTemplateProperties['crud-update-twig'])) {
-            if (!class_exists($autocodeTemplateProperties['crud-update-twig'])) {
-                throw new \RuntimeException(sprintf('The specified class file \'%s\' cannot be loaded', $autocodeTemplateProperties['crud-update-twig']));
-            }
-
-            $this->setCrudUpdateTwigTemplate(new $autocodeTemplateProperties['crud-update-twig']);
+            $this->setAutocodeTemplate($templateName, new $template);
         }
 
         // Process entities
@@ -564,7 +795,29 @@ class Project extends ProjectBase
         }
 
         // Find inherited classes and mark their parent entities
-        $childClasses = $xmlDesign->xpath('*[self::module or self::loose]/*[@inheritingFrom and (self::class or self::abstract)]');
+        $childClasses = $xmlDesign->xpath('*[self::module or self::loose]/*[@inheritingFrom and (self::abstract)]');
+
+        foreach ($childClasses as $childClass) {
+            $childClassAttributes         = (array)$childClass->attributes();
+            $childClassAttributes         = $childClassAttributes['@attributes'];
+            $childClassFullyQualifiedName = $childClassAttributes['fullyQualifiedName'];
+
+            $parentName = $childClassAttributes['inheritingFrom'];
+
+            $child = &$this->getEntityByFullyQualifiedName($childClassFullyQualifiedName);
+            $parent = &$this->getEntityByFullyQualifiedName($parentName);
+
+            $child->setParentEntity($parent);
+            $parent->addChildrenEntity($child);
+
+            foreach ($parent->getAttributes() as $attrNode) {
+                $child->addAttributeReference($attrNode);
+            }
+
+            unset($child,$parent);
+        }
+
+        $childClasses = $xmlDesign->xpath('*[self::module or self::loose]/*[@inheritingFrom and (self::class)]');
 
         foreach ($childClasses as $childClass) {
             $childClassAttributes         = (array)$childClass->attributes();
@@ -604,7 +857,7 @@ class Project extends ProjectBase
         }
 
         // Find and map foreign keys (OneToMany, ManyToOne or OneToOne)
-        $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
+        $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'one-to-one\' or @type=\'one-to-many\']');
 
         foreach ($foreignKeys as $foreignKey) {
             $sourceEntityName    = (string)$foreignKey->attributes()->from;
@@ -626,7 +879,17 @@ class Project extends ProjectBase
             else
                 $sourceAttribute->setForeign('ManyToOne');
 	        */
+
             $type = (string)$foreignKey->attributes()->type;
+
+            // Backwards compatibility
+            if ($type == 'one-to-one') {
+                $type = 'OneToOne';
+            } elseif ($type == 'many-to-one') {
+                $type = 'ManyToOne';
+            }
+            // End of backwards compatibility
+
             if ($type === 'OneToOne') {
                 $targetAttribute->setForeign('OneToOne');
             } else { // ManyToOne
@@ -701,7 +964,7 @@ class Project extends ProjectBase
         }
 
         // Add OneToOne and OneToMany inverse attributes
-        $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'OneToOne\' or @type=\'OneToMany\']');
+        $foreignKeys = $xmlDesign->xpath('relationships/relation[@type=\'one-to-one\' or @type=\'one-to-many\']');
 
         // Find ideal new attribute counters
         foreach ($foreignKeys as $foreignKey) {
@@ -709,6 +972,14 @@ class Project extends ProjectBase
             $relationAttributes = $relationAttributes['@attributes'];
 
             $type = $relationAttributes['type'];
+
+            // Backwards compatibility
+            if ($type == 'one-to-one') {
+                $type = 'OneToOne';
+            } elseif ($type == 'many-to-one') {
+                $type = 'ManyToOne';
+            }
+            // End of backwards compatibility
 
             $sourceEntityName = (string)$foreignKey->attributes()->from;
             $targetEntityName = (string)$foreignKey->attributes()->to;
@@ -747,6 +1018,14 @@ class Project extends ProjectBase
             $targetAttribute = &$targetEntity->getAttributeByName($targetAttributeName);
 
             $type = $relationAttributes['type'];
+
+            // Backwards compatibility
+            if ($type == 'one-to-one') {
+                $type = 'OneToOne';
+            } elseif ($type == 'many-to-one') {
+                $type = 'ManyToOne';
+            }
+            // End of backwards compatibility
 
             if ($targetEntity->getRenderizable()) {
                 if ('OneToOne' === $type) {
@@ -908,57 +1187,6 @@ class Project extends ProjectBase
         return $fileCollection;
     }
 
-    private function completeMissingTemplates()
-    {
-        if (is_null($this->getEntityTemplate())) {
-            $this->setEntityTemplate(new PHPTemplates\Entity1());
-        }
-
-        if (is_null($this->getEntityBaseTemplate())) {
-            $this->setEntityBaseTemplate(new PHPTemplates\EntityBase1());
-        }
-
-        if (is_null($this->getRepositoryTemplate())) {
-            $this->setRepositoryTemplate(new PHPTemplates\Symfony2\Repository());
-        }
-
-        if (is_null($this->getFormTemplate())) {
-            $this->setFormTemplate(new PHPTemplates\Form());
-        }
-
-        if (is_null($this->getFormBaseTemplate())) {
-            $this->setFormBaseTemplate(new PHPTemplates\FormBase1());
-        }
-
-        if (is_null($this->getControllerTemplate())) {
-            $this->setControllerTemplate(new PHPTemplates\Symfony2\Controller());
-        }
-
-        if (is_null($this->getFixturesTemplate())) {
-            $this->setFixturesTemplate(new PHPTemplates\Symfony2\Fixtures());
-        }
-
-        if (is_null($this->getRoutesTemplate())) {
-            $this->setRoutesTemplate(new PHPTemplates\Symfony2\Routes());
-        }
-
-        if (is_null($this->getRoutesRoutingTemplate())) {
-            $this->setRoutesRoutingTemplate(new PHPTemplates\Symfony2\RoutesRouting());
-        }
-
-        if (is_null($this->getCrudCreateTwigTemplate())) {
-            $this->setCrudCreateTwigTemplate(new PHPTemplates\CrudCreate());
-        }
-
-        if (is_null($this->getCrudReadTwigTemplate())) {
-            $this->setCrudReadTwigTemplate(new PHPTemplates\CrudRead());
-        }
-
-        if (is_null($this->getCrudUpdateTwigTemplate())) {
-            $this->setCrudUpdateTwigTemplate(new PHPTemplates\CrudUpdate());
-        }
-    }
-
     public function getChanges($path)
     {
         $fileCollection = $this->getModelFiles($path);
@@ -1004,8 +1232,6 @@ class Project extends ProjectBase
     {
         $fileCollection = new FileCollection();
 
-        $this->completeMissingTemplates();
-
         $fileCollection->add($this->findExistingExtraFiles($path));
 
         $namespacePath = str_replace('\\', '/', $path . $this->getNamespace() . '/');
@@ -1018,7 +1244,7 @@ class Project extends ProjectBase
                     $targetPath = $path . str_replace('\\', '/', $entity->getNamespace()) . '/';
                 }
 
-                if ($this->getLanguage() === 'PHP') {
+                if ($this->getLanguage() === 'php') {
                     $fileCollection->add($this->getPHPEntityFile($entity, $targetPath));
                     $fileCollection->add($this->getRepositoryFile($entity, $targetPath));
                     $fileCollection->add($this->getFormFile($entity, $targetPath));
@@ -1028,14 +1254,14 @@ class Project extends ProjectBase
                     $fileCollection->add($this->getTwigCreateFile($entity, $targetPath));
                     $fileCollection->add($this->getTwigReadFile($entity, $targetPath));
                     $fileCollection->add($this->getTwigUpdateFile($entity, $targetPath));
-                } elseif ($this->getLanguage() === 'JS') {
+                } elseif ($this->getLanguage() === 'js') {
                     $fileCollection->add($this->getJSEntityFile($entity, $targetPath));
                 }
 
             }
         }
 
-        if ($this->getLanguage() === 'PHP') {
+        if ($this->getLanguage() === 'php') {
             foreach ($this->modules as $module) {
                 $targetPath = $path . str_replace('\\', '/', $this->moduleNamespaces[$module]) . '/';
 
@@ -1088,7 +1314,7 @@ class Project extends ProjectBase
 
         $basePath = $path;
 
-        if ($this->base) {
+        if ($this->getBase()) {
             $basePath .= 'Base/';
         }
 
