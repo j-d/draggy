@@ -43,23 +43,10 @@ Attribute.prototype.remove = function ()
 Attribute.prototype.setType = function (type)
 {
     if (type != this.type) {
-        switch (type) {
-            case 'array':
-            case 'bigint':
-            case 'boolean':
-            case 'date':
-            case 'datetime':
-            case 'decimal':
-            case 'integer':
-            case 'object':
-            case 'smallint':
-            case 'string':
-            case 'text':
-            case 'time':
-                this.type = type;
-                break;
-            default:
-                this.type = null;
+        if (undefined !== Draggy.prototype.getAttributeTypes()[type]) {
+            this.type = type;
+        } else {
+            this.type = null;
         }
 
         // Update linked attributes

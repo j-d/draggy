@@ -29,35 +29,6 @@ abstract class Attribute extends AttributeBase
 {
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
-    public static $SYMFONY_VARS = [
-        'string'   => 'string',
-        'boolean'  => 'boolean',
-        'integer'  => 'integer',
-        'smallint' => 'integer',
-        'bigint'   => 'integer',
-        'text'     => 'string',
-        'date'     => 'object',
-        'time'     => 'object',
-        'datetime' => 'object',
-        'array'    => 'array',
-        'decimal'  => 'float',
-        'object'   => 'ERROR'
-    ];
-
-    public static $BASIC_TYPES = [
-        'string',
-        'boolean',
-        'integer',
-        'smallint',
-        'bigint',
-        'text',
-        'date',
-        'time',
-        'datetime',
-        'array',
-        'decimal',
-        'object',
-    ];
     // </user-additions>
     // </editor-fold>
 
@@ -75,13 +46,13 @@ abstract class Attribute extends AttributeBase
             throw new \InvalidArgumentException('Attribute name on the entity ' . $entity->getName() . ' has to be a string and can\'t be the empty string');
         }
 
-        if (!isset(self::$SYMFONY_VARS[$type])) {
+        if (!array_key_exists($type, $entity->getProject()->getAttributeTypes())) {
             throw new \InvalidArgumentException('Type of the column ' . $name . ' is not known (' . $type . ')');
         }
 
-        $this->setEntity($entity);
         $this->setName($name);
         $this->setType($type);
+        $this->setEntity($entity);
         // </user-additions>
     }
     // </editor-fold>
@@ -212,7 +183,7 @@ abstract class Attribute extends AttributeBase
     // <user-additions part="otherMethods">
     public function isEntitySubtype()
     {
-        return $this->getSubtype() !== null && !in_array($this->getSubtype(), self::$BASIC_TYPES);
+        return $this->getSubtype() !== null && (null === $this->getEntity() || !in_array($this->getSubtype(), array_keys($this->getEntity()->getProject()->getAttributeTypes())));
     }
 
     public function getEntitySubtype()

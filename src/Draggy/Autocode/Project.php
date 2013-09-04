@@ -88,7 +88,7 @@ class Project extends ProjectBase
             $namespace = substr($namespace, 0, -1);
         }
 
-        return parent::setNamespace($namespace);
+        return $this;
     }
 
     /**
@@ -181,28 +181,12 @@ class Project extends ProjectBase
 
     public function isValidEntityName($term)
     {
-        $reservedWords = [];
-
-        if ($this->getLanguage() === 'php') {
-            // PHP 5.4 reserved words as per http://php.net/manual/en/reserved.keywords.php
-            $reservedWords = array_merge($reservedWords, ['__HALT_COMPILER', 'ABSTRACT', 'AND', 'ARRAY', 'AS', 'BREAK', 'CALLABLE', 'CASE', 'CATCH', 'CLASS', 'CLONE', 'CONST', 'CONTINUE', 'DECLARE', 'DEFAULT', 'DIE', 'DO', 'ECHO', 'ELSE', 'ELSEIF', 'EMPTY', 'ENDDECLARE', 'ENDFOR', 'ENDFOREACH', 'ENDIF', 'ENDSWITCH', 'ENDWHILE', 'EVAL()', 'EXIT', 'EXTENDS', 'FINAL', 'FOR', 'FOREACH', 'FUNCTION', 'GLOBAL', 'GOTO', 'IF', 'IMPLEMENTS', 'INCLUDE', 'INCLUDE_ONCE', 'INSTANCEOF', 'INSTEADOF', 'INTERFACE', 'ISSET', 'LIST', 'NAMESPACE', 'NEW', 'OR', 'PRINT', 'PRIVATE', 'PROTECTED', 'PUBLIC', 'REQUIRE', 'REQUIRE_ONCE', 'RETURN', 'STATIC', 'SWITCH', 'THROW', 'TRAIT', 'TRY', 'UNSET', 'USE', 'VAR', 'WHILE', 'XOR']);
-        }
-
-        return !in_array(strtoupper($term), $reservedWords);
+        return !array_key_exists(strtolower($term), array_flip($this->getReservedWords()));
     }
 
     public function isValidAttributeName($term)
     {
-        if ($this->getORM() === '') {
-            return true;
-        }
-
-        $reservedWords = [];
-
-        // MySQL 5.5 reserved words as per http://dev.mysql.com/doc/refman/5.5/en/reserved-words.html
-        $reservedWords = array_merge($reservedWords, ['ACCESSIBLE', 'ADD', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ASENSITIVE', 'BEFORE', 'BETWEEN', 'BIGINT', 'BINARY', 'BLOB', 'BOTH', 'BY', 'CALL', 'CASCADE', 'CASE', 'CHANGE', 'CHAR', 'CHARACTER', 'CHECK', 'COLLATE', 'COLUMN', 'CONDITION', 'CONSTRAINT', 'CONTINUE', 'CONVERT', 'CREATE', 'CROSS', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'CURRENT_USER', 'CURSOR', 'DATABASE', 'DATABASES', 'DAY_HOUR', 'DAY_MICROSECOND', 'DAY_MINUTE', 'DAY_SECOND', 'DEC', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELAYED', 'DELETE', 'DESC', 'DESCRIBE', 'DETERMINISTIC', 'DISTINCT', 'DISTINCTROW', 'DIV', 'DOUBLE', 'DROP', 'DUAL', 'EACH', 'ELSE', 'ELSEIF', 'ENCLOSED', 'ESCAPED', 'EXISTS', 'EXIT', 'EXPLAIN', 'FETCH', 'FLOAT', 'FLOAT4', 'FLOAT8', 'FOR', 'FORCE', 'FOREIGN', 'FROM', 'FULLTEXT', 'GENERAL', 'GRANT', 'GROUP', 'HAVING', 'HIGH_PRIORITY', 'HOUR_MICROSECOND', 'HOUR_MINUTE', 'HOUR_SECOND', 'IF', 'IGNORE', 'IGNORE_SERVER_IDS', 'IN', 'INDEX', 'INFILE', 'INNER', 'INOUT', 'INSENSITIVE', 'INSERT', 'INT', 'INT1', 'INT2', 'INT3', 'INT4', 'INT8', 'INTEGER', 'INTERVAL', 'INTO', 'IS', 'ITERATE', 'JOIN', 'KEY', 'KEYS', 'KILL', 'LEADING', 'LEAVE', 'LEFT', 'LIKE', 'LIMIT', 'LINEAR', 'LINES', 'LOAD', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCK', 'LONG', 'LONGBLOB', 'LONGTEXT', 'LOOP', 'LOW_PRIORITY', 'MASTER_HEARTBEAT_PERIOD', 'MASTER_SSL_VERIFY_SERVER_CERT', 'MATCH', 'MAXVALUE', 'MEDIUMBLOB', 'MEDIUMINT', 'MEDIUMTEXT', 'MIDDLEINT', 'MINUTE_MICROSECOND', 'MINUTE_SECOND', 'MOD', 'MODIFIES', 'NATURAL', 'NO_WRITE_TO_BINLOG', 'NOT', 'NULL', 'NUMERIC', 'ON', 'OPTIMIZE', 'OPTION', 'OPTIONALLY', 'OR', 'ORDER', 'OUT', 'OUTER', 'OUTFILE', 'PRECISION', 'PRIMARY', 'PROCEDURE', 'PURGE', 'RANGE', 'READ', 'READ_WRITE', 'READS', 'REAL', /*'REFERENCES',*/ 'REGEXP', 'RELEASE', 'RENAME', 'REPEAT', 'REPLACE', 'REQUIRE', 'RESIGNAL', 'RESTRICT', 'RETURN', 'REVOKE', 'RIGHT', 'RLIKE', 'SCHEMA', 'SCHEMAS', 'SECOND_MICROSECOND', 'SELECT', 'SENSITIVE', 'SEPARATOR', 'SET', 'SHOW', 'SIGNAL', 'SLOW', 'SMALLINT', 'SPATIAL', 'SPECIFIC', 'SQL', 'SQL_BIG_RESULT', 'SQL_CALC_FOUND_ROWS', 'SQL_SMALL_RESULT', 'SQLEXCEPTION', 'SQLSTATE', 'SQLWARNING', 'SSL', 'STARTING', 'STRAIGHT_JOIN', 'TABLE', 'TERMINATED', 'THEN', 'TINYBLOB', 'TINYINT', 'TINYTEXT', 'TO', 'TRAILING', 'TRIGGER', 'UNDO', 'UNION', 'UNIQUE', 'UNLOCK', 'UNSIGNED', 'UPDATE', 'USAGE', 'USE', 'USING', 'UTC_DATE', 'UTC_TIME', 'UTC_TIMESTAMP', 'VALUES', 'VARBINARY', 'VARCHAR', 'VARCHARACTER', 'VARYING', 'WHEN', 'WHERE', 'WHILE', 'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL', 'FALSE', 'TRUE']);
-
-        return !in_array(strtoupper($term), $reservedWords);
+        return !array_key_exists(strtolower($term), array_flip($this->getReservedWords()));
     }
 
     private function xmlEntityToEntity(\SimpleXMLElement $class, $moduleName = '')
@@ -337,6 +321,32 @@ class Project extends ProjectBase
         return $properties;
     }
 
+    public function getAttributeTypes()
+    {
+        $configuration = $this->getConfiguration();
+
+        $types = [];
+
+        foreach ($configuration['attributes']['types'] as $attributeName => $attributeValue) {
+            if ($attributeValue['enabled']) {
+                $types[$attributeName] = $attributeValue;
+            }
+        }
+
+        return $types;
+    }
+
+    public function getReservedWords()
+    {
+        $words = [];
+
+        foreach ($this->getConfiguration()['reserved-words'] as $word) {
+            $words[] = strtolower($word);
+        }
+
+        return $words;
+    }
+
     /**
      * @return array
      */
@@ -365,7 +375,9 @@ class Project extends ProjectBase
      */
     public function getAutocodeProperty($property)
     {
-        return $this->autocodeProperties[$property];
+        return isset($this->autocodeProperties[$property])
+            ? $this->autocodeProperties[$property]
+            : null;
     }
 
     /**
@@ -422,7 +434,11 @@ class Project extends ProjectBase
      */
     public function getNamespace()
     {
-        return $this->getAutocodeConfiguration('namespace');
+        if (array_key_exists('namespace', $this->getConfiguration()['autocode'])) {
+            return $this->getAutocodeConfiguration('namespace');
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -613,6 +629,12 @@ class Project extends ProjectBase
             $this->setEntityClass('Draggy\\Autocode\\PHPEntity');
         } elseif ($this->getLanguage() === 'js') {
             $this->setAttributeClass('Draggy\\Autocode\\JSAttribute');
+            $this->setEntityClass('Draggy\\Autocode\\Entity');
+        } elseif ($this->getLanguage() === 'java') {
+            $this->setAttributeClass('Draggy\\Autocode\\JavaAttribute');
+            $this->setEntityClass('Draggy\\Autocode\\Entity');
+        } elseif ($this->getLanguage() === 'cpp') {
+            $this->setAttributeClass('Draggy\\Autocode\\CPPAttribute');
             $this->setEntityClass('Draggy\\Autocode\\Entity');
         }
 
@@ -1189,6 +1211,10 @@ class Project extends ProjectBase
 
     public function getChanges($path)
     {
+        if ('java' === $this->getLanguage()) {
+            $path = $this->getAutocodeConfiguration('target-path');
+        }
+
         $fileCollection = $this->getModelFiles($path);
         $fileCollection->setOverwrite($this->getOverwrite());
 
@@ -1199,9 +1225,12 @@ class Project extends ProjectBase
 
     public function saveTo($path)
     {
+        if ('java' === $this->getLanguage()) {
+            $path = $this->getAutocodeConfiguration('target-path');
+        }
+
         if (!is_dir($path)) {
-            //user_error('Was expecting to find the path ' . $path, E_USER_WARNING);
-            mkdir($path);
+            mkdir($path, 0777, true);
         }
 
         $fileCollection = $this->getModelFiles($path);
@@ -1215,7 +1244,7 @@ class Project extends ProjectBase
         }
 
         $filteredFileCollection
-            ->setOverwrite($this->getOverwrite())
+            ->setOverwrite($this->getAutocodeProperty('overwrite'))
             ->save();
 
         $this->log->append($fileCollection->getLog());
@@ -1238,13 +1267,13 @@ class Project extends ProjectBase
 
         foreach ($this->getEntities() as $entity) {
             if ($entity->getRenderizable()) {
-                if ($entity->getNamespace() === '') {
-                    $targetPath = $namespacePath;
-                } else {
-                    $targetPath = $path . str_replace('\\', '/', $entity->getNamespace()) . '/';
-                }
-
                 if ($this->getLanguage() === 'php') {
+                    if ($entity->getNamespace() === '') {
+                        $targetPath = $namespacePath;
+                    } else {
+                        $targetPath = $path . str_replace('\\', '/', $entity->getNamespace()) . '/';
+                    }
+
                     $fileCollection->add($this->getPHPEntityFile($entity, $targetPath));
                     $fileCollection->add($this->getRepositoryFile($entity, $targetPath));
                     $fileCollection->add($this->getFormFile($entity, $targetPath));
@@ -1256,6 +1285,16 @@ class Project extends ProjectBase
                     $fileCollection->add($this->getTwigUpdateFile($entity, $targetPath));
                 } elseif ($this->getLanguage() === 'js') {
                     $fileCollection->add($this->getJSEntityFile($entity, $targetPath));
+                } elseif ($this->getLanguage() === 'java') {
+                    if ($entity->getModule() === '') {
+                        $targetPath = $namespacePath;
+                    } else {
+                        $targetPath = $path . '/' . $this->getAutocodeConfiguration('package') . '/' . str_replace('.', '/', $entity->getModule()) . '/';
+                    }
+
+                    $fileCollection->add($this->getJavaEntityFile($entity, $targetPath));
+                } elseif ($this->getLanguage() === 'cpp') {
+                    $fileCollection->add($this->getCPPEntityFile($entity, $targetPath));
                 }
 
             }
@@ -1324,6 +1363,36 @@ class Project extends ProjectBase
             $fileCollection->add(new File($path, $entity->getName() . '.js', $this->getEntityBaseTemplate()->setEntity($entity)->render()));
         } else {
             // NoFile
+        }
+
+        return $fileCollection;
+    }
+
+    /**
+     * @param Entity $entity
+     * @param string $path
+
+     * @return FileInterface
+     */
+    private function getJavaEntityFile(Entity $entity, $path)
+    {
+        $fileCollection = new FileCollection();
+
+        $entityTemplate     = $this->getAutocodeTemplate('entity')->setEntity($entity);
+        $entityBaseTemplate = $this->getAutocodeTemplate('entity-base')->setEntity($entity);
+
+        $entityPath = $path . $entityTemplate->getPath();
+        $basePath   = $path . $entityBaseTemplate->getPath();
+
+        $entityName     = $entityTemplate->getFilename();
+        $entityBaseName = $entityBaseTemplate->getFilename();
+
+        $fileCollection->add(new File($basePath, $entityBaseName, $entityBaseTemplate->render()));
+
+        if ($this->getAutocodeProperty('base')) {
+            $fileCollection->add(new File($entityPath, $entityName, $entityTemplate->render()));
+        } else {
+            $fileCollection->add(new NoFile($entityPath, $entityName, sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
         }
 
         return $fileCollection;
