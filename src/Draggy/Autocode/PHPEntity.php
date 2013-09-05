@@ -89,6 +89,43 @@ class PHPEntity extends PHPEntityBase
     {
         return $this->getProject()->getFormBaseTemplate()->setEntity($this)->getFullyQualifiedName();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shouldRender($templateName)
+    {
+        if (!$this->getRenderizable()) {
+            return false;
+        }
+
+        switch ($templateName) {
+            case 'entity':
+                return true;
+            case 'entity-base':
+                return $this->getProject()->getAutocodeProperty('base');
+            case 'repository':
+                return $this->getHasRepository();
+            case 'form':
+                return $this->getHasForm();
+            case 'form-base':
+                return $this->getHasForm() && $this->getProject()->getAutocodeProperty('base');
+            case 'controller':
+                return $this->getHasController();
+            case 'fixtures':
+                return $this->getHasFixtures();
+            case 'routes':
+                return $this->getHasRoutes();
+            case 'crud-create':
+                return $this->getCrudCreate();
+            case 'crud-read':
+                return $this->getCrudRead();
+            case 'crud-update':
+                return $this->getCrudUpdate();
+        }
+
+        return false;
+    }
     // </user-additions>
     // </editor-fold>
 }

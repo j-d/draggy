@@ -43,6 +43,14 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'entity';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()

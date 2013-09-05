@@ -41,6 +41,14 @@ class FormBase1 extends FormBase1Base implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'form-base';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()

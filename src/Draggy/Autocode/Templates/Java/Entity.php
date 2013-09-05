@@ -42,6 +42,11 @@ class Entity extends JavaEntityTemplate implements RenderizableTemplateInterface
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    public function getTemplateName()
+    {
+        return 'entity';
+    }
+
     /**
      * {@inheritDoc}
      */

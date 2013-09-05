@@ -40,6 +40,14 @@ class Repository extends RepositoryBase
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'repository';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()

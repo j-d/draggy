@@ -16,61 +16,81 @@
 
 namespace Draggy\Autocode\Templates;
 
-use Draggy\Autocode\Templates\Base\EntityTemplateBase;
 // <user-additions part="use">
 // </user-additions>
+
+use Draggy\Autocode\Project;
 
 /**
  * Draggy\Autocode\Templates\Entity\EntityTemplate
  */
-abstract class EntityTemplate extends EntityTemplateBase implements EntityTemplateInterface
+abstract class ModuleTemplate extends Template
     // <user-additions part="implements">
     // </user-additions>
 {
     // <editor-fold desc="Attributes">
     // <user-additions part="attributes">
+    protected $module;
+
+    protected $project;
     // </user-additions>
     // </editor-fold>
 
     // <editor-fold desc="Setters and Getters">
     // <user-additions part="settersAndGetters">
-    /**
-     * @return ConcreteEntityTemplateInterface
-     */
-    public function getTemplate()
+    public function setModule($module)
     {
-        return parent::getTemplate();
+        $this->module = $module;
+
+        return $this;
+    }
+
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    public function setProject($project)
+    {
+        $this->project = $project;
+    }
+
+    /**
+     * @return Project
+     */
+    public function getProject()
+    {
+        return $this->project;
     }
     // </user-additions>
     // </editor-fold>
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
-    public function getDescriptionCode()
-    {
-        return $this->convertLinesToCode($this->getDescriptionCodeLines());
-    }
-
-    /**
-     * @return string
-     */
-    public function getPathAndFilename()
-    {
-        return $this->getPath() . $this->getFilename();
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullPathAndFilename()
-    {
-        return $this->getPathAndFilename();
-    }
+//    /**
+//     * @return string
+//     */
+//    public function getPathAndFilename()
+//    {
+//        return $this->getPath() . $this->getFilename();
+//    }
+//
+//    /**
+//     * @return string
+//     */
+//    public function getFullPathAndFilename()
+//    {
+//        return $this->getPathAndFilename();
+//    }
 
     /**
      * @return string
      */
     abstract public function render();
+
+    abstract public function getPath();
+
+    abstract public function getFilename();
 
     // </user-additions>
     // </editor-fold>

@@ -41,6 +41,14 @@ class CrudRead extends CrudReadBase implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'crud-read';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getName()

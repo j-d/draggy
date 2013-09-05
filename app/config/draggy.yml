@@ -65,10 +65,12 @@ languages:
                 entity:
                     name:     Entity
                     template: Draggy\Autocode\Templates\Java\Entity
+                    type:     entity
                     enabled:  true
                 entity-base:
                     name:     Entity base
                     template: Draggy\Autocode\Templates\Java\EntityBase
+                    type:     entity
                     enabled:  true
     php:
         name: PHP
@@ -102,30 +104,37 @@ languages:
                         entity:
                             name:     Entity
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Entity3
+                            type:     entity
                             enabled:  true
                         entity-base:
                             name:     Entity base
                             template: Draggy\Autocode\Templates\PHP\Symfony2\EntityBase3
+                            type:     entity
                             enabled:  true
                         controller:
                             name:     Controller
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Controller
+                            type:     entity
                             enabled:  true
                         fixtures:
                             name:     Fixtures
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Fixtures
+                            type:     entity
                             enabled:  true
                         routes:
                             name:     Routes
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Routes
+                            type:     entity
                             enabled:  true
                         routes-routing:
                             name:     Routes (routing)
                             template: Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting
+                            type:     module
                             enabled:  true
                         repository:
                             name:     Repository
                             template: Draggy\Autocode\Templates\PHP\Symfony2\Repository
+                            type:     entity
                             enabled:  true
                 orms:
                     symfony2-doctrine2:
@@ -142,11 +151,11 @@ languages:
                                 date:
                                     name:      date
                                     enabled:   true
-                                    mapped-to: datetime
+                                    mapped-to: object
                                 decimal:
                                     name:       decimal
                                     enabled:    true
-                                    mapped-top: float
+                                    mapped-to:  float
                                 smallint:
                                     name:      smallint
                                     enabled:   true
@@ -158,7 +167,7 @@ languages:
                                 time:
                                     name:      time
                                     enabled:   true
-                                    mapped-to: datetime
+                                    mapped-to: object
                         relationships:
                             types:
                                 one-to-one:
@@ -174,10 +183,12 @@ languages:
                                 entity:
                                     name:     Entity
                                     template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity4
+                                    type:     entity
                                     enabled:  true
                                 entity-base:
                                     name:     Entity base
                                     template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase4
+                                    type:     entity
                                     enabled:  true
         attributes:
             types:
@@ -216,38 +227,47 @@ languages:
                 entity:
                     name:     Entity
                     template: Draggy\Autocode\Templates\PHP\Entity1
+                    type:     entity
                     enabled:  true
                 entity-base:
                     name:     Entity base
                     template: Draggy\Autocode\Templates\PHP\EntityBase1
+                    type:     entity
                     enabled:  true
                 interface:
                     name:     Interface
                     template: Draggy\Autocode\Templates\PHP\InterfaceT
+                    type:     entity
                     enabled:  true
                 trait:
                     name:     Trait
                     template: Draggy\Autocode\Templates\PHP\TraitT
+                    type:     entity
                     enabled:  true
                 form:
                     name:     Form
                     template: Draggy\Autocode\Templates\PHP\Form
+                    type:     entity
                     enabled:  true
                 form-base:
                     name:     Form base
                     template: Draggy\Autocode\Templates\PHP\FormBase1
+                    type:     entity
                     enabled:  true
                 crud-create:
                     name:     CRUD (Create)
                     template: Draggy\Autocode\Templates\PHP\CrudCreate
+                    type:     entity
                     enabled:  true
                 crud-read:
                     name:     CRUD (Read / View / List)
                     template: Draggy\Autocode\Templates\PHP\CrudRead
+                    type:     entity
                     enabled:  true
                 crud-update:
                     name:     CRUD (Update / Edit)
                     template: Draggy\Autocode\Templates\PHP\CrudUpdate
+                    type:     entity
                     enabled:  true
     js:
         name: JavaScript
@@ -263,10 +283,12 @@ languages:
                 entity:
                     name:     Entity
                     template: Draggy\Autocode\Templates\JS\Entity2
+                    type:     entity
                     enabled:  true
                 entity-base:
                     name:     Entity base
                     template: Draggy\Autocode\Templates\JS\EntityBase2
+                    type:     entity
                     enabled:  true
     cpp:
         name: C++

@@ -24,7 +24,7 @@ use Draggy\Autocode\Exceptions\DuplicateAttributeException;
 /**
  * Draggy\Autocode\Entity\Entity
  */
-class Entity extends EntityBase
+abstract class Entity extends EntityBase
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -362,6 +362,8 @@ class Entity extends EntityBase
     {
         return strtolower($this->getModuleNoBundle()) . '_' . strtolower($this->getName()) . '_disable';
     }
+
+    abstract public function shouldRender($templateName);
     // </user-additions>
     // </editor-fold>
 }

@@ -178,6 +178,8 @@ abstract class Template extends TemplateBase implements TemplateInterface
     {
         return $this->getTemplate()->convertLinesToCode($this->getTemplate()->getHashBlurbLines());
     }
+
+    abstract public function getTemplateName();
     // </user-additions>
     // </editor-fold>
 }

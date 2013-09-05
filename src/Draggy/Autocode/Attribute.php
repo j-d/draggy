@@ -159,7 +159,12 @@ abstract class Attribute extends AttributeBase
 
     public function getSymfonyType()
     {
-        if (is_null($this->getForeign())) {
+        if (null === $this->getForeign()) {
+            return $this->getEntity()->getProject()->getRenamedAttributeType($this->getType());
+
+            return $this->getType();
+
+
             return self::$SYMFONY_VARS[$this->getType()];
         } else {
             if ($this->getForeign() !== 'ManyToMany') {

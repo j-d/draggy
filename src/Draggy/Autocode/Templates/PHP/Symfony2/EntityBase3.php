@@ -40,6 +40,14 @@ class EntityBase3 extends EntityBase3Base
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'entity-base';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()

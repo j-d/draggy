@@ -43,6 +43,14 @@ class EntityBase extends JavaEntityTemplate implements RenderizableTemplateInter
     /**
      * {@inheritDoc}
      */
+    public function getTemplateName()
+    {
+        return 'entity-base';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPath()
     {
         return '';

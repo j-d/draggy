@@ -19,8 +19,10 @@ namespace Draggy\Autocode;
 use Draggy\Autocode\Base\ProjectBase;
 // <user-additions part="use">
 use Draggy\Autocode\Templates\EntityTemplate;
+use Draggy\Autocode\Templates\ModuleTemplate;
 use Draggy\Autocode\Templates\PHP as PHPTemplates;
 use Draggy\Autocode\Templates\JS as JSTemplates;
+use Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting;
 use Draggy\Autocode\Templates\Template;
 use Draggy\Log;
 use Draggy\Utils\Yaml\YamlLoader;
@@ -426,6 +428,32 @@ class Project extends ProjectBase
         return $this->autocodeTemplates[$template];
     }
 
+    public function getAutocodeEntityTemplates()
+    {
+        $templates = [];
+
+        foreach ($this->autocodeTemplates as $templateName => $template) {
+            if ('entity' === $this->getConfiguration()['autocode']['templates'][$templateName]['type']) {
+                $templates[$templateName] = $template;
+            }
+        }
+
+        return $templates;
+    }
+
+    public function getAutocodeModuleTemplates()
+    {
+        $templates = [];
+
+        foreach ($this->autocodeTemplates as $templateName => $template) {
+            if ('module' === $this->getConfiguration()['autocode']['templates'][$templateName]['type']) {
+                $templates[$templateName] = $template;
+            }
+        }
+
+        return $templates;
+    }
+
     // <editor-fold desc="Deprecated methods">
     /**
      * @deprecated
@@ -434,7 +462,7 @@ class Project extends ProjectBase
      */
     public function getNamespace()
     {
-        if (array_key_exists('namespace', $this->getConfiguration()['autocode'])) {
+        if (array_key_exists('namespace', $this->getConfiguration()['autocode']['configurations'])) {
             return $this->getAutocodeConfiguration('namespace');
         } else {
             return null;
@@ -632,10 +660,10 @@ class Project extends ProjectBase
             $this->setEntityClass('Draggy\\Autocode\\Entity');
         } elseif ($this->getLanguage() === 'java') {
             $this->setAttributeClass('Draggy\\Autocode\\JavaAttribute');
-            $this->setEntityClass('Draggy\\Autocode\\Entity');
+            $this->setEntityClass('Draggy\\Autocode\\JavaEntity');
         } elseif ($this->getLanguage() === 'cpp') {
             $this->setAttributeClass('Draggy\\Autocode\\CPPAttribute');
-            $this->setEntityClass('Draggy\\Autocode\\Entity');
+            $this->setEntityClass('Draggy\\Autocode\\CPPEntity');
         }
 
         $attributeClass = $this->getAttributeClass();
@@ -1159,56 +1187,6 @@ class Project extends ProjectBase
         return [$name, ''];
     }
 
-    private function findExistingExtraFiles($path)
-    {
-        $path = str_replace('\\', '/', $path . $this->getNamespace() . '/');
-
-        $fileCollection = new FileCollection();
-
-        if (is_dir($path)) {
-            foreach (scandir($path) as $folder) {
-                if (is_dir($path . '/' . $folder . '/Entity/') && !in_array($folder, ['.', '..'])) {
-                    foreach (scandir($path . '/' . $folder . '/Entity/') as $file) {
-                        if (!is_dir($path . '/' . $folder . '/Entity/' . $file)) {
-                            $file = str_replace('Repository.php','.php',$file); // Repositories are allowed
-
-                            try {
-                                $entity = $this->getEntityByFullyQualifiedName($folder . '\\' .  substr($file, 0, -4));
-
-                                if (!$entity->getRenderizable()) {
-                                    $this->log->prepend('*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an it belongs to an implicit ManyToMany relationship.');
-                                }
-
-                                if ($entity->getModule() != $folder) {
-                                    $this->log->prepend('*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should be in the module ' . $entity->getModule() . '.');
-                                }
-                            } catch (\RuntimeException $e) {
-                                if (!$this->getDeleteUnmapped()) {
-                                    $this->log->prepend('*** Perhaps the file ' . $folder . '/Entity/' . $file . ' should not be there as there is not an entity linked to it.');
-                                } else {
-                                    if (file_exists($path . '/' . $folder . '/Entity/' . $file)) {
-                                        $fileCollection->add(new NoFile($path . '/' . $folder . '/Entity/', $file, sprintf('There \'%s\' has been deleted as there is no entity linked to it.', $file)));
-                                    }
-                                    if ($this->getBase()) {
-                                        $baseFileName = str_replace('.php','Base.php',$file);
-
-                                        $baseFile = $path . '/' . $folder . '/Entity/Base/' . $baseFileName;
-
-                                        if (file_exists($baseFile)) {
-                                            $fileCollection->add(new NoFile($path . '/' . $folder . '/Entity/Base/', $baseFileName, sprintf('There \'%s\' has been deleted as there is no entity linked to it.', $baseFileName)));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $fileCollection;
-    }
-
     public function getChanges($path)
     {
         if ('java' === $this->getLanguage()) {
@@ -1261,42 +1239,25 @@ class Project extends ProjectBase
     {
         $fileCollection = new FileCollection();
 
-        $fileCollection->add($this->findExistingExtraFiles($path));
-
         $namespacePath = str_replace('\\', '/', $path . $this->getNamespace() . '/');
+
+        $targetPath = $namespacePath;
 
         foreach ($this->getEntities() as $entity) {
             if ($entity->getRenderizable()) {
                 if ($this->getLanguage() === 'php') {
-                    if ($entity->getNamespace() === '') {
-                        $targetPath = $namespacePath;
-                    } else {
+                    if ($entity->getNamespace() !== '') {
                         $targetPath = $path . str_replace('\\', '/', $entity->getNamespace()) . '/';
                     }
-
-                    $fileCollection->add($this->getPHPEntityFile($entity, $targetPath));
-                    $fileCollection->add($this->getRepositoryFile($entity, $targetPath));
-                    $fileCollection->add($this->getFormFile($entity, $targetPath));
-                    $fileCollection->add($this->getControllerFile($entity, $targetPath));
-                    $fileCollection->add($this->getFixturesFile($entity, $targetPath));
-                    $fileCollection->add($this->getRoutesFile($entity, $targetPath));
-                    $fileCollection->add($this->getTwigCreateFile($entity, $targetPath));
-                    $fileCollection->add($this->getTwigReadFile($entity, $targetPath));
-                    $fileCollection->add($this->getTwigUpdateFile($entity, $targetPath));
-                } elseif ($this->getLanguage() === 'js') {
-                    $fileCollection->add($this->getJSEntityFile($entity, $targetPath));
                 } elseif ($this->getLanguage() === 'java') {
-                    if ($entity->getModule() === '') {
-                        $targetPath = $namespacePath;
-                    } else {
+                    if ($entity->getModule() !== '') {
                         $targetPath = $path . '/' . $this->getAutocodeConfiguration('package') . '/' . str_replace('.', '/', $entity->getModule()) . '/';
                     }
-
-                    $fileCollection->add($this->getJavaEntityFile($entity, $targetPath));
-                } elseif ($this->getLanguage() === 'cpp') {
-                    $fileCollection->add($this->getCPPEntityFile($entity, $targetPath));
                 }
 
+                foreach ($this->getAutocodeEntityTemplates() as $template) {
+                    $fileCollection->add($this->renderEntityTemplate($template, $entity, $targetPath));
+                }
             }
         }
 
@@ -1304,7 +1265,9 @@ class Project extends ProjectBase
             foreach ($this->modules as $module) {
                 $targetPath = $path . str_replace('\\', '/', $this->moduleNamespaces[$module]) . '/';
 
-                $fileCollection->add($this->getRoutesRoutingFile($module, $targetPath));
+                foreach ($this->getAutocodeModuleTemplates() as $template) {
+                    $fileCollection->add($this->renderModuleTemplate($this, $template, $module, $targetPath));
+                }
             }
         }
 
@@ -1312,345 +1275,84 @@ class Project extends ProjectBase
     }
 
     /**
-     * @param Entity $entity
-     * @param string $path
-
+     * @param EntityTemplate $template
+     * @param Entity         $entity
+     * @param string         $path
+     *
      * @return FileInterface
      */
-    private function getPHPEntityFile(Entity $entity, $path)
+    public function renderEntityTemplate(EntityTemplate $template, Entity $entity, $path)
     {
+        $template->setEntity($entity);
+
         $fileCollection = new FileCollection();
 
-        $entityTemplate     = $this->getEntityTemplate()->setEntity($entity);
-        $entityBaseTemplate = $this->getEntityBaseTemplate()->setEntity($entity);
+        $entityPath = $path . $template->getPath();
 
-        $entityPath = $path . $entityTemplate->getPath();
-        $basePath   = $path . $entityBaseTemplate->getPath();
+        $entityName = $template->getFilename();
 
-        $entityName     = $entityTemplate->getFilename();
-        $entityBaseName = $entityBaseTemplate->getFilename();
-
-        $fileCollection->add(new File($basePath, $entityBaseName, $entityBaseTemplate->render()));
-
-        if ($this->getBase()) {
-            $fileCollection->add(new File($entityPath, $entityName, $entityTemplate->render()));
+        if ($entity->shouldRender($template->getTemplateName())) {
+            $fileCollection->add(new File($entityPath, $entityName, $template->render()));
         } else {
-            $fileCollection->add(new NoFile($entityPath, $entityName, sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
+            $fileCollection->add(new NoFile($entityPath, $entityName, sprintf('The entity \'%s\' is should not have a \'%s\'.', $entity->getFullyQualifiedName(), $template->getTemplateName())));
         }
 
         return $fileCollection;
     }
 
     /**
-     * @param Entity $entity
-     * @param string $path
-
+     * @param Project        $project
+     * @param ModuleTemplate $template
+     * @param string         $module
+     * @param string         $path
+     *
      * @return FileInterface
      */
-    private function getJSEntityFile(Entity $entity, $path)
+    public function renderModuleTemplate(Project $project, ModuleTemplate $template, $module, $path)
     {
+        $template->setModule($module);
+        $template->setProject($project);
+
         $fileCollection = new FileCollection();
 
-        $basePath = $path;
+        $modulePath = $path . $template->getPath();
 
-        if ($this->getBase()) {
-            $basePath .= 'Base/';
-        }
+        $moduleName = $template->getFilename();
 
-        $fileCollection->add(new File($basePath, $entity->getNameBase() . '.js', $this->getEntityTemplate()->setEntity($entity)->render()));
+        $file = new File($modulePath, $moduleName, $template->render());
+        $file->setAddToFile(true);
 
-        if ($this->getBase()) {
-            $fileCollection->add(new File($path, $entity->getName() . '.js', $this->getEntityBaseTemplate()->setEntity($entity)->render()));
-        } else {
-            // NoFile
-        }
+        $fileCollection->add($file);
 
         return $fileCollection;
     }
 
-    /**
-     * @param Entity $entity
-     * @param string $path
-
-     * @return FileInterface
-     */
-    private function getJavaEntityFile(Entity $entity, $path)
+    public function getRenamedAttributeType($type)
     {
-        $fileCollection = new FileCollection();
-
-        $entityTemplate     = $this->getAutocodeTemplate('entity')->setEntity($entity);
-        $entityBaseTemplate = $this->getAutocodeTemplate('entity-base')->setEntity($entity);
-
-        $entityPath = $path . $entityTemplate->getPath();
-        $basePath   = $path . $entityBaseTemplate->getPath();
-
-        $entityName     = $entityTemplate->getFilename();
-        $entityBaseName = $entityBaseTemplate->getFilename();
-
-        $fileCollection->add(new File($basePath, $entityBaseName, $entityBaseTemplate->render()));
-
-        if ($this->getAutocodeProperty('base')) {
-            $fileCollection->add(new File($entityPath, $entityName, $entityTemplate->render()));
-        } else {
-            $fileCollection->add(new NoFile($entityPath, $entityName, sprintf('The entity \'%s\' is not marked to inherit from a base.', $entity->getFullyQualifiedName())));
-        }
-
-        return $fileCollection;
+        return isset($this->getConfiguration()['attributes']['types'][$type]['mapped-to'])
+            ? $this->getConfiguration()['attributes']['types'][$type]['mapped-to']
+            : $type;
     }
 
-    /**
-     * @param Entity $entity
-     * @param string $path
-
-     * @return FileInterface
-     */
-    private function getRepositoryFile(Entity $entity, $path)
+    public function shouldRenderModule($templateName, $module)
     {
-        $repositoryTemplate = $this->getRepositoryTemplate()->setEntity($entity);
-
-        $repositoryPath = $path . $repositoryTemplate->getPath();
-        $repositoryName = $repositoryTemplate->getFilename();
-
-        if ($entity->getHasRepository()) {
-            return new File($repositoryPath, $repositoryName, $repositoryTemplate->render());
-        } else {
-            return new NoFile($repositoryPath, $repositoryName, sprintf('The entity \'%s\' is not marked to have a repository.', $entity->getFullyQualifiedName()));
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getFormFile($entity, $path)
-    {
-        $formTemplate     = $this->getFormTemplate()->setEntity($entity);
-        $formBaseTemplate = $this->getFormBaseTemplate()->setEntity($entity);
-
-        $formPath     = $path . $formTemplate->getPath();
-        $formBasePath = $path . $formBaseTemplate->getPath();
-
-        $formName     = $formTemplate->getFilename();
-        $formBaseName = $formBaseTemplate->getFilename();
-
-        $fileCollection = new FileCollection();
-
-        if ($entity->getHasForm()) {
-            // Form
-            $fileCollection->add(new File($formPath, $formName, $formTemplate->render()));
-
-            // Form Base
-            $fileCollection->add(new File($formBasePath, $formBaseName, $formBaseTemplate->render()));
-        } else {
-            $fileCollection->add(new NoFile($formPath, $formName, sprintf('The entity \'%s\' is not marked to have a form.', $entity->getFullyQualifiedName())));
-            $fileCollection->add(new NoFile($formBasePath, $formBaseName, sprintf('The entity \'%s\' is not marked to have a form.', $entity->getFullyQualifiedName())));
+        if ('php' !== $this->getLanguage()) {
+            return false;
         }
 
-        return $fileCollection;
-    }
+        switch($templateName) {
+            case 'routes-routing':
+                foreach ($this->moduleEntities[$module] as $entity) {
+                    /** @var PHPEntity $entity */
+                    if ($entity->getHasRoutes()) {
+                        return true;
+                    }
 
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getControllerFile($entity, $path)
-    {
-        $controllerTemplate = $this->getControllerTemplate()->setEntity($entity);
-
-        $controllerPath = $path . $controllerTemplate->getPath();
-        $controllerName = $controllerTemplate->getFilename();
-
-        if ($entity->getHasController()) {
-            return new File($controllerPath, $controllerName, $controllerTemplate->render());
-        } else {
-            return new NoFile($controllerPath, $controllerName, sprintf('The entity \'%s\' is not marked to have a controller.', $entity->getFullyQualifiedName()));
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getFixturesFile($entity, $path)
-    {
-        $fixturesTemplate = $this->getFixturesTemplate()->setEntity($entity);
-
-        $fixturesPath = $path . $fixturesTemplate->getPath();
-        $fixturesName = $fixturesTemplate->getFilename();
-
-        if ($entity->getHasFixtures()) {
-            return new File($fixturesPath, $fixturesName, $fixturesTemplate->render());
-        } else {
-            return new NoFile($fixturesPath, $fixturesName, sprintf('The entity \'%s\'is not marked to have fixtures.', $entity->getFullyQualifiedName()));
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getRoutesFile($entity, $path)
-    {
-        $routesTemplate = $this->getRoutesTemplate()->setEntity($entity);
-
-        $routesPath = $path . $routesTemplate->getPath();
-        $routesName = $routesTemplate->getFilename();
-
-        if ($entity->getHasRoutes()) {
-            return new File($routesPath, $routesName, $routesTemplate->render());
-        } else {
-            return new NoFile($routesPath, $routesName, sprintf('The entity \'%s\' is not marked to have CRUD.', $entity->getFullyQualifiedName()));
-        }
-    }
-
-    /**
-     * @param string $module
-     * @param string $path
-     *
-     * @return File|null
-     */
-    private function getRoutesRoutingFile($module, $path)
-    {
-        $routesRoutingTemplate = $this->getRoutesRoutingTemplate();
-
-        $routesRoutingPath = $path . $routesRoutingTemplate->getPath();
-        $routesRoutingName = $routesRoutingTemplate->getFilename();
-
-        $routesArray = [];
-
-        /** @var Entity $entity */
-        foreach ($this->moduleEntities[$module] as $entity) {
-            if ($entity->getHasRoutes()) {
-                $routesRoutingTemplate->setEntity($entity);
-
-                $routesArray[] = $routesRoutingTemplate->render();
-            }
+                    return false;
+                }
         }
 
-        if (count($routesArray) > 0) {
-            $routes =   '# <system-additions part="routes">' . PHP_EOL .
-                        implode(PHP_EOL,$routesArray) .
-                        '# </system-additions>' . PHP_EOL;
-
-            $file = new File($routesRoutingPath, $routesRoutingName, $routes);
-            $file->setAddToFile(true);
-
-            return $file;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getTwigCreateFile($entity, $path)
-    {
-        $twigCreateTemplate = $this->getCrudCreateTwigTemplate()->setEntity($entity);
-
-        $twigCreatePath = $path . $twigCreateTemplate->getPath();
-        $twigCreateName = $twigCreateTemplate->getFilename();
-
-        if ($entity->getCrudCreate()) {
-            return new File($twigCreatePath, $twigCreateName, $twigCreateTemplate->render());
-        } else {
-            $fileCollection = new FileCollection();
-
-            $fileCollection->add(new NoFile($twigCreatePath, $twigCreateName, sprintf('The entity \'%s\' is not marked to have CRUD(C).', $entity->getFullyQualifiedName())));
-
-            return $fileCollection;
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getTwigReadFile($entity, $path)
-    {
-        $twigReadTemplate = $this->getCrudReadTwigTemplate()->setEntity($entity);
-
-        $twigReadPath = $path . $twigReadTemplate->getPath();
-        $twigReadName = $twigReadTemplate->getFilename();
-
-        if ($entity->getCrudRead()) {
-            return new File($twigReadPath, $twigReadName, $twigReadTemplate->render());
-        } else {
-            $fileCollection = new FileCollection();
-
-            $fileCollection->add(new NoFile($twigReadPath, $twigReadName, sprintf('The entity \'%s\' is not marked to have CRUD(R).', $entity->getFullyQualifiedName())));
-
-            return $fileCollection;
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getTwigUpdateFile($entity, $path)
-    {
-        $twigUpdateTemplate = $this->getCrudUpdateTwigTemplate()->setEntity($entity);
-
-        $twigUpdatePath = $path . $twigUpdateTemplate->getPath();
-        $twigUpdateName = $twigUpdateTemplate->getFilename();
-
-        if ($entity->getCrudUpdate()) {
-            return new File($twigUpdatePath, $twigUpdateName, $twigUpdateTemplate->render());
-        } else {
-            $fileCollection = new FileCollection();
-
-            $fileCollection->add(new NoFile($twigUpdatePath, $twigUpdateName, sprintf('The entity \'%s\' is not marked to have CRUD(U).', $entity->getFullyQualifiedName())));
-
-            return $fileCollection;
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getInterfaceFile($entity, $path)
-    {
-        $interfaceTemplate = $this->getInterfaceTemplate()->setEntity($entity);
-
-        $interfacePath = $path . $interfaceTemplate->getPath();
-        $interfaceName = $interfaceTemplate->getFilename();
-
-        return new File($interfacePath, $interfaceName, $interfaceTemplate->render());
-    }
-
-    /**
-     * @param Entity $entity
-     * @param string $path
-     *
-     * @return FileInterface
-     */
-    private function getTraitFile($entity, $path)
-    {
-        $traitTemplate = $this->getTraitTemplate()->setEntity($entity);
-
-        $traitPath     = $path . $traitTemplate->getPath();
-        $traitName     = $traitTemplate->getFilename();
-
-        return new File($traitPath, $traitName, $traitTemplate->render());
+        return false;
     }
 
     public function supportsReverseAttributes()

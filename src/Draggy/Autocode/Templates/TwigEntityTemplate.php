@@ -24,7 +24,7 @@ use Draggy\Utils\Justifier\Twig\TwigJustifier;
 /**
  * Draggy\Autocode\Templates\Entity\PHPEntityTemplate
  */
-class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInterface
+abstract class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
