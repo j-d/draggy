@@ -1189,7 +1189,7 @@ class Project extends ProjectBase
 
     public function getChanges($path)
     {
-        if ('java' === $this->getLanguage()) {
+        if ('java' === $this->getLanguage() || 'cpp' === $this->getLanguage()) {
             $path = $this->getAutocodeConfiguration('target-path');
         }
 
@@ -1203,7 +1203,7 @@ class Project extends ProjectBase
 
     public function saveTo($path)
     {
-        if ('java' === $this->getLanguage()) {
+        if ('java' === $this->getLanguage() || 'cpp' === $this->getLanguage()) {
             $path = $this->getAutocodeConfiguration('target-path');
         }
 

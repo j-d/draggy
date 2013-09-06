@@ -292,3 +292,71 @@ languages:
                     enabled:  true
     cpp:
         name: C++
+        reserved-words: ['alignas', 'alignof', 'and', 'and_eq', 'asm', 'auto', 'bitand', 'bitor', 'bool', 'break', 'case', 'catch', 'char', 'char16_t', 'char32_t', 'class', 'compl', 'const', 'const_cast', 'constexpr', 'continue', 'decltype', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'final', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq', 'nullptr', 'operator', 'or', 'or_eq', 'override', 'private', 'protected', 'public', 'register', 'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_assert', 'static_cast', 'struct', 'switch', 'template', 'this', 'thread_local', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'wchar_t', 'while', 'xor', 'xor_eq'] # http://en.cppreference.com/w/cpp/keyword
+        relationships:
+            types:
+                one-to-one:
+                    enabled: true
+                one-to-many:
+                    enabled: true
+                many-to-one:
+                    enabled: true
+                many-to-many:
+                    enabled: true
+                inheritance:
+                    enabled: true
+        attributes:
+            types:
+                bool:
+                    name:    bool
+                    enabled: true
+                chart:
+                    name:    chart
+                    enabled: true
+                short:
+                    name:    short
+                    enabled: true
+                int:
+                    name:    int
+                    enabled: true
+                long:
+                    name:    long
+                    enabled: true
+                float:
+                    name:    float
+                    enabled: true
+                double:
+                    name:    double
+                    enabled: true
+        autocode:
+            properties:
+                base:
+                    name:    Base
+                    enabled: true
+                    default: true
+            configurations:
+                target-path:
+                    name:    Target path
+                    enabled: true
+                    default: ~
+            templates:
+                entity:
+                    name:     Entity
+                    template: Draggy\Autocode\Templates\CPP\Entity
+                    type:     entity
+                    enabled:  true
+                entity-base:
+                    name:     Entity base
+                    template: Draggy\Autocode\Templates\CPP\EntityBase
+                    type:     entity
+                    enabled:  true
+                entity-header:
+                    name:     Entity header
+                    template: Draggy\Autocode\Templates\CPP\EntityHeader
+                    type:     entity
+                    enabled:  true
+                entity-base-header:
+                    name:     Entity base header
+                    template: Draggy\Autocode\Templates\CPP\EntityBaseHeader
+                    type:     entity
+                    enabled:  true
