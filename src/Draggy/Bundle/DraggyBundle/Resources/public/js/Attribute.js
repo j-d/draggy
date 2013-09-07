@@ -182,12 +182,10 @@ Attribute.prototype.setEmail = function (email)
     }
 };
 
-Attribute.prototype.getMinSize = function ()
+Attribute.prototype.getEmail = function ()
 {
-    return this.minSize;
+    return this.email;
 };
-
-
 
 Attribute.prototype.setNull = function (n)
 {
@@ -387,16 +385,6 @@ Attribute.prototype.setGetter = function (getter)
 Attribute.prototype.getGetter = function ()
 {
     return this.getter;
-};
-
-Attribute.prototype.setEmail = function (email)
-{
-    this.email = email;
-};
-
-Attribute.prototype.getEmail = function ()
-{
-    return this.email;
 };
 
 Attribute.prototype.setMin = function (min)

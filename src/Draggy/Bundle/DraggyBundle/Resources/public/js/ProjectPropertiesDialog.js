@@ -28,7 +28,6 @@ ProjectPropertiesDialog.prototype.openDialog = function () {
 
         ProjectPropertiesDialog.prototype.changedLanguage(currentLanguage);
     }
-
     var currentFramework = Draggy.prototype.getFramework();
 
     if (null !== currentFramework && typeof languages[currentFramework] != "undefined") {

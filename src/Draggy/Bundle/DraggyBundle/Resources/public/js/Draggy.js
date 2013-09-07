@@ -36,12 +36,6 @@ Draggy.prototype.save = function () {
     });
 };
 
-Draggy.prototype.statusMsg = function (msg) {
-    $('#status').html(msg);
-
-    setTimeout('$(\'#status\').html(\'<br>\');', 500);
-};
-
 Draggy.prototype.getModelXML = function () {
     var i;
 
