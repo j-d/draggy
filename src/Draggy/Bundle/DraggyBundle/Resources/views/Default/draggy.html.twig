@@ -18,7 +18,9 @@
             |
             <span onClick="ProjectPropertiesDialog.prototype.openDialog();">Project properties</span>
             |
-            <span onClick="GenerateEntitiesDialog.prototype.openDialog();">Generate entities</span>
+            <span onClick="GenerateEntitiesDialog.prototype.openDialog();">Generate</span>
+            |
+            <span onClick="AnalyseDialog.prototype.openDialog();">Analyse</span>
             <span id="contextMenus" style="display: none;">| <span onClick="ContextMenu.prototype.enableMenus();">Show context menus</span></span>
         </div>
         <div id="draggy-area">
@@ -53,7 +55,7 @@
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Notification.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Autocode.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/GenerateEntitiesDialog.js') }}"></script>
-
+        <script type="text/javascript" src="{{ asset('bundles/draggy/js/AnalyseDialog.js') }}"></script>
         <script>
             ContextMenu.prototype.enableMenus();
             {% if not self %}
@@ -89,6 +91,7 @@
         {% include 'DraggyBundle:Default:dialogs/linkClassDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/projectPropertiesDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/generateEntitiesDialog.html.twig' %}
+        {% include 'DraggyBundle:Default:dialogs/analyseDialog.html.twig' %}
         <script>
             {% if loaderJS is empty %}
                 $(document).ready(function() {

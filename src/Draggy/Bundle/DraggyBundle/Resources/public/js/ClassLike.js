@@ -118,3 +118,25 @@ ClassLike.prototype.canInheritFrom = function (potentialParent) {
 
     return true;
 };
+
+ClassLike.prototype.getChildren = function ()
+{
+    return this.children;
+};
+
+ClassLike.prototype.getImplementing = function()
+{
+    var r = [];
+    var link;
+
+
+    for (var i in this.links) {
+        link = Link.prototype.links[this.links[i]];
+
+        if (undefined !== link && link.getType() === 'implements' && link.getFrom() === this.getId()) {
+            r.push(link.getTo());
+        }
+    }
+
+    return r;
+};

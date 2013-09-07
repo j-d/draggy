@@ -269,27 +269,6 @@ languages:
                     template: Draggy\Autocode\Templates\PHP\CrudUpdate
                     type:     entity
                     enabled:  true
-    js:
-        name: JavaScript
-        attributes:
-            types:
-                - array
-                - boolean
-                - number
-                - object
-                - string
-        autocode:
-            templates:
-                entity:
-                    name:     Entity
-                    template: Draggy\Autocode\Templates\JS\Entity2
-                    type:     entity
-                    enabled:  true
-                entity-base:
-                    name:     Entity base
-                    template: Draggy\Autocode\Templates\JS\EntityBase2
-                    type:     entity
-                    enabled:  true
     cpp:
         name: C++
         reserved-words: ['alignas', 'alignof', 'and', 'and_eq', 'asm', 'auto', 'bitand', 'bitor', 'bool', 'break', 'case', 'catch', 'char', 'char16_t', 'char32_t', 'class', 'compl', 'const', 'const_cast', 'constexpr', 'continue', 'decltype', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'final', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq', 'nullptr', 'operator', 'or', 'or_eq', 'override', 'private', 'protected', 'public', 'register', 'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_assert', 'static_cast', 'struct', 'switch', 'template', 'this', 'thread_local', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'wchar_t', 'while', 'xor', 'xor_eq'] # http://en.cppreference.com/w/cpp/keyword

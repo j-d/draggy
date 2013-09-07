@@ -147,9 +147,9 @@ relationships:
             direct-name:  Implements
             inverse-name: Implemented by
             icons:
-                from:      aggregate
+                from:      none
                 from-null: ~
-                to:        none
+                to:        inheritance
                 to-null:   ~
             entities:
                 interface: [class, abstract]

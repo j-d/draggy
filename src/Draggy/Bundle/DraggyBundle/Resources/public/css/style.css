@@ -606,3 +606,27 @@ span.generate-entities-check-all, span.generate-entities-uncheck-all, span.gener
 .ui-tabs .ui-state-disabled {
     display: none; /* disabled tabs don't show up */
 }
+
+div.analyse-information, div.analyse-warning, div.analyse-error {
+    margin-bottom: 14px;
+    padding: 12px 12px 12px 68px;
+    min-height: 36px;
+}
+
+div.analyse-information {
+    border: 1px solid #bce8f1;
+    color: #3a87ad;
+    background: #d9edf7 url('../img/information.png') no-repeat 7px 7px;
+}
+
+div.analyse-warning {
+    border: 1px solid #e7dac1;
+    color: #c09853;
+    background: #fcf8e3 url('../img/warning.png') no-repeat 7px 7px;
+}
+
+div.analyse-error {
+    border: 1px solid #eed3d7;
+    color: #b94a48;
+    background: #f2dede url('../img/error.png') no-repeat 7px 7px;
+}

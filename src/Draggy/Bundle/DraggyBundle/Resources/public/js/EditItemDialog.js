@@ -176,18 +176,13 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
     if (inheritance) {
         targetAttribute = '';
         sourceAttribute = '';
-    }
-    else {
-        if (!Draggy.prototype.options.linkClasses) {
+    } else {
+        if (!Draggy.prototype.options.linkClasses && Attribute.prototype.attributes[targetAttribute] != undefined) {
             targetAttribute = Attribute.prototype.attributes[targetAttribute].getName();
+            sourceAttribute = Attribute.prototype.attributes[sourceAttribute].getName();
         } else {
             targetAttribute = '';
-        }
-
-        if (Draggy.prototype.options.linkClasses) {
             sourceAttribute = '';
-        } else {
-            sourceAttribute = Attribute.prototype.attributes[sourceAttribute].getName();
         }
     }
 
@@ -600,7 +595,9 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
 
     // ToString
 
-    var currentToString = c.getToString();
+    if (!(c instanceof Interface)) {
+        var currentToString = c.getToString();
+    }
 
     $('<option value=""' + (currentToString == null ? ' selected="selected"' : '') + '>--None--</option>').appendTo('#edit-item-tostring');
 
