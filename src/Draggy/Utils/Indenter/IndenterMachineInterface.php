@@ -22,7 +22,7 @@ interface IndenterMachineInterface
     /**
      * Get all the lines
      *
-     * @return \string
+     * @return string[]
      */
     public function getLines();
 
