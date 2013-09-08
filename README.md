@@ -143,6 +143,6 @@ Install the Draggy assets
 
     sudo php app/console assets:install --symlink
 
-That's it! To use it just browse to the path you created, e.g. `http://myproject.local/app_dev.php/_draggy/`
+That's it! To use it just browse to the path you created, e.g. http://myproject.local/app_dev.php/_draggy
 
 Happy Draggy-ing!
