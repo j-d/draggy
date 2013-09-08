@@ -25,20 +25,13 @@ Edit your `composer.json` file and add draggy as a dependency
         ...
 ```
 
-Remove the Incenteev call as it doesn't currently (2.3) support additional parameters on the `parameters.yml` file:
+Change the version of the Incenteev dependency as it doesn't currently (2.3) support additional parameters on the `parameters.yml` file:
 
 ```json
-"post-install-cmd": [
-    ...
-    Remove: "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-    ...
-],
-"post-update-cmd": [
-    ...
-    Remove: "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-    ...
-]
-
+    "require": {
+        ...
+        "incenteev/composer-parameter-handler": "2.1.*@dev"
+        ...
 ```
 
 Run `composer update` to download the recently added dependency
