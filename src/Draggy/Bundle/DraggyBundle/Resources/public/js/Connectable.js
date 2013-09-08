@@ -14,6 +14,7 @@ Connectable.prototype.innitConnectable = function (desiredId, container) {
     this.module = '';
     this.links = [];
     this.dependantAttributes = [];
+    this.type = null;
 
     Connectable.prototype.connectables[this.id] = this;
     Connectable.prototype.connectableList.push(this);
@@ -178,7 +179,7 @@ Connectable.prototype.reDraw = function () {
 
     this.makeInteractive();
 
-    if (this.children.length > 0) {
+    if (undefined !== this.children && this.children.length > 0) {
         for (var i = 0; i < this.children.length; i++) {
             Connectable.prototype.connectables[this.children[i]].reDraw();
         }
@@ -530,7 +531,7 @@ Connectable.prototype.addAttribute = function (attribute) {
 
     this.attributes.push(attribute.getId());
 
-    if (this.children.length > 0) {
+    if (undefined !== this.children && this.children.length > 0) {
         for (var i = 0; i < this.children.length; i++) {
             var ia = new InheritedAttribute(attribute.getId());
 
@@ -648,4 +649,8 @@ Connectable.prototype.removeDependantAttribute = function (attribute) {
     this.dependantAttributes.remove(attribute);
 
     return this;
+};
+
+Connectable.prototype.getType = function () {
+    return this.type;
 };

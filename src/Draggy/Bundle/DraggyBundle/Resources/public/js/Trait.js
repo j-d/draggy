@@ -23,6 +23,8 @@ function Trait (name, container) {
     this.setDrawn(true);
 
     this.reDraw();
+
+    this.type = 'trait';
 }
 
 

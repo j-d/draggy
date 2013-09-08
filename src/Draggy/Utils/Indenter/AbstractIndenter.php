@@ -1,8 +1,8 @@
 <?php
 
-namespace Draggy\Utils;
+namespace Draggy\Utils\Indenter;
 
-abstract class AbstractJustifier implements JustifierInterface
+abstract class AbstractIndenter implements IndenterInterface, IndenterMachineInterface
 {
     /**
      * @var string Character used to indent, typically a space or a tab
@@ -42,11 +42,7 @@ abstract class AbstractJustifier implements JustifierInterface
     protected $passes;
 
     /**
-     * @param string $indentationCharacter
-     * @param int    $indentationCount
-     * @param string $eol
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
     public function __construct($indentationCharacter = ' ', $indentationCount = 4, $eol = "\n")
     {
@@ -68,6 +64,9 @@ abstract class AbstractJustifier implements JustifierInterface
         $this->eol                  = $eol;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getLine($lineNumber)
     {
         return isset($this->lines[$lineNumber])
@@ -75,11 +74,17 @@ abstract class AbstractJustifier implements JustifierInterface
             : null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getLines()
     {
         return $this->lines;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOutputLine($lineNumber)
     {
         return isset($this->outputLines[$lineNumber])
@@ -87,59 +92,93 @@ abstract class AbstractJustifier implements JustifierInterface
             : null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setOutputLine($lineNumber, $line)
     {
         $this->outputLines[$lineNumber] = $line;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indentLines($startLine, $endLine)
     {
         for ($i = $startLine; $i <= $endLine; $i++) {
-            if ('' !== $this->lines[$i]) { // Don't justify blank lines
+            if ('' !== $this->lines[$i]) { // Don't indent blank lines
                 $this->outputLines[$i] = $this->indentation . $this->outputLines[$i];
             }
         }
     }
 
+    /**
+     * Get all the source code lines from a source code file
+     *
+     * @param string $sourceFile
+     */
     protected function initialiseFromSourceFile($sourceFile)
     {
         $this->lines = explode($this->eol, $sourceFile);
     }
 
+    /**
+     * Initialise from an array of lines
+     *
+     * @param string[] $lines
+     */
     protected function initialiseFromLines($lines)
     {
         $this->lines = $lines;
     }
 
-    protected function addJustificationRule($pass, $rule)
+    /**
+     * Add a new indentation rule to the indenter that will be processed in order
+     *
+     * @param int $pass
+     * @param $rule
+     */
+    protected function addIndentationRule($pass, $rule)
     {
         $this->passes[$pass][] = $rule;
     }
 
-    public function justifyFromLines($lines)
+    /**
+     * {@inheritdoc}
+     */
+    public function indentFromLines($lines)
     {
         $this->initialiseFromLines($lines);
 
-        $this->justify();
+        $this->indent();
 
         return $this->outputLines;
     }
 
-    public function justifyFromSourceFile($sourceFile)
+    /**
+     * {@inheritdoc}
+     */
+    public function indentFromSourceFile($sourceFile)
     {
         $this->initialiseFromSourceFile($sourceFile);
 
-        $this->justify();
+        $this->indent();
 
         return implode($this->eol, $this->outputLines);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getIndentation()
     {
         return $this->indentation;
     }
 
-    protected function prepareToJustify()
+    /**
+     * Pre-process all the lines so they are ready to be indented
+     */
+    protected function prepareToIndent()
     {
         foreach ($this->lines as $lineNumber => $line) {
             $this->lines[$lineNumber] = trim($line);

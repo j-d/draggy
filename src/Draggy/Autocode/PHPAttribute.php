@@ -614,6 +614,30 @@ class PHPAttribute extends PHPAttributeBase
 //            if (null !== $this->getMax()) {
 //                $properties[] = '\'max\' => ' . $this->getMax() . ',';
 //            }
+
+            if ('OneToOne' === $this->getForeign()) {
+                $properties[] = '\'query_builder\' => function (EntityRepository $er) {';
+                $properties[] =     '$alreadyAssigned' .  $this->getForeignEntity()->getPluralName() . ' = $er';
+                $properties[] =         '->createQueryBuilder(\'' . $this->getForeignEntity()->getLowerName() . '\')';
+                $properties[] =         '->innerJoin(\'' . $this->getEntity()->getModule() . ':' . $this->getEntity()->getName() . '\', \'' . $this->getEntity()->getLowerName() . '\', \'WITH\', \'' . $this->getEntity()->getLowerName() . '.' . $this->getEntity()->getPrimaryAttribute()->getName() . ' = ' . $this->getForeignEntity()->getLowerName() . '.' . $this->getForeignEntity()->getPrimaryAttribute()->getName() . '\')';
+                $properties[] =         '->getQuery()';
+                $properties[] =         '->getResult();';
+                $properties[] = '';
+                $properties[] =     '$alreadyAssigned' . $this->getForeignEntity()->getPrimaryAttribute()->getPluralUpperName() . ' = [];';
+                $properties[] = '';
+                $properties[] =     'foreach ($alreadyAssigned' .  $this->getForeignEntity()->getPluralName() . ' as $' . $this->getForeignEntity()->getLowerName() . ') {';
+                $properties[] =         '/** @var ' . $this->getForeignEntity()->getName() . ' $' . $this->getForeignEntity()->getLowerName() . ' */';
+                $properties[] = '';
+                $properties[] =         '$alreadyAssigned' . $this->getForeignEntity()->getPrimaryAttribute()->getPluralUpperName() . '[] = $' . $this->getForeignEntity()->getLowerName() . '->' . $this->getForeignEntity()->getPrimaryAttribute()->getGetterName() . '();';
+                $properties[] =     '}';
+                $properties[] = '';
+                $properties[] =     '$qb = $er->createQueryBuilder(\'' . $this->getForeignEntity()->getLowerName() . '\');';
+                $properties[] = '';
+                $properties[] =     'return 0 !== count($alreadyAssigned' . $this->getForeignEntity()->getPrimaryAttribute()->getPluralUpperName() . ')';
+                $properties[] =         '? $qb->where($qb->expr()->notIn(\'' . $this->getForeignEntity()->getLowerName() . '\', $alreadyAssigned' . $this->getForeignEntity()->getPrimaryAttribute()->getPluralUpperName() . '))';
+                $properties[] =         ': $qb;';
+                $properties[] = '},';
+            }
         }
 
         $lines[] = '\'options\' => [';

@@ -41,6 +41,14 @@ class InterfaceT extends InterfaceTBase implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'interface';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()

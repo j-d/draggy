@@ -43,6 +43,14 @@ class TraitT extends TraitTBase implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'trait';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()

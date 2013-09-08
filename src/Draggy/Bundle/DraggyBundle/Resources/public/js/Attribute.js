@@ -43,23 +43,10 @@ Attribute.prototype.remove = function ()
 Attribute.prototype.setType = function (type)
 {
     if (type != this.type) {
-        switch (type) {
-            case 'array':
-            case 'bigint':
-            case 'boolean':
-            case 'date':
-            case 'datetime':
-            case 'decimal':
-            case 'integer':
-            case 'object':
-            case 'smallint':
-            case 'string':
-            case 'text':
-            case 'time':
-                this.type = type;
-                break;
-            default:
-                this.type = null;
+        if (undefined !== Draggy.prototype.getAttributeTypes()[type]) {
+            this.type = type;
+        } else {
+            this.type = null;
         }
 
         // Update linked attributes
@@ -92,11 +79,13 @@ Attribute.prototype.setSubtype = function (subtype)
             this.subtype = subtype;
         }
 
-        if (oldSubtype !== '' && oldSubtype !== null && Config.prototype.types.indexOf(oldSubtype) === -1) { // It was a class subtype
+        var attributeTypes = Draggy.prototype.getAttributeTypes();
+
+        if (oldSubtype !== '' && oldSubtype !== null && undefined === attributeTypes[oldSubtype]) { // It was a class subtype
             Connectable.prototype.getConnectableFromName(oldSubtype).removeDependantAttribute(this.getId());
         }
 
-        if (subtype !== '' && subtype !== null && subtype !== undefined && Config.prototype.types.indexOf(subtype) === -1) { // Is a class subtype
+        if (subtype !== '' && subtype !== null && subtype !== undefined && undefined === attributeTypes[subtype]) { // Is a class subtype
             Connectable.prototype.getConnectableFromName(subtype).addDependantAttribute(this.getId());
         }
 
@@ -193,12 +182,10 @@ Attribute.prototype.setEmail = function (email)
     }
 };
 
-Attribute.prototype.getMinSize = function ()
+Attribute.prototype.getEmail = function ()
 {
-    return this.minSize;
+    return this.email;
 };
-
-
 
 Attribute.prototype.setNull = function (n)
 {
@@ -398,16 +385,6 @@ Attribute.prototype.setGetter = function (getter)
 Attribute.prototype.getGetter = function ()
 {
     return this.getter;
-};
-
-Attribute.prototype.setEmail = function (email)
-{
-    this.email = email;
-};
-
-Attribute.prototype.getEmail = function ()
-{
-    return this.email;
 };
 
 Attribute.prototype.setMin = function (min)

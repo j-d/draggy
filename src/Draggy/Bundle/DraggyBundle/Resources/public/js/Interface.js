@@ -23,6 +23,8 @@ function Interface (name, container) {
     this.setDrawn(true);
 
     this.reDraw();
+
+    this.type = 'interface';
 }
 
 

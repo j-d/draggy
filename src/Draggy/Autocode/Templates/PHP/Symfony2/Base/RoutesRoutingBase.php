@@ -16,14 +16,12 @@
 
 namespace Draggy\Autocode\Templates\PHP\Symfony2\Base;
 
-use Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting;
-use Draggy\Autocode\Templates\PHPEntityTemplate;
-use Draggy\Autocode\Entity;
+use Draggy\Autocode\Templates\ModuleTemplate;
 
 /**
  * Draggy\Autocode\Templates\PHP\Symfony2\Entity\Base\RoutesRouting
  */
-abstract class RoutesRoutingBase extends PHPEntityTemplate
+abstract class RoutesRoutingBase extends ModuleTemplate
 {
     // <editor-fold desc="Attributes">
     // </editor-fold>

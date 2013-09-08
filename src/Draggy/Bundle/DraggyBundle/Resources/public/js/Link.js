@@ -14,15 +14,6 @@ Link.prototype.suffixes = [
     '-left'
 ];
 
-Link.prototype.iconNames = {
-    inheritance:    'icon-inheritance',
-    one:            'icon-one',
-    oneNull:        'icon-one-null',
-    many:           'icon-many',
-    manyNull:       'icon-many-null',
-    null:           'icon-none'
-};
-
 function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.innitScreenItem('Link');
 
@@ -42,7 +33,7 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
     this.cascadeRemove  = true;
     this.persist = true;
 
-    if (type !== 'Inheritance') {
+    if (type !== 'inheritance' && type !== 'implements') {
         if (!Draggy.prototype.options.linkClasses) {
             this.fromAttribute = Connectable.prototype.connectables[this.from].getAttributeFromName(fromAttributeName);
             var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
@@ -62,12 +53,15 @@ function Link (from, to, type, fromAttributeName, toAttributeName) {
         } else {
             toAttribute.links.push(this.getId());
         }
-    }
-    else {
-        Item.prototype.items[this.from].setInheritingFrom(this.to);
+    } else if (type == 'implements') {
+        Item.prototype.items[this.from].reDraw();
+    } else {
+        if (!(Item.prototype.items[this.to] instanceof Interface)) {
+            Item.prototype.items[this.from].setInheritingFrom(this.to);
 
-        if (System.prototype.runtime) {
-            Item.prototype.items[this.from].inheritAttributes();
+            if (System.prototype.runtime) {
+                Item.prototype.items[this.from].inheritAttributes();
+            }
         }
 
         Item.prototype.items[this.from].reDraw();
@@ -112,7 +106,7 @@ Link.prototype.getType = function () {
 Link.prototype.toXML = function () {
     var ret = '';
 
-    if (this.getType() == 'Inheritance') {
+    if (this.getType() == 'inheritance' || this.getType() == 'implements') {
         ret += '<relation ' +
             'from="' + Item.prototype.items[this.getFrom()].getFullyQualifiedName() + '" ' +
             'to="' + Item.prototype.items[this.getTo()].getFullyQualifiedName() + '" ' +
@@ -132,7 +126,7 @@ Link.prototype.toXML = function () {
         ret += 'toAttribute="' + Attribute.prototype.attributes[this.toAttribute].getName() + '" ';
         ret += 'type="' + this.getType() + '" ';
 
-        if ('Inheritance' !== this.getType()) {
+        if ('inheritance' !== this.getType()) {
             ret += 'persist="' + this.getPersist() + '" ';
             ret += 'remove="' + this.getRemove() + '" ';
         }
@@ -148,6 +142,8 @@ Link.prototype.toXML = function () {
 };
 
 Link.prototype.reDrawLinks = function () {
+    Draggy.prototype.updateConfiguration();
+
     for (var i = 0; i < Link.prototype.linkList.length; i++) {
         if (Link.prototype.linkList[i].needsRedraw) {
             Link.prototype.linkList[i].reDraw();
@@ -269,11 +265,11 @@ Link.prototype.adjustConnectors = function () {
     var newTo;
 
     switch (this.type) {
-        case 'Inheritance':
+        case 'inheritance':
             newFrom = null;
             newTo = 'inheritance';
             break;
-        case 'OneToOne':
+        case 'one-to-one':
             if (!Draggy.prototype.options.linkClasses) {
                 newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
             } else {
@@ -282,7 +278,7 @@ Link.prototype.adjustConnectors = function () {
 
             newTo = Attribute.prototype.attributes[this.toAttribute].getNull() ? 'oneNull' : 'one';
             break;
-        case 'OneToMany':
+        case 'one-to-many':
             if (!Draggy.prototype.options.linkClasses) {
                 newFrom = Attribute.prototype.attributes[this.fromAttribute].getNull() ? 'oneNull' : 'one';
             } else {
@@ -336,7 +332,7 @@ Link.prototype.remove = function () {
     Item.prototype.items[this.from].removeConnector(this.id);
     Item.prototype.items[this.to].removeConnector(this.id);
 
-    if (this.type !== 'Inheritance') {
+    if (this.type !== 'inheritance') {
         if (!Draggy.prototype.options.linkClasses) {
             var fromAttribute = Attribute.prototype.attributes[this.fromAttribute];
 
@@ -355,7 +351,7 @@ Link.prototype.remove = function () {
 
         toAttribute.setForeign(false);
     }
-    else { // Type === Inheritance
+    else { // Type === inheritance
         Item.prototype.items[this.from].unInheritAttributes();
 
         Item.prototype.items[this.from].setInheritingFrom(null);
@@ -466,8 +462,11 @@ Link.prototype.draw = function () {
         var firstType;
         var secondType;
 
-        var fromType = Link.prototype.iconNames[this.fromType] + Link.prototype.suffixes[fromConnector];
-        var toType = Link.prototype.iconNames[this.toType] + Link.prototype.suffixes[toConnector];
+        var linkTypes = Draggy.prototype.getRelationshipTypes();
+        var thisLinkType = linkTypes[this.type];
+
+        var fromType = 'icon-' + thisLinkType.icons.from + Link.prototype.suffixes[fromConnector];
+        var toType   = 'icon-' + thisLinkType.icons.to + Link.prototype.suffixes[toConnector];
 
         var div = '';
 

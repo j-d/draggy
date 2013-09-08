@@ -3,6 +3,7 @@
 namespace Draggy\Bundle\DraggyBundle\Controller;
 
 use Draggy\Loader;
+use Draggy\Utils\Yaml\YamlLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Draggy\Autocode\Project;
@@ -177,12 +178,13 @@ class DefaultController extends Controller
         return $this->render(
             'DraggyBundle:Default:draggy.html.twig',
             [
-            'loaderJS'         => $loader->getLoaderJS(),
-            'saveable'         => $saveable,
-            'noSaveableReason' => $noSaveableReason,
-            'targetFolder'     => $targetFolder,
-            'file'             => $file,
-            'self'             => $self,
+                'loaderJS'         => $loader->getLoaderJS(),
+                'saveable'         => $saveable,
+                'noSaveableReason' => $noSaveableReason,
+                'targetFolder'     => $targetFolder,
+                'file'             => $file,
+                'self'             => $self,
+                'configuration'    => json_encode(YamlLoader::loadConfiguration()),
             ]
         );
     }
@@ -204,10 +206,9 @@ class DefaultController extends Controller
 
         $targetFolder = $this->getSourcePath($file, $self);
 
-        $project = (new Project())
-            ->loadFile($modelFile);
+        $project = new Project();
 
-        //$this->getRequest()->get('ignore')
+        $project->loadFile($modelFile);
 
         $toProcess = $this->getRequest()->get('process');
 

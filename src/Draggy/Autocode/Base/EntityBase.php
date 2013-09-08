@@ -164,6 +164,8 @@ abstract class EntityBase
      * Get namespace
      *
      * @return string
+     *
+     * @deprecated
      */
     public function getNamespace()
     {

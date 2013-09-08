@@ -1,0 +1,23 @@
+<div id="analyse-dialog" class="draggy-dialog" title="Analyse model">
+    <div id="analyse-messages">
+        <div class="analyse-information"> You are cool man!</div>
+        <div class="analyse-warning"> Meh</div>
+        <div class="analyse-error"> Oh oh!!!! </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#analyse-dialog").dialog({
+            autoOpen: false,
+            height: 800,
+            width: 1000,
+            modal: true,
+            buttons: {
+                Close: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    });
+</script>

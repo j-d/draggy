@@ -40,6 +40,14 @@ class Fixtures extends FixturesBase
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'fixtures';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()
@@ -182,7 +190,7 @@ class Fixtures extends FixturesBase
 
         $helpLines = $this->getLoadMethodHelpLines();
 
-        $lines = array_merge($lines, $this->commentAndJustifyLines($helpLines));
+        $lines = array_merge($lines, $this->commentAndIndentLines($helpLines));
 
         $lines[] = '';
         $lines[] =     $this->getUserAdditions('load');
