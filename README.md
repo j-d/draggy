@@ -30,12 +30,12 @@ Remove the Incenteev call as it doesn't currently (2.3) support additional param
 ```json
 "post-install-cmd": [
     ...
-    //"Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+    Remove: "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
     ...
 ],
 "post-update-cmd": [
     ...
-    //"Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+    Remove: "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
     ...
 ]
 
