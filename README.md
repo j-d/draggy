@@ -1,20 +1,44 @@
 Draggy
 ======
 
-Draggy is a visual browser modelling tool that enables the user to create and maintain a functional
+Draggy is a code development tool and template engine that enables the user to create and maintain a functional
 Skelleton of an application.
 
-Installation (as a vendor)
---------------------------
+The installation instructions here are for installing Draggy as a vendor on an existing Symfony2 installation.
+If you are starting a new project, there is an easier way to get started by downloading a Symfony2 installation 
+that already has Draggy bundled. For details please go to https://github.com/j-d/symfony-standard-draggy
+
+Downloading that bundle package is the same as creating a new Symfony2 project and following the steps below.
+
+If you want to see a demo, you can download one from here: https://github.com/j-d/draggy-demo
+
+Installation (as a vendor on an existing Symfony2 installation)
+---------------------------------------------------------------
 Edit your `composer.json` file and add draggy as a dependency
 
     sudo nano composer.json
 
 ```json
-    "require": {
+    "require-dev": {
         ...
         "jd/draggy": "dev-master"
         ...
+```
+
+Remove the Incenteev call as it doesn't currently (2.3) support additional parameters on the `parameters.yml` file:
+
+```json
+"post-install-cmd": [
+    ...
+    //"Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+    ...
+],
+"post-update-cmd": [
+    ...
+    //"Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+    ...
+]
+
 ```
 
 Run `composer update` to download the recently added dependency
@@ -66,6 +90,16 @@ Give write access to `www-data` to those folder
     sudo setfacl -R  -m u:www-data:rwx -m u:`whoami`:rwx doc doc/history
     sudo setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx doc doc/history
 
+Add `doc/history` to the .gitignore
+
+    sudo nano .gitignore
+
+```
+...
+/doc/history/*
+!.gitkeep
+```
+
 Register the `DraggyBundle` in the `app\AppKernel.php` (it is recommended to add it on the `dev` section)
 
     sudo nano app/AppKernel.php
@@ -74,6 +108,7 @@ Register the `DraggyBundle` in the `app\AppKernel.php` (it is recommended to add
 if (in_array($this->getEnvironment(), array('dev', 'test'))) {
     ...
     $bundles[] = new Draggy\Bundle\DraggyBundle\DraggyBundle();
+    $bundles[] = new Draggy\Bundle\MockBundle\MockBundle();
     ...
 ```
 
@@ -88,79 +123,33 @@ _draggy:
     prefix:   /_draggy/
 ```
 
+If you are going to use the default Draggy mock templates, copy the custom `form_div_layout.html.twig` into the resources folder:
+
+    mkdir app/Resources/views/Form
+    cp vendor/jd/draggy/src/Draggy/Bundle/MockBundle/Resources/views/Form/form_div_layout.html.twig app/Resources/views/Form/form_div_layout.html.twig
+
+and amend your `config.yml` file to use this twig template and add the MockBundle to assetic:
+
+    sudo nano app/config/config.yml
+
+```yml
+... 
+twig:
+    ...
+    form:
+        resources:
+            - ':Form:form_div_layout.html.twig'
+...
+assetic:
+    ...
+    bundles:        [MockBundle]
+    ...
+```
+
 Install the Draggy assets
 
     sudo php app/console assets:install --symlink
 
 That's it! To use it just browse to the path you created, e.g. `http://myproject.local/app_dev.php/_draggy/`
 
-Remember to start by configuring your project!
-
 Happy Draggy-ing!
-
-----------------------------------------------------------------------------------------
-
-Installation (if you know what you are doing) (THIS IS CURRENTLY BROKEN)
-------------------------------------------------------------------------
-The easiest way to install dragyy is by using Composer:
-
-    curl -s https://getcomposer.org/installer | php
-    php composer.phar create-project jd/draggy /PATH/TO/DRAGGY master-dev
-
-Installation (for dummies) (THIS IS CURRENTLY BROKEN)
------------------------------------------------------
-Make sure you have all the necessary dependencies installed:
-
-    sudo apt-get install subversion git apache2 php5 php5-sqlite php-apc php5-intl mysql-server php5-mysql phpmyadmin php5-xdebug php-apc php5-intl php5-xdebug curl
-    
-Configure a new site on apache called draggy.local:
-
-    echo date.timezone = Europe/London | sudo tee -a /etc/php5/cli/php.ini
-    echo date.timezone = Europe/London | sudo tee -a /etc/php5/apache2/php.ini
-    echo short_open_tag = Off | sudo tee -a /etc/php5/cli/php.ini
-    echo short_open_tag = Off | sudo tee -a /etc/php5/apache2/php.ini
-    
-    echo 127.0.0.1 draggy.local | sudo tee -a /etc/hosts
-    
-    sudo tee /etc/apache2/sites-available/draggy << EOF
-    <VirtualHost *:80>
-      DocumentRoot "/var/www/draggy"
-      DirectoryIndex d.php
-      ServerName draggy.local
-      <Directory "/var/www/draggy">
-        AllowOverride All
-        Allow from All
-      </Directory>
-    </VirtualHost>
-    EOF
-    
-    sudo a2ensite draggy
-    sudo service apache2 reload
-
-Download composer and install draggy:
-
-    cd
-    curl -s https://getcomposer.org/installer | php
-    sudo php composer.phar create-project jd/draggy /var/www/draggy master-dev
-    
-It is now installed, now open:
-
-    http://draggy.local/?f=test
-    
-To generate the entities:
-    
-    http://draggy.local/generateentities-test.php
-    
-Usage (THIS IS CURRENTLY BROKEN)
---------------------------------
-Design phase:
-* Create a project: http://draggy.local/?f=NAME_OF_PROJECT
-* Click on Project properties and configure the type of project
-* Add the modules and classes that you need
-* Click Save (make sure that www-data has write access on the installation folder)
-
-Auto-coding phase:
-* Create a PHP to render the files
-  * Look at /generateentities-test.php for inspiration
-* Create the necessary bundles on Symfony first (if applicable)
-* Open that PHP on your browser
