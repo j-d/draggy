@@ -5,29 +5,16 @@ ContextMenu.prototype.initializeMenuOptions = function () {
     ContextMenu.prototype.backgroundMenuOptions = {};
     ContextMenu.prototype.moduleMenuOptions = {};
 
-    var options = Draggy.prototype.options;
+    var entities    = Draggy.prototype.getEntityTypes();
+    var showDivisor = false;
 
-    if (options.classes) {
-        ContextMenu.prototype.backgroundMenuOptions.addClass = {name: 'Add class', icon: 'class'};
-        ContextMenu.prototype.moduleMenuOptions.addClass = {name: 'Add class', icon: 'class'};
+    for (var i in entities) {
+        showDivisor = true;
+        ContextMenu.prototype.backgroundMenuOptions['add-' + i] = {name: 'Add ' + entities[i].name, icon: i};
+        ContextMenu.prototype.moduleMenuOptions['add-' + i] = {name: 'Add ' + entities[i].name, icon: i};
     }
 
-    if (options.abstracts) {
-        ContextMenu.prototype.backgroundMenuOptions.addAbstract = {name: 'Add abstract class', icon: 'abstract'};
-        ContextMenu.prototype.moduleMenuOptions.addAbstract = {name: 'Add abstract class', icon: 'abstract'};
-    }
-
-    if (options.interfaces) {
-        ContextMenu.prototype.backgroundMenuOptions.addInterface = {name: 'Add interface', icon: 'interface'};
-        ContextMenu.prototype.moduleMenuOptions.addInterface = {name: 'Add interface', icon: 'interface'};
-    }
-
-    if (options.traits) {
-        ContextMenu.prototype.backgroundMenuOptions.addTrait = {name: 'Add trait', icon: 'trait'};
-        ContextMenu.prototype.moduleMenuOptions.addTrait = {name: 'Add trait', icon: 'trait'};
-    }
-
-    if (options.classes || options.abstracts || options.interfaces || options.traits) {
+    if (showDivisor) {
         ContextMenu.prototype.backgroundMenuOptions.sep1 = '---------';
         ContextMenu.prototype.moduleMenuOptions.sep1 = '---------';
     }
@@ -39,7 +26,6 @@ ContextMenu.prototype.initializeMenuOptions = function () {
 
     ContextMenu.prototype.moduleMenuOptions.disableContext = {name: 'Disable context menu'};
 };
-
 
 ContextMenu.prototype.enableMenus = function () {
     ContextMenu.prototype.initializeMenuOptions();
@@ -54,16 +40,16 @@ ContextMenu.prototype.enableMenus = function () {
             var top = $contextMenu.css('top');
 
             switch (key) {
-                case 'addClass':
+                case 'add-class':
                     (new Class()).moveTo(left, top);
                     break;
-                case 'addAbstract':
+                case 'add-abstract':
                     (new Abstract()).moveTo(left, top);
                     break;
-                case 'addInterface':
+                case 'add-interface':
                     (new Interface()).moveTo(left, top);
                     break;
-                case 'addTrait':
+                case 'add-trait':
                     (new Trait()).moveTo(left, top);
                     break;
                 case 'addModule':
@@ -94,16 +80,16 @@ ContextMenu.prototype.enableMenus = function () {
             var containerName = Container.prototype.containers[containerId].getName();
 
             switch (key) {
-                case 'addClass':
+                case 'add-class':
                     (new Class(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
-                case 'addAbstract':
+                case 'add-abstract':
                     (new Abstract(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
-                case 'addInterface':
+                case 'add-interface':
                     (new Interface(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
-                case 'addTrait':
+                case 'add-trait':
                     (new Trait(undefined, containerName)).moveTo(left, top).setModule(containerId);
                     break;
                 case 'disableContext':
@@ -136,7 +122,7 @@ ContextMenu.prototype.enableMenus = function () {
             }
         },
         items: {
-            'addClass':         {name: 'Add class',             icon: 'class'},
+            'addClass':         {name: 'Add class', icon: 'class'},
             'sep2':             '---------',
             'disableContext':   {name: 'Disable context menu'},
             'sep3':             '---------'

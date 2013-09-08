@@ -9,7 +9,6 @@
         <link type="text/css" href="{{ asset('bundles/draggy/css/style.css') }}" rel="stylesheet"/>
     </head>
     <body>
-
         <div id="menu">
             {% if saveable %}
                 <span onClick="Draggy.prototype.save();">Save</span>
@@ -19,7 +18,9 @@
             |
             <span onClick="ProjectPropertiesDialog.prototype.openDialog();">Project properties</span>
             |
-            <span onClick="GenerateEntitiesDialog.prototype.openDialog();">Generate entities</span>
+            <span onClick="GenerateEntitiesDialog.prototype.openDialog();">Generate</span>
+            |
+            <span onClick="AnalyseDialog.prototype.openDialog();">Analyse</span>
             <span id="contextMenus" style="display: none;">| <span onClick="ContextMenu.prototype.enableMenus();">Show context menus</span></span>
         </div>
         <div id="draggy-area">
@@ -28,7 +29,6 @@
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/jquery-1.8.2.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/jquery-ui-1.9.0.custom.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/contextMenu/jquery.contextMenu.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/draggy/js/Config.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/func.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Item.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/ScreenItem.js') }}"></script>
@@ -55,7 +55,7 @@
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Notification.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/Autocode.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/draggy/js/GenerateEntitiesDialog.js') }}"></script>
-
+        <script type="text/javascript" src="{{ asset('bundles/draggy/js/AnalyseDialog.js') }}"></script>
         <script>
             ContextMenu.prototype.enableMenus();
             {% if not self %}
@@ -67,6 +67,7 @@
                 Draggy.prototype.previewAddress  = '{{ path('self_autocode_preview') }}';
                 Draggy.prototype.generateAddress = '{{ path('self_autocode_generate') }}';
             {% endif %}
+            Draggy.prototype.configuration = {{ configuration | raw }};
         </script>
 
         <script>
@@ -90,5 +91,15 @@
         {% include 'DraggyBundle:Default:dialogs/linkClassDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/projectPropertiesDialog.html.twig' %}
         {% include 'DraggyBundle:Default:dialogs/generateEntitiesDialog.html.twig' %}
+        {% include 'DraggyBundle:Default:dialogs/analyseDialog.html.twig' %}
+        <script>
+            {% if loaderJS is empty %}
+                $(document).ready(function() {
+                    ProjectPropertiesDialog.prototype.openDialog();
+                });
+            {% else %}
+                Draggy.prototype.updateConfiguration();
+            {% endif %}
+        </script>
     </body>
 </html>

@@ -1,55 +1,187 @@
-draggy:
-    configuration:
-        framework:    []
-        orm:          []
-
-        link_classes: true
-    attributes:
-        types: []
-        properties:
-            nullable:      true
-            primary_key:   true
-            autoincrement: true
-            unique:        true
-            default:       true
-            description:   true
-    entities:
-        types:
-            class:     true
-            abstract:  true
-            interface: true
-            trait:     true
-        properties:
-            programming:
-                properties:
-                  constructor:  true
-                  repository:   true
-                  form:         true
-                  controller:   true
-                  fixtures:     true
-                  array_access: true
-                  crud:         [CRUD, CRU, CUD, CRD, CR, CU, CD, C, RUD, RU, RD, R, UD, U, D]
-                  to_string:    true
-                attribute_properties:
-                    setter:   true
-                    getter:   true
-                    min_size: true
-                    email:    true
-                    min:      true
-                    max:      true
-                    static:   true
-    relationships:
-        types:
-            one_to_one:    true
-            one_to_many:   true
-            many_to_one:   true
-            many_to_many:  true
-            inheritance:   true
-        properties: ~
-    autocode:
-        properties:
-            base:            true
-            overwrite:       true
-            delete_unmapped: true
-            validation:      true
-        templates: []
+reserved-words: []
+attributes:
+    types: {}
+    properties:
+        nullable:
+            name:       Nullable
+            short-name: "Null"
+            enabled:    true
+        primary-key:
+            name:       Primary key
+            short-name: PK
+            enabled:    true
+        autoincrement:
+            name:       Autoincrement
+            short-name: AI
+            enabled:    true
+        unique:
+            name:       Unique
+            short-name: UQ
+            enabled:    true
+        default:
+            name:       Default
+            short-name: Default
+            enabled:    true
+        description:
+            name:       Description
+            short-name: Description
+            enabled:    true
+entities:
+    types:
+        class:
+            name:       Class
+            enabled:    true
+            attributes: true
+        abstract:
+            name:       Abstract class
+            enabled:    true
+            attributes: true
+        interface:
+            name:       Interface
+            enabled:    true
+            attributes: false
+        trait:
+            name:       Trait
+            enabled:    true
+            attributes: true
+    properties:
+        programming:
+            properties:
+              constructor:  true
+              repository:   true
+              form:         true
+              controller:   true
+              fixtures:     true
+              array-access: true
+              crud:         [CRUD, CRU, CUD, CRD, CR, CU, CD, C, RUD, RU, RD, R, UD, U, D]
+              to-string:    true
+            attribute-properties:
+                setter:   true
+                getter:   true
+                min-size: true
+                email:    true
+                min:      true
+                max:      true
+                static:   true
+relationships:
+    types:
+        one-to-one:
+            name:         One to one
+            enabled:      false
+            direct-name:  One to one
+            inverse-name: One to one
+            icons:
+                from:      one
+                from-null: one-null
+                to:        one
+                to-null:   one-null
+            entities:
+                class:    [class, abstract]
+                abstract: [class, abstract]
+            connect-entity:      true
+            adquires-attributes: false
+        one-to-many:
+            name:         One to many
+            enabled:      false
+            direct-name:  One to many
+            inverse-name: Many to one
+            icons:
+                from:      one
+                from-null: one-null
+                to:        many
+                to-null:   many-null
+            entities:
+                class:    [class, abstract]
+                abstract: [class, abstract]
+            connect-entity:      true
+            adquires-attributes: false
+        many-to-one:
+            name:         Many to one
+            enabled:      false
+            direct-name:  Many to one
+            inverse-name: One to many
+            icons:
+                from:      many
+                from-null: many-null
+                to:        one
+                to-null:   one-null
+            entities:
+                class:    [class, abstract]
+                abstract: [class, abstract]
+            connect-entity:      true
+            adquires-attributes: false
+        many-to-many:
+            name:         Many to many
+            enabled:      false
+            direct-name:  Many to many
+            inverse-name: Many to many
+            icons:
+                from:      many
+                from-null: many-null
+                to:        many
+                to-null:   many-null
+            entities:
+                class:    [class, abstract]
+                abstract: [class, abstract]
+            connect-entity:      true
+            adquires-attributes: false
+        inheritance:
+            name:         Inheritance
+            enabled:      false
+            direct-name:  Inherits from
+            inverse-name: Inherited by
+            icons:
+                from:      none
+                from-null: ~
+                to:        inheritance
+                to-null:   ~
+            entities:
+                class:     [class, abstract]
+                abstract:  [class, abstract]
+                interface: [interface]
+            connect-entity:      true
+            adquires-attributes: true
+        implements:
+            name:         Implements
+            enabled:      false
+            direct-name:  Implements
+            inverse-name: Implemented by
+            icons:
+                from:      none
+                from-null: ~
+                to:        inheritance
+                to-null:   ~
+            entities:
+                interface: [class, abstract]
+            connect-entity:      true
+            adquires-attributes: false
+        trait:
+            name:           Uses trait
+            enabled:        false
+            direct-name:    Uses trait
+            inverse-name:   Trait used by
+            icons:
+                from:      composite
+                from-null: ~
+                to:        none
+                to-null:   ~
+            entities:
+                trait: [class, abstract]
+            connect-entity:      true
+            adquires-attributes: true
+    properties: {}
+autocode:
+    properties:
+        overwrite:
+            name:    Overwrite
+            enabled: true
+            default: true
+        delete-unmapped:
+            name:    Delete unmapped
+            enabled: true
+            default: true
+    configurations: {}
+    templates:      {}
+languages:  {}
+frameworks: {}
+orms:       {}

@@ -4,7 +4,7 @@ namespace Draggy\Autocode\Templates;
 
 use Draggy\Autocode\Entity;
 
-interface   EntityTemplateInterface extends TemplateInterface
+interface EntityTemplateInterface extends TemplateInterface
 {
     /**
      * @return Entity

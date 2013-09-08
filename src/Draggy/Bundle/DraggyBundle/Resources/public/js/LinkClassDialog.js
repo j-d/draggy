@@ -5,9 +5,15 @@ LinkClassDialog.prototype.connectable = null;
 
 LinkClassDialog.prototype.innit = function () {
     $('#link-item-type').change(function () {
+        var i;
+
+        var relationshipTypes = Draggy.prototype.getRelationshipTypes();
+
+        var thisRelationship = relationshipTypes[$('#link-item-type').val()];
+
         var attributeSelectors = $('#link-item-dialog').find('.attribute-selector');
 
-        if ($('#link-item-type').val() !== 'Inheritance') {
+        if (!thisRelationship['connect-entity']) {
             attributeSelectors.show();
             //LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=sourceAttribute]',$('#link-item-dialog input[name=class]').val(),true);
             //LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-dialog select[name=destinationItem]').val());
@@ -15,15 +21,45 @@ LinkClassDialog.prototype.innit = function () {
             if (Draggy.prototype.options.linkClasses) {
                 $('#link-item-source').parents('.attribute-selector').hide();
             }
-        }
-        else {
+        } else {
             attributeSelectors.hide();
+        }
+
+        var sourceClassFQN = $('#link-item-source-class').val();
+        var sourceConnectable = null;
+
+        for (i = 0; i < Connectable.prototype.connectableList.length; i++) {
+            if (sourceClassFQN == Connectable.prototype.connectableList[i].getFullyQualifiedName()) {
+                sourceConnectable = Connectable.prototype.connectableList[i];
+                break;
+            }
+        }
+
+        var sourceType = sourceConnectable.getType();
+
+        var $destinationClass = $('#link-item-destination-class');
+
+        $destinationClass.find('option').remove();
+
+        for (i = 0; i < Connectable.prototype.connectableList.length; i++) {
+            var type = Connectable.prototype.connectableList[i].getType();
+
+            if (undefined !== thisRelationship.entities[type] && -1 != thisRelationship.entities[type].indexOf(sourceType) ) {
+                $(
+                    '<option value="' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '">' +
+                        Connectable.prototype.connectableList[i].getFullyQualifiedName() +
+                    '</option>'
+                ).appendTo($destinationClass);
+            }
         }
     });
 
     // Change when changing target
     $('#link-item-destination-class').change(function () {
-        LinkClassDialog.prototype.populateOptions('#link-item-dialog select[name=destinationAttribute]',$('#link-item-destination-class').val());
+        LinkClassDialog.prototype.populateOptions(
+            '#link-item-dialog select[name=destinationAttribute]',
+            $('#link-item-destination-class').val()
+        );
     });
 };
 
@@ -32,7 +68,6 @@ LinkClassDialog.prototype.openDialog = function (connectableId) {
         c = LinkClassDialog.prototype.connectable = Connectable.prototype.connectables[connectableId],
         i,
         $destinationAttribute = $('#link-item-destination'),
-        $destinationClass = $('#link-item-destination-class'),
         $sourceClass = $('#link-item-source-class'),
         $type = $('#link-item-type'),
         $dialog = $('#link-item-dialog');
@@ -41,28 +76,28 @@ LinkClassDialog.prototype.openDialog = function (connectableId) {
     $dialog.find('.attribute-selector').show();
 
     // Remove previous dropdowns
-    $destinationClass.find('option').remove();
     $destinationAttribute.find('option').remove();
     $type.find('option').remove();
 
     // Add other connectables
+    var $destinationClass = $('#link-item-destination-class');
+
+    $destinationClass.find('option').remove();
+
     for (i = 0; i < Connectable.prototype.connectableList.length; i++) {
-        //if (Connectable.prototype.connectableList[i].getId() != connectableId) {
-            $('<option value="' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '">' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '</option>').appendTo($destinationClass);
-        //}
+        $('<option value="' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '">' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '</option>').appendTo($destinationClass);
     }
 
     // Add types
-    for (i = 0; i < Config.prototype.relationships.length; i++) {
-        if (Draggy.prototype.options[Config.prototype.relationships[i].optionsName]) {
-            if ( Config.prototype.relationships[i].internalName !== 'Inheritance' || c.getInheritedFrom() == null ) {
-                $('<option value="' + Config.prototype.relationships[i].internalName + '">' + Config.prototype.relationships[i].nameSelf + '</option>').appendTo($type);
-            }
+    var relationshipTypes = Draggy.prototype.getRelationshipTypes();
+
+    for (i in relationshipTypes) {
+        if ( i != 'inheritance' || c instanceof Interface || c.getInheritedFrom() == null ) {
+            $('<option value="' + i + '">' + relationshipTypes[i]['direct-name'] + '</option>').appendTo($type);
         }
     }
 
-    //$('#link-class-name-dialog input[name=name]').attr('value',$(this.hashId + ' .name').html());
-    $sourceClass.attr('value',c.getFullyQualifiedName());
+    $sourceClass.attr('value', c.getFullyQualifiedName());
 
     // Populate options for the first time
     LinkClassDialog.prototype.populateOptions('#link-item-source',$sourceClass.val(),true);
@@ -82,7 +117,7 @@ LinkClassDialog.prototype.createLink = function () {
     var destination = Connectable.prototype.getConnectableFromName($('#link-item-destination-class').val());
     var type = $('#link-item-type').val();
 
-    if (type !== 'Inheritance') {
+    if (type !== 'inheritance' && type !== 'implements') {
         var sourceAttribute;
         var destinationAttribute = $destinationSelector.val();
 
@@ -135,8 +170,14 @@ LinkClassDialog.prototype.createLink = function () {
 
         destination.reDraw();
     }
-    else { // Type == inheritance
-        if (source.canInheritFrom(destination)) {
+    else if (type === 'implements') {
+        Draggy.prototype.addLink(
+            source.getFullyQualifiedName(),
+            destination.getFullyQualifiedName(),
+            type
+        );
+    } else { // Type == inheritance
+        if (source instanceof Interface || source.canInheritFrom(destination)) {
             Draggy.prototype.addLink(
                 source.getFullyQualifiedName(),
                 destination.getFullyQualifiedName(),

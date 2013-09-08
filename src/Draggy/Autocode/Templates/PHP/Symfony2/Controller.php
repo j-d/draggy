@@ -41,6 +41,14 @@ class Controller extends ControllerBase
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'controller';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()
@@ -266,7 +274,14 @@ class Controller extends ControllerBase
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
-            $lines[] =     '$' . $entity->getPluralLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findBy([], [\'' . $entity->getPrimaryAttribute()->getName() . '\' => \'ASC\']);';
+
+            // Bug in doctrine, if it is foreign it cannot sort by it
+            if (null !== $entity->getPrimaryAttribute()->getForeign()) {
+                $lines[] = '$' . $entity->getPluralLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findAll(); // You can\'t do ORDER BY ' . $entity->getPrimaryAttribute()->getName() . ' because there seems to be a bug in Doctrine';
+            } else {
+                $lines[] = '$' . $entity->getPluralLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findBy([], [\'' . $entity->getPrimaryAttribute()->getName() . '\' => \'ASC\']);';
+            }
+
             $lines[] = '';
             $lines[] =     'return $this->render(';
             $lines[] =         '\'' . $entity->getModule() . ':' . $entity->getName() . ':list' . $entity->getName() . '.html.twig\',';
@@ -343,11 +358,13 @@ class Controller extends ControllerBase
 
     public function getControllerEditActionLinesReturnPart()
     {
+        $id = $this->getEntity()->getPrimaryAttribute();
+
         $lines[] = 'return $this->render(';
         $lines[] =     '\'' . $this->getEntity()->getModule() . ':' . $this->getEntity()->getName() . ':edit' . $this->getEntity()->getName() . '.html.twig\',';
         $lines[] =     '[';
         $lines[] =         '\'form\' => $form->createView(),';
-        $lines[] =         '\'id\' => $id,';
+        $lines[] =         '\'' . $id->getName() . '\' => $' . $id->getName() . ',';
         $lines[] =     ']';
         $lines[] = ');';
 
@@ -360,11 +377,16 @@ class Controller extends ControllerBase
 
         $entity = $this->getEntity();
 
-        if ($entity->getCrudUpdate()) {
-            $lines[] = '';
+        $id = $entity->getPrimaryAttribute();
 
+        if ($entity->getCrudUpdate()) {
+            $idName = null === $id->getForeign()
+                ? $id->getName()
+                : $id->getForeignEntity()->getPrimaryAttribute()->getName();
+
+            $lines[] = '';
             $lines[] = $this->getUserAdditions('editAction');
-            $lines[] = 'public function editAction(Request $request, $id)';
+            $lines[] = 'public function editAction(Request $request, $' . $idName . ')';
             $lines[] = '{';
 
             if ($entity->getHasForm()) {
@@ -372,10 +394,10 @@ class Controller extends ControllerBase
                 $lines[] = '$em = $this->getDoctrine()->getManager();';
                 $lines[] = '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
                 $lines[] = '';
-                $lines[] = '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
+                $lines[] = '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'' . $id->getName() . '\' => $' . $idName . ']);';
                 $lines[] = '';
                 $lines[] = 'if (null === $' . $entity->getLowerName() . ') {';
-                $lines[] =     'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);';
+                $lines[] =     'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for ' . $id->getName() . ' \' . $' . $idName . ');';
                 $lines[] = '}';
                 $lines[] = '';
                 $lines[] = '$' . $entity->getLowerName() . 'Type = new ' . $entity->getName() . 'Type();';
@@ -412,20 +434,25 @@ class Controller extends ControllerBase
 
         $entity = $this->getEntity();
 
-        if ($entity->getCrudDelete()) {
-            $lines[] = '';
+        $id = $entity->getPrimaryAttribute();
 
+        if ($entity->getCrudDelete()) {
+            $idName = null === $id->getForeign()
+                ? $id->getName()
+                : $id->getForeignEntity()->getPrimaryAttribute()->getName();
+
+            $lines[] = '';
             $lines[] = $this->getUserAdditions('deleteAction');
-            $lines[] = 'public function deleteAction(Request $request, $id)';
+            $lines[] = 'public function deleteAction(Request $request, $' . $idName . ')';
             $lines[] = '{';
             $lines[] =     '/** @var EntityManager $em */';
             $lines[] =     '$em = $this->getDoctrine()->getManager();';
             $lines[] =     '$' . $entity->getLowerName() . 'Repository = new ' . $entity->getName() . 'Repository($em);';
             $lines[] = '';
-            $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'id\' => $id]);';
+            $lines[] =     '$' . $entity->getLowerName() . ' = $' . $entity->getLowerName() . 'Repository->findOneBy([\'' . $id->getName() . '\' => $' . $idName . ']);';
             $lines[] = '';
             $lines[] =     'if (null === $' . $entity->getLowerName() . ') {';
-            $lines[] =         'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for id \' . $id);';
+            $lines[] =         'throw $this->createNotFoundException(\'No ' . $entity->getLowerName() . ' found for ' . $id->getName() . ' \' . $' . $idName . ');';
             $lines[] =     '}';
             $lines[] = '';
             $lines[] =     '$em->remove($' . $entity->getLowerName() . ');';
@@ -445,7 +472,7 @@ class Controller extends ControllerBase
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->commentAndJustifyLines($this->getControllerHelpLines()));
+        $lines = array_merge($lines, $this->commentAndIndentLines($this->getControllerHelpLines()));
 
         $lines[] = '';
 

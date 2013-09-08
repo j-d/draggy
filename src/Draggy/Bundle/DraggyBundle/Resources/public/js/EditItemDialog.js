@@ -55,6 +55,7 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
     fixtures.show();
     crud.show();
     arrayAccess.show();
+
     if (EditItemDialog.prototype.connectable instanceof Abstract) {
         repository.hide();
         form.hide();
@@ -64,9 +65,27 @@ EditItemDialog.prototype.openDialog = function (connectableId) {
         arrayAccess.hide();
     }
 
-    this.loadProgrammingTab();
+    if (!EditItemDialog.prototype.connectable instanceof Interface) {
+        this.loadProgrammingTab();
+    }
 
     $('#edit-item-dialog').dialog('open');
+
+    var $editItemTabs = $('#edit-item-tabs');
+
+    var $li1 = $editItemTabs.find('li')[0];
+    var $li2 = $editItemTabs.find('li')[2];
+
+    if (EditItemDialog.prototype.connectable instanceof Interface) {
+        $($li1).addClass('ui-state-disabled');
+        $($li2).addClass('ui-state-disabled');
+        $editItemTabs.tabs("select", 1)
+    } else {
+        $($li1).removeClass('ui-state-disabled');
+        $($li2).removeClass('ui-state-disabled');
+    }
+
+    EditItemDialog.prototype.loadProgrammingTab(); // Don't remove this ! Otherwise error when saving if not clicked
 };
 
 EditItemDialog.prototype.deleteAttribute = function (attributeId, rowId) {
@@ -86,7 +105,7 @@ EditItemDialog.prototype.deleteLink = function (linkId, rowId) {
     var j, k;
 
     // If I am destroying an inheritance link, remove the inherited attributes from the Attributes tab
-    if (link.getType() === 'Inheritance' && link.from === this.connectable.getId()) {
+    if (link.getType() === 'inheritance' && link.from === this.connectable.getId()) {
         var parentAttributes = Connectable.prototype.connectables[link.to].attributes;
 
         for (k = 0; k < parentAttributes.length; k++)
@@ -134,16 +153,15 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
         targetAttribute = link.getToAttribute();
         sourceAttribute = link.getFromAttribute();
 
-        if (type === 'Inheritance') {
+        if (type === 'inheritance') {
             type = 'Inherits from';
             inheritance = true;
         }
     }
     else {
-        if (type === 'OneToMany') {
+        if (type === 'one-to-many') {
             type = 'ManyToOne';
-        }
-        else if (type === 'Inheritance') {
+        } else if (type === 'inheritance') {
             type = 'Inherited by';
             inheritance = true;
         }
@@ -158,18 +176,13 @@ EditItemDialog.prototype.getLinkRow = function (rowId, connectableId, linkId) {
     if (inheritance) {
         targetAttribute = '';
         sourceAttribute = '';
-    }
-    else {
-        if (!Draggy.prototype.options.linkClasses) {
+    } else {
+        if (!Draggy.prototype.options.linkClasses && Attribute.prototype.attributes[targetAttribute] != undefined) {
             targetAttribute = Attribute.prototype.attributes[targetAttribute].getName();
+            sourceAttribute = Attribute.prototype.attributes[sourceAttribute].getName();
         } else {
             targetAttribute = '';
-        }
-
-        if (Draggy.prototype.options.linkClasses) {
             sourceAttribute = '';
-        } else {
-            sourceAttribute = Attribute.prototype.attributes[sourceAttribute].getName();
         }
     }
 
@@ -253,33 +266,38 @@ EditItemDialog.prototype.hideNullBox = function (event) {
 EditItemDialog.prototype.getAttributeRow = function (rowId, attributeId) {
     var attribute, i;
 
+    var attributeProperties = Draggy.prototype.getAttributeProperties();
+    var attributeTypes      = Draggy.prototype.getAttributeTypes();
+
     attribute = Attribute.prototype.attributes[attributeId];
 
     var row =   '<tr>' +
         '<td data-name="' + attribute.getId() + '">' + rowId + '</td>' +
         '<td class="center">' +
-        '<input id="name' + rowId + '" type="text" size="12" value="' +  attribute.getName() + '"' + (attribute.getInherited() ? ' disabled="disabled"' : '') + '>' +
+            '<input id="name' + rowId + '" type="text" size="12" value="' +  attribute.getName() + '"' + (attribute.getInherited() ? ' disabled="disabled"' : '') + '>' +
         '</td>' +
         '<td>' +
-        '<select id="type' + rowId + '"' + (attribute.getInherited() || attribute.getForeign() ? ' disabled="disabled"' : '') + '>' +
-        '<option value=""' + (attribute.getType() == null ? ' selected="selected"' : '') + '></option>';
+            '<select id="type' + rowId + '"' + (attribute.getInherited() || attribute.getForeign() ? ' disabled="disabled"' : '') + '>' +
+                '<option value=""' + (attribute.getType() == null ? ' selected="selected"' : '') + '></option>';
 
-    for (i = 0; i < Config.prototype.types.length; i++)
-        row += '<option value="' + Config.prototype.types[i] + '"' + (attribute.getType() == Config.prototype.types[i] ? ' selected="selected"' : '') + '>' + Config.prototype.types[i] + '</option>';
+    for (i in attributeTypes) {
+        row += '<option value="' + i + '"' + (attribute.getType() == i ? ' selected="selected"' : '') + '>' + attributeTypes[i].name + '</option>';
+    }
 
     row += '</select>' +
         '<select id="subtype' + rowId + '"' + (attribute.getInherited() || attribute.getForeign() ? ' disabled="disabled"' : '') + (attribute.getType() !== 'object' && attribute.getType() !== 'array' ? ' style="display:none;"' : '') + '>' +
         '<option value=""' + (attribute.getType() == null ? ' selected="selected"' : '') + '></option>';
 
-    for (i = 0; i < Config.prototype.types.length; i++)
-        row += '<option value="' + Config.prototype.types[i] + '"' + (attribute.getSubtype() == Config.prototype.types[i] ? ' selected="selected"' : '') + '>' + Config.prototype.types[i] + '</option>';
+    for (i in attributeTypes) {
+        row += '<option value="' + i + '"' + (attribute.getSubtype() == attributeTypes[i] ? ' selected="selected"' : '') + '>' + attributeTypes[i].name + '</option>';
+    }
 
     for (i = 0; i < Connectable.prototype.connectableList.length; i++)
         row += '<option value="' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '"' + (attribute.getSubtype() == Connectable.prototype.connectableList[i].getFullyQualifiedName() ? ' selected="selected"' : '') + '>' + Connectable.prototype.connectableList[i].getFullyQualifiedName() + '</option>';
 
-    row +=              '</select>' +
-        //'</td>' +
-        //'<td class="center">' +
+    row += '</select>';
+
+    row +=
            '<input id="size' + rowId + '" type="text" size="2" value="' + ( attribute.getSize() == null ? '' : attribute.getSize() ) + '"' + (attribute.getInherited() || attribute.getForeign() ? ' disabled="disabled"' : '') + (attribute.getType() !== 'string' ? ' style="display:none;"' : '') + '>' +
         '</td>' +
         '<td class="center">' +
@@ -366,14 +384,17 @@ EditItemDialog.prototype.commitChanges = function () {
         c.setName(newName);
     }
 
-    var toString = $('#edit-item-tostring');
     var description = $('#edit-item-description');
 
-    if (toString.val() != '') {
-        c.setToString(toString.val());
-    }
+    if (!(EditItemDialog.prototype.connectable instanceof Interface)) {
+        var toString = $('#edit-item-tostring');
 
-    c.setConstructor( $('#edit-item-constructor').is(':checked') );
+        if (toString.val() != '') {
+            c.setToString(toString.val());
+        }
+
+        c.setConstructor( $('#edit-item-constructor').is(':checked') );
+    }
 
     if (EditItemDialog.prototype.connectable instanceof Class) {
         c.setRepository( $('#edit-item-repository').is(':checked') );
@@ -574,7 +595,9 @@ EditItemDialog.prototype.loadProgrammingTab = function () {
 
     // ToString
 
-    var currentToString = c.getToString();
+    if (!(c instanceof Interface)) {
+        var currentToString = c.getToString();
+    }
 
     $('<option value=""' + (currentToString == null ? ' selected="selected"' : '') + '>--None--</option>').appendTo('#edit-item-tostring');
 

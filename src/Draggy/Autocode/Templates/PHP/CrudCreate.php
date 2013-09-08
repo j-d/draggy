@@ -41,6 +41,14 @@ class CrudCreate extends CrudCreateBase implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'crud-create';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getName()
@@ -55,12 +63,12 @@ class CrudCreate extends CrudCreateBase implements RenderizableTemplateInterface
 
     public function getTitleLinePart()
     {
-        return '{{ parent() }} | Add ' . $this->getEntity()->getName();
+        return '{{ parent() }} | Add ' . $this->getEntity()->getLowerHumanName();
     }
 
     public function getPageTitleLinePart()
     {
-        return 'Add ' . $this->getEntity()->getName();
+        return 'Add ' . $this->getEntity()->getLowerHumanName();
     }
 
     public function getContentLines()

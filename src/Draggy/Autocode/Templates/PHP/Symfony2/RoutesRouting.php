@@ -16,6 +16,7 @@
 
 namespace Draggy\Autocode\Templates\PHP\Symfony2;
 
+use Draggy\Autocode\Entity;
 use Draggy\Autocode\Templates\PHP\Symfony2\Base\RoutesRoutingBase;
 // <user-additions part="use">
 // </user-additions>
@@ -39,6 +40,11 @@ class RoutesRouting extends RoutesRoutingBase
 
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
+    public function getTemplateName()
+    {
+        return 'routes-routing';
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -62,16 +68,29 @@ class RoutesRouting extends RoutesRoutingBase
 
     public function render()
     {
-        $entity = $this->getEntity();
+        $routesArray = [];
 
-        $file = '';
+        foreach ($this->getProject()->getModuleEntities()[$this->getModule()] as $entity) {
+            /** @var Entity $entity */
 
-        $file .= '### ' . $entity->getName() . ' ###' . "\n";
-        $file .= $entity->getModule() . '_' . $entity->getName() . ':' . "\n";
-        $file .= '    resource: "@' . $entity->getModule() . '/Resources/config/auto_' . $entity->getLowerName() . '.yml"' . "\n";
-        $file .= '    prefix:   /' . "\n";
+            if ($entity->getHasRoutes()) {
 
-        return $file;
+                $file = '';
+
+                $file .= '### ' . $entity->getName() . ' ###' . "\n";
+                $file .= $entity->getModule() . '_' . $entity->getName() . ':' . "\n";
+                $file .= '    resource: "@' . $entity->getModule() . '/Resources/config/auto_' . $entity->getLowerName() . '.yml"' . "\n";
+                $file .= '    prefix:   /' . "\n";
+
+                $routesArray[] = $file;
+            }
+        }
+
+        $routes =   '# <system-additions part="routes">' . PHP_EOL .
+                    implode(PHP_EOL,$routesArray) .
+                    '# </system-additions>' . PHP_EOL;
+
+        return $routes;
     }
     // </user-additions>
     // </editor-fold>

@@ -20,6 +20,4 @@ interface SimplePHPEntityTemplateInterface extends EntityTemplateInterface
      * @return string[]
      */
     public function getFileLines();
-
-
 }

@@ -1,135 +1,341 @@
-draggy:
-    languages:
-        PHP:
-            configuration:
-                framework:
-                    - symfony2
-            framework:
-                symfony2:
-                    name: Symfony 2
-                    configuration:
-                        orm:
-                            - symfony2_doctrine2
-                    autocode:
-                        templates:
-                            entity:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Entity1
-                            entity_base:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\EntityBase1
-                            interface:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\InterfaceT
-                            trait:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\TraitT
-                            form:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Form
-                            form_base:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\FormBase1
-                            crud_create:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\CrudCreate
-                            crud_read:
-                                templace: Draggy\Autocode\Templates\PHP\Symfony2\CrudRead
-                            crud_update:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\CrudUpdate
-                            controller:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Controller
-                            fixtures:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Fixtures
-                            routes:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Routes
-                            routes_routing:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting
-                            repository:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Repository
-            orm:
-                symfony2_doctrine2:
-                    name: Symfony 2 \ Doctrine 2
-                    configuration:
-                        link_classes: false
-                    attributes:
-                        types:
-                            array:    ~
-                            bigint:   integer
-                            boolean:  ~
-                            date:     datetime
-                            datetime: ~
-                            decimal:  float
-                            integer:  ~
-                            object:   ~
-                            smallint: integer
-                            string:   ~
-                            text:     string
-                            time:     datetime
-                    relationships:
-                        types:
-                            many_to_one:  false
-                            many_to_many: false
-                    autocode:
-                        templates:
-                            entity:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity1
-                            entity_base:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase1
-                            form:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Form
-                            form_base:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\FormBase1
-                            crud_create:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudCreate
-                            crud_read:
-                                templace: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudRead
-                            crud_update:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\CrudUpdate
-                            controller:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Controller
-                            fixtures:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Fixtures
-                            repository:
-                                template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Repository
-            attributes:
-                types:
-                    - array
-                    - boolean
-                    - datetime
-                    - float
-                    - integer
-                    - object
-                    - string
-            autocode:
-                templates:
-                    entity:
-                        template: Draggy\Autocode\Templates\PHP\Entity1
-                    entity_base:
-                        template: Draggy\Autocode\Templates\PHP\EntityBase1
-                    interface:
-                        template: Draggy\Autocode\Templates\PHP\InterfaceT
-                    trait:
-                        template: Draggy\Autocode\Templates\PHP\TraitT
-                    form:
-                        template: Draggy\Autocode\Templates\PHP\Form
-                    form_base:
-                        template: Draggy\Autocode\Templates\PHP\FormBase1
-                    crud_create:
-                        template: Draggy\Autocode\Templates\PHP\CrudCreate
-                    crud_read:
-                        templace: Draggy\Autocode\Templates\PHP\CrudRead
-                    crud_update:
-                        template: Draggy\Autocode\Templates\PHP\CrudUpdate
-        JS:
-            attributes:
-                types:
-                    - array
-                    - boolean
-                    - number
-                    - object
-                    - string
-            entities:
-                types:
-                    trait: false
-            autocode:
-                templates:
-                    entity:
-                        template: Draggy\Autocode\Templates\JS\Entity2
-                    entity_base:
-                        template: Draggy\Autocode\Templates\JS\EntityBase2
-        Java: ~
-        C++:  ~
+languages:
+    java:
+        name: Java
+        reserved-words: ['abstract', 'continue', 'for', 'new', 'switch', 'assert', 'default', 'goto', 'package', 'synchronized', 'boolean', 'do', 'if', 'private', 'this', 'break', 'double', 'implements', 'protected', 'throw', 'byte', 'else', 'import', 'public', 'throws', 'case', 'enum', 'instanceof', 'return', 'transient', 'catch', 'extends', 'int', 'short', 'try', 'char', 'final', 'interface', 'static', 'void', 'class', 'finally', 'long', 'strictfp', 'volatile', 'const', 'float', 'native', 'super', 'while'] # From: http://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html
+        relationships:
+            types:
+                one-to-one:
+                    enabled: true
+                one-to-many:
+                    enabled: true
+                many-to-one:
+                    enabled: true
+                many-to-many:
+                    enabled: true
+                inheritance:
+                    enabled: true
+        attributes:
+            types:
+                byte:
+                    name:    byte
+                    enabled: true
+                short:
+                    name:    short
+                    enabled: true
+                int:
+                    name:    int
+                    enabled: true
+                long:
+                    name:    long
+                    enabled: true
+                float:
+                    name:    float
+                    enabled: true
+                double:
+                    name:    double
+                    enabled: true
+                boolean:
+                    name:    boolean
+                    enabled: true
+                char:
+                    name:    char
+                    enabled: true
+                String:
+                    name:    String
+                    enabled: true
+                object:
+                    name:    object
+                    enabled: true
+        autocode:
+            properties:
+                base:
+                    name:    Base
+                    enabled: true
+                    default: true
+            configurations:
+                package:
+                    name:    Package
+                    enabled: true
+                    default: sample_package
+                target-path:
+                    name:    Target path
+                    enabled: true
+                    default: ~
+            templates:
+                entity:
+                    name:     Entity
+                    template: Draggy\Autocode\Templates\Java\Entity
+                    type:     entity
+                    enabled:  true
+                entity-base:
+                    name:     Entity base
+                    template: Draggy\Autocode\Templates\Java\EntityBase
+                    type:     entity
+                    enabled:  true
+    php:
+        name: PHP
+        reserved-words: ['__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var	while', 'xor', 'yield'] # From: http://www.php.net/manual/en/reserved.keywords.php
+        relationships:
+            types:
+                one-to-one:
+                    enabled: true
+                one-to-many:
+                    enabled: true
+                many-to-one:
+                    enabled: true
+                many-to-many:
+                    enabled: true
+                inheritance:
+                    enabled: true
+                implements:
+                    enabled: true
+                trait:
+                    enabled: true
+        frameworks:
+            symfony2:
+                name: Symfony 2
+                autocode:
+                    configurations:
+                        namespace:
+                            name:    Namespace
+                            enabled: true
+                            default: ~
+                    templates:
+                        entity:
+                            name:     Entity
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\Entity3
+                            type:     entity
+                            enabled:  true
+                        entity-base:
+                            name:     Entity base
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\EntityBase3
+                            type:     entity
+                            enabled:  true
+                        controller:
+                            name:     Controller
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\Controller
+                            type:     entity
+                            enabled:  true
+                        fixtures:
+                            name:     Fixtures
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\Fixtures
+                            type:     entity
+                            enabled:  true
+                        routes:
+                            name:     Routes
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\Routes
+                            type:     entity
+                            enabled:  true
+                        routes-routing:
+                            name:     Routes (routing)
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\RoutesRouting
+                            type:     module
+                            enabled:  true
+                        repository:
+                            name:     Repository
+                            template: Draggy\Autocode\Templates\PHP\Symfony2\Repository
+                            type:     entity
+                            enabled:  true
+                orms:
+                    symfony2-doctrine2:
+                        name: Symfony 2 \ Doctrine 2
+                        reserved-words: ['ACCESSIBLE', 'ADD', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ASENSITIVE', 'BEFORE', 'BETWEEN', 'BIGINT', 'BINARY', 'BLOB', 'BOTH', 'BY', 'CALL', 'CASCADE', 'CASE', 'CHANGE', 'CHAR', 'CHARACTER', 'CHECK', 'COLLATE', 'COLUMN', 'CONDITION', 'CONSTRAINT', 'CONTINUE', 'CONVERT', 'CREATE', 'CROSS', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'CURRENT_USER', 'CURSOR', 'DATABASE', 'DATABASES', 'DAY_HOUR', 'DAY_MICROSECOND', 'DAY_MINUTE', 'DAY_SECOND', 'DEC', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELAYED', 'DELETE', 'DESC', 'DESCRIBE', 'DETERMINISTIC', 'DISTINCT', 'DISTINCTROW', 'DIV', 'DOUBLE', 'DROP', 'DUAL', 'EACH', 'ELSE', 'ELSEIF', 'ENCLOSED', 'ESCAPED', 'EXISTS', 'EXIT', 'EXPLAIN', 'FETCH', 'FLOAT', 'FLOAT4', 'FLOAT8', 'FOR', 'FORCE', 'FOREIGN', 'FROM', 'FULLTEXT', 'GENERAL', 'GRANT', 'GROUP', 'HAVING', 'HIGH_PRIORITY', 'HOUR_MICROSECOND', 'HOUR_MINUTE', 'HOUR_SECOND', 'IF', 'IGNORE', 'IGNORE_SERVER_IDS', 'IN', 'INDEX', 'INFILE', 'INNER', 'INOUT', 'INSENSITIVE', 'INSERT', 'INT', 'INT1', 'INT2', 'INT3', 'INT4', 'INT8', 'INTEGER', 'INTERVAL', 'INTO', 'IS', 'ITERATE', 'JOIN', 'KEY', 'KEYS', 'KILL', 'LEADING', 'LEAVE', 'LEFT', 'LIKE', 'LIMIT', 'LINEAR', 'LINES', 'LOAD', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCK', 'LONG', 'LONGBLOB', 'LONGTEXT', 'LOOP', 'LOW_PRIORITY', 'MASTER_HEARTBEAT_PERIOD', 'MASTER_SSL_VERIFY_SERVER_CERT', 'MATCH', 'MAXVALUE', 'MEDIUMBLOB', 'MEDIUMINT', 'MEDIUMTEXT', 'MIDDLEINT', 'MINUTE_MICROSECOND', 'MINUTE_SECOND', 'MOD', 'MODIFIES', 'NATURAL', 'NO_WRITE_TO_BINLOG', 'NOT', 'NULL', 'NUMERIC', 'ON', 'OPTIMIZE', 'OPTION', 'OPTIONALLY', 'OR', 'ORDER', 'OUT', 'OUTER', 'OUTFILE', 'PRECISION', 'PRIMARY', 'PROCEDURE', 'PURGE', 'RANGE', 'READ', 'READ_WRITE', 'READS', 'REAL', /*'REFERENCES',*/ 'REGEXP', 'RELEASE', 'RENAME', 'REPEAT', 'REPLACE', 'REQUIRE', 'RESIGNAL', 'RESTRICT', 'RETURN', 'REVOKE', 'RIGHT', 'RLIKE', 'SCHEMA', 'SCHEMAS', 'SECOND_MICROSECOND', 'SELECT', 'SENSITIVE', 'SEPARATOR', 'SET', 'SHOW', 'SIGNAL', 'SLOW', 'SMALLINT', 'SPATIAL', 'SPECIFIC', 'SQL', 'SQL_BIG_RESULT', 'SQL_CALC_FOUND_ROWS', 'SQL_SMALL_RESULT', 'SQLEXCEPTION', 'SQLSTATE', 'SQLWARNING', 'SSL', 'STARTING', 'STRAIGHT_JOIN', 'TABLE', 'TERMINATED', 'THEN', 'TINYBLOB', 'TINYINT', 'TINYTEXT', 'TO', 'TRAILING', 'TRIGGER', 'UNDO', 'UNION', 'UNIQUE', 'UNLOCK', 'UNSIGNED', 'UPDATE', 'USAGE', 'USE', 'USING', 'UTC_DATE', 'UTC_TIME', 'UTC_TIMESTAMP', 'VALUES', 'VARBINARY', 'VARCHAR', 'VARCHARACTER', 'VARYING', 'WHEN', 'WHERE', 'WHILE', 'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL', 'FALSE', 'TRUE'] # // MySQL 5.5 reserved words as per http://dev.mysql.com/doc/refman/5.5/en/reserved-words.html
+                        configuration:
+                            link-classes: false
+                        attributes:
+                            types:
+                                bigint:
+                                    name:      bigint
+                                    enabled:   true
+                                    mapped-to: integer
+                                date:
+                                    name:      date
+                                    enabled:   true
+                                    mapped-to: object
+                                decimal:
+                                    name:       decimal
+                                    enabled:    true
+                                    mapped-to:  float
+                                smallint:
+                                    name:      smallint
+                                    enabled:   true
+                                    mapped-to: integer
+                                text:
+                                    name:      text
+                                    enabled:   true
+                                    mapped-to: string
+                                time:
+                                    name:      time
+                                    enabled:   true
+                                    mapped-to: object
+                        relationships:
+                            types:
+                                one-to-one:
+                                    connect-entity: false
+                                one-to-many:
+                                    connect-entity: false
+                                many-to-one:
+                                    enabled: false
+                                many-to-many:
+                                    enabled: false
+                        autocode:
+                            templates:
+                                entity:
+                                    name:     Entity
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\Entity4
+                                    type:     entity
+                                    enabled:  true
+                                entity-base:
+                                    name:     Entity base
+                                    template: Draggy\Autocode\Templates\PHP\Symfony2\Doctrine2\EntityBase4
+                                    type:     entity
+                                    enabled:  true
+        attributes:
+            types:
+                array:
+                    name:    array
+                    enabled: true
+                boolean:
+                    name:    boolean
+                    enabled: true
+                datetime:
+                    name:    datetime
+                    enabled: true
+                float:
+                    name:    float
+                    enabled: true
+                integer:
+                    name:    integer
+                    enabled: true
+                object:
+                    name:    object
+                    enabled: true
+                string:
+                    name:    string
+                    enabled: true
+        autocode:
+            properties:
+                base:
+                    name:    Base
+                    enabled: true
+                    default: true
+                validation:
+                    name:    Validation
+                    enabled: true
+                    default: true
+            templates:
+                entity:
+                    name:     Entity
+                    template: Draggy\Autocode\Templates\PHP\Entity1
+                    type:     entity
+                    enabled:  true
+                entity-base:
+                    name:     Entity base
+                    template: Draggy\Autocode\Templates\PHP\EntityBase1
+                    type:     entity
+                    enabled:  true
+                interface:
+                    name:     Interface
+                    template: Draggy\Autocode\Templates\PHP\InterfaceT
+                    type:     entity
+                    enabled:  true
+                trait:
+                    name:     Trait
+                    template: Draggy\Autocode\Templates\PHP\TraitT
+                    type:     entity
+                    enabled:  true
+                form:
+                    name:     Form
+                    template: Draggy\Autocode\Templates\PHP\Form
+                    type:     entity
+                    enabled:  true
+                form-base:
+                    name:     Form base
+                    template: Draggy\Autocode\Templates\PHP\FormBase1
+                    type:     entity
+                    enabled:  true
+                crud-create:
+                    name:     CRUD (Create)
+                    template: Draggy\Autocode\Templates\PHP\CrudCreate
+                    type:     entity
+                    enabled:  true
+                crud-read:
+                    name:     CRUD (Read / View / List)
+                    template: Draggy\Autocode\Templates\PHP\CrudRead
+                    type:     entity
+                    enabled:  true
+                crud-update:
+                    name:     CRUD (Update / Edit)
+                    template: Draggy\Autocode\Templates\PHP\CrudUpdate
+                    type:     entity
+                    enabled:  true
+    cpp:
+        name: C++
+        reserved-words: ['alignas', 'alignof', 'and', 'and_eq', 'asm', 'auto', 'bitand', 'bitor', 'bool', 'break', 'case', 'catch', 'char', 'char16_t', 'char32_t', 'class', 'compl', 'const', 'const_cast', 'constexpr', 'continue', 'decltype', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'final', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq', 'nullptr', 'operator', 'or', 'or_eq', 'override', 'private', 'protected', 'public', 'register', 'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_assert', 'static_cast', 'struct', 'switch', 'template', 'this', 'thread_local', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'wchar_t', 'while', 'xor', 'xor_eq'] # http://en.cppreference.com/w/cpp/keyword
+        relationships:
+            types:
+                one-to-one:
+                    enabled: true
+                one-to-many:
+                    enabled: true
+                many-to-one:
+                    enabled: true
+                many-to-many:
+                    enabled: true
+                inheritance:
+                    enabled: true
+        attributes:
+            types:
+                bool:
+                    name:    bool
+                    enabled: true
+                chart:
+                    name:    chart
+                    enabled: true
+                short:
+                    name:    short
+                    enabled: true
+                int:
+                    name:    int
+                    enabled: true
+                long:
+                    name:    long
+                    enabled: true
+                float:
+                    name:    float
+                    enabled: true
+                double:
+                    name:    double
+                    enabled: true
+        autocode:
+            properties:
+                base:
+                    name:    Base
+                    enabled: true
+                    default: true
+            configurations:
+                target-path:
+                    name:    Target path
+                    enabled: true
+                    default: ~
+            templates:
+                entity:
+                    name:     Entity
+                    template: Draggy\Autocode\Templates\CPP\Entity
+                    type:     entity
+                    enabled:  true
+                entity-base:
+                    name:     Entity base
+                    template: Draggy\Autocode\Templates\CPP\EntityBase
+                    type:     entity
+                    enabled:  true
+                entity-header:
+                    name:     Entity header
+                    template: Draggy\Autocode\Templates\CPP\EntityHeader
+                    type:     entity
+                    enabled:  true
+                entity-base-header:
+                    name:     Entity base header
+                    template: Draggy\Autocode\Templates\CPP\EntityBaseHeader
+                    type:     entity
+                    enabled:  true

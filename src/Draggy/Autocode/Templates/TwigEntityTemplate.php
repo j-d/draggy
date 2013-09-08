@@ -18,13 +18,13 @@ namespace Draggy\Autocode\Templates;
 
 use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
-use Draggy\Utils\TwigJustifier;
+use Draggy\Utils\Indenter\Twig\TwigIndenter;
 // </user-additions>
 
 /**
  * Draggy\Autocode\Templates\Entity\PHPEntityTemplate
  */
-class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInterface
+abstract class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInterface
     // <user-additions part="implements">
     // </user-additions>
 {
@@ -91,11 +91,11 @@ class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInt
         $lines[] =     '<li class="nav-header">' . $this->getTemplate()->getEntity()->getPluralName() . '</li>';
 
         if ($this->getTemplate()->getEntity()->getCrudCreate()) {
-            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getTemplate()->getEntity()->getLowerName() . '</a></li>';
+            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getAddRoute() . '\') }}">Add ' . $this->getTemplate()->getEntity()->getLowerHumanName() . '</a></li>';
         }
 
         if ($this->getTemplate()->getEntity()->getCrudRead()) {
-            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getListRoute() . '\') }}">View ' . $this->getTemplate()->getEntity()->getPluralLowerName() . '</a></li>';
+            $lines[] = '<li><a href="{{ path(\'' . $this->getTemplate()->getEntity()->getListRoute() . '\') }}">View ' . $this->getTemplate()->getEntity()->getPluralLowerHumanName() . '</a></li>';
         }
 
         $otherEntityLines = [];
@@ -103,7 +103,7 @@ class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInt
         foreach ($this->getTemplate()->getEntity()->getProject()->getEntities() as $entity) {
             if ($entity !== $this->getTemplate()->getEntity()) {
                 if ($entity->getCrudRead()) {
-                    $otherEntityLines[] = '<li><a href="{{ path(\'' . $entity->getListRoute() . '\') }}">' . $entity->getPluralName() . '</a></li>';
+                    $otherEntityLines[] = '<li><a href="{{ path(\'' . $entity->getListRoute() . '\') }}">' . $entity->getPluralHumanName() . '</a></li>';
                 }
             }
         }
@@ -165,9 +165,9 @@ class TwigEntityTemplate extends EntityTemplate implements TwigEntityTemplateInt
 
         $lines = array_merge($lines, $this->getTemplate()->getFileLines());
 
-        $twigJustifier = new TwigJustifier($this->getTemplate()->getIndentation(), 1);
+        $twigIndenter = new TwigIndenter($this->getTemplate()->getIndentation(), 1);
 
-        $lines = $twigJustifier->justifyFromLines($lines);
+        $lines = $twigIndenter->indentFromLines($lines);
 
         return $this->getTemplate()->convertLinesToCode($lines);
     }

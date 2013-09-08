@@ -20,7 +20,7 @@ use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
 use Draggy\Autocode\Entity;
 use Draggy\Autocode\PHPEntity;
-use Draggy\Utils\PHPJustifier;
+use Draggy\Utils\Indenter\PHP\PHPIndenter;
 // </user-additions>
 
 /**
@@ -116,20 +116,20 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase implements PHPEnt
         return $lines;
     }
 
-    public function commentAndJustifyLines($lines)
+    public function commentAndIndentLines($lines)
     {
-        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+        $phpIndenter = new PHPIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         return $this->commentLines($lines);
     }
 
     public function surroundDocumentationBlock(array $lines)
     {
-        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+        $phpIndenter = new PHPIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         foreach ($lines as $key => $line) {
             $lines[$key] = '' !== $line
@@ -166,9 +166,9 @@ abstract class PHPEntityTemplate extends PHPEntityTemplateBase implements PHPEnt
 
         $lines = array_merge($lines, $this->getFileLines());
 
-        $phpJustifier = new PHPJustifier($this->getIndentation(), 1);
+        $phpIndenter = new PHPIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         return $this->convertLinesToCode($lines);
     }

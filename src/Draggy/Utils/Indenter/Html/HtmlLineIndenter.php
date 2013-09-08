@@ -1,19 +1,23 @@
 <?php
 
-namespace Draggy\Utils;
+namespace Draggy\Utils\Indenter\Html;
 
-class HtmlLineJustifier extends AbstractLineJustifier
+use Draggy\Utils\Indenter\AbstractLineIndenter;
+use Draggy\Utils\Indenter\IndentationRule;
+use Draggy\Utils\Indenter\IndenterMachineInterface;
+
+class HtmlLineIndenter extends AbstractLineIndenter
 {
-    public function __construct(JustifierMachineInterface $justifierMachine)
+    public function __construct(IndenterMachineInterface $indenterMachine)
     {
-        $this->justifierMachine = $justifierMachine;
+        $this->indenterMachine = $indenterMachine;
 
-        $this->addJustificationRules();
+        $this->addIndentationRules();
     }
 
     protected function identifyLines()
     {
-        foreach ($this->justifierMachine->getLines() as $lineNumber => $line) {
+        foreach ($this->indenterMachine->getLines() as $lineNumber => $line) {
             $this->lineTypes['startTable'][$lineNumber] = $this->isStartTableBlock($lineNumber);
             $this->lineTypes['endTable'][$lineNumber]   = $this->isEndTableBlock($lineNumber);
 
@@ -48,7 +52,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartTableBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<table' === substr($line, 0, 6)) {
             return true;
@@ -59,7 +63,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndTableBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</table>' === substr($line, -8)) {
             return true;
@@ -70,7 +74,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartTheadBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<thead' === substr($line, 0, 6)) {
             return true;
@@ -81,7 +85,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndTheadBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</thead>' === substr($line, -8)) {
             return true;
@@ -92,7 +96,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartTbodyBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<tbody' === substr($line, 0, 6)) {
             return true;
@@ -103,7 +107,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndTbodyBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</tbody>' === substr($line, -8)) {
             return true;
@@ -114,7 +118,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartTrBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<tr' === substr($line, 0, 3)) {
             return true;
@@ -125,7 +129,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndTrBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</tr>' === substr($line, -5)) {
             return true;
@@ -136,7 +140,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartTdBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<td' === substr($line, 0, 3) && false === strstr($line, '</td>')) {
             return true;
@@ -147,7 +151,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndTdBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</td>' === substr($line, -5)) {
             return true;
@@ -158,7 +162,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartUlBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<ul' === substr($line, 0, 3)) {
             return true;
@@ -169,7 +173,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndUlBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</ul>' === substr($line, -5)) {
             return true;
@@ -180,7 +184,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartSectionBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<section ' === substr($line, 0, 9)) {
             return true;
@@ -191,7 +195,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndSectionBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</section>' === substr($line, -10)) {
             return true;
@@ -202,7 +206,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartDivBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<div ' === substr($line, 0, 5)) {
             return true;
@@ -213,7 +217,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndDivBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</div>' === substr($line, -6)) {
             return true;
@@ -224,7 +228,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartFormBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<form ' === substr($line, 0, 5)) {
             return true;
@@ -239,7 +243,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndFormBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</form>' === substr($line, -7)) {
             return true;
@@ -254,7 +258,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isStartPBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if (('<p>' === substr($line, 0, 3) || '<p ' === substr($line, 0, 3)) && false === strstr($line, '</p>')) {
             return true;
@@ -265,7 +269,7 @@ class HtmlLineJustifier extends AbstractLineJustifier
 
     protected function isEndPBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('</p>' === substr($line, -4)) {
             return true;
@@ -274,65 +278,65 @@ class HtmlLineJustifier extends AbstractLineJustifier
         return false;
     }
 
-    protected function addJustificationRules()
+    protected function addIndentationRules()
     {
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startTable'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Table', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Table', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startThead'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Thead', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Thead', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startTbody'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Tbody', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Tbody', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startTr'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Tr', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Tr', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startTd'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Td', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Td', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startUl'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Ul', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Ul', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startSection'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Section', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Section', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startDiv'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Div', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Div', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startForm'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Form', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Form', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startP'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('P', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('P', $lineNumber, $endLine) - 1);
             }
         }));
     }

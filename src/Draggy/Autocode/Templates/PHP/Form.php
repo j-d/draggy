@@ -41,6 +41,14 @@ class Form extends FormBase implements RenderizableTemplateInterface
     // <editor-fold desc="Other methods">
     // <user-additions part="otherMethods">
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplateName()
+    {
+        return 'form';
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPath()
@@ -118,7 +126,7 @@ class Form extends FormBase implements RenderizableTemplateInterface
             }
         }
 
-        return $this->commentAndJustifyLines($lines);
+        return $this->commentAndIndentLines($lines);
     }
 
     public function getConstructorInsideLines()

@@ -67,6 +67,11 @@ abstract class EntityTemplate extends EntityTemplateBase implements EntityTempla
         return $this->getPathAndFilename();
     }
 
+    /**
+     * @return string
+     */
+    abstract public function render();
+
     // </user-additions>
     // </editor-fold>
 }
