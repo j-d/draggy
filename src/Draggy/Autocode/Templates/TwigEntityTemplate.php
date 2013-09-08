@@ -18,7 +18,7 @@ namespace Draggy\Autocode\Templates;
 
 use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
-use Draggy\Utils\Justifier\Twig\TwigJustifier;
+use Draggy\Utils\Indenter\Twig\TwigIndenter;
 // </user-additions>
 
 /**
@@ -165,9 +165,9 @@ abstract class TwigEntityTemplate extends EntityTemplate implements TwigEntityTe
 
         $lines = array_merge($lines, $this->getTemplate()->getFileLines());
 
-        $twigJustifier = new TwigJustifier($this->getTemplate()->getIndentation(), 1);
+        $twigIndenter = new TwigIndenter($this->getTemplate()->getIndentation(), 1);
 
-        $lines = $twigJustifier->justifyFromLines($lines);
+        $lines = $twigIndenter->indentFromLines($lines);
 
         return $this->getTemplate()->convertLinesToCode($lines);
     }

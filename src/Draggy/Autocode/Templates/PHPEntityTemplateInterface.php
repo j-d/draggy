@@ -50,7 +50,7 @@ interface PHPEntityTemplateInterface extends SimplePHPEntityTemplateInterface
      *
      * @return string[]
      */
-    public function commentAndJustifyLines($lines);
+    public function commentAndIndentLines($lines);
 
     /**
      * @param string[] $lines

@@ -1,8 +1,8 @@
 <?php
 
-namespace Draggy\Utils\Justifier;
+namespace Draggy\Utils\Indenter;
 
-interface JustifierMachineInterface
+interface IndenterMachineInterface
 {
     public function indentLines($startLine, $endLine);
 

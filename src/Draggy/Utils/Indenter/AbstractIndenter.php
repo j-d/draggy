@@ -1,8 +1,8 @@
 <?php
 
-namespace Draggy\Utils\Justifier;
+namespace Draggy\Utils\Indenter;
 
-abstract class AbstractJustifier implements JustifierInterface
+abstract class AbstractIndenter implements IndenterInterface
 {
     /**
      * @var string Character used to indent, typically a space or a tab
@@ -95,7 +95,7 @@ abstract class AbstractJustifier implements JustifierInterface
     public function indentLines($startLine, $endLine)
     {
         for ($i = $startLine; $i <= $endLine; $i++) {
-            if ('' !== $this->lines[$i]) { // Don't justify blank lines
+            if ('' !== $this->lines[$i]) { // Don't indent blank lines
                 $this->outputLines[$i] = $this->indentation . $this->outputLines[$i];
             }
         }
@@ -111,25 +111,25 @@ abstract class AbstractJustifier implements JustifierInterface
         $this->lines = $lines;
     }
 
-    protected function addJustificationRule($pass, $rule)
+    protected function addIndentationRule($pass, $rule)
     {
         $this->passes[$pass][] = $rule;
     }
 
-    public function justifyFromLines($lines)
+    public function indentFromLines($lines)
     {
         $this->initialiseFromLines($lines);
 
-        $this->justify();
+        $this->indent();
 
         return $this->outputLines;
     }
 
-    public function justifyFromSourceFile($sourceFile)
+    public function indentFromSourceFile($sourceFile)
     {
         $this->initialiseFromSourceFile($sourceFile);
 
-        $this->justify();
+        $this->indent();
 
         return implode($this->eol, $this->outputLines);
     }
@@ -139,7 +139,7 @@ abstract class AbstractJustifier implements JustifierInterface
         return $this->indentation;
     }
 
-    protected function prepareToJustify()
+    protected function prepareToIndent()
     {
         foreach ($this->lines as $lineNumber => $line) {
             $this->lines[$lineNumber] = trim($line);

@@ -472,7 +472,7 @@ class Controller extends ControllerBase
     {
         $lines = [];
 
-        $lines = array_merge($lines, $this->commentAndJustifyLines($this->getControllerHelpLines()));
+        $lines = array_merge($lines, $this->commentAndIndentLines($this->getControllerHelpLines()));
 
         $lines[] = '';
 

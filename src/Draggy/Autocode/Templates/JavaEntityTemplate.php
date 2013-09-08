@@ -19,7 +19,7 @@ namespace Draggy\Autocode\Templates;
 use Draggy\Autocode\Entity;
 use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
-use Draggy\Utils\Justifier\Java\JavaJustifier;
+use Draggy\Utils\Indenter\Java\JavaIndenter;
 // </user-additions>
 
 /**
@@ -89,20 +89,20 @@ abstract class JavaEntityTemplate extends EntityTemplate
         return $lines;
     }
 
-    public function commentAndJustifyLines($lines)
+    public function commentAndIndentLines($lines)
     {
-        $phpJustifier = new JavaJustifier($this->getIndentation(), 1);
+        $phpIndenter = new JavaIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         return $this->commentLines($lines);
     }
 
     public function surroundDocumentationBlock(array $lines)
     {
-        $phpJustifier = new JavaJustifier($this->getIndentation(), 1);
+        $phpIndenter = new JavaIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         foreach ($lines as $key => $line) {
             $lines[$key] = '' !== $line
@@ -142,9 +142,9 @@ abstract class JavaEntityTemplate extends EntityTemplate
 
         $lines = array_merge($lines, $this->getFileLines());
 
-        $javaJustifier = new JavaJustifier($this->getIndentation(), 1);
+        $javaIndenter = new JavaIndenter($this->getIndentation(), 1);
 
-        $lines = $javaJustifier->justifyFromLines($lines);
+        $lines = $javaIndenter->indentFromLines($lines);
 
         return $this->convertLinesToCode($lines);
     }

@@ -1,23 +1,23 @@
 <?php
 
-namespace Draggy\Utils\Justifier\Twig;
+namespace Draggy\Utils\Indenter\Twig;
 
-use Draggy\Utils\Justifier\AbstractLineJustifier;
-use Draggy\Utils\Justifier\JustificationRule;
-use Draggy\Utils\Justifier\JustifierMachineInterface;
+use Draggy\Utils\Indenter\AbstractLineIndenter;
+use Draggy\Utils\Indenter\IndentationRule;
+use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class TwigLineJustifier extends AbstractLineJustifier
+class TwigLineIndenter extends AbstractLineIndenter
 {
-    public function __construct(JustifierMachineInterface $justifierMachine)
+    public function __construct(IndenterMachineInterface $indenterMachine)
     {
-        $this->justifierMachine = $justifierMachine;
+        $this->indenterMachine = $indenterMachine;
 
-        $this->addJustificationRules();
+        $this->addIndentationRules();
     }
 
     protected function identifyLines()
     {
-        foreach ($this->justifierMachine->getLines() as $lineNumber => $line) {
+        foreach ($this->indenterMachine->getLines() as $lineNumber => $line) {
             $this->lineTypes['startBlock'][$lineNumber] = $this->isStartBlockBlock($lineNumber);
             $this->lineTypes['endBlock'][$lineNumber]   = $this->isEndBlockBlock($lineNumber);
 
@@ -31,7 +31,7 @@ class TwigLineJustifier extends AbstractLineJustifier
 
     protected function isStartBlockBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{% block ' === substr($line, 0, 9) && false === strstr($line, '{% endblock %}')) {
             return true;
@@ -42,7 +42,7 @@ class TwigLineJustifier extends AbstractLineJustifier
 
     protected function isEndBlockBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{% endblock %}' === substr($line, -14)) {
             return true;
@@ -53,7 +53,7 @@ class TwigLineJustifier extends AbstractLineJustifier
 
     protected function isStartIfBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{% if ' === substr($line, 0, 6) && false === strstr($line, '{% else %}') && false === strstr($line, '{% endif %}')) {
             return true;
@@ -68,7 +68,7 @@ class TwigLineJustifier extends AbstractLineJustifier
 
     protected function isEndIfBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{% endif %}' === substr($line, -11)) {
             return true;
@@ -83,7 +83,7 @@ class TwigLineJustifier extends AbstractLineJustifier
 
     protected function isStartForBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{% for ' === substr($line, 0, 7) && false === strstr($line, '{% endfor %}')) {
             return true;
@@ -94,7 +94,7 @@ class TwigLineJustifier extends AbstractLineJustifier
 
     protected function isEndForBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{% endfor %}' === substr($line, -12)) {
             return true;
@@ -103,23 +103,23 @@ class TwigLineJustifier extends AbstractLineJustifier
         return false;
     }
 
-    protected function addJustificationRules()
+    protected function addIndentationRules()
     {
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startBlock'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Block', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Block', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startIf'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('If', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('If', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startFor'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('For', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('For', $lineNumber, $endLine) - 1);
             }
         }));
     }

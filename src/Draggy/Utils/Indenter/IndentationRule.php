@@ -1,8 +1,8 @@
 <?php
 
-namespace Draggy\Utils\Justifier;
+namespace Draggy\Utils\Indenter;
 
-class JustificationRule
+class IndentationRule
 {
     /**
      * @var integer

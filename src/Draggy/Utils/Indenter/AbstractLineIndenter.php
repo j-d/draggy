@@ -1,8 +1,8 @@
 <?php
 
-namespace Draggy\Utils\Justifier;
+namespace Draggy\Utils\Indenter;
 
-abstract class AbstractLineJustifier implements LineJustifierInterface
+abstract class AbstractLineIndenter implements LineIndenterInterface
 {
     /**
      * @var array
@@ -12,11 +12,11 @@ abstract class AbstractLineJustifier implements LineJustifierInterface
     protected $rules = [];
 
     /**
-     * @var JustifierMachineInterface
+     * @var IndenterMachineInterface
      */
-    protected $justifierMachine;
+    protected $indenterMachine;
 
-    protected function addJustificationRule(JustificationRule $rule)
+    protected function addIndentationRule(IndentationRule $rule)
     {
         $this->rules[$rule->getPass()][] = $rule->getRule();
     }
@@ -49,7 +49,7 @@ abstract class AbstractLineJustifier implements LineJustifierInterface
             }
         }
 
-        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber . ' (' . $this->justifierMachine->getLine($lineNumber) . ')');
+        throw new \RuntimeException('Cannot find the end of the ' . $name . ' block starting in line ' . $lineNumber . ' (' . $this->indenterMachine->getLine($lineNumber) . ')');
     }
 
     protected function identifyLines()
@@ -57,11 +57,11 @@ abstract class AbstractLineJustifier implements LineJustifierInterface
         throw new \LogicException('Optional abstract method not implemented');
     }
 
-    public function justify()
+    public function indent()
     {
         $this->identifyLines();
 
-        $endLine = count($this->justifierMachine->getLines()) - 1;
+        $endLine = count($this->indenterMachine->getLines()) - 1;
 
         if ($endLine < 0) {
             return;

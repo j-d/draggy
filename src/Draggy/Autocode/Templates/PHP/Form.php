@@ -126,7 +126,7 @@ class Form extends FormBase implements RenderizableTemplateInterface
             }
         }
 
-        return $this->commentAndJustifyLines($lines);
+        return $this->commentAndIndentLines($lines);
     }
 
     public function getConstructorInsideLines()

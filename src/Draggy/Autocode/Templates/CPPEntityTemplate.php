@@ -19,7 +19,7 @@ namespace Draggy\Autocode\Templates;
 use Draggy\Autocode\Entity;
 use Draggy\Autocode\Templates\Base\PHPEntityTemplateBase;
 // <user-additions part="use">
-use Draggy\Utils\Justifier\CPP\CPPJustifier;
+use Draggy\Utils\Indenter\CPP\CPPIndenter;
 // </user-additions>
 
 /**
@@ -79,20 +79,20 @@ abstract class CPPEntityTemplate extends EntityTemplate
         return $lines;
     }
 
-    public function commentAndJustifyLines($lines)
+    public function commentAndIndentLines($lines)
     {
-        $phpJustifier = new CPPJustifier($this->getIndentation(), 1);
+        $phpIndenter = new CPPIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         return $this->commentLines($lines);
     }
 
     public function surroundDocumentationBlock(array $lines)
     {
-        $phpJustifier = new CPPJustifier($this->getIndentation(), 1);
+        $phpIndenter = new CPPIndenter($this->getIndentation(), 1);
 
-        $lines = $phpJustifier->justifyFromLines($lines);
+        $lines = $phpIndenter->indentFromLines($lines);
 
         foreach ($lines as $key => $line) {
             $lines[$key] = '' !== $line
@@ -121,9 +121,9 @@ abstract class CPPEntityTemplate extends EntityTemplate
 
         $lines = array_merge($lines, $this->getFileLines());
 
-        $CPPJustifier = new CPPJustifier($this->getIndentation(), 1);
+        $CPPIndenter = new CPPIndenter($this->getIndentation(), 1);
 
-        $lines = $CPPJustifier->justifyFromLines($lines);
+        $lines = $CPPIndenter->indentFromLines($lines);
 
         return $this->convertLinesToCode($lines);
     }

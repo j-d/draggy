@@ -1,23 +1,23 @@
 <?php
 
-namespace Draggy\Utils\Justifier\CPP;
+namespace Draggy\Utils\Indenter\PHP;
 
-use Draggy\Utils\Justifier\AbstractLineJustifier;
-use Draggy\Utils\Justifier\JustificationRule;
-use Draggy\Utils\Justifier\JustifierMachineInterface;
+use Draggy\Utils\Indenter\AbstractLineIndenter;
+use Draggy\Utils\Indenter\IndentationRule;
+use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class CPPLineJustifier extends AbstractLineJustifier
+class PHPLineIndenter extends AbstractLineIndenter
 {
-    public function __construct(JustifierMachineInterface $justifierMachine)
+    public function __construct(IndenterMachineInterface $indenterMachine)
     {
-        $this->justifierMachine = $justifierMachine;
+        $this->indenterMachine = $indenterMachine;
 
-        $this->addJustificationRules();
+        $this->addIndentationRules();
     }
 
     protected function identifyLines()
     {
-        foreach ($this->justifierMachine->getLines() as $lineNumber => $line) {
+        foreach ($this->indenterMachine->getLines() as $lineNumber => $line) {
             $this->lineTypes['commentBlock'][$lineNumber] = $this->isStartCommentBlock($lineNumber);
 
             $this->lineTypes['startBraces'][$lineNumber] = $this->isStartBracesBlock($lineNumber);
@@ -45,7 +45,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isStartCommentBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('/*' === substr($line, 0, 2)) {
             return true;
@@ -57,7 +57,7 @@ class CPPLineJustifier extends AbstractLineJustifier
     protected function findEndCommentBlock($lineNumber, $endLine)
     {
         for ($i = $lineNumber; $i <= $endLine; $i++) {
-            if ('*/' === substr($this->justifierMachine->getLine($i), -2)) {
+            if ('*/' === substr($this->indenterMachine->getLine($i), -2)) {
                 return $i;
             }
         }
@@ -69,15 +69,15 @@ class CPPLineJustifier extends AbstractLineJustifier
     {
         // Restore deleted space
         for ($i = $startLine; $i <= $endLine; $i++) {
-            if ('*' === substr($this->justifierMachine->getLine($i), 0, 1)) {
-                $this->justifierMachine->setOutputLine($i, ' ' . $this->justifierMachine->getLine($i));
+            if ('*' === substr($this->indenterMachine->getLine($i), 0, 1)) {
+                $this->indenterMachine->setOutputLine($i, ' ' . $this->indenterMachine->getLine($i));
             }
         }
     }
 
     protected function isStartBracesBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('{' === substr($line, -1) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
@@ -88,7 +88,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isEndBracesBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if (('}' === substr($line, 0, 1) || '}' === substr($line, -1)) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
@@ -99,7 +99,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isStartBracketsBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('(' === substr($line, -1) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
@@ -110,7 +110,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isEndBracketsBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if (')' === substr($line, 0, 1) && '*' !== substr($line, 0, 1)) {
             return true;
@@ -129,7 +129,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isStartSquaredBracketsBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('[' === substr($line, -1) && '*' !== substr($line, 0, 1) && '//' !== substr($line, 0, 2)) {
             return true;
@@ -140,7 +140,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isEndSquaredBracketsBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if (']' === substr($line, 0, 1) && '*' !== substr($line, 0, 1)) {
             return true;
@@ -159,7 +159,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isStartEchoBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('<?=' === substr($line, 0, 3) && false === strstr($line, '?>')) {
             return true;
@@ -170,7 +170,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isEndEchoBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('?>' === substr($line, -2) && false === strstr($line, '<?=')) {
             return true;
@@ -181,7 +181,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isStartCaseBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('case ' === substr($line, 0, 5) || 'default:' === $line) {
             return true;
@@ -192,7 +192,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isEndCaseBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('break;' === $line) {
             return true;
@@ -221,7 +221,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isArrowsRow($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('->' === substr($line, 0, 2)) {
             return true;
@@ -247,7 +247,7 @@ class CPPLineJustifier extends AbstractLineJustifier
 
     protected function isDoubleArrowLine($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if (
             1 === substr_count($line, ' => ') &&
@@ -283,10 +283,10 @@ class CPPLineJustifier extends AbstractLineJustifier
         $beforeAssignment    = [];
         $afterAssignment     = [];
 
-        $justifierMachine = $this->justifierMachine;
+        $indenterMachine = $this->indenterMachine;
 
         for ($i = $startLine; $i <= $endLine; $i++) {
-            $line = $justifierMachine->getOutputLine($i);
+            $line = $indenterMachine->getOutputLine($i);
 
             $positionAssignment   = strpos($line, ' => ');
             $beforeAssignment[$i] = substr($line, 0, $positionAssignment);
@@ -296,15 +296,16 @@ class CPPLineJustifier extends AbstractLineJustifier
         }
 
         for ($i = $startLine; $i <= $endLine; $i++) {
-            $justifierMachine->setOutputLine($i, $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i]);
+            $indenterMachine->setOutputLine($i, $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i]);
         }
     }
 
     protected function isAssignmentLine($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if (
+            ('$' === substr($line, 0, 1) || '//$' === substr($line, 0, 3) || '// $' === substr($line, 0, 4)) &&
             ';' === substr($line, -1) &&
             1 === substr_count($line, ' = ')
         ) {
@@ -336,10 +337,10 @@ class CPPLineJustifier extends AbstractLineJustifier
         $beforeAssignment    = [];
         $afterAssignment     = [];
 
-        $justifierMachine = $this->justifierMachine;
+        $indenterMachine = $this->indenterMachine;
 
         for ($i = $startLine; $i <= $endLine; $i++) {
-            $line = $justifierMachine->getOutputLine($i);
+            $line = $indenterMachine->getOutputLine($i);
 
             $positionAssignment   = strpos($line, ' = ');
             $beforeAssignment[$i] = substr($line, 0, $positionAssignment);
@@ -349,13 +350,13 @@ class CPPLineJustifier extends AbstractLineJustifier
         }
 
         for ($i = $startLine; $i <= $endLine; $i++) {
-            $justifierMachine->setOutputLine($i, $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i]);
+            $indenterMachine->setOutputLine($i, $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i]);
         }
     }
 
     protected function isAtParamLine($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('@param' === substr($line, 0, 6)) {
             return true;
@@ -386,10 +387,10 @@ class CPPLineJustifier extends AbstractLineJustifier
         $beforeDescription    = [];
         $afterDescription     = [];
 
-        $justifierMachine = $this->justifierMachine;
+        $indenterMachine = $this->indenterMachine;
 
         for ($i = $startLine; $i <= $endLine; $i++) {
-            $line = $justifierMachine->getOutputLine($i);
+            $line = $indenterMachine->getOutputLine($i);
 
             $positionDescription   = strpos($line, ' ', 7);
             $beforeDescription[$i] = substr($line, 0, $positionDescription);
@@ -399,13 +400,13 @@ class CPPLineJustifier extends AbstractLineJustifier
         }
 
         for ($i = $startLine; $i <= $endLine; $i++) {
-            $justifierMachine->setOutputLine($i, $beforeDescription[$i] . str_repeat(' ', $maxPositionDescription - strlen($beforeDescription[$i])) . $afterDescription[$i]);
+            $indenterMachine->setOutputLine($i, $beforeDescription[$i] . str_repeat(' ', $maxPositionDescription - strlen($beforeDescription[$i])) . $afterDescription[$i]);
         }
     }
 
     protected function isSpecialIndentationBlock($lineNumber)
     {
-        $line = $this->justifierMachine->getLine($lineNumber);
+        $line = $this->indenterMachine->getLine($lineNumber);
 
         if ('implements' === substr($line, 0, 10)) {
             return true;
@@ -415,7 +416,7 @@ class CPPLineJustifier extends AbstractLineJustifier
             return true;
         }
 
-        if ('// </user-additions>' === $line && $lineNumber > 0 && '// <user-additions part="implements">' === $this->justifierMachine->getLine($lineNumber - 1)) {
+        if ('// </user-additions>' === $line && $lineNumber > 0 && '// <user-additions part="implements">' === $this->indenterMachine->getLine($lineNumber - 1)) {
             return true;
         }
 
@@ -430,51 +431,51 @@ class CPPLineJustifier extends AbstractLineJustifier
         return false;
     }
 
-    protected function addJustificationRules()
+    protected function addIndentationRules()
     {
-        $this->addJustificationRule(new JustificationRule(1, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(1, function ($lineNumber, $endLine) {
             if ($this->isStartCommentBlock($lineNumber)) {
                 $this->indentCommentBlock($lineNumber, $this->findEndCommentBlock($lineNumber, $endLine));
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startBraces'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Braces', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Braces', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startBrackets'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Brackets', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Brackets', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startSquaredBrackets'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('SquaredBrackets', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('SquaredBrackets', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startEcho'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Echo', $lineNumber, $endLine) - 1);
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndStandardBlock('Echo', $lineNumber, $endLine) - 1);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($this->lineTypes['startCase'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber + 1, $this->findEndCaseBlock($lineNumber, $endLine));
+                $this->indenterMachine->indentLines($lineNumber + 1, $this->findEndCaseBlock($lineNumber, $endLine));
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber) {
             if ($this->lineTypes['special'][$lineNumber]) {
-                $this->justifierMachine->indentLines($lineNumber, $lineNumber);
+                $this->indenterMachine->indentLines($lineNumber, $lineNumber);
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($lineNumber > 0) {
                 if ($this->lineTypes['arrow'][$lineNumber] && !$this->lineTypes['arrow'][$lineNumber - 1]) {
                     $endArrowsBlock = $this->findEndArrowsBlock($lineNumber, $endLine);
@@ -483,12 +484,12 @@ class CPPLineJustifier extends AbstractLineJustifier
                         $endArrowsBlock = $this->findEndStandardBlock('Brackets', $lineNumber, $endLine);
                     }
 
-                    $this->justifierMachine->indentLines($lineNumber, $endArrowsBlock);
+                    $this->indenterMachine->indentLines($lineNumber, $endArrowsBlock);
                 }
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($lineNumber > 0) {
                 if ($this->lineTypes['doubleArrow'][$lineNumber] && !$this->lineTypes['doubleArrow'][$lineNumber - 1]) {
                     $this->alignDoubleArrowLines($lineNumber, $this->findEndDoubleArrowBlock($lineNumber, $endLine));
@@ -496,7 +497,7 @@ class CPPLineJustifier extends AbstractLineJustifier
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($lineNumber > 0) {
                 if ($this->lineTypes['assignment'][$lineNumber] && !$this->lineTypes['assignment'][$lineNumber - 1]) {
                     $this->alignAssignmentsLines($lineNumber, $this->findEndAssignmentsBlock($lineNumber, $endLine));
@@ -504,7 +505,7 @@ class CPPLineJustifier extends AbstractLineJustifier
             }
         }));
 
-        $this->addJustificationRule(new JustificationRule(2, function ($lineNumber, $endLine) {
+        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
             if ($lineNumber > 0) {
                 if ($this->lineTypes['atParam'][$lineNumber] && !$this->lineTypes['atParam'][$lineNumber - 1]) {
                     $this->alignAtParamLines($lineNumber, $this->findEndAtParamBlock($lineNumber, $endLine));

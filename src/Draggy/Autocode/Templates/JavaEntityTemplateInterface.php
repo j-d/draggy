@@ -50,7 +50,7 @@ interface JavaEntityTemplateInterface
      *
      * @return string[]
      */
-    public function commentAndJustifyLines($lines);
+    public function commentAndIndentLines($lines);
 
     /**
      * @param string[] $lines
