@@ -748,6 +748,11 @@ class Loader
         return $r;
     }
 
+    /**
+     * Returns all the JS code to load the project
+     *
+     * @return string
+     */
     public function getLoaderJS()
     {
         if ($this->newFile) {

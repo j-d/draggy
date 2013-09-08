@@ -3,9 +3,8 @@
 namespace Draggy\Utils\Indenter\Java;
 
 use Draggy\Utils\Indenter\AbstractIndenter;
-use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class JavaIndenter extends AbstractIndenter implements IndenterMachineInterface
+class JavaIndenter extends AbstractIndenter
 {
     /**
      * @var JavaLineIndenter
@@ -22,6 +21,9 @@ class JavaIndenter extends AbstractIndenter implements IndenterMachineInterface
         $this->javaLineIndenter = new JavaLineIndenter($this);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indent()
     {
         $this->prepareToIndent();

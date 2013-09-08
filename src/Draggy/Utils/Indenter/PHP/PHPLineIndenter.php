@@ -6,6 +6,13 @@ use Draggy\Utils\Indenter\AbstractLineIndenter;
 use Draggy\Utils\Indenter\IndentationRule;
 use Draggy\Utils\Indenter\IndenterMachineInterface;
 
+/**
+ * Class PHPLineIndenter
+ *
+ * This class provides the set of rules that will be used for indentation
+ *
+ * @package Draggy\Utils\Indenter\PHP
+ */
 class PHPLineIndenter extends AbstractLineIndenter
 {
     public function __construct(IndenterMachineInterface $indenterMachine)

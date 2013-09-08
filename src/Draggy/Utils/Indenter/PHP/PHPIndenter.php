@@ -4,9 +4,15 @@ namespace Draggy\Utils\Indenter\PHP;
 
 use Draggy\Utils\Indenter\AbstractIndenter;
 use Draggy\Utils\Indenter\Html\HtmlLineIndenter;
-use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class PHPIndenter extends AbstractIndenter implements IndenterMachineInterface
+/**
+ * Class PHPIndenter
+ *
+ * This class will indent a PHP file, by applying the HTML indentation first and then the PHP one.
+ *
+ * @package Draggy\Utils\Indenter\PHP
+ */
+class PHPIndenter extends AbstractIndenter
 {
     /**
      * @var HtmlLineIndenter
@@ -26,9 +32,12 @@ class PHPIndenter extends AbstractIndenter implements IndenterMachineInterface
         parent::__construct($indentationCharacter, $indentationCount, $eol);
 
         $this->htmlLineIndenter = new HtmlLineIndenter($this);
-        $this->phpLineIndenter = new PHPLineIndenter($this);
+        $this->phpLineIndenter  = new PHPLineIndenter($this);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indent()
     {
         $this->prepareToIndent();

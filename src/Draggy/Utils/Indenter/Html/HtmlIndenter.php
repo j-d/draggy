@@ -3,9 +3,8 @@
 namespace Draggy\Utils\Indenter\Html;
 
 use Draggy\Utils\Indenter\AbstractIndenter;
-use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class HtmlIndenter extends AbstractIndenter implements IndenterMachineInterface
+class HtmlIndenter extends AbstractIndenter
 {
     /**
      * @var HtmlLineIndenter
@@ -22,6 +21,9 @@ class HtmlIndenter extends AbstractIndenter implements IndenterMachineInterface
         $this->htmlLineIndenter = new HtmlLineIndenter($this);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indent()
     {
         $this->prepareToIndent();

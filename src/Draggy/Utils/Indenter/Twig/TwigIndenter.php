@@ -4,9 +4,8 @@ namespace Draggy\Utils\Indenter\Twig;
 
 use Draggy\Utils\Indenter\AbstractIndenter;
 use Draggy\Utils\Indenter\Html\HtmlLineIndenter;
-use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class TwigIndenter extends AbstractIndenter implements IndenterMachineInterface
+class TwigIndenter extends AbstractIndenter
 {
     /**
      * @var HtmlLineIndenter
@@ -29,6 +28,9 @@ class TwigIndenter extends AbstractIndenter implements IndenterMachineInterface
         $this->twigLineIndenter = new TwigLineIndenter($this);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indent()
     {
         $this->prepareToIndent();

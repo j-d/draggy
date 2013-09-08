@@ -2,7 +2,7 @@
 
 namespace Draggy\Utils\Indenter;
 
-abstract class AbstractIndenter implements IndenterInterface
+abstract class AbstractIndenter implements IndenterInterface, IndenterMachineInterface
 {
     /**
      * @var string Character used to indent, typically a space or a tab
@@ -42,11 +42,7 @@ abstract class AbstractIndenter implements IndenterInterface
     protected $passes;
 
     /**
-     * @param string $indentationCharacter
-     * @param int    $indentationCount
-     * @param string $eol
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
     public function __construct($indentationCharacter = ' ', $indentationCount = 4, $eol = "\n")
     {
@@ -68,6 +64,9 @@ abstract class AbstractIndenter implements IndenterInterface
         $this->eol                  = $eol;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getLine($lineNumber)
     {
         return isset($this->lines[$lineNumber])
@@ -75,11 +74,17 @@ abstract class AbstractIndenter implements IndenterInterface
             : null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getLines()
     {
         return $this->lines;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOutputLine($lineNumber)
     {
         return isset($this->outputLines[$lineNumber])
@@ -87,11 +92,17 @@ abstract class AbstractIndenter implements IndenterInterface
             : null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setOutputLine($lineNumber, $line)
     {
         $this->outputLines[$lineNumber] = $line;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indentLines($startLine, $endLine)
     {
         for ($i = $startLine; $i <= $endLine; $i++) {
@@ -101,21 +112,40 @@ abstract class AbstractIndenter implements IndenterInterface
         }
     }
 
+    /**
+     * Get all the source code lines from a source code file
+     *
+     * @param string $sourceFile
+     */
     protected function initialiseFromSourceFile($sourceFile)
     {
         $this->lines = explode($this->eol, $sourceFile);
     }
 
+    /**
+     * Initialise from an array of lines
+     *
+     * @param string[] $lines
+     */
     protected function initialiseFromLines($lines)
     {
         $this->lines = $lines;
     }
 
+    /**
+     * Add a new indentation rule to the indenter that will be processed in order
+     *
+     * @param int $pass
+     * @param $rule
+     */
     protected function addIndentationRule($pass, $rule)
     {
         $this->passes[$pass][] = $rule;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indentFromLines($lines)
     {
         $this->initialiseFromLines($lines);
@@ -125,6 +155,9 @@ abstract class AbstractIndenter implements IndenterInterface
         return $this->outputLines;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indentFromSourceFile($sourceFile)
     {
         $this->initialiseFromSourceFile($sourceFile);
@@ -134,11 +167,17 @@ abstract class AbstractIndenter implements IndenterInterface
         return implode($this->eol, $this->outputLines);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getIndentation()
     {
         return $this->indentation;
     }
 
+    /**
+     * Pre-process all the lines so they are ready to be indented
+     */
     protected function prepareToIndent()
     {
         foreach ($this->lines as $lineNumber => $line) {

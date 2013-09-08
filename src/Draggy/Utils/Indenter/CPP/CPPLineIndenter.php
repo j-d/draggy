@@ -8,6 +8,9 @@ use Draggy\Utils\Indenter\IndenterMachineInterface;
 
 class CPPLineIndenter extends AbstractLineIndenter
 {
+    /**
+     * {inheritdoc}
+     */
     public function __construct(IndenterMachineInterface $indenterMachine)
     {
         $this->indenterMachine = $indenterMachine;
@@ -15,6 +18,9 @@ class CPPLineIndenter extends AbstractLineIndenter
         $this->addIndentationRules();
     }
 
+    /**
+     * {inheritdoc}
+     */
     protected function identifyLines()
     {
         foreach ($this->indenterMachine->getLines() as $lineNumber => $line) {
@@ -36,7 +42,6 @@ class CPPLineIndenter extends AbstractLineIndenter
             $this->lineTypes['endEcho'][$lineNumber]   = $this->isEndEchoBlock($lineNumber);
 
             $this->lineTypes['arrow'][$lineNumber]       = $this->isArrowsRow($lineNumber);
-            $this->lineTypes['doubleArrow'][$lineNumber] = $this->isDoubleArrowLine($lineNumber);
             $this->lineTypes['assignment'][$lineNumber]  = $this->isAssignmentLine($lineNumber);
             $this->lineTypes['atParam'][$lineNumber]     = $this->isAtParamLine($lineNumber);
             $this->lineTypes['special'][$lineNumber]     = $this->isSpecialIndentationBlock($lineNumber);
@@ -245,61 +250,6 @@ class CPPLineIndenter extends AbstractLineIndenter
         throw new \RuntimeException('Cannot find the end of the arrows block starting in line ' . $lineNumber);
     }
 
-    protected function isDoubleArrowLine($lineNumber)
-    {
-        $line = $this->indenterMachine->getLine($lineNumber);
-
-        if (
-            1 === substr_count($line, ' => ') &&
-            !$this->isStartBracesBlock($lineNumber) &&
-            !$this->isStartSquaredBracketsBlock($lineNumber) &&
-            !$this->isStartBracketsBlock($lineNumber)
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function findEndDoubleArrowBlock($lineNumber, $maxLine)
-    {
-        for ($i = $lineNumber + 1; $i <= $maxLine; $i++) {
-            if (!$this->lineTypes['doubleArrow'][$i]) {
-                return $i - 1;
-            }
-        }
-
-        return $lineNumber;
-    }
-
-    protected function alignDoubleArrowLines($startLine, $endLine)
-    {
-        if ($endLine - $startLine < 1) {
-            return;
-        }
-
-        $maxPositionAssignment = 0;
-
-        $beforeAssignment    = [];
-        $afterAssignment     = [];
-
-        $indenterMachine = $this->indenterMachine;
-
-        for ($i = $startLine; $i <= $endLine; $i++) {
-            $line = $indenterMachine->getOutputLine($i);
-
-            $positionAssignment   = strpos($line, ' => ');
-            $beforeAssignment[$i] = substr($line, 0, $positionAssignment);
-            $afterAssignment[$i]  = substr($line, $positionAssignment);
-
-            $maxPositionAssignment = max($positionAssignment, $maxPositionAssignment);
-        }
-
-        for ($i = $startLine; $i <= $endLine; $i++) {
-            $indenterMachine->setOutputLine($i, $beforeAssignment[$i] . str_repeat(' ', $maxPositionAssignment - strlen($beforeAssignment[$i])) . $afterAssignment[$i]);
-        }
-    }
-
     protected function isAssignmentLine($lineNumber)
     {
         $line = $this->indenterMachine->getLine($lineNumber);
@@ -484,14 +434,6 @@ class CPPLineIndenter extends AbstractLineIndenter
                     }
 
                     $this->indenterMachine->indentLines($lineNumber, $endArrowsBlock);
-                }
-            }
-        }));
-
-        $this->addIndentationRule(new IndentationRule(2, function ($lineNumber, $endLine) {
-            if ($lineNumber > 0) {
-                if ($this->lineTypes['doubleArrow'][$lineNumber] && !$this->lineTypes['doubleArrow'][$lineNumber - 1]) {
-                    $this->alignDoubleArrowLines($lineNumber, $this->findEndDoubleArrowBlock($lineNumber, $endLine));
                 }
             }
         }));

@@ -3,9 +3,8 @@
 namespace Draggy\Utils\Indenter\CPP;
 
 use Draggy\Utils\Indenter\AbstractIndenter;
-use Draggy\Utils\Indenter\IndenterMachineInterface;
 
-class CPPIndenter extends AbstractIndenter implements IndenterMachineInterface
+class CPPIndenter extends AbstractIndenter
 {
     /**
      * @var CPPLineIndenter
@@ -22,6 +21,9 @@ class CPPIndenter extends AbstractIndenter implements IndenterMachineInterface
         $this->cppLineIndenter = new CPPLineIndenter($this);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function indent()
     {
         $this->prepareToIndent();

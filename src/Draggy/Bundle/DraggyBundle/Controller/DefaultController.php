@@ -206,10 +206,9 @@ class DefaultController extends Controller
 
         $targetFolder = $this->getSourcePath($file, $self);
 
-        $project = (new Project())
-            ->loadFile($modelFile);
+        $project = new Project();
 
-        //$this->getRequest()->get('ignore')
+        $project->loadFile($modelFile);
 
         $toProcess = $this->getRequest()->get('process');
 

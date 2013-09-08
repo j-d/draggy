@@ -4,8 +4,24 @@ namespace Draggy\Utils\Yaml;
 
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class YamlLoader
+ *
+ * This class will process the configuration file, and it will merge all the different settings depending on the options
+ * chosen. The output will be a configuration array that will be used on the project.
+ *
+ * @package Draggy\Utils\Yaml
+ */
 class YamlLoader
 {
+    /**
+     * Overwrite / complete the target array with the values found on the source array
+     *
+     * @param array $target
+     * @param array $source
+     *
+     * @return array
+     */
     protected static function mergeArrays($target, $source)
     {
         foreach ($source as $node => $values) {
@@ -21,6 +37,14 @@ class YamlLoader
         return $target;
     }
 
+    /**
+     * Complete the different configuration sections on the target array with those ones found on the source array
+     *
+     * @param array $target
+     * @param array $source
+     *
+     * @return array
+     */
     public static function mergeConfigurations($target, $source)
     {
         foreach (['attributes', 'entities', 'relationships', 'autocode', 'languages', 'frameworks', 'orms'] as $configurationPart) {
@@ -32,6 +56,11 @@ class YamlLoader
         return $target;
     }
 
+    /**
+     * Load the model configuration, merge it onto the default one and return the result array
+     *
+     * @return array
+     */
     public static function loadConfiguration()
     {
         $defaultsFile = __DIR__ . '/../../../../app/config/defaults.yml';
