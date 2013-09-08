@@ -1,16 +1,16 @@
 {
     "name": "jd/draggy",
-    "description": "Draggy project",
+    "description": "Draggy - Visual code development tool and template engine",
     "license": "MIT",
     "authors": [
         {
-            "name": "Jose Diaz",
-            "email": "jose@diazangulo.com",
+            "name":     "Jose Diaz",
+            "email":    "jose@diazangulo.com",
             "homepage": "http://www.diazangulo.com"
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php":          ">=5.4.0",
         "symfony/yaml": "2.3.*"
     },
     "support": {
