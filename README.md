@@ -2,7 +2,7 @@ Draggy
 ======
 
 Draggy is a code development tool and template engine that enables the user to create and maintain a functional
-Skelleton of an application.
+Skeleton of an application.
 
 The installation instructions here are for installing Draggy as a vendor on an existing Symfony2 installation.
 If you are starting a new project, there is an easier way to get started by downloading a Symfony2 installation 
