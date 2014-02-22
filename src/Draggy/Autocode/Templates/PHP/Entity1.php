@@ -323,9 +323,25 @@ class Entity1 extends Entity1Base implements RenderizableTemplateInterface
         $lines = [];
 
         if ('integer' === $attribute->getPhpType()) {
-            $lines[] = $attribute->getThisName() . ' = intval($' . $attribute->getLowerFullName() . ');';
+            if ($attribute->getNull()) {
+                $lines[] = 'if (null !== $' . $attribute->getLowerFullName() . ') {';
+                $lines[] =   $attribute->getThisName() . ' = intval($' . $attribute->getLowerFullName() . ');';
+                $lines[] = '} else {';
+                $lines[] =   $attribute->getThisName() . ' = null;';
+                $lines[] = '}';
+            } else {
+                $lines[] = $attribute->getThisName() . ' = intval($' . $attribute->getLowerFullName() . ');';
+            }
         } elseif ('float' === $attribute->getPhpType()) {
-            $lines[] = $attribute->getThisName() . ' = floatval($' . $attribute->getLowerFullName() . ');';
+            if ($attribute->getNull()) {
+                $lines[] = 'if (null !== $' . $attribute->getLowerFullName() . ') {';
+                $lines[] =   $attribute->getThisName() . ' = floatval($' . $attribute->getLowerFullName() . ');';
+                $lines[] = '} else {';
+                $lines[] =   $attribute->getThisName() . ' = null;';
+                $lines[] = '}';
+            } else {
+                $lines[] = $attribute->getThisName() . ' = floatval($' . $attribute->getLowerFullName() . ');';
+            }
         } else {
             $lines[] = $attribute->getThisName() . ' = $' . $attribute->getLowerFullName() . ';';
         }
