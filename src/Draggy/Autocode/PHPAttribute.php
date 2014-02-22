@@ -42,6 +42,7 @@ class PHPAttribute extends PHPAttributeBase
         'datetime' => '\\DateTime',
         'array'    => 'array',
         'decimal'  => 'float',
+        'float'    => 'float',
         'object'   => 'ERROR'
     ];
     // </user-additions>
